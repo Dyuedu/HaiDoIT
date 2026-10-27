@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soi tin — Hải Đồ IT</title>
+  <style>
+    /* Spine sections governing this screen:
+       DESIGN.md — Brand & Style; Colors; Typography; Layout & Spacing; Elevation & Depth; Shapes; Components (Logo, Thanh điều hướng, Nút chính, ô link viền 2px accent-cold, Kết quả soi tin); Do's and Don'ts.
+       EXPERIENCE.md — Foundation; Information Architecture (Soi tin); Voice and Tone; Component Patterns (Logo, Thanh điều hướng, Nút chính, Kết quả soi tin); State Patterns (Link có trong dữ liệu, Link không có, Lương ẩn); Interaction Primitives; Accessibility Floor; Responsive & Platform; Ngưỡng, nguồn, và hồ sơ; Key Flows (UJ-3). */
+
+    /* DESIGN.md Colors — dark tokens only */
+    :root {
+      --surface: #070B10;
+      --surface-card: #0D141C;
+      --surface-sunken: #0A1118;
+      --ink: #E6EDF3;
+      --ink-lead: #A9B8C7;
+      --ink-meta: #9FB0C2;
+      --ink-on-accent: #0A0F05;
+      --accent-hot: #C5F36A;
+      --accent-cold: #62D9EE;
+      --warning: #F5A65B;
+      --warning-ink: #FFD3A6;
+      --warning-surface: #140F09;
+      --warning-border: #5A3E22;
+      --line: #1C2A36;
+      --content-max: 1320px;
+      --gutter: 24px;
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --font-body: "Be Vietnam Pro", "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "Cascadia Mono", ui-monospace, monospace;
+      --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+    }
+
+    /* DESIGN.md Layout & Spacing — canvas, 40px grid in accent-cold at very low opacity */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--surface);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--surface);
+      background-image:
+        linear-gradient(rgba(98, 217, 238, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(98, 217, 238, 0.045) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    /* EXPERIENCE.md Accessibility Floor — focus outline accent-hot, 2px, offset 2px */
+    :focus {
+      outline: 2px solid #C5F36A;
+      outline-offset: 2px;
+    }
+
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid #C5F36A;
+      outline-offset: 2px;
+    }
+
+    /* DESIGN.md Layout & Spacing — sticky header, surface at high opacity, rule in line */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(7, 11, 16, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner,
+    .content,
+    .footer-inner {
+      width: 100%;
+      max-width: var(--content-max);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 28px;
+      min-height: 64px;
+      padding-block: 4px;
+    }
+
+    /* DESIGN.md Components — Logo */
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      flex: none;
+      border: 1.5px solid var(--accent-hot);
+      border-radius: var(--radius-sm);
+    }
+
+    .logo-mark span {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+    }
+
+    .logo-mark .cold-a {
+      top: 7px;
+      left: 8px;
+      background: var(--accent-cold);
+    }
+
+    .logo-mark .cold-b {
+      bottom: 7px;
+      left: 14px;
+      background: var(--accent-cold);
+    }
+
+    .logo-mark .hot {
+      top: 14px;
+      right: 7px;
+      background: var(--accent-hot);
+    }
+
+    .logo-word {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-word i {
+      color: var(--accent-hot);
+      font-style: normal;
+    }
+
+    /* DESIGN.md Components — Thanh điều hướng; EXPERIENCE.md Responsive & Platform */
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 12px;
+      border-bottom: 2px solid transparent;
+      color: var(--ink-lead);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+
+    .nav a[aria-current="page"] {
+      color: var(--ink);
+      border-bottom-color: var(--accent-cold);
+    }
+
+    /* DESIGN.md Layout & Spacing — screens other than the map: 48px from the header, 72px at the foot, 32px between blocks */
+    .content {
+      padding-top: 48px;
+      padding-bottom: 32px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .lead {
+      margin: 12px 0 0;
+      max-width: 42rem;
+      color: var(--ink-lead);
+    }
+
+    /* EXPERIENCE.md State Patterns — two stacked states of Soi tin */
+    .state {
+      margin-top: 32px;
+    }
+
+    .state + .state {
+      margin-top: 48px;
+      padding-top: 48px;
+      border-top: 1px solid var(--line);
+    }
+
+    .kicker {
+      margin: 0 0 16px;
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* DESIGN.md Components — Ô link: sunken, radius md, border 2px accent-cold. Nút chính. */
+    .entry {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .field {
+      flex: 1;
+      min-width: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      padding: 0 16px;
+      border: 2px solid #62D9EE;
+      border-radius: var(--radius-md);
+      background: var(--surface-sunken);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    input::placeholder {
+      color: var(--ink-meta);
+      opacity: 1;
+    }
+
+    button {
+      min-height: 48px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: var(--radius-md);
+      background: #C5F36A;
+      color: #0A0F05;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    /* DESIGN.md Components — Kết quả soi tin */
+    .card {
+      margin-top: 32px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--surface-card);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin: 0;
+    }
+
+    .stats div {
+      min-width: 0;
+    }
+
+    .stats dt {
+      margin: 0;
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stats dd {
+      margin: 8px 0 0;
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    /* DESIGN.md Components — tin trùng uses the warning-surface box */
+    .warning {
+      margin-top: 24px;
+      padding: 16px;
+      border: 1px dashed var(--warning);
+      border-radius: var(--radius-lg);
+      background: var(--warning-surface);
+      color: var(--warning-ink);
+    }
+
+    /* EXPERIENCE.md State Patterns — Lương ẩn; Voice and Tone */
+    .sample {
+      margin: 16px 0 0;
+      color: var(--ink);
+    }
+
+    /* EXPERIENCE.md Component Patterns — Kết quả soi tin: refresh count is not the map footer date */
+    .distinguish {
+      margin: 16px 0 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-lead);
+    }
+
+    /* EXPERIENCE.md State Patterns — Link không có */
+    .miss {
+      margin: 0;
+      color: var(--ink);
+    }
+
+    /* EXPERIENCE.md Ngưỡng, nguồn, và hồ sơ — footer */
+    .site-footer {
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      padding-top: 24px;
+      padding-bottom: 72px;
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .footer-inner p {
+      margin: 0;
+    }
+
+    /* DESIGN.md Elevation & Depth — no motion when the reader asks for less */
+    @media (prefers-reduced-motion: no-preference) {
+      button {
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(197, 243, 106, 0.28);
+      }
+    }
+
+    /* EXPERIENCE.md Responsive & Platform — under 720px, one column; nav wraps */
+    @media (max-width: 719px) {
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0;
+        padding-block: 8px;
+      }
+
+      .entry {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#ban-do-nhu-cau">
+        <span class="logo-mark" aria-hidden="true">
+          <span class="cold-a"></span>
+          <span class="cold-b"></span>
+          <span class="hot"></span>
+        </span>
+        <span class="logo-word">HẢI ĐỒ<i>·</i>IT</span>
+      </a>
+      <nav class="nav" aria-label="Chính">
+        <a href="#ban-do-nhu-cau">Bản đồ nhu cầu</a>
+        <a href="#hoc-gi-tiep">Học gì tiếp?</a>
+        <a href="#lo-trinh-90-ngay">Lộ trình 90 ngày</a>
+        <a href="#so-sanh-offer">So sánh offer</a>
+        <a href="#soi-tin" aria-current="page">Soi tin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content" id="soi-tin">
+    <h1>Soi tin</h1>
+    <p class="lead">Dán link một tin tuyển dụng để xem số lần làm mới và hai ngày thấy tin.</p>
+
+    <!-- EXPERIENCE.md State Patterns — Link có trong dữ liệu. Key Flows UJ-3. -->
+    <section class="state" aria-labelledby="found-title">
+      <h2 class="kicker" id="found-title">Link có trong dữ liệu</h2>
+      <div class="entry">
+        <div class="field">
+          <label for="link-found">Link tin tuyển dụng</label>
+          <input id="link-found" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://example.com/tuyen-dung/vi-tri" value="https://example.com/tuyen-dung/backend-junior-ha-noi">
+        </div>
+        <button type="button">Soi tin</button>
+      </div>
+      <article class="card">
+        <dl class="stats">
+          <div>
+            <dt>Số lần làm mới</dt>
+            <dd>3</dd>
+          </div>
+          <div>
+            <dt>Ngày thấy đầu</dt>
+            <dd>28/09/2026</dd>
+          </div>
+          <div>
+            <dt>Ngày thấy gần nhất</dt>
+            <dd>18/10/2026</dd>
+          </div>
+        </dl>
+        <p class="warning">Có tin đang mở khác trùng kỹ năng, thành phố, cấp bậc và khoảng lương.</p>
+        <p class="sample">Chưa đủ mẫu để xét lương.</p>
+        <p class="distinguish">Số lần làm mới là số lần tin này được thấy lại, khác với ngày làm mới dữ liệu của bản đồ ở chân trang.</p>
+      </article>
+    </section>
+
+    <!-- EXPERIENCE.md State Patterns — Link không có. Không có ô dán mô tả. -->
+    <section class="state" aria-labelledby="unknown-title">
+      <h2 class="kicker" id="unknown-title">Link không có</h2>
+      <div class="entry">
+        <div class="field">
+          <label for="link-unknown">Link tin tuyển dụng</label>
+          <input id="link-unknown" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://example.com/tuyen-dung/vi-tri" value="https://example.com/tuyen-dung/link-chua-co">
+        </div>
+        <button type="button">Soi tin</button>
+      </div>
+      <article class="card">
+        <p class="miss">Chưa soi được tin này.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Làm mới 22/10/2026</p>
+      <p>Lương công khai ẩn khi dưới 30 tin.</p>
+    </div>
+  </footer>
+</body>
+</html>

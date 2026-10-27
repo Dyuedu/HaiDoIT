@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>So sánh offer — Hải Đồ IT</title>
+  <style>
+    /*
+      Spine sections for this screen
+      DESIGN.md: Brand & Style, Colors, Typography, Layout & Spacing,
+      Elevation & Depth, Shapes, Components (Logo, Thanh điều hướng,
+      Panel offer, Thanh thực nhận, Hộp hụt bảo hiểm, Ô email — viền ô nhập).
+      EXPERIENCE.md: Information Architecture (So sánh offer), Voice and Tone,
+      Component Patterns (Logo, Thanh điều hướng, Panel offer, Thanh thực nhận,
+      Hộp hụt bảo hiểm), State Patterns (Offer đủ ô, Đóng bảo hiểm trên mức thấp),
+      Accessibility Floor, Responsive & Platform, Key Flows UJ-4.
+    */
+
+    /* DESIGN.md Colors, Typography — tokens */
+    :root {
+      color-scheme: dark;
+      --surface: #070B10;
+      --surface-card: #0D141C;
+      --surface-sunken: #0A1118;
+      --surface-hover: #111C26;
+      --ink: #E6EDF3;
+      --ink-lead: #A9B8C7;
+      --ink-meta: #9FB0C2;
+      --accent-hot: #C5F36A;
+      --accent-cold: #62D9EE;
+      --offer-b: #B9A6FF;
+      --warning: #F5A65B;
+      --warning-ink: #FFD3A6;
+      --warning-surface: #140F09;
+      --line: #1C2A36;
+      --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+      --font-body: "Be Vietnam Pro", "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+    }
+
+    /* DESIGN.md Layout & Spacing — canvas */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--surface);
+      background-image:
+        linear-gradient(rgba(98, 217, 238, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(98, 217, 238, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    /* Accessibility Floor — focus outline */
+    a:focus,
+    input:focus,
+    select:focus,
+    summary:focus {
+      outline: 2px solid var(--accent-hot);
+      outline-offset: 2px;
+    }
+
+    /* DESIGN.md Layout & Spacing, Elevation & Depth — header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner,
+    .wrap,
+    .site-footer .wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin-inline: auto;
+      padding-inline: 24px;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* DESIGN.md Components — Logo */
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      color: var(--ink);
+      text-decoration: none;
+      flex: 0 0 auto;
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid var(--accent-hot);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      justify-items: center;
+      padding: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: var(--accent-cold);
+    }
+
+    .dot-hot {
+      grid-column: 1 / -1;
+      background: var(--accent-hot);
+    }
+
+    .logo-word {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-word span {
+      color: var(--accent-hot);
+    }
+
+    /* EXPERIENCE.md Component Patterns — Thanh điều hướng */
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 10px;
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      background: var(--surface-hover);
+    }
+
+    .nav a[aria-current="page"] {
+      box-shadow: inset 0 -2px 0 var(--accent-cold);
+    }
+
+    /* DESIGN.md Layout & Spacing — content column */
+    main.wrap {
+      padding-top: 48px;
+      padding-bottom: 32px;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .lead {
+      margin: 12px 0 0;
+      color: var(--ink-lead);
+    }
+
+    /* DESIGN.md Components — Panel offer */
+    .offers,
+    .outcomes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .offer,
+    .outcome {
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .offer-a,
+    .outcome-a {
+      border-top: 4px solid var(--accent-cold);
+    }
+
+    .offer-b,
+    .outcome-b {
+      border-top: 4px solid var(--offer-b);
+    }
+
+    .offer h2,
+    .kicker {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .offer-a h2 {
+      color: var(--accent-cold);
+    }
+
+    .offer-b h2 {
+      color: var(--offer-b);
+    }
+
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--ink-lead);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* DESIGN.md Components — Ô email border reused on offer inputs */
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 2px solid var(--accent-cold);
+      border-radius: 10px;
+      background: var(--surface-sunken);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    input[type="number"] {
+      font-family: var(--font-mono);
+      font-weight: 400;
+    }
+
+    .basis-note {
+      margin: 0;
+    }
+
+    /* EXPERIENCE.md — remote does not change take-home */
+    .remote-note {
+      margin: 0;
+    }
+
+    /* EXPERIENCE.md State Patterns — Offer đủ ô */
+    .verdict {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .disclaimer {
+      margin: 12px 0 0;
+      color: var(--ink-lead);
+    }
+
+    .outcome h3 {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .figures {
+      display: grid;
+      gap: 16px;
+      margin: 0;
+    }
+
+    .figures div {
+      margin: 0;
+    }
+
+    .figures dt {
+      margin: 0;
+      color: var(--ink-lead);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .figures dd {
+      margin: 4px 0 0;
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .pair dd {
+      font-size: 20px;
+    }
+
+    /* DESIGN.md Components — Thanh thực nhận */
+    .bar {
+      display: flex;
+      height: 12px;
+      margin-top: 16px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 12px;
+      min-width: 0;
+      flex-shrink: 1;
+      flex-basis: 0;
+    }
+
+    .take {
+      background: var(--accent-hot);
+    }
+
+    .ins {
+      background: var(--accent-cold);
+    }
+
+    .tax {
+      background: var(--warning);
+    }
+
+    .bar-a .take { flex-grow: 28; }
+    .bar-a .ins { flex-grow: 3; }
+    .bar-a .tax { flex-grow: 1; }
+    .bar-b .take { flex-grow: 33; }
+    .bar-b .ins { flex-grow: 2; }
+    .bar-b .tax { flex-grow: 1; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .legend li {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 9999px;
+      flex: 0 0 auto;
+    }
+
+    /* DESIGN.md Components — Hộp hụt bảo hiểm */
+    .shortfall {
+      margin: 16px 0 0;
+      padding: 16px;
+      border: 1.5px dashed var(--warning);
+      border-radius: 12px;
+      background: var(--warning-surface);
+      color: var(--warning-ink);
+    }
+
+    /* EXPERIENCE.md Component Patterns — Thanh thực nhận, closed disclosure */
+    .params {
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .params summary {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .params ul {
+      margin: 0;
+      padding: 0 16px 16px 36px;
+    }
+
+    .params li + li {
+      margin-top: 8px;
+    }
+
+    /* DESIGN.md Typography — footer */
+    .site-footer .wrap {
+      padding-top: 0;
+      padding-bottom: 72px;
+    }
+
+    .site-footer p {
+      margin: 0;
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .site-footer p + p {
+      margin-top: 4px;
+    }
+
+    /* EXPERIENCE.md Responsive & Platform — under 720px */
+    @media (max-width: 719px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .offers,
+      .outcomes,
+      .pair {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* DESIGN.md Elevation & Depth — reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    Mốc bố cục, không phải offer của một người thật. Làm tròn tới triệu đồng trên nhãn.
+    Công ty A: gross 30 triệu/tháng, phụ cấp 2, thưởng 2 tháng, người phụ thuộc 0, đóng trên lương thật.
+    Phần người lao động 3,15; thuế tháng 0,835; net tháng 28,015; thực nhận năm 384,51. Nhãn: 3, 1, 28, 385.
+    Công ty B: gross 36 triệu/tháng, phụ cấp 0, thưởng 0, người phụ thuộc 0, đóng trên 18.
+    Phần người lao động 1,89; thuế tháng 1,361; net tháng 32,749; thực nhận năm 392,988. Nhãn: 2, 1, 33, 393.
+    Chênh nhãn 8 triệu (đúng 8,478). Hụt cả năm 69,12, nhãn 69, gồm phần người lao động và phần công ty.
+    Thanh A 28/3/1 trên 32. Thanh B 33/2/1 trên 36. Ngày remote không vào tiền.
+  -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#ban-do-nhu-cau">
+        <span class="mark" aria-hidden="true">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot dot-hot"></span>
+        </span>
+        <span class="logo-word">HẢI ĐỒ<span>·</span>IT</span>
+      </a>
+      <nav class="nav" aria-label="Chính">
+        <a href="#ban-do-nhu-cau">Bản đồ nhu cầu</a>
+        <a href="#hoc-gi-tiep">Học gì tiếp?</a>
+        <a href="#lo-trinh-90-ngay">Lộ trình 90 ngày</a>
+        <a href="#so-sanh-offer" aria-current="page">So sánh offer</a>
+        <a href="#soi-tin">Soi tin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap" id="so-sanh-offer">
+    <div class="stack">
+      <header>
+        <h1>So sánh offer</h1>
+        <p class="lead">So thực nhận cả năm của hai offer và kiểm tra mức đóng bảo hiểm.</p>
+      </header>
+
+      <div class="offers">
+        <section class="offer offer-a" aria-labelledby="offer-a-title">
+          <h2 id="offer-a-title">Offer A</h2>
+          <div class="fields">
+            <div class="field">
+              <label for="a-company">Tên công ty</label>
+              <input id="a-company" type="text" value="Công ty A" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="a-gross">Lương gross mỗi tháng (triệu đồng)</label>
+              <input id="a-gross" type="number" value="30" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="a-kind">Loại lương</label>
+              <select id="a-kind">
+                <option selected>Gross</option>
+                <option>Net</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="a-deps">Người phụ thuộc</label>
+              <input id="a-deps" type="number" value="0" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="a-bonus">Thưởng (tháng)</label>
+              <input id="a-bonus" type="number" value="2" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="a-allow">Phụ cấp (triệu đồng)</label>
+              <input id="a-allow" type="number" value="2" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="a-remote">Remote (ngày mỗi tuần)</label>
+              <input id="a-remote" type="number" value="2" min="0" max="7" step="1" aria-describedby="remote-note">
+            </div>
+            <div class="field">
+              <label for="a-basis">Căn cứ đóng bảo hiểm</label>
+              <select id="a-basis">
+                <option selected>Trên lương thật</option>
+                <option>Trên mức thấp hơn</option>
+              </select>
+            </div>
+            <p class="basis-note">Mức đóng bằng lương gross: 30 triệu đồng.</p>
+          </div>
+        </section>
+
+        <section class="offer offer-b" aria-labelledby="offer-b-title">
+          <h2 id="offer-b-title">Offer B</h2>
+          <div class="fields">
+            <div class="field">
+              <label for="b-company">Tên công ty</label>
+              <input id="b-company" type="text" value="Công ty B" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="b-gross">Lương gross mỗi tháng (triệu đồng)</label>
+              <input id="b-gross" type="number" value="36" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="b-kind">Loại lương</label>
+              <select id="b-kind">
+                <option selected>Gross</option>
+                <option>Net</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="b-deps">Người phụ thuộc</label>
+              <input id="b-deps" type="number" value="0" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="b-bonus">Thưởng (tháng)</label>
+              <input id="b-bonus" type="number" value="0" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="b-allow">Phụ cấp (triệu đồng)</label>
+              <input id="b-allow" type="number" value="0" min="0" step="1">
+            </div>
+            <div class="field">
+              <label for="b-remote">Remote (ngày mỗi tuần)</label>
+              <input id="b-remote" type="number" value="1" min="0" max="7" step="1" aria-describedby="remote-note">
+            </div>
+            <div class="field">
+              <label for="b-basis">Căn cứ đóng bảo hiểm</label>
+              <select id="b-basis">
+                <option>Trên lương thật</option>
+                <option selected>Trên mức thấp hơn</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="b-base">Mức đóng bảo hiểm (triệu đồng)</label>
+              <input id="b-base" type="number" value="18" min="0" step="1">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <p class="remote-note" id="remote-note">Số ngày remote hiện cùng offer và không đổi thực nhận cả năm.</p>
+
+      <section aria-label="Kết quả">
+        <p class="verdict">Công ty B có thực nhận cả năm cao hơn Công ty A 8 triệu đồng.</p>
+        <p class="disclaimer">Kết quả là ước tính, không thay thế tư vấn thuế.</p>
+      </section>
+
+      <div class="outcomes">
+        <article class="outcome outcome-a">
+          <h3>Công ty A</h3>
+          <dl class="figures">
+            <div>
+              <dt>Thực nhận cả năm</dt>
+              <dd>385 triệu đồng</dd>
+            </div>
+            <div class="pair">
+              <div>
+                <dt>Net mỗi tháng</dt>
+                <dd>28 triệu đồng</dd>
+              </div>
+              <div>
+                <dt>Thuế mỗi tháng</dt>
+                <dd>1 triệu đồng</dd>
+              </div>
+            </div>
+          </dl>
+          <div class="bar bar-a" role="img" aria-label="Thực nhận 28 triệu đồng, bảo hiểm 3 triệu đồng, thuế 1 triệu đồng">
+            <span class="take"></span>
+            <span class="ins"></span>
+            <span class="tax"></span>
+          </div>
+          <ul class="legend">
+            <li><span class="swatch take" aria-hidden="true"></span>Thực nhận</li>
+            <li><span class="swatch ins" aria-hidden="true"></span>Bảo hiểm 3 triệu đồng</li>
+            <li><span class="swatch tax" aria-hidden="true"></span>Thuế</li>
+          </ul>
+        </article>
+
+        <article class="outcome outcome-b">
+          <h3>Công ty B</h3>
+          <dl class="figures">
+            <div>
+              <dt>Thực nhận cả năm</dt>
+              <dd>393 triệu đồng</dd>
+            </div>
+            <div class="pair">
+              <div>
+                <dt>Net mỗi tháng</dt>
+                <dd>33 triệu đồng</dd>
+              </div>
+              <div>
+                <dt>Thuế mỗi tháng</dt>
+                <dd>1 triệu đồng</dd>
+              </div>
+            </div>
+          </dl>
+          <div class="bar bar-b" role="img" aria-label="Thực nhận 33 triệu đồng, bảo hiểm 2 triệu đồng, thuế 1 triệu đồng">
+            <span class="take"></span>
+            <span class="ins"></span>
+            <span class="tax"></span>
+          </div>
+          <ul class="legend">
+            <li><span class="swatch take" aria-hidden="true"></span>Thực nhận</li>
+            <li><span class="swatch ins" aria-hidden="true"></span>Bảo hiểm 2 triệu đồng</li>
+            <li><span class="swatch tax" aria-hidden="true"></span>Thuế</li>
+          </ul>
+          <p class="shortfall">Khoản hụt cả năm khoảng 69 triệu đồng, gồm phần người lao động và phần công ty, ở mức ước tính. Hưu trí, thai sản và trợ cấp thất nghiệp tính trên mức đóng 18 triệu đồng.</p>
+        </article>
+      </div>
+
+      <details class="params">
+        <summary>Tham số tính (kỳ tính thuế 2026)</summary>
+        <ul>
+          <li>Giảm trừ bản thân 15,5 triệu đồng mỗi tháng. Người phụ thuộc 6,2 triệu đồng mỗi tháng.</li>
+          <li>Biểu thuế năm bậc: 5% đến 10 triệu, 10% đến 30 triệu, 20% đến 60 triệu, 30% đến 100 triệu, 35% trên phần còn lại.</li>
+          <li>Người lao động 10,5% (BHXH 8%, BHYT 1,5%, BHTN 1%). Trần BHXH và BHYT 50,6 triệu từ 01/07/2026. Trần BHTN 106,2 triệu cho vùng I. Phần công ty khoảng 21,5%.</li>
+          <li>Số ngày remote hiện cùng offer và không đổi thực nhận cả năm.</li>
+        </ul>
+      </details>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Làm mới 22/10/2026</p>
+      <p>Lương công khai ẩn khi dưới 30 tin.</p>
+    </div>
+  </footer>
+</body>
+</html>

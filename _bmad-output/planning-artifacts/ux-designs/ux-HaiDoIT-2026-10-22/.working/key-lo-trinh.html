@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lộ trình 90 ngày — Hải Đồ IT</title>
+  <style>
+    /* Mock spine: header, canonical (lộ trình đã hiện, chưa lưu), alternate (ngăn Vì sao?), footer.
+       DESIGN.md — Brand & Style; Colors; Typography; Layout & Spacing; Elevation & Depth; Shapes;
+       Components: Logo, Thanh điều hướng, Viên hồ sơ phiên, Nút chính, Nút Vì sao?, Ngăn Vì sao?,
+       Nút báo nguồn, Chip kỹ năng, Dấu đã có, Thẻ chặng, Ô email.
+       EXPERIENCE.md — Information Architecture (Lộ trình 90 ngày); Voice and Tone;
+       Component Patterns: Logo, Thanh điều hướng, Viên hồ sơ phiên, Chip kỹ năng, Thẻ chặng,
+       Nút Vì sao?, Ngăn Vì sao?, Nút báo nguồn, Ô email;
+       State Patterns: Lộ trình đã hiện, chưa lưu;
+       Accessibility Floor; Responsive & Platform;
+       Key Flows: UJ-1 bước 8. */
+    :root {
+      --surface: #070B10;
+      --surface-card: #0D141C;
+      --surface-sunken: #0A1118;
+      --surface-selected: #13202B;
+      --surface-hover: #111C26;
+      --ink: #E6EDF3;
+      --ink-lead: #A9B8C7;
+      --ink-meta: #9FB0C2;
+      --ink-dim: #6E8091;
+      --ink-on-accent: #0A0F05;
+      --accent-hot: #C5F36A;
+      --accent-hot-hover: #E4FFB5;
+      --accent-cold: #62D9EE;
+      --warning: #F5A65B;
+      --warning-ink: #FFD3A6;
+      --warning-surface: #140F09;
+      --line: #1C2A36;
+      --line-strong: #243543;
+      --line-emphasis: #2E4456;
+      --font-text: "Be Vietnam Pro", "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "Cascadia Mono", ui-monospace, monospace;
+      --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--ink);
+      font-family: var(--font-text);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    :focus {
+      outline: 2px solid var(--accent-hot);
+      outline-offset: 2px;
+    }
+
+    :focus:not(:focus-visible) { outline: none; }
+
+    .show-focus,
+    .show-focus:focus {
+      outline: 2px solid var(--accent-hot);
+      outline-offset: 2px;
+    }
+
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+
+    .mock-label {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 24px 12px;
+      color: var(--ink-dim);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .screen + .mock-label {
+      margin-top: 48px;
+      border-top: 1px solid var(--line);
+      padding-top: 28px;
+    }
+
+    .app {
+      background-color: var(--surface);
+      background-image:
+        linear-gradient(rgba(98, 217, 238, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(98, 217, 238, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .header {
+      background: rgba(7, 11, 16, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bar {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 8px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .logo-mark {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      flex: none;
+      border: 1.5px solid var(--accent-hot);
+      border-radius: 8px;
+    }
+
+    .logo-mark span {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      display: block;
+      border-radius: 9999px;
+    }
+
+    .logo-mark span:nth-child(1) { background: var(--accent-cold); top: 7px; left: 7px; }
+    .logo-mark span:nth-child(2) { background: var(--accent-cold); bottom: 7px; left: 13px; }
+    .logo-mark span:nth-child(3) { background: var(--accent-hot); top: 12px; right: 7px; }
+
+    .wordmark {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+    }
+
+    .wordmark-dot { color: var(--accent-hot); }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 12px;
+      border-bottom: 2px solid transparent;
+      color: var(--ink-lead);
+      font-family: var(--font-text);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+
+    .nav a:hover { color: var(--ink); background: var(--surface-hover); }
+
+    .nav a[aria-current="page"] {
+      color: var(--ink);
+      border-bottom-color: var(--accent-cold);
+    }
+
+    .session {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 9999px;
+      background: var(--surface-card);
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+
+    .session:hover { background: var(--surface-hover); }
+
+    .wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      margin: 0 0 32px;
+      max-width: 62ch;
+      color: var(--ink-lead);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .profile dl { margin: 8px 0 0; }
+    .profile dl div + div { margin-top: 16px; }
+    .profile dt {
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .profile dd { margin: 4px 0 0; }
+    .city {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .skill-block { margin-top: 24px; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 9999px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .tick { flex: none; }
+
+    .owned-word { color: var(--accent-hot); font-weight: 600; }
+
+    .chip.hypo {
+      border-color: var(--accent-hot);
+      background: var(--accent-hot);
+      color: var(--ink-on-accent);
+    }
+
+    .stages {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .stage-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .index {
+      margin: 0;
+      color: var(--ink-dim);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+    }
+
+    h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .project {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .claim {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 16px;
+    }
+
+    .claim p { flex: 1 1 16rem; margin: 0; }
+
+    .why {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 9999px;
+      background: transparent;
+      color: var(--accent-cold);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .why:hover { background: var(--surface-hover); }
+
+    .why.is-open {
+      background: var(--surface-selected);
+      box-shadow: inset 0 0 0 1px var(--line-emphasis);
+    }
+
+    .excluded {
+      background: var(--warning-surface);
+      border: 1px dashed var(--warning);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: var(--warning-ink);
+    }
+
+    .excluded .kicker { color: var(--warning-ink); }
+
+    .save {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .save label {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .hint { margin: 0; color: var(--ink-lead); }
+
+    .email-input {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 2px solid var(--accent-cold);
+      border-radius: 10px;
+      background: var(--surface-sunken);
+      color: var(--ink);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      margin-top: 8px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent-hot);
+      color: var(--ink-on-accent);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(197, 243, 106, 0.28);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .btn-ghost:hover { background: var(--surface-hover); }
+
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-meta);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .footer p { margin: 0; }
+
+    .screen-alt {
+      position: relative;
+      height: 100vh;
+      min-height: 840px;
+      overflow: hidden;
+    }
+
+    .dim {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgba(3, 6, 9, 0.7);
+    }
+
+    .drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: min(560px, 100%);
+      height: 100%;
+      padding: 24px;
+      overflow-y: auto;
+      background: var(--surface-sunken);
+      border-left: 1px solid var(--line-strong);
+    }
+
+    .drawer > * { flex-shrink: 0; }
+
+    .drawer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .drawer-top .kicker { margin: 0; }
+
+    blockquote {
+      margin: 0;
+      padding: 4px 0 4px 16px;
+      border-left: 2px solid var(--accent-cold);
+      color: var(--ink);
+    }
+
+    .tie { margin: 0; color: var(--ink-lead); }
+
+    .source-name {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .fields {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .fields li + li { margin-top: 4px; }
+
+    .posting {
+      color: var(--accent-hot);
+      overflow-wrap: anywhere;
+    }
+
+    .posting:hover { color: var(--accent-hot-hover); }
+
+    .report { width: 100%; margin-top: auto; }
+
+    @media (min-width: 720px) {
+      .session { margin-left: auto; }
+    }
+
+    @media (max-width: 719px) {
+      .nav { flex-basis: 100%; }
+      .session-level { display: none; }
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .btn-primary:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <p class="mock-label">Chuẩn · đã hiện, chưa lưu</p>
+  <section class="screen" aria-label="Lộ trình 90 ngày đã hiện, chưa lưu">
+    <div class="app">
+      <header class="header">
+        <div class="bar">
+          <a class="logo" href="#ban-do-nhu-cau">
+            <span class="logo-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="wordmark">HẢI ĐỒ<span class="wordmark-dot">·</span>IT</span>
+          </a>
+          <nav class="nav" aria-label="Chính">
+            <a href="#ban-do-nhu-cau">Bản đồ nhu cầu</a>
+            <a href="#hoc-gi-tiep">Học gì tiếp?</a>
+            <a href="#lo-trinh-a" aria-current="page">Lộ trình 90 ngày</a>
+            <a href="#so-sanh-offer">So sánh offer</a>
+            <a href="#soi-tin">Soi tin</a>
+          </nav>
+          <a class="session" href="#ho-so-a" aria-label="Hồ sơ phiên, Hải Phòng, Junior, Data/AI">Hải Phòng<span class="session-level"> · Junior</span> · Data/AI</a>
+        </div>
+      </header>
+      <main>
+        <div class="wrap">
+          <h1 id="lo-trinh-a">Lộ trình 90 ngày</h1>
+          <p class="lead">Ba chặng đã hiện trên máy này. Chưa lưu.</p>
+          <div class="layout">
+            <aside class="card profile" id="ho-so-a" aria-labelledby="profile-title-a">
+              <p class="kicker" id="profile-title-a">Hồ sơ phiên</p>
+              <dl>
+                <div>
+                  <dt>Thành phố</dt>
+                  <dd class="city">Hải Phòng</dd>
+                </div>
+                <div>
+                  <dt>Cấp bậc</dt>
+                  <dd>Junior</dd>
+                </div>
+                <div>
+                  <dt>Vai trò mục tiêu</dt>
+                  <dd>Data/AI</dd>
+                </div>
+              </dl>
+              <div class="skill-block">
+                <p class="kicker">Đã có</p>
+                <ul class="chips">
+                  <li>
+                    <span class="chip">
+                      <svg class="tick" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5 6.2 12 13 4" fill="none" stroke="#C5F36A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      Python <span class="owned-word">đã có</span>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="chip">
+                      <svg class="tick" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5 6.2 12 13 4" fill="none" stroke="#C5F36A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      SQL <span class="owned-word">đã có</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class="skill-block">
+                <p class="kicker">Kỹ năng giả định</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+              </div>
+            </aside>
+            <div class="stages">
+              <article class="card stage">
+                <div class="stage-head">
+                  <p class="index" aria-hidden="true">01</p>
+                  <h2>Ngày 1–30</h2>
+                </div>
+                <p class="kicker">Kỹ năng</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+                <p class="kicker">Dự án thực hành</p>
+                <p class="project">Ảnh cho script Python</p>
+                <p class="kicker">Nhận định</p>
+                <div class="claim">
+                  <p>Người học đóng script Python đã có thành một ảnh Docker và chạy được trên máy.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Đóng script Python thành ảnh Docker">Vì sao?</button>
+                </div>
+              </article>
+              <article class="card stage">
+                <div class="stage-head">
+                  <p class="index" aria-hidden="true">02</p>
+                  <h2>Ngày 31–60</h2>
+                </div>
+                <p class="kicker">Kỹ năng</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+                <p class="kicker">Dự án thực hành</p>
+                <p class="project">Dịch vụ cho truy vấn SQL</p>
+                <p class="kicker">Nhận định</p>
+                <div class="claim">
+                  <p>Người học đưa truy vấn SQL đã có vào một dịch vụ Docker và chạy lại được cùng kết quả.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Đưa truy vấn SQL vào dịch vụ Docker">Vì sao?</button>
+                </div>
+              </article>
+              <article class="card stage">
+                <div class="stage-head">
+                  <p class="index" aria-hidden="true">03</p>
+                  <h2>Ngày 61–90</h2>
+                </div>
+                <p class="kicker">Kỹ năng</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+                <p class="kicker">Dự án thực hành</p>
+                <p class="project">Kho ảnh chạy được</p>
+                <p class="kicker">Nhận định</p>
+                <div class="claim">
+                  <p>Người học giao một kho ảnh Docker kèm lệnh khởi động, để máy khác mở ra cùng kết quả.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Giao kho ảnh Docker kèm lệnh khởi động">Vì sao?</button>
+                </div>
+              </article>
+              <article class="excluded">
+                <p class="kicker">Nhận định bị loại</p>
+                <div class="claim">
+                  <p>Thiếu dữ liệu. Chưa đủ mẫu để kết luận lương công khai.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Thiếu dữ liệu, chưa đủ mẫu">Vì sao?</button>
+                </div>
+              </article>
+              <form class="save" action="#">
+                <label for="email-a">Email để mở lại lộ trình này</label>
+                <p class="hint">Liên kết mở lại gửi về email này.</p>
+                <input class="email-input" id="email-a" name="email" type="email" autocomplete="email" inputmode="email">
+                <button class="btn-primary" type="button">Lưu lộ trình</button>
+              </form>
+            </div>
+          </div>
+          <footer class="footer">
+            <p>Làm mới 22/10/2026</p>
+            <p>Lương công khai ẩn khi dưới 30 tin.</p>
+          </footer>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <p class="mock-label">Thay · ngăn Vì sao? đang mở</p>
+  <section class="screen screen-alt" aria-label="Ngăn Vì sao đang mở trên lộ trình 90 ngày">
+    <div class="app" inert>
+      <header class="header">
+        <div class="bar">
+          <a class="logo" href="#ban-do-nhu-cau">
+            <span class="logo-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="wordmark">HẢI ĐỒ<span class="wordmark-dot">·</span>IT</span>
+          </a>
+          <nav class="nav" aria-label="Chính">
+            <a href="#ban-do-nhu-cau">Bản đồ nhu cầu</a>
+            <a href="#hoc-gi-tiep">Học gì tiếp?</a>
+            <a href="#lo-trinh-b" aria-current="page">Lộ trình 90 ngày</a>
+            <a href="#so-sanh-offer">So sánh offer</a>
+            <a href="#soi-tin">Soi tin</a>
+          </nav>
+          <a class="session" href="#ho-so-b" aria-label="Hồ sơ phiên, Hải Phòng, Junior, Data/AI">Hải Phòng<span class="session-level"> · Junior</span> · Data/AI</a>
+        </div>
+      </header>
+      <main>
+        <div class="wrap">
+          <h1 id="lo-trinh-b">Lộ trình 90 ngày</h1>
+          <p class="lead">Ba chặng đã hiện trên máy này. Chưa lưu.</p>
+          <div class="layout">
+            <aside class="card profile" id="ho-so-b" aria-labelledby="profile-title-b">
+              <p class="kicker" id="profile-title-b">Hồ sơ phiên</p>
+              <dl>
+                <div>
+                  <dt>Thành phố</dt>
+                  <dd class="city">Hải Phòng</dd>
+                </div>
+                <div>
+                  <dt>Cấp bậc</dt>
+                  <dd>Junior</dd>
+                </div>
+                <div>
+                  <dt>Vai trò mục tiêu</dt>
+                  <dd>Data/AI</dd>
+                </div>
+              </dl>
+              <div class="skill-block">
+                <p class="kicker">Đã có</p>
+                <ul class="chips">
+                  <li>
+                    <span class="chip">
+                      <svg class="tick" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5 6.2 12 13 4" fill="none" stroke="#C5F36A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      Python <span class="owned-word">đã có</span>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="chip">
+                      <svg class="tick" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8.5 6.2 12 13 4" fill="none" stroke="#C5F36A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      SQL <span class="owned-word">đã có</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class="skill-block">
+                <p class="kicker">Kỹ năng giả định</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+              </div>
+            </aside>
+            <div class="stages">
+              <article class="card stage">
+                <div class="stage-head">
+                  <p class="index" aria-hidden="true">01</p>
+                  <h2>Ngày 1–30</h2>
+                </div>
+                <p class="kicker">Kỹ năng</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+                <p class="kicker">Dự án thực hành</p>
+                <p class="project">Ảnh cho script Python</p>
+                <p class="kicker">Nhận định</p>
+                <div class="claim">
+                  <p>Người học đóng script Python đã có thành một ảnh Docker và chạy được trên máy.</p>
+                  <button type="button" class="why is-open" aria-expanded="true" aria-controls="why-drawer" aria-label="Vì sao? Đóng script Python thành ảnh Docker">Vì sao?</button>
+                </div>
+              </article>
+              <article class="card stage">
+                <div class="stage-head">
+                  <p class="index" aria-hidden="true">02</p>
+                  <h2>Ngày 31–60</h2>
+                </div>
+                <p class="kicker">Kỹ năng</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+                <p class="kicker">Dự án thực hành</p>
+                <p class="project">Dịch vụ cho truy vấn SQL</p>
+                <p class="kicker">Nhận định</p>
+                <div class="claim">
+                  <p>Người học đưa truy vấn SQL đã có vào một dịch vụ Docker và chạy lại được cùng kết quả.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Đưa truy vấn SQL vào dịch vụ Docker">Vì sao?</button>
+                </div>
+              </article>
+              <article class="card stage">
+                <div class="stage-head">
+                  <p class="index" aria-hidden="true">03</p>
+                  <h2>Ngày 61–90</h2>
+                </div>
+                <p class="kicker">Kỹ năng</p>
+                <ul class="chips">
+                  <li><span class="chip hypo">Docker</span></li>
+                </ul>
+                <p class="kicker">Dự án thực hành</p>
+                <p class="project">Kho ảnh chạy được</p>
+                <p class="kicker">Nhận định</p>
+                <div class="claim">
+                  <p>Người học giao một kho ảnh Docker kèm lệnh khởi động, để máy khác mở ra cùng kết quả.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Giao kho ảnh Docker kèm lệnh khởi động">Vì sao?</button>
+                </div>
+              </article>
+              <article class="excluded">
+                <p class="kicker">Nhận định bị loại</p>
+                <div class="claim">
+                  <p>Thiếu dữ liệu. Chưa đủ mẫu để kết luận lương công khai.</p>
+                  <button type="button" class="why" aria-label="Vì sao? Thiếu dữ liệu, chưa đủ mẫu">Vì sao?</button>
+                </div>
+              </article>
+              <form class="save" action="#">
+                <label for="email-b">Email để mở lại lộ trình này</label>
+                <p class="hint">Liên kết mở lại gửi về email này.</p>
+                <input class="email-input" id="email-b" name="email" type="email" autocomplete="email" inputmode="email">
+                <button class="btn-primary" type="button">Lưu lộ trình</button>
+              </form>
+            </div>
+          </div>
+          <footer class="footer">
+            <p>Làm mới 22/10/2026</p>
+            <p>Lương công khai ẩn khi dưới 30 tin.</p>
+          </footer>
+        </div>
+      </main>
+    </div>
+    <div class="dim" aria-hidden="true"></div>
+    <aside class="drawer" id="why-drawer" role="dialog" aria-modal="true" aria-labelledby="why-quote">
+      <div class="drawer-top">
+        <p class="kicker">Vì sao?</p>
+        <button type="button" class="btn-ghost show-focus">Đóng</button>
+      </div>
+      <div>
+        <p class="kicker">Ngày 1–30</p>
+        <blockquote id="why-quote">Người học đóng script Python đã có thành một ảnh Docker và chạy được trên máy.</blockquote>
+      </div>
+      <p class="tie">Câu này dựa trên tin đang mở cho Data/AI, cấp Junior, có Python và SQL, và có nhắc Docker.</p>
+      <div>
+        <p class="kicker">Nguồn</p>
+        <p class="source-name">ITviec</p>
+      </div>
+      <ul class="fields">
+        <li>Kỹ năng: Docker</li>
+        <li>Thành phố: Hải Phòng</li>
+        <li>Cấp bậc: Junior</li>
+        <li>Ngày đăng: 22/10/2026</li>
+      </ul>
+      <div>
+        <p class="kicker">Link gốc</p>
+        <a class="posting" href="https://itviec.com/viec-lam/data-junior-docker-hai-phong">https://itviec.com/viec-lam/data-junior-docker-hai-phong</a>
+      </div>
+      <button type="button" class="btn-ghost report">Báo nguồn sai hoặc đã cũ</button>
+    </aside>
+  </section>
+</body>
+</html>
