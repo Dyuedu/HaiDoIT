@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bản đồ nhu cầu — Hải Đồ IT</title>
+<!-- Các số tin, tỷ lệ cơ cấu, cột tám quý và khoảng dự báo là mốc bố cục, không phải dữ liệu sản phẩm. -->
+<style>
+/* Spine: Bản đồ nhu cầu sau «Đã hiểu» — lọc Tất cả, tầm nhìn NAY, Hải Phòng đang chọn, thẻ tab Cơ cấu với Python và SQL «đã có», bảng hạng / tên / số tin, xu hướng tám quý (tăng, giảm, đi ngang). Thẻ thay thế của cùng thành phố: tab Lương với «Chưa đủ mẫu.», tab Dự báo với khoảng có nhãn «Dự báo» và «Chưa ghi nhận tín hiệu đáng kể cho thành phố này.» */
+:root {
+  --surface: #070B10;
+  --surface-card: #0D141C;
+  --surface-sunken: #0A1118;
+  --surface-selected: #13202B;
+  --surface-hover: #111C26;
+  --ink: #E6EDF3;
+  --ink-lead: #A9B8C7;
+  --ink-meta: #9FB0C2;
+  --ink-dim: #6E8091;
+  --ink-on-accent: #0A0F05;
+  --accent-hot: #C5F36A;
+  --accent-cold: #62D9EE;
+  --warning: #F5A65B;
+  --warning-ink: #FFD3A6;
+  --warning-surface: #140F09;
+  --line: #1C2A36;
+  --line-strong: #243543;
+  --line-emphasis: #2E4456;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(var(--accent-cold) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent-cold) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+a, button { font: inherit; color: inherit; }
+button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent-hot);
+  outline-offset: 2px;
+}
+.wrap {
+  width: min(1320px, calc(100% - 48px));
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  text-decoration: none;
+  flex: none;
+}
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--accent-hot);
+  border-radius: 8px;
+  position: relative;
+  display: block;
+}
+.logo-mark i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  display: block;
+}
+.logo-mark .a { background: var(--accent-cold); left: 7px; top: 8px; }
+.logo-mark .b { background: var(--accent-hot); left: 14px; top: 16px; }
+.logo-mark .c { background: var(--accent-cold); left: 21px; top: 10px; }
+.logo-word {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.logo-dot { color: var(--accent-hot); }
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  text-decoration: none;
+  color: var(--ink-lead);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.nav a[aria-current="page"] {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--accent-cold);
+}
+.pill {
+  flex: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-card);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.page { padding-top: 40px; padding-bottom: 72px; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 28px;
+}
+h1 {
+  margin: 0 0 12px;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: clamp(34px, 5vw, 60px);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+.lead {
+  margin: 0 0 20px;
+  max-width: 42em;
+  color: var(--ink-lead);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: var(--accent-hot);
+  color: var(--ink-on-accent);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.btn-ghost[aria-pressed="true"] {
+  background: var(--surface-selected);
+  box-shadow: inset 0 0 0 1px var(--line-emphasis), inset 0 -2px 0 var(--accent-cold);
+}
+.kpis {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.kpi-label, .kicker {
+  display: block;
+  margin: 0 0 8px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-meta);
+}
+.kpi-num {
+  display: block;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.kpi-meta {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink-lead);
+  font-size: 15px;
+}
+.salary-hidden {
+  background: var(--warning-surface);
+  color: var(--warning-ink);
+  border: 2px dashed var(--warning);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 28px;
+  align-items: flex-end;
+}
+.chip-row, .horizon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--ink-on-accent);
+  border-color: var(--ink);
+}
+.horizon {
+  background: var(--surface-sunken);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+}
+.horizon button {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 8px;
+  color: var(--ink-lead);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.horizon button[aria-pressed="true"] {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--accent-cold);
+}
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 28px;
+  margin-bottom: 28px;
+  align-items: start;
+}
+.map {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px 12px 16px;
+}
+.map-tools {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.cols {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 268px;
+  padding: 16px 2px 4px;
+}
+.col {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+.col-plot {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.col-block {
+  width: 28px;
+  position: relative;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent-cold);
+  box-shadow: 7px 0 0 var(--surface-selected);
+}
+.col[aria-pressed="true"] .col-block {
+  background: var(--ink);
+  box-shadow: 7px 0 0 var(--line-strong);
+}
+.col[aria-pressed="true"] .col-name {
+  box-shadow: inset 0 -2px 0 var(--accent-cold);
+}
+.h-hn { height: 156px; }
+.h-hp { height: 56px; }
+.h-dn { height: 84px; }
+.h-qn { height: 24px; }
+.h-nt { height: 32px; }
+.h-hcm { height: 200px; }
+.h-ct { height: 40px; }
+.col-name, .col-count {
+  display: block;
+  text-align: center;
+  max-width: 100%;
+}
+.col-name {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-bottom: 2px;
+}
+.col-count {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-lead);
+}
+.map-note {
+  margin: 8px 0 0;
+  color: var(--ink-lead);
+  font-size: 15px;
+}
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+}
+.city {
+  margin: 0 0 8px;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+.tabs button {
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--ink-lead);
+  font-size: 14px;
+  font-weight: 600;
+}
+.tabs button[aria-selected="true"] {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--accent-cold);
+}
+.mix { list-style: none; margin: 0; padding: 0; }
+.mix li {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr) 48px;
+  gap: 12px;
+  align-items: center;
+  min-height: 36px;
+}
+.mix-name { color: var(--ink); }
+.mix-track {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.mix-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent-cold);
+}
+.mix-pct {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  text-align: right;
+  color: var(--ink);
+}
+.mix-total {
+  margin: 8px 0 20px;
+  color: var(--ink);
+}
+.skills { list-style: none; margin: 0; padding: 0; }
+.skills li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  border-top: 1px solid var(--line);
+}
+.have {
+  color: var(--accent-hot);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 28px;
+}
+.block-title {
+  margin: 0 0 16px;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.rank { width: 100%; border-collapse: collapse; }
+.rank th, .rank td {
+  text-align: left;
+  padding: 0 12px;
+  height: 48px;
+}
+.rank th {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-meta);
+  border-bottom: 1px solid var(--line);
+}
+.rank td:last-child, .rank th:last-child { text-align: right; }
+.rank tbody td { border-bottom: 1px solid var(--line); }
+.rank tbody tr.is-selected td {
+  background: var(--surface-selected);
+  border-bottom: 2px solid var(--accent-cold);
+  box-shadow: inset 0 1px 0 var(--line-emphasis);
+}
+.rank button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  text-align: inherit;
+  color: var(--ink);
+}
+.rank .num {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
+.trend-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  color: var(--ink);
+  font-size: 15px;
+}
+.legend li { display: inline-flex; align-items: center; gap: 8px; min-height: 24px; }
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+.swatch.up { background: var(--accent-hot); }
+.swatch.down { background: var(--warning); }
+.swatch.flat { background: var(--accent-cold); }
+.quarters {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 180px;
+  margin-top: 20px;
+}
+.q {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 100%;
+}
+.vbar {
+  width: 16px;
+  border-radius: 4px 4px 0 0;
+  display: block;
+}
+.vbar.up { background: var(--accent-hot); }
+.vbar.down { background: var(--warning); }
+.vbar.flat { background: var(--accent-cold); }
+.q:first-child .vbar { opacity: 0.45; width: 12px; }
+.q:last-child .vbar { opacity: 1; width: 22px; }
+.q span:last-child {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-lead);
+}
+.alt {
+  margin-top: 48px;
+  padding-top: 48px;
+  border-top: 1px solid var(--line);
+}
+.alt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.forecast-box {
+  border: 2px dashed var(--accent-cold);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.forecast-range {
+  margin: 8px 0 0;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.forecast-note { margin: 0; color: var(--ink-lead); }
+.signal { margin: 0; color: var(--ink); }
+.salary-panel .salary-hidden {
+  font-size: 17px;
+  line-height: 1.6;
+  padding: 28px 24px;
+}
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 72px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-meta);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.site-footer p { margin: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px #C5F36A33;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary:hover { transform: none; }
+}
+@media (max-width: 719px) {
+  .header-inner, .hero, .stage, .lower, .alt-grid { display: block; }
+  .kpis, .pill { margin-top: 12px; }
+  .nav { width: 100%; }
+  .hero, .filters, .stage, .lower { margin-bottom: 32px; }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="#ban-do">
+      <span class="logo-mark" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></span>
+      <span class="logo-word">HẢI ĐỒ<span class="logo-dot">·</span>IT</span>
+    </a>
+    <nav class="nav" aria-label="Chính">
+      <a href="#ban-do" aria-current="page">Bản đồ nhu cầu</a>
+      <a href="#ban-do">Học gì tiếp?</a>
+      <a href="#ban-do">Lộ trình 90 ngày</a>
+      <a href="#ban-do">So sánh offer</a>
+      <a href="#ban-do">Soi tin</a>
+    </nav>
+    <button type="button" class="pill">Hải Phòng · Junior · Data/AI</button>
+  </div>
+</header>
+
+<main class="wrap page" id="ban-do">
+  <section aria-labelledby="title-ban-do">
+    <div class="hero">
+      <div>
+        <h1 id="title-ban-do">Bản đồ nhu cầu</h1>
+        <p class="lead">Việc đang mở tại bảy thành phố. Hải Phòng đang được chọn.</p>
+        <button type="button" class="btn-primary">Thử một kỹ năng cho thành phố này</button>
+      </div>
+      <div class="kpis">
+        <div>
+          <span class="kpi-label">Tin đang mở</span>
+          <span class="kpi-num">38</span>
+          <span class="kpi-meta">Hải Phòng</span>
+        </div>
+        <div>
+          <span class="kpi-label">Lương công khai</span>
+          <div class="salary-hidden">Chưa đủ mẫu.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div>
+        <span class="kicker" id="label-vai-tro">Vai trò</span>
+        <div class="chip-row" role="group" aria-labelledby="label-vai-tro">
+          <button type="button" class="chip" aria-pressed="true">Tất cả</button>
+          <button type="button" class="chip" aria-pressed="false">Backend</button>
+          <button type="button" class="chip" aria-pressed="false">Frontend</button>
+          <button type="button" class="chip" aria-pressed="false">Data/AI</button>
+          <button type="button" class="chip" aria-pressed="false">DevOps/Cloud</button>
+          <button type="button" class="chip" aria-pressed="false">Mobile</button>
+          <button type="button" class="chip" aria-pressed="false">Bảo mật</button>
+        </div>
+      </div>
+      <div>
+        <span class="kicker" id="label-tam-nhin">Tầm nhìn</span>
+        <div class="horizon" role="group" aria-labelledby="label-tam-nhin">
+          <button type="button" aria-pressed="true">NAY</button>
+          <button type="button" aria-pressed="false">+6T</button>
+          <button type="button" aria-pressed="false">+12T</button>
+          <button type="button" aria-pressed="false">+18T</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="map">
+        <div class="map-tools">
+          <button type="button" class="btn-ghost" aria-pressed="true">Khối</button>
+          <button type="button" class="btn-ghost" aria-pressed="false">Phẳng</button>
+        </div>
+        <div class="cols" role="group" aria-label="Bảy thành phố">
+          <button type="button" class="col" aria-pressed="false">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-hn"></span></span>
+            <span class="col-name">Hà Nội</span>
+            <span class="col-count">142 tin</span>
+          </button>
+          <button type="button" class="col" aria-pressed="true">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-hp"></span></span>
+            <span class="col-name">Hải Phòng</span>
+            <span class="col-count">38 tin</span>
+          </button>
+          <button type="button" class="col" aria-pressed="false">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-dn"></span></span>
+            <span class="col-name">Đà Nẵng</span>
+            <span class="col-count">64 tin</span>
+          </button>
+          <button type="button" class="col" aria-pressed="false">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-qn"></span></span>
+            <span class="col-name">Quy Nhơn</span>
+            <span class="col-count">9 tin</span>
+          </button>
+          <button type="button" class="col" aria-pressed="false">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-nt"></span></span>
+            <span class="col-name">Nha Trang</span>
+            <span class="col-count">14 tin</span>
+          </button>
+          <button type="button" class="col" aria-pressed="false">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-hcm"></span></span>
+            <span class="col-name">TP. Hồ Chí Minh</span>
+            <span class="col-count">186 tin</span>
+          </button>
+          <button type="button" class="col" aria-pressed="false">
+            <span class="col-plot" aria-hidden="true"><span class="col-block h-ct"></span></span>
+            <span class="col-name">Cần Thơ</span>
+            <span class="col-count">21 tin</span>
+          </button>
+        </div>
+        <p class="map-note">Cột = tin đang mở. Kéo ngang để xoay. Kéo dọc để nghiêng.</p>
+      </div>
+
+      <article class="card" aria-labelledby="city-hp">
+        <h2 class="city" id="city-hp">Hải Phòng</h2>
+        <div class="tabs" role="tablist" aria-label="Hải Phòng">
+          <button type="button" role="tab" id="tab-co-cau" aria-selected="true" aria-controls="panel-co-cau">Cơ cấu</button>
+          <button type="button" role="tab" id="tab-luong" aria-selected="false" tabindex="-1">Lương</button>
+          <button type="button" role="tab" id="tab-du-bao" aria-selected="false" tabindex="-1">Dự báo</button>
+        </div>
+        <div role="tabpanel" id="panel-co-cau" aria-labelledby="tab-co-cau">
+          <p class="kicker">Cơ cấu vai trò</p>
+          <ul class="mix">
+            <li><span class="mix-name">Backend</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:32%"></span></span><span class="mix-pct">32%</span></li>
+            <li><span class="mix-name">Frontend</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:24%"></span></span><span class="mix-pct">24%</span></li>
+            <li><span class="mix-name">Data/AI</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:14%"></span></span><span class="mix-pct">14%</span></li>
+            <li><span class="mix-name">DevOps/Cloud</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:11%"></span></span><span class="mix-pct">11%</span></li>
+            <li><span class="mix-name">Mobile</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:8%"></span></span><span class="mix-pct">8%</span></li>
+            <li><span class="mix-name">Bảo mật</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:6%"></span></span><span class="mix-pct">6%</span></li>
+            <li><span class="mix-name">Còn lại</span><span class="mix-track" aria-hidden="true"><span class="mix-fill" style="width:5%"></span></span><span class="mix-pct">5%</span></li>
+          </ul>
+          <p class="mix-total">Tổng 100%</p>
+          <p class="kicker">Kỹ năng đang được nhắc</p>
+          <ul class="skills">
+            <li><span>Python</span><span class="have"><span aria-hidden="true">✓</span> đã có</span></li>
+            <li><span>SQL</span><span class="have"><span aria-hidden="true">✓</span> đã có</span></li>
+            <li><span>Java</span></li>
+            <li><span>JavaScript</span></li>
+            <li><span>Docker</span></li>
+            <li><span>Git</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="lower">
+      <section class="card" aria-labelledby="title-rank">
+        <h2 class="block-title" id="title-rank">Xếp hạng</h2>
+        <table class="rank">
+          <thead>
+            <tr>
+              <th scope="col">Hạng</th>
+              <th scope="col">Tên</th>
+              <th scope="col">Số tin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num">1</td>
+              <td><button type="button">TP. Hồ Chí Minh</button></td>
+              <td class="num">186</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td><button type="button">Hà Nội</button></td>
+              <td class="num">142</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td><button type="button">Đà Nẵng</button></td>
+              <td class="num">64</td>
+            </tr>
+            <tr class="is-selected">
+              <td class="num">4</td>
+              <td><button type="button" aria-pressed="true">Hải Phòng</button></td>
+              <td class="num">38</td>
+            </tr>
+            <tr>
+              <td class="num">5</td>
+              <td><button type="button">Cần Thơ</button></td>
+              <td class="num">21</td>
+            </tr>
+            <tr>
+              <td class="num">6</td>
+              <td><button type="button">Nha Trang</button></td>
+              <td class="num">14</td>
+            </tr>
+            <tr>
+              <td class="num">7</td>
+              <td><button type="button">Quy Nhơn</button></td>
+              <td class="num">9</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card" aria-labelledby="title-trend">
+        <div class="trend-head">
+          <h2 class="block-title" id="title-trend">Xu hướng tám quý</h2>
+          <ul class="legend">
+            <li><i class="swatch up" aria-hidden="true"></i> tăng</li>
+            <li><i class="swatch down" aria-hidden="true"></i> giảm</li>
+            <li><i class="swatch flat" aria-hidden="true"></i> đi ngang</li>
+          </ul>
+        </div>
+        <div class="quarters" role="img" aria-label="Tám quý: đi ngang, tăng, tăng, đi ngang, giảm, đi ngang, tăng, tăng. Cột cuối đậm hơn cột đầu.">
+          <div class="q"><span class="vbar flat" style="height:34%"></span><span>Q1</span></div>
+          <div class="q"><span class="vbar up" style="height:48%"></span><span>Q2</span></div>
+          <div class="q"><span class="vbar up" style="height:58%"></span><span>Q3</span></div>
+          <div class="q"><span class="vbar flat" style="height:42%"></span><span>Q4</span></div>
+          <div class="q"><span class="vbar down" style="height:63%"></span><span>Q5</span></div>
+          <div class="q"><span class="vbar flat" style="height:40%"></span><span>Q6</span></div>
+          <div class="q"><span class="vbar up" style="height:72%"></span><span>Q7</span></div>
+          <div class="q"><span class="vbar up" style="height:90%"></span><span>Q8</span></div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="alt" aria-label="Thẻ Hải Phòng khi mở tab Lương và tab Dự báo">
+    <div class="alt-grid">
+      <article class="card salary-panel" aria-labelledby="city-hp-luong">
+        <h2 class="city" id="city-hp-luong">Hải Phòng</h2>
+        <div class="tabs" role="tablist" aria-label="Hải Phòng, lương">
+          <button type="button" role="tab" aria-selected="false" tabindex="-1">Cơ cấu</button>
+          <button type="button" role="tab" id="tab-luong-alt" aria-selected="true" aria-controls="panel-luong-alt">Lương</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1">Dự báo</button>
+        </div>
+        <div role="tabpanel" id="panel-luong-alt" aria-labelledby="tab-luong-alt">
+          <p class="kicker">Lương công khai</p>
+          <div class="salary-hidden">Chưa đủ mẫu.</div>
+        </div>
+      </article>
+
+      <article class="card" aria-labelledby="city-hp-du-bao">
+        <h2 class="city" id="city-hp-du-bao">Hải Phòng</h2>
+        <div class="tabs" role="tablist" aria-label="Hải Phòng, dự báo">
+          <button type="button" role="tab" aria-selected="false" tabindex="-1">Cơ cấu</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1">Lương</button>
+          <button type="button" role="tab" id="tab-du-bao-alt" aria-selected="true" aria-controls="panel-du-bao-alt">Dự báo</button>
+        </div>
+        <div role="tabpanel" id="panel-du-bao-alt" aria-labelledby="tab-du-bao-alt">
+          <div class="forecast-box">
+            <p class="kicker">Dự báo</p>
+            <p class="forecast-note">12 tháng</p>
+            <p class="forecast-range">24–41 tin</p>
+          </div>
+          <p class="signal">Chưa ghi nhận tín hiệu đáng kể cho thành phố này.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>Làm mới 22/10/2026</p>
+    <p>Lương công khai ẩn khi dưới 30 tin.</p>
+  </footer>
+</main>
+</body>
+</html>

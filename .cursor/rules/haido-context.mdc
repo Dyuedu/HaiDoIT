@@ -1,0 +1,41 @@
+---
+description: Hải Đồ IT product context carried from the Claude Code session on 2026-10-22
+alwaysApply: true
+---
+
+# Hải Đồ IT — context đã chốt (2026-10-22)
+
+Web hướng nghiệp IT cho junior, fresher và người chuyển hướng. Không phải sàn tuyển dụng: không ghép việc, không đánh giá nhà tuyển dụng, không agent pháp lý đọc hợp đồng.
+
+Nhóm: Duy và 2 người nữa, cả ba fullstack, đã có ngân sách. Hạn 2 tháng. Chỉ web, không mobile.
+
+## Phạm vi v1
+
+1. Bản đồ nhu cầu — mặt tiền, đúng prototype cập nhật 2026-10-22. Bảy thành phố: Hà Nội, Hải Phòng, Đà Nẵng, Quy Nhơn, Nha Trang, TP. Hồ Chí Minh, Cần Thơ. Có dự báo 18 tháng và tín hiệu sớm. Lương công khai ẩn số khi dưới 30 tin, vì prototype đang làm vậy. Không thu hẹp còn ba thành phố.
+2. Học gì tiếp? — tên đã chốt, thay "Mô phỏng Nếu–thì". Dòng phụ: thử thêm kỹ năng, xem số việc và lương đổi trước khi học.
+3. Lộ trình 90 ngày, có nút "Vì sao?". "Hải trình 90 ngày" chỉ là đề xuất, chưa được chọn.
+4. Xu hướng và hạn dùng kỹ năng — lớp dữ liệu dùng chung, không phải màn riêng.
+5. So sánh offer + kiểm tra BHXH — miễn phí, kéo người vào.
+6. Soi tin tuyển dụng, bản nhẹ — miễn phí.
+
+v2: review dự án (điểm thu tiền chính), tập thương lượng, lương phân vị. Không làm: ghép việc, chỉ số phản hồi nhà tuyển dụng, agent pháp lý thu phí.
+
+## Dữ liệu
+
+SkillNexus là dự án cũ. Pipeline nằm ngoài repo này: `D:\FR_KS_FU_Java_03\SkillNexus\pipeline`. Hải Đồ IT dùng lại pipeline đó. API ATS (Greenhouse, Lever, Workable; 11 công ty) là nguồn chiến lược. Khoảng 832 tin đang mở tại một thời điểm: ITviec 652, TopDev 99, ATS 78, Cốc Cốc 3. Tin chỉ sống khoảng 1 tháng, nên phải cào hằng ngày. Chỉ hiện số khi có từ 30 mẫu.
+
+Duy đã quyết (2026-10-22): v1 đưa số liệu đã trích vào sản phẩm, gồm ITviec và TopDev, không xin phép và không chờ luật sư. Dòng tin trên Postgres chỉ giữ kỹ năng, thành phố, cấp bậc, khoảng lương, ngày đăng và link gốc. Pipeline giữ robots.txt và không vượt trang chặn bot.
+
+Duy đã quyết (2026-10-23): đưa LangGraph, LangChain, Neo4j, Redis và Silo vào project. Agent nghĩa là LLM + lập kế hoạch + bộ nhớ + tool. Bốn agent: Bản đồ, Học gì tiếp, Lộ trình, Soi tin. So sánh offer không có agent. Model sinh lời gọi tool. LangGraph chạy tool và đưa kết quả lại. Mỗi agent chỉ thấy đúng tool được giao. Một lượt dừng sau 6 bước sinh của model hoặc sau 2 lần từ chối câu liên tiếp. Vì sao? trả trong cùng lượt. `read_bronze` không trả JSON-LD. Chỉ máy chạy web lấy hàng đợi nạp. Postgres commit sau khi Neo4j cập nhật xong. Màn ghi tên agent, không hiện kế hoạch và không hiện lời gọi tool. Màn không hiện nguyên văn mô tả. API công khai không trả bản thô. Chữ người dùng dán không lưu. Không có agent đọc hợp đồng, ghép việc, chấm nhà tuyển dụng, hay đọc CV.
+
+## Việc đang dở
+
+Brief, PRD, UX, kiến trúc và spec đã có. Đang ở `bmad-create-epics-and-stories`, danh yêu cầu chưa được Duy bấm tiếp. Kiến trúc đã được Duy mở lại vào 2026-10-23 để thêm agent và bốn dịch vụ trên.
+
+Đọc trước khi sửa brief hoặc UX:
+
+- `_bmad-output/planning-artifacts/briefs/brief-HaiDoIT-2026-10-22/brief.md`
+- `_bmad-output/planning-artifacts/briefs/brief-HaiDoIT-2026-10-22/addendum.md`
+- `_bmad-output/planning-artifacts/research/market-hai-do-it-nen-tang-nghe-nghiep-it-viet-n-2026-10-22/research.md`
+
+Giữ nhãn `[GIẢ ĐỊNH]` cho mẫu Data/AI theo thành phố có thể dưới 30 tin: đo trong tuần 1, đừng biến thành sự thật trước khi đo. Không đưa lại chuyện Minh, mức 500 người thử, giá 50.000đ / 150.000đ, cửa giả, hay một số CAC.

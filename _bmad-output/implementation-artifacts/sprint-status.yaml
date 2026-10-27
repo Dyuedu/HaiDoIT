@@ -1,0 +1,66 @@
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when its first story starts (via build's sprint sync)
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates the next story after the previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; the status view surfaces open ones
+generated: 10-25-2026 13:17
+last_updated: 10-25-2026 13:17
+project: HaiDoIT
+project_key: NOKEY
+tracking_system: file-system
+story_location: 
+  D:\FR_KS_FU_Java_03\HaiDoIT\_bmad-output\implementation-artifacts
+development_status:
+  epic-1: backlog
+  1-1-khởi-tạo-schema-dữ-liệu-hạt-giống-và-fixture-kiểm-thử: backlog
+  1-2-pipeline-cào-tin-lưu-silo-bronze-và-lệnh-nạp-đồng-bộ: backlog
+  1-3-động-cơ-tính-toán-số-gộp-và-api-bản-đồ-thị-trường: backlog
+  1-4-khung-langgraph-dùng-chung-và-agent-bản-đồ: backlog
+  1-5-giao-diện-bản-đồ-nhu-cầu-3d-và-thẻ-thành-phố: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-động-cơ-tính-tin-đủ-điều-kiện-và-thuật-toán-xếp-hạng-kỹ-năng: backlog
+  2-2-thuật-toán-nới-phạm-vi-mẫu-lương-khi-dưới-30-tin: backlog
+  2-3-agent-học-gì-tiếp-và-tool-skill_delta: backlog
+  2-4-giao-diện-học-gì-tiếp-và-quản-lý-hồ-sơ-phiên: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-tool-roadmap_frame-và-thuật-toán-phân-bổ-kỹ-năng-3-chặng: backlog
+  3-2-agent-lộ-trình-và-cơ-chế-sinh-dự-án-thực-hành-có-vì-sao: backlog
+  3-3-dịch-vụ-gửi-thư-và-lưu-trữ-lộ-trình-với-token-giao-dịch: backlog
+  3-4-endpoint-mở-lại-lộ-trình-bằng-token-và-theo-dõi-mốc-14-ngày: backlog
+  3-5-giao-diện-lộ-trình-90-ngày-dialog-vì-sao-và-luồng-lưu-mở-lại: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-động-cơ-đối-chiếu-tin-tuyển-dụng-và-tool-lookup_posting: backlog
+  4-2-tool-read_bronze-an-toàn-và-agent-soi-tin: backlog
+  4-3-giao-diện-soi-tin-tuyển-dụng-và-cầu-nối-phễu-sang-học-gì-tiế: backlog
+  epic-4-retrospective: optional

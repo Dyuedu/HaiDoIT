@@ -1,0 +1,4 @@
+Kéo để xoay -> -1
+xoay trái -> -1
+Cột = tin hiện tại -> -1
+perspective -> -1
