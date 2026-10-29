@@ -1,0 +1,5 @@
+# Dữ liệu cào (JSONL, state, log) — không commit
+data/
+__pycache__/
+.pytest_cache/
+.venv/
