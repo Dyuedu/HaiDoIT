@@ -22,11 +22,19 @@ tới: cấp bậc (junior/mid/senior), mức lương, và mô hình làm việc
 | VietnamWorks | tổng hợp | mục inTECH, có lương |
 | TopCV | tổng hợp | cần lọc việc làm IT |
 | LinkedIn | IT | Playwright + đăng nhập tài khoản |
+| CareerLink | tổng hợp | danh mục CNTT phần mềm + phần cứng/mạng, JSON-LD có lương VND; tối đa 40 request/lượt, cách nhau ≥ 1 giờ |
+| ITNavi | IT | HTML danh sách + JSON chi tiết `/ajax/get-job-by-id`; tối đa 150 tin/lượt |
+| Zalo Careers | trang công ty | API JSON công khai `/api/v2/jobs`, một request mỗi team |
+| MoMo Careers | trang công ty | danh sách đọc từ DOM (trình duyệt headless bấm "Xem thêm"), chi tiết từ `__NEXT_DATA__` |
+
+Bốn crawler mới dùng chung `crawlers/polite.py`: User-Agent trung thực, kiểm tra
+`robots.txt`, giãn cách cố định giữa các request, và **dừng hẳn** khi gặp
+403/429 hoặc captcha (không tìm cách vượt qua).
 
 ## Pipeline
 
 ```
-crawl (5 crawlers)        → data/raw/*.jsonl                      7.753 tin thô
+crawl (9 crawlers)        → data/raw/*.jsonl                      7.753 tin thô (bản 26/10, 5 nguồn đầu)
   step-02-dedupe          → data/step-02-dedup.jsonl              7.444 (bỏ trùng)
   step-03-fetch-details   → data/step-03-full.jsonl               7.444 + mô tả đầy đủ
   step-04-filter-tech     → data/step-04-tech.jsonl               3.469 tin IT
@@ -57,6 +65,13 @@ make crawl-topdev
 make crawl-vietnamworks
 make crawl-topcv
 make crawl-linkedin        # cần đăng nhập LinkedIn bằng Playwright
+make crawl-careerlink      # chạy lại mỗi ≥ 1 giờ cho tới khi hết hàng đợi
+make crawl-itnavi          # chạy lại tới khi không còn tin mới
+make crawl-zalo
+make crawl-momo            # cần: playwright install chromium
+
+# Windows: make PY=.venv/Scripts/python crawl-zalo
+# hoặc chạy thẳng: .venv/Scripts/python -m crawlers.zalo
 
 # 2. bỏ trùng + lấy mô tả đầy đủ
 make dedupe

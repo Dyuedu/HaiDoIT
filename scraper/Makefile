@@ -1,34 +1,49 @@
-.PHONY: crawl-itviec crawl-topdev crawl-vietnamworks crawl-topcv crawl-linkedin dedupe details classify consolidate
+# Windows: make PY=.venv/Scripts/python <target>
+PY ?= .venv/bin/python
+
+.PHONY: crawl-itviec crawl-topdev crawl-vietnamworks crawl-topcv crawl-linkedin crawl-careerlink crawl-itnavi crawl-zalo crawl-momo dedupe details classify consolidate
 
 crawl-itviec:
-	.venv/bin/python -m crawlers.itviec
+	$(PY) -m crawlers.itviec
 
 crawl-topdev:
-	.venv/bin/python -m crawlers.topdev
+	$(PY) -m crawlers.topdev
 
 crawl-vietnamworks:
-	.venv/bin/python -m crawlers.vietnamworks
+	$(PY) -m crawlers.vietnamworks
 
 crawl-topcv:
-	.venv/bin/python -m crawlers.topcv
+	$(PY) -m crawlers.topcv
 
 crawl-linkedin:
-	.venv/bin/python -m crawlers.linkedin
+	$(PY) -m crawlers.linkedin
+
+crawl-careerlink:
+	$(PY) -m crawlers.careerlink
+
+crawl-itnavi:
+	$(PY) -m crawlers.itnavi
+
+crawl-zalo:
+	$(PY) -m crawlers.zalo
+
+crawl-momo:
+	$(PY) -m crawlers.momo
 
 dedupe:
-	.venv/bin/python step-02-dedupe.py
+	$(PY) step-02-dedupe.py
 
 details:
-	.venv/bin/python step-03-fetch-details.py
+	$(PY) step-03-fetch-details.py
 
 classify:
-	.venv/bin/python step-04-filter-tech.py
+	$(PY) step-04-filter-tech.py
 
 consolidate:
-	.venv/bin/python step-05-consolidate.py
+	$(PY) step-05-consolidate.py
 
 extract:
-	.venv/bin/python step-06-extract-with-llm.py
+	$(PY) step-06-extract-with-llm.py
 
 jev-classify:
-	.venv/bin/python step-07-extract-with-jev.py
+	$(PY) step-07-extract-with-jev.py
