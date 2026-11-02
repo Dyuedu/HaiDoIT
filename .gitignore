@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Bí mật
+.env
+.env.*
+*.key
+
+# Cấu hình BMAD cá nhân (mỗi thành viên tự sinh khi cài)
+_bmad/config.user.toml
+_bmad/custom/config.user.toml
+
+# Hệ điều hành / editor
+.DS_Store
+Thumbs.db
