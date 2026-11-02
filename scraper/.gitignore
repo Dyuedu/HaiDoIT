@@ -1,0 +1,20 @@
+# --- credentials & secrets -------------------------------------------------
+# data/linkedin-profile-webkit/ holds a logged-in LinkedIn browser profile
+# (cookie.db, LocalStorage, IndexedDB). It must never be published.
+.env
+.env.*
+*.key
+
+# --- data ------------------------------------------------------------------
+# Everything under data/ is excluded BY DEFAULT, so a re-run that writes new
+# intermediate files can never publish them by accident. The one published
+# dataset is re-included explicitly below.
+data/*
+!data/step-07-jev-extracted.jsonl
+
+# --- environment & caches --------------------------------------------------
+.venv/
+.ruff_cache/
+__pycache__/
+*.pyc
+.DS_Store
