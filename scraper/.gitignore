@@ -12,6 +12,12 @@
 data/*
 !data/step-07-jev-extracted.jsonl
 
+# --- browser profiles (session cookies, never publish) ---------------------
+chrome_topcv_profile/
+
+# --- sqlite local databases ------------------------------------------------
+*.db
+
 # --- environment & caches --------------------------------------------------
 .venv/
 .ruff_cache/
