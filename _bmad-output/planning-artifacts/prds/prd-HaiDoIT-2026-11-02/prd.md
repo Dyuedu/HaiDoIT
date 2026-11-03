@@ -38,6 +38,8 @@ Trên nền dữ liệu đó có bốn chức năng:
 - **Cố vấn:** dựng lộ trình học theo vai trò mục tiêu, cá nhân hóa theo hồ sơ kỹ năng;
 - **Soi tin:** đặt một JD cụ thể cạnh hồ sơ của người dùng và cạnh mặt bằng thị trường.
 
+Người chưa mở ứng dụng vẫn đọc được mặt bằng kỹ năng của từng vai trò mục tiêu trên một trang công khai. Trang đó dùng snapshot mà ứng dụng đang hiển thị, trên một ô duy nhất: vai trò đó, mọi cấp bậc, toàn quốc (FR-48).
+
 Hải Đồ IT khác chatbot và các sàn tuyển dụng ở ba điểm:
 - mọi con số đi kèm cỡ mẫu, nguồn và ngày của snapshot;
 - lộ trình học được dựng tất định trên đồ thị học trước – học sau đã kiểm duyệt; LLM chỉ viết lời dẫn;
@@ -751,6 +753,45 @@ Chế độ thử nghiệm không có ô nhập email, Zalo hay bất kỳ thôn
 **Kết quả kiểm chứng được:**
 - Một câu truy vấn duy nhất xuất được bảng kết quả theo từng phiên, gồm: nhóm người dùng, 3 kỹ năng tự đoán, các lựa chọn "đã biết / chưa biết", ý định hành động, điểm và lựa chọn của phần so sánh mù.
 
+### 4.8 Trang nội dung công khai
+
+**Mô tả.** Ngoài ứng dụng mà người dùng mở để làm các hành trình ở §2.3, Hải Đồ IT có các trang đọc được không cần tài khoản. Trang để trình thu thập của công cụ tìm kiếm và công cụ AI đọc được câu trả lời có số, có nguồn và có ngày trong nội dung trả về. v1 có đúng một trang cho mỗi vai trò mục tiêu trong danh sách lúc công khai ở §8.1, tức 4–5 vai trò, tất cả dùng chung một khuôn. Trang theo vai trò, không theo nhánh. Vai trò chưa có đồ thị học trước vẫn có trang. Cộng một trang chính sách dữ liệu (FR-47). Không có khoảng 5–8 trang.
+
+#### FR-48: Trang thị trường theo vai trò mục tiêu
+Mỗi vai trò mục tiêu trong danh sách lúc công khai có đúng một trang. URL của vai trò đó không đổi khi sang snapshot mới.
+
+Ô duy nhất của trang là vai trò mục tiêu × mọi cấp bậc, toàn quốc, chỉ tin có ngày thấy lần cuối trong 60 ngày. n ghi trên trang là n của ô đó. Trang không dùng thứ tự quay về của §3. Trang không vẽ tỷ trọng thành phố và không sửa FR-33.
+
+Khi n của ô ≥ 30, đoạn đầu nêu ít nhất ba kỹ năng, mỗi kỹ năng có tỷ lệ xuất hiện. Khi n < 30, đoạn đầu chỉ được câu "chưa đủ dữ liệu (n = X)": không có tên nhóm kỹ năng, không có phần trăm.
+
+Phân vị số kỹ năng chỉ hiện khi n của ô ≥ 30. Phân vị lương và phân vị số năm kinh nghiệm chỉ hiện khi có ≥ 30 tin có đúng trường đó, cùng cửa với FR-30. Dưới cửa của đúng thước đo thì câu "chưa đủ dữ liệu", không hiện con số của thước đo đó. Tỷ lệ xuất hiện và phân vị trên trang dùng cùng quyết định che số với Soi tin. Tỷ trọng cấu phần không thuộc trang này.
+
+Mỗi con số kèm n của đúng thước đo, danh sách nguồn đang bật, và ngày snapshot. Trang có đủ hai ý độ phủ của §5, trong đó có ba lưu ý chuẩn của FR-36.
+
+Trang chỉ dùng số liệu tổng hợp. Không liệt kê tin. Không chức danh, công ty, thành phố hay lương của từng tin. Không link về tin gốc. Không toàn văn JD, không mô tả tin. Trần trường ngắn của §6.2 không áp vào trang này.
+
+Ràng buộc trung thực của FR-47 áp dụng nguyên: không đăng bảng R1–R4 (§6.1). Trang không có câu nào khẳng định đã có phép, đã tuân thủ điều khoản của nguồn, hoặc mọi dữ liệu đã được cấp phép. Hai câu bị cấm, lấy nguyên từ FR-47: "tuân thủ đầy đủ điều khoản của mọi nguồn" và "mọi dữ liệu đều đã được cấp phép".
+
+Sau khi ứng dụng đã chuyển sang một snapshot, kể cả snapshot thiếu nguồn, nội dung trang khớp snapshot đó. Nguồn thiếu hiện trong danh sách nguồn. Trang không giữ snapshot cũ hơn snapshot ứng dụng đang hiển thị.
+
+Mỗi URL có liên kết nhìn thấy tới trang chính sách dữ liệu.
+
+**Kết quả kiểm chứng được:**
+- Với mỗi vai trò trong danh sách lúc công khai của §8.1 có đúng một URL. URL không đổi khi sang snapshot mới. Mở được không cần tài khoản.
+- Request không cookie tới URL đó nhận đủ đoạn đầu trong nội dung trả về, không chuyển hướng tới đăng nhập, và URL không nằm trong chỉ dẫn chặn thu thập.
+- Khi n của ô ≥ 30, đoạn đầu có ít nhất ba kỹ năng, mỗi kỹ năng một tỷ lệ, kèm n, danh sách nguồn đang bật và ngày snapshot.
+- Khi n của ô < 30, đoạn đầu chỉ là "chưa đủ dữ liệu (n = X)", không có tên nhóm và không có phần trăm.
+- Phân vị lương không hiện khi số tin có lương dưới 30, kể cả khi n của ô ≥ 30.
+- Trang không chứa mô tả tin, toàn văn JD, chức danh, công ty, thành phố, lương của từng tin, hay link về tin gốc.
+- Trang không chứa bảng R1–R4, không chứa hai câu cấm ở trên, và không chứa câu nào cùng nghĩa.
+- Sau khi ứng dụng chuyển snapshot, kể cả snapshot thiếu nguồn, mở URL thấy ngày của snapshot đó và số khớp bảng tổng hợp của ô đã nêu. Nguồn thiếu có trong danh sách nguồn.
+- Trang có hai ý độ phủ của §5 và liên kết tới trang chính sách dữ liệu.
+
+**Ngoài phạm vi:**
+- Không có trang theo thành phố, theo kỹ năng, hay theo câu hỏi trong v1.
+- Không có tài khoản trên các trang này.
+- Không lấy việc thêm dữ liệu có cấu trúc cho công cụ tìm kiếm, hay một file hướng dẫn riêng cho mô hình ngôn ngữ, làm tiêu chí hoàn thành.
+
 ## 5. Yêu cầu phi chức năng chung
 
 **Hiệu năng.**
@@ -767,7 +808,7 @@ Chế độ thử nghiệm không có ô nhập email, Zalo hay bất kỳ thôn
 **Trung thực của con số.**
 - Mọi con số hiển thị cho người dùng đều kèm cỡ mẫu, nguồn và ngày của snapshot.
 - Ô thống kê dưới ngưỡng mẫu thì nói "chưa đủ dữ liệu", không bao giờ hiển thị một con số đoán.
-- Mọi màn hình có số liệu (Bản đồ nhu cầu, Insights, Cố vấn, Soi tin) và bản tóm tắt tải về đều có **lưu ý về độ phủ dữ liệu**, gồm hai ý:
+- Mọi màn hình có số liệu (Bản đồ nhu cầu, Insights, Cố vấn, Soi tin, trang vai trò FR-48) và bản tóm tắt tải về đều có **lưu ý về độ phủ dữ liệu**, gồm hai ý:
   - dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên N nguồn;
   - ba lưu ý chuẩn ở FR-36.
 
@@ -853,7 +894,8 @@ Nhóm đã cân nhắc và **chấp nhận có chủ đích** các rủi ro dư�
 ## 8. Phạm vi MVP
 
 ### 8.1 Có trong v1
-- Bảy tính năng với FR-1 đến FR-47.
+- Bảy tính năng tương tác, FR-1 đến FR-47.
+- Trang nội dung công khai là P1: có trong bản công khai, không có trong review giữa kỳ (FR-48, FR-47). Đúng một trang cho mỗi vai trò mục tiêu trong danh sách lúc công khai (4–5), cộng trang chính sách. Chỉ ra khỏi v1 bằng một dòng phạm vi bị cắt, ghi rõ FR-48.
 - Lộ trình học có thứ tự:
   - Review giữa kỳ: 2 vai trò mục tiêu, Backend (nhánh Java Backend) và Data/AI (nhánh Data Engineer);
   - khi công khai: 4–5 vai trò mục tiêu.
@@ -874,6 +916,7 @@ Nhóm đã cân nhắc và **chấp nhận có chủ đích** các rủi ro dư�
 - Thu thập mới từ LinkedIn. Dữ liệu LinkedIn lịch sử trong bộ nền vẫn được dùng, xem R3 ở §6.1.
 - Tính năng cho nhà trường hoặc nhà tuyển dụng.
 - Ứng dụng di động.
+- Trang công khai theo thành phố, theo kỹ năng, hoặc theo câu hỏi. v1 không đặt mục tiêu lượt được dẫn. Khi xét mục này, "được dẫn tới" nghĩa là một trang vai trò xuất hiện trong kết quả tìm hoặc trong câu trả lời của công cụ AI, do nhóm kiểm tại thời điểm xét.
 
 ## 9. Chỉ số thành công
 
@@ -977,7 +1020,7 @@ SM-1, SM-2, SM-3, SM-9 và SM-12 được báo cáo cả ở dạng tổng và d
 4. Tỷ giá USD cố định dùng giá trị nào, và bao lâu cập nhật một lần? (FR-8)
 5. Kết quả xin phép ITviec, TopCV và tác giả repo gốc. Kết quả sẽ quyết định công tắc của từng nguồn. (§6.1, §6.2)
 6. Ai kiểm duyệt danh mục tài liệu, và bao lâu kiểm tra link chết một lần? (FR-23)
-7. **Thứ tự ưu tiên của 47 FR trong 8 tuần.** PRD chưa có lằn ranh cắt giảm. Cần gắn mức ưu tiên cho từng FR:
+7. **Thứ tự ưu tiên của các FR trong 8 tuần.** PRD chưa có lằn ranh cắt giảm cho cả bộ FR. FR-48 đã chốt là P1 ở §8.1, không xếp lại ở bước này. Các FR còn lại cần gắn mức:
    - P0: bắt buộc cho Review giữa kỳ;
    - P1: bắt buộc trước khi công khai;
    - P2: làm nếu kịp.

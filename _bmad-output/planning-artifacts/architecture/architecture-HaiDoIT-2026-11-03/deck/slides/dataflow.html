@@ -1,0 +1,43 @@
+<section id="dataflow" data-transition="push" style="background:#F7F6F2;color:#11202E;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#D9822B">Dòng dữ liệu một đêm</p>
+<h2 style="font-size:60px;font-weight:600;line-height:1.1">Thứ tự này là bất biến, không phải gợi ý</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#FFFFFF;padding:24px 28px;border:1px solid #D5D2C8;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#1F7A72;width:150px">NHỊP 1</p>
+<p style="font-size:26px;background:#E4F2F0;padding:14px 20px;border-radius:8px">crawl</p>
+<p style="font-size:26px;background:#E4F2F0;padding:14px 20px;border-radius:8px">redact</p>
+<p style="font-size:26px;background:#E4F2F0;padding:14px 20px;border-radius:8px">ingest</p>
+<p style="font-size:26px;background:#E4F2F0;padding:14px 20px;border-radius:8px">dedupe trong nguồn</p>
+</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#FFFFFF;padding:24px 28px;border:1px solid #D5D2C8;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#D9822B;width:150px">NHỊP 2</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">fetch_details</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">extract</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">mapping</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">cluster chéo nguồn</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">classify</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">lương</p>
+</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#FFFFFF;padding:24px 28px;border:1px solid #D5D2C8;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#D9822B;width:150px">NHỊP 2</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">vòng đời theo snapshot</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">aggregate</p>
+<p style="font-size:26px;background:#11202E;color:#F7F6F2;padding:14px 20px;border-radius:8px">publish</p>
+<p style="font-size:26px;background:#F3E3D0;padding:14px 20px;border-radius:8px">revalidate + mồi GET</p>
+</div>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#F3E3D0;padding:28px;border-radius:12px;border-left:6px solid #D9822B">
+<h3 style="font-size:28px;font-weight:600">Dedupe trong nguồn đứng TRƯỚC extract</h3>
+<p style="font-size:25px;line-height:1.35;color:#44505C">Để LLM không chạy trên các bản sao, giữ trần chi phí của §6.4.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:#E4F2F0;padding:28px;border-radius:12px;border-left:6px solid #1F7A72">
+<h3 style="font-size:28px;font-weight:600">Cluster chéo nguồn đứng SAU mapping</h3>
+<p style="font-size:25px;line-height:1.35;color:#44505C">Vì FR-4 ghép trùng dựa trên độ tương đồng tập mã kỹ năng — thứ chỉ tồn tại sau mapping.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;font-size:24px;color:#6E7A86">Bản nháp xếp dedupe ở một chỗ không có đầu vào để chạy · 6 / 14</p>
+<aside>Hai ô dưới cùng là hai lỗi bản nháp mắc. Chúng kéo nhau: nếu đảo thứ tự để sửa cái thứ hai thì vi phạm cái thứ nhất. Giải pháp là tách thành hai pha dedupe khác nhau.</aside>
+</section>

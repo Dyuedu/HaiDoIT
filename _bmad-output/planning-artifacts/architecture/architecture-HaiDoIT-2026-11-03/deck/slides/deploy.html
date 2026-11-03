@@ -1,0 +1,42 @@
+<section id="deploy" data-transition="push" style="background:#11202E;color:#F7F6F2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#D9822B">Triển khai · một VPS 4 GB</p>
+<h2 style="font-size:68px;font-weight:600;line-height:1.1;color:#F7F6F2">Bảy tiến trình, và một ngân sách chật</h2>
+</div>
+<div style="display:flex;gap:16px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1A2E3F;padding:28px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:23px;font-weight:600;color:#1F7A72">LỚP NGOÀI</p>
+<p style="font-size:25px;line-height:1.4;color:#BBCBD6">Cloudflare miễn phí · Caddy reverse proxy</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1A2E3F;padding:28px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:23px;font-weight:600;color:#1F7A72">PHỤC VỤ</p>
+<p style="font-size:25px;line-height:1.4;color:#BBCBD6">web — Next.js trên Node 24 · api — FastAPI</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#3D2420;padding:28px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:23px;font-weight:600;color:#E8A05C">DAGSTER — BA, KHÔNG PHẢI MỘT</p>
+<p style="font-size:25px;line-height:1.4;color:#E0CCC4">webserver · daemon · code location gRPC — cộng một run worker mỗi lượt chạy</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1A2E3F;padding:28px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:23px;font-weight:600;color:#1F7A72">DỮ LIỆU</p>
+<p style="font-size:25px;line-height:1.4;color:#BBCBD6">postgres 18 · pg_dump hằng ngày ra ngoài VPS</p>
+</div>
+</div>
+<div style="display:flex;gap:28px">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#3D2420;padding:36px;border-radius:16px;border-left:6px solid #D9822B">
+<h3 style="font-size:32px;font-weight:600;color:#F7F6F2">Ngân sách không dư</h3>
+<p style="font-size:27px;line-height:1.45;color:#E0CCC4">Ước lượng ~1,7–2,8 GB lúc nghỉ nhưng <b>2,4–4,8 GB lúc pipeline chạy</b> — vượt trần đúng vào khoảnh khắc duy nhất hệ thống làm việc thật.</p>
+<p style="font-size:27px;line-height:1.45;color:#E0CCC4">Và Dagster <b>không công bố con số RAM nào</b>, nên lập luận “Dagster nhẹ hơn Airflow nên vừa” chưa từng được chứng minh.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#1A2E3F;padding:36px;border-radius:16px;border-left:6px solid #1F7A72">
+<h3 style="font-size:32px;font-weight:600;color:#F7F6F2">Bốn cách nén cho vừa</h3>
+<ul style="font-size:27px;line-height:1.5;color:#BBCBD6">
+<li>Đúng một lượt chạy đồng thời</li>
+<li>Bootstrap theo lô, có trần bộ nhớ</li>
+<li><span style="font-family:'JetBrains Mono', 'Courier New', monospace">next build</span> không bao giờ chạy trên prod</li>
+<li>Dagster UI không bật thường trực, cộng swap</li>
+</ul>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;font-size:24px;color:#7A8C99">Nếu nén không đủ, đường thoát rẻ nhất là bỏ Dagster và dùng cron — AD-15 đã làm việc đó rẻ · 12 / 14</p>
+<aside>Nói thẳng chỗ này: lựa chọn Dagster có thể vẫn đúng, nhưng lý do ban đầu chưa đủ căn cứ. AD-15 cố ý giữ cho việc đổi sang cron chỉ mất một buổi chiều.</aside>
+</section>

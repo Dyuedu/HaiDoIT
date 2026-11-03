@@ -1,0 +1,51 @@
+{
+  "v": 4,
+  "createdOnFiles": { "v": 1, "at": "2026-11-03T13:00:00Z" },
+  "lists": "css",
+  "title": "Kiến trúc Hải Đồ IT",
+  "order": [
+    "cover",
+    "engines",
+    "paradigm",
+    "layers",
+    "registry",
+    "dataflow",
+    "snapshot",
+    "gate",
+    "data-truths",
+    "cadence",
+    "stack",
+    "deploy",
+    "split",
+    "thisweek"
+  ],
+  "sections": {
+    "s1": {
+      "description": "Vì sao kiến trúc này tồn tại: năm bộ máy sinh số và cái paradigm giải quyết chúng",
+      "start": "cover"
+    },
+    "s2": {
+      "description": "Các bất biến then chốt: registry đóng, dòng dữ liệu, snapshot",
+      "start": "registry"
+    },
+    "s3": {
+      "description": "Cổng rà soát bắt được gì, và ba sự thật phũ phàng về dữ liệu đang có",
+      "start": "gate"
+    },
+    "s4": {
+      "description": "Thực thi: stack, triển khai một VPS, chia việc ba người",
+      "start": "stack"
+    }
+  },
+  "faces": {
+    "ibm-plex-sans": {
+      "family": "IBM Plex Sans",
+      "href": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+    },
+    "jetbrains-mono": {
+      "family": "JetBrains Mono",
+      "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+    }
+  },
+  "designSystems": []
+}

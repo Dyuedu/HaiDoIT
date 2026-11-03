@@ -1,0 +1,18 @@
+<section id="engines" data-transition="fade" style="background:#F7F6F2;color:#11202E;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#D9822B">Vấn đề kiến trúc thật</p>
+<h2 style="font-size:68px;font-weight:600;line-height:1.1">Năm bộ máy sinh số, mỗi bộ bị gọi ở hai nơi</h2>
+</div>
+<p style="font-size:30px;line-height:1.45;color:#44505C;width:1664px">Mỗi phép tính dưới đây phải chạy <b>một lần theo lô trong đêm</b> và <b>một lần cho một tin đơn lúc người dùng dán</b>. Hai lần đó cách nhau hai đến bốn tuần trong lịch sprint — nên bản thứ hai luôn được viết lại “cho nhanh”.</p>
+<table style="font-family:'IBM Plex Sans', Arial, sans-serif;font-size:28px;border:1px solid #D5D2C8;border-radius:12px;padding:20px 24px">
+<tr style="background:#11202E"><th style="width:34%;color:#F7F6F2;font-weight:600;text-align:left">Bộ máy</th><th style="width:33%;color:#F7F6F2;font-weight:600;text-align:left">Gọi trong đêm</th><th style="width:33%;color:#F7F6F2;font-weight:600;text-align:left">Gọi lúc người dùng dán</th></tr>
+<tr><td style="text-align:left">Mapping lượt nhắc → mã kỹ năng</td><td style="text-align:left">FR-6</td><td style="text-align:left">FR-12, FR-26</td></tr>
+<tr style="background:#EFEDE6"><td style="text-align:left">Chọn ô thống kê + thứ tự quay về</td><td style="text-align:left">aggregate</td><td style="text-align:left">FR-27, FR-30</td></tr>
+<tr><td style="text-align:left">Phân loại vai trò, cấp bậc</td><td style="text-align:left">FR-7</td><td style="text-align:left">FR-27</td></tr>
+<tr style="background:#EFEDE6"><td style="text-align:left">So khớp tin trùng</td><td style="text-align:left">FR-4</td><td style="text-align:left">FR-32</td></tr>
+<tr><td style="text-align:left">Phân vị và mốc</td><td style="text-align:left">FR-9</td><td style="text-align:left">Dấu hiệu D1, D3</td></tr>
+</table>
+<p style="font-size:30px;line-height:1.45;color:#11202E;background:#F3E3D0;padding:28px 32px;border-radius:12px;border-left:6px solid #D9822B;width:1600px">Nếu bộ phân loại lúc chạy khác bộ phân loại ban đêm, người dùng được so vào <b>một ô thống kê không phải ô mà tin của họ thuộc về</b> — và mức khớp, phân vị, D1, D3 đều sai mà không một kiểm thử nào đỏ.</p>
+<p style="position:absolute;left:128px;bottom:64px;font-size:24px;color:#6E7A86">Phát hiện của lăng kính toàn vẹn dữ liệu · 2 / 14</p>
+<aside>Đây là slide quan trọng nhất của cả deck. Spine bản nháp chỉ gác hai trong năm bộ máy này. Ba bộ còn lại không có bất biến nào, và cả ba đều bị gọi ở hai nơi.</aside>
+</section>

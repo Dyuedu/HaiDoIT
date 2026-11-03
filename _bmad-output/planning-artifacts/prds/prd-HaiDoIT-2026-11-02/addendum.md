@@ -10,6 +10,7 @@ Tài liệu này giữ những chi tiết **làm thế nào** và những **phư
 
 ## 1. Ghi chú hiện thực theo từng FR
 
+- **FR-48:** kết quả "trang khớp snapshot mà ứng dụng đang hiển thị, kể cả snapshot thiếu nguồn" là tiêu chí trong PRD. Cách làm để đạt kết quả đó, và việc trang chỉ đọc số tổng hợp qua API, nằm ở AD-13 và AD-14 của `_bmad-output/planning-artifacts/architecture/architecture-HaiDoIT-2026-11-03/ARCHITECTURE-SPINE.md`.
 - **FR-9, ngưỡng θ:** khởi tạo θ_core = 30%, θ_common = 10%. Lý do chọn 30%: JD là văn bản tự nhiên, nhiều nhà tuyển dụng không liệt kê những kỹ năng "hiển nhiên". Một kỹ năng xuất hiện tường minh trong hơn 1/3 số tin của một nhánh đã là tín hiệu cầu mạnh. Với ngưỡng 50%, nhóm cốt lõi gần như rỗng; số liệu kiểm tra ngày 02/11:
   - Backend chỉ có Java và Microservices (54%);
   - Data/AI chỉ có Python (64%).
@@ -66,3 +67,5 @@ Tài liệu này giữ những chi tiết **làm thế nào** và những **phư
 | Soi tin | D2 tính cả kỹ năng chưa nhận diện | Khi đó D2 đo độ phủ của bộ từ vựng, không đo tin tuyển dụng |
 | Soi tin | Thêm thành phố vào ô thống kê | Mẫu thưa đi 2–3 lần; kỹ năng cốt lõi của một nhánh không khác nhau theo tỉnh thành |
 | Lưu trữ | Neo4j độc lập, GraphRAG | Chỉ có một bài toán đồ thị thật; xem addendum của brief |
+| Trang công khai | Lấy JSON-LD hoặc một file hướng dẫn mô hình ngôn ngữ làm tiêu chí hoàn thành | Bằng chứng ngày 03/11: hai thứ đó không làm tăng việc được công cụ AI dẫn. Đòn bẩy là câu trả lời ở đầu trang, nguồn cho từng số, độ mới, và không chặn trình thu thập |
+| Trang công khai | Một trang cho mỗi thành phố, kỹ năng, hoặc câu hỏi ngay trong v1 | Thêm trang là thêm một dòng sinh trang, nhưng v1 dừng ở trang theo vai trò cho tới khi đo được FR-48 có được dẫn hay không |

@@ -1,0 +1,27 @@
+<section id="layers" data-transition="fade" style="background:#11202E;color:#F7F6F2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#D9822B">AD-1 · hướng phụ thuộc</p>
+<h2 style="font-size:68px;font-weight:600;line-height:1.1;color:#F7F6F2">Bốn tầng, và mũi tên chỉ đi một chiều</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:20px;align-items:center;background:#1A2E3F;padding:28px 32px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#D9822B;width:420px">web/</p>
+<p style="font-size:28px;line-height:1.35;color:#BBCBD6;flex:1">Chỉ biết hợp đồng HTTP của <span style="color:#F7F6F2">haido_api</span>. Không bao giờ mở kết nối Postgres — kể cả lúc sinh trang nội dung công khai.</p>
+</div>
+<div style="display:flex;gap:20px;align-items:center;background:#1A2E3F;padding:28px 32px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#D9822B;width:420px">haido_api/<br>haido_pipeline/</p>
+<p style="font-size:28px;line-height:1.35;color:#BBCBD6;flex:1">Biết <span style="color:#F7F6F2">haido_core</span>. Không biết nhau. Dagster chỉ là lớp vỏ gọi các bước theo lịch.</p>
+</div>
+<div style="display:flex;gap:20px;align-items:center;background:#1A2E3F;padding:28px 32px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#D9822B;width:420px">haido_core/<br>steps · extract · crawl · db</p>
+<p style="font-size:28px;line-height:1.35;color:#BBCBD6;flex:1">Biết <span style="color:#F7F6F2">domain</span> và Postgres. Mỗi bước là một hàm chạy được bằng CLI, không import Dagster.</p>
+</div>
+<div style="display:flex;gap:20px;align-items:center;background:#1F7A72;padding:28px 32px;border-radius:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#F7F6F2;width:420px">haido_core/domain/</p>
+<p style="font-size:28px;line-height:1.35;color:#E4F2F0;flex:1">Không biết gì cả. Hàm thuần, không I/O, không framework — nên test được bằng hàm thuần.</p>
+</div>
+</div>
+<p style="font-size:30px;line-height:1.45;color:#F7F6F2;background:#2A3F52;padding:28px 32px;border-radius:12px;border-left:6px solid #D9822B;width:1600px">Chia việc <b>theo package, không theo tính năng</b>. Ranh giới package là ranh giới ít xung đột merge nhất, và mỗi người sở hữu trọn một tầng thay vì ba người cùng sửa <span style="color:#D9822B">domain/</span>.</p>
+<p style="position:absolute;left:128px;bottom:64px;font-size:24px;color:#7A8C99">Một import đi ngược chiều là lỗi, chặn ở CI · 4 / 14</p>
+<aside>Lý do chia theo package nằm ở đây, không ở slide chia việc. Nếu ai hỏi “sao em không làm theo tính năng”, câu trả lời là xung đột merge trên domain/.</aside>
+</section>

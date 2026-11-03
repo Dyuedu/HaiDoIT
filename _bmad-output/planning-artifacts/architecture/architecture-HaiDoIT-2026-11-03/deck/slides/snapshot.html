@@ -1,0 +1,32 @@
+<section id="snapshot" data-transition="fade" style="background:#11202E;color:#F7F6F2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#D9822B">AD-4 · snapshot</p>
+<h2 style="font-size:68px;font-weight:600;line-height:1.1;color:#F7F6F2">Bất biến, nhưng vòng đời tin thì xuyên snapshot</h2>
+</div>
+<p style="font-size:30px;line-height:1.45;color:#BBCBD6;width:1664px">Đây là chỗ khó nhất của mô hình dữ liệu. Ngày thấy lần cuối, số lần thấy, số lần đăng lại <b>đổi mỗi đêm</b> — trong khi snapshot phải đóng băng. Nếu vòng đời là một lệnh <span style="font-family:'JetBrains Mono', 'Courier New', monospace">UPDATE</span> tại chỗ, ba thứ vỡ cùng lúc.</p>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#3D2420;padding:32px;border-radius:12px;border-left:6px solid #D9822B">
+<h3 style="font-size:28px;font-weight:600;color:#F7F6F2">D4 không truy vết</h3>
+<p style="font-size:25px;line-height:1.35;color:#D8C4BC">Không biết số lần đăng lại hôm qua là bao nhiêu</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#3D2420;padding:32px;border-radius:12px;border-left:6px solid #D9822B">
+<h3 style="font-size:28px;font-weight:600;color:#F7F6F2">Cửa sổ 60 ngày không tính lại được</h3>
+<p style="font-size:25px;line-height:1.35;color:#D8C4BC">Tính lại snapshot cũ sai cả hai chiều</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#3D2420;padding:32px;border-radius:12px;border-left:6px solid #D9822B">
+<h3 style="font-size:28px;font-weight:600;color:#F7F6F2">FR-3 không viết được thành truy vấn</h3>
+<p style="font-size:25px;line-height:1.35;color:#D8C4BC">“Vắng ≥ 3 lượt chạy thành công của chính nguồn đó”</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1A2E3F;padding:36px;border-radius:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#1F7A72">CÁCH GIẢI</p>
+<ul style="font-size:28px;line-height:1.5;color:#BBCBD6">
+<li><span style="color:#F7F6F2">job_observations</span> là bảng append-only, mỗi hàng treo vào một lượt chạy cụ thể — không bao giờ UPDATE</li>
+<li><span style="color:#F7F6F2">stat_job_lifecycle</span> vật hóa vòng đời theo từng snapshot, dẫn xuất từ bảng trên</li>
+<li>Cửa sổ 60 ngày xét trên vòng đời <b>thuộc snapshot đang dùng</b>, không trên trạng thái hiện thời</li>
+<li>Snapshot kết thúc ở <span style="color:#F7F6F2">published</span> hoặc <span style="color:#F7F6F2">partial</span>; cả hai đọc được, partial mang danh sách nguồn lỗi</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;font-size:24px;color:#7A8C99">Hàng của snapshot đã công bố không bao giờ bị sửa. Mọi nhu cầu tính lại sinh một snapshot MỚI · 7 / 14</p>
+<aside>Câu cuối quan trọng cho pháp lý: yêu cầu gỡ trong 48 giờ cũng không sửa snapshot cũ, nó áp loại trừ trước bước aggregate của snapshot kế tiếp.</aside>
+</section>
