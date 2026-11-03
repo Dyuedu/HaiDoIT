@@ -165,7 +165,7 @@ def main() -> None:
     left = len([u for u in state["queue"] if u not in done and u not in state["skipped"]])
     print(f"saved {saved} jobs this run, {len(done)} total in {out}, {left} left in queue")
     if left or len(state["listing_done"]) < len(CATEGORIES):
-        print("run again in ≥ 1 hour to continue")
+        print("run again in >= 1 hour to continue")
 
 
 if __name__ == "__main__":

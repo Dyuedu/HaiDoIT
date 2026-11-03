@@ -1,11 +1,9 @@
 """MoMo Careers crawler (https://momo.careers/jobs-opening).
 
-The listing is server-rendered 12 at a time; the rest load when the visitor
-clicks "Xem thêm", through an API that needs a token the page's own JS signs.
-So the listing is read from the DOM of a headless browser (honest UA, no
-anti-detection patches) that clicks "Xem thêm" like a visitor would. Each job
-page is server-rendered: its __NEXT_DATA__ holds the full job, fetched with a
-plain HTTP request. No JSON-LD on this site.
+The listing loads 12 at a time; the rest load on "Xem them" click via a signed
+API. So listing is read from the DOM of a headless browser (honest UA) that
+clicks "Xem them" like a visitor would. Each job page is server-rendered: its
+__NEXT_DATA__ holds the full job, fetched with a plain HTTP request.
 """
 
 import argparse
@@ -14,34 +12,30 @@ import re
 from pathlib import Path
 
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
 
 from crawlers.base import write_jsonl
-from crawlers.polite import USER_AGENT, BlockedError, PoliteClient
+from crawlers.browser_polite import browser_polite
+from crawlers.polite import PoliteClient
 
 BASE = "https://momo.careers"
 LIST_URL = f"{BASE}/jobs-opening"
-# DGM.0001 = Trung tâm Công nghệ Thông tin, DGM.0002 = Khối Phát triển Sản phẩm,
-# DGM.0003 = Khối Kinh Doanh, DGM.0004 = Khối Vận Hành
 DEFAULT_GROUPS = "DGM.0001,DGM.0002"
 NEXT_DATA = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 
 
-def list_job_paths(group: str, headless: bool = True) -> list[str]:
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
-        page = browser.new_page(user_agent=USER_AGENT)
-        page.goto(f"{LIST_URL}?groups={group}", wait_until="networkidle", timeout=60000)
-        more = page.locator("div.mt-6.flex.justify-center button")
-        for _ in range(30):
-            if not more.count():
-                break
-            more.first.click()
-            page.wait_for_timeout(3000)
-        paths = page.eval_on_selector_all(
-            "a[href^='/jobs/']", "els => els.map(e => e.getAttribute('href'))"
-        )
-        browser.close()
+def list_job_paths(ctx, group: str) -> list[str]:
+    page = ctx.new_page()
+    page.goto(f"{LIST_URL}?groups={group}", wait_until="networkidle", timeout=60_000)
+    more = page.locator("div.mt-6.flex.justify-center button")
+    for _ in range(30):
+        if not more.count():
+            break
+        more.first.click()
+        page.wait_for_timeout(3000)
+    paths = page.eval_on_selector_all(
+        "a[href^='/jobs/']", "els => els.map(e => e.getAttribute('href'))"
+    )
+    page.close()
     return list(dict.fromkeys(paths))
 
 
@@ -72,7 +66,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Crawl MoMo Careers jobs")
     parser.add_argument("--groups", type=str, default=DEFAULT_GROUPS)
     parser.add_argument("--delay", type=float, default=3.0)
-    parser.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--headless", action="store_true", default=True)
+    parser.add_argument("--no-headless", dest="headless", action="store_false")
     parser.add_argument("--out", type=str, default="data/raw/momo.jsonl")
     args = parser.parse_args()
 
@@ -84,20 +79,25 @@ def main() -> None:
     client = PoliteClient(delay=args.delay)
     total = 0
     try:
-        for group in args.groups.split(","):
-            paths = list_job_paths(group, headless=args.headless)
-            print(f"{group}: {len(paths)} jobs listed", flush=True)
-            for path in paths:
-                url = BASE + path
-                m = NEXT_DATA.search(client.get(url).text)
-                detail = json.loads(m.group(1))["props"]["pageProps"].get("dataJobDetail") if m else None
-                if not detail:
-                    print(f"  no job data: {url}", flush=True)
-                    continue
-                write_jsonl(out, [parse_job(url, detail)])
-                total += 1
-    except BlockedError as exc:
-        print(f"STOP — blocked: {exc}", flush=True)
+        with browser_polite(headless=args.headless) as ctx:
+            for group in args.groups.split(","):
+                paths = list_job_paths(ctx, group)
+                print(f"{group}: {len(paths)} jobs listed", flush=True)
+                for path in paths:
+                    url = BASE + path
+                    resp = client.get(url)
+                    m = NEXT_DATA.search(resp.text)
+                    detail = (
+                        json.loads(m.group(1))["props"]["pageProps"].get("dataJobDetail")
+                        if m else None
+                    )
+                    if not detail:
+                        print(f"  no job data: {url}", flush=True)
+                        continue
+                    write_jsonl(out, [parse_job(url, detail)])
+                    total += 1
+    except Exception as exc:
+        print(f"STOP -- {exc}", flush=True)
 
     print(f"saved {total} jobs to {out}")
 

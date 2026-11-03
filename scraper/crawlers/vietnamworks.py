@@ -1,8 +1,10 @@
 """VietnamWorks crawler via the ms.vietnamworks.com job-search API.
 
-The site's frontend calls POST https://ms.vietnamworks.com/job-search/v1.0/search
-with jobFunction parentId=5 (IT). Returns 756 IT jobs across 16 pages of 50,
-including full description, skills, level, salary, and locations.
+POST https://ms.vietnamworks.com/job-search/v1.0/search with jobFunction
+parentId=5 (IT). Returns up to 50 jobs per page with full descriptions.
+
+Rewritten to use PoliteClient (honest UA, robots check, delay) instead of
+Playwright request context with a fake Chrome UA.
 """
 
 import argparse
@@ -10,17 +12,13 @@ import json
 from pathlib import Path
 
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
 
 from crawlers.base import write_jsonl
+from crawlers.polite import BlockedError, PoliteClient
 
 ENDPOINT = "https://ms.vietnamworks.com/job-search/v1.0/search"
-USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-)
 
-BODY = {
+BODY_TEMPLATE = {
     "userId": 0,
     "query": "",
     "filter": [
@@ -31,55 +29,14 @@ BODY = {
     "hitsPerPage": 50,
     "page": 0,
     "retrieveFields": [
-        "address",
-        "benefits",
-        "jobTitle",
-        "salaryMax",
-        "isSalaryVisible",
-        "jobLevelVI",
-        "isShowLogo",
-        "salaryMin",
-        "companyLogo",
-        "userId",
-        "jobLevel",
-        "jobLevelId",
-        "jobId",
-        "jobUrl",
-        "companyId",
-        "approvedOn",
-        "isAnonymous",
-        "alias",
-        "expiredOn",
-        "industries",
-        "industriesV3",
-        "workingLocations",
-        "services",
-        "companyName",
-        "salary",
-        "onlineOn",
-        "onlineOnText",
-        "simpleServices",
-        "visibilityDisplay",
-        "isShowLogoInSearch",
-        "priorityOrder",
-        "skills",
-        "profilePublishedSiteMask",
-        "jobDescription",
-        "jobRequirement",
-        "prettySalary",
-        "requiredCoverLetter",
-        "languageSelectedVI",
-        "languageSelected",
-        "languageSelectedId",
-        "typeWorkingId",
-        "createdOn",
-        "isAdrLiteJob",
-        "applicantSignal",
-        "numOfApplications",
-        "numberOfRecruits",
-        "exposureStatus",
-        "isTopPriorityV4",
-        "topPriorityType",
+        "address", "benefits", "jobTitle", "salaryMax", "isSalaryVisible",
+        "jobLevelVI", "salaryMin", "companyLogo", "userId", "jobLevel",
+        "jobLevelId", "jobId", "jobUrl", "companyId", "approvedOn",
+        "isAnonymous", "alias", "expiredOn", "industries", "industriesV3",
+        "workingLocations", "services", "companyName", "salary", "onlineOn",
+        "skills", "jobDescription", "jobRequirement", "prettySalary",
+        "languageSelectedVI", "languageSelected", "typeWorkingId", "createdOn",
+        "numOfApplications", "numberOfRecruits",
     ],
     "summaryVersion": "",
     "variants": "test",
@@ -105,7 +62,6 @@ def parse_job(j: dict) -> dict:
         salary = f"{j.get('salaryMin') or ''}-{j.get('salaryMax')}".strip("-")
 
     skills = [s.get("skillName") for s in (j.get("skills") or []) if s.get("skillName")]
-
     industries = [
         i.get("industryV3NameVI")
         for i in (j.get("industriesV3") or [])
@@ -113,10 +69,7 @@ def parse_job(j: dict) -> dict:
     ]
 
     description = "\n".join(
-        [
-            clean_html(j.get("jobDescription")),
-            clean_html(j.get("jobRequirement")),
-        ]
+        [clean_html(j.get("jobDescription")), clean_html(j.get("jobRequirement"))]
     ).strip()
 
     return {
@@ -127,7 +80,6 @@ def parse_job(j: dict) -> dict:
         "location": location,
         "salary": salary,
         "experience_level": j.get("jobLevel"),
-        "posted_at": j.get("approvedOnText"),
         "skills": skills,
         "description": description,
         "date_posted": j.get("createdOn"),
@@ -135,20 +87,10 @@ def parse_job(j: dict) -> dict:
     }
 
 
-def fetch_page(ctx, page_num: int) -> list[dict]:
-    body = {**BODY, "page": page_num}
-    resp = ctx.post(
-        ENDPOINT,
-        data=json.dumps(body),
-        headers={"Content-Type": "application/json"},
-    )
-    payload = resp.json()
-    return [parse_job(j) for j in payload.get("data", [])]
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Crawl VietnamWorks IT jobs via API")
-    parser.add_argument("--pages", type=int, default=16)
+    parser.add_argument("--pages", type=int, default=20)
+    parser.add_argument("--delay", type=float, default=3.0)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--out", type=str, default="data/raw/vietnamworks.jsonl")
     args = parser.parse_args()
@@ -158,14 +100,17 @@ def main() -> None:
     if out.exists():
         out.unlink()
 
+    client = PoliteClient(delay=args.delay)
     seen = set()
     total = 0
-    with sync_playwright() as p:
-        ctx = p.request.new_context(user_agent=USER_AGENT)
+    try:
         for page_num in range(args.pages):
-            rows = fetch_page(ctx, page_num)
-            if not rows:
+            body = {**BODY_TEMPLATE, "page": page_num}
+            resp = client.post(ENDPOINT, json=body)
+            jobs = resp.json().get("data") or []
+            if not jobs:
                 break
+            rows = [parse_job(j) for j in jobs]
             rows = [r for r in rows if r["job_url"] and r["job_url"] not in seen]
             for r in rows:
                 seen.add(r["job_url"])
@@ -176,7 +121,8 @@ def main() -> None:
             print(f"page {page_num + 1}: {len(rows)} jobs (total {total})", flush=True)
             if args.limit and total >= args.limit:
                 break
-        ctx.dispose()
+    except BlockedError as exc:
+        print(f"STOP -- blocked: {exc}", flush=True)
 
     print(f"saved {total} jobs to {out}")
 

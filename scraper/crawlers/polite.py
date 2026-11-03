@@ -53,19 +53,18 @@ class PoliteClient:
             self._robots[base] = rp
         return rp.can_fetch(USER_AGENT, url)
 
-    def get(self, url: str, **kwargs) -> requests.Response:
+    def _check_budget(self):
         if self.max_requests and self.count >= self.max_requests:
             raise BudgetExhausted(f"used {self.count} requests")
-        if not self.allowed(url):
-            raise BlockedError(f"robots.txt disallows {url}")
 
+    def _throttle(self):
         wait = self.delay - (time.monotonic() - self._last)
         if wait > 0:
             time.sleep(wait)
-        resp = self.session.get(url, timeout=30, **kwargs)
+
+    def _check_response(self, resp: requests.Response, url: str):
         self._last = time.monotonic()
         self.count += 1
-
         if resp.status_code in (403, 429):
             raise BlockedError(f"HTTP {resp.status_code} on {url}")
         if "html" in resp.headers.get("Content-Type", ""):
@@ -73,4 +72,21 @@ class PoliteClient:
             if any(m in head for m in CAPTCHA_MARKERS):
                 raise BlockedError(f"captcha page on {url}")
         resp.raise_for_status()
+
+    def get(self, url: str, **kwargs) -> requests.Response:
+        self._check_budget()
+        if not self.allowed(url):
+            raise BlockedError(f"robots.txt disallows {url}")
+        self._throttle()
+        resp = self.session.get(url, timeout=30, **kwargs)
+        self._check_response(resp, url)
+        return resp
+
+    def post(self, url: str, **kwargs) -> requests.Response:
+        self._check_budget()
+        if not self.allowed(url):
+            raise BlockedError(f"robots.txt disallows {url}")
+        self._throttle()
+        resp = self.session.post(url, timeout=30, **kwargs)
+        self._check_response(resp, url)
         return resp
