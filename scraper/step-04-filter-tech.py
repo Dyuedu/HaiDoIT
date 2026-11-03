@@ -151,7 +151,7 @@ def process_job(row: dict, cache: dict, cache_path: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Coarse tech/non-tech filter with Jev")
-    parser.add_argument("--in", dest="src", type=str, default="data/full.jsonl")
+    parser.add_argument("--in", dest="src", type=str, default="data/dedup.jsonl")
     parser.add_argument("--tech-out", type=str, default="data/tech_filtered.jsonl")
     parser.add_argument("--nontech-out", type=str, default="data/non_tech.jsonl")
     parser.add_argument("--cache", type=str, default="data/jev-cache.jsonl")

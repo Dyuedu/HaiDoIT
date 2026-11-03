@@ -1,185 +1,210 @@
-"""Step 05: consolidate tech job descriptions into clean, complete English Markdown.
+"""Step 05: consolidate tech job descriptions — rule-based cleanup (no LLM).
 
-Reads data/tech_filtered.jsonl and rewrites each job's raw `description` into a
-clean, full, nicely-formatted English job description — stripping HTML artifacts,
-marketing/legal boilerplate, and non-informational text. NOT a summary: every
-meaningful requirement, responsibility, qualification, and concrete benefit stays.
+Reads data/tech_filtered.jsonl, cleans each raw `description`:
+  - strips residual HTML tags/entities
+  - removes common boilerplate (apply-now, marketing fluff, nav/footer)
+  - normalizes whitespace
+  - extracts section structure where possible
 
-Outputs data/consolidated.jsonl (metadata kept, `description` replaced by the
-clean version), with a resumable cache at data/consolidate-cache.jsonl.
+Outputs data/consolidated.jsonl with clean text in `description_consolidated`
+while preserving the original `description`.
 
-Needs ANTHROPIC_API_KEY in the environment.
+No API key needed.
 """
 
 import argparse
-import asyncio
 import json
-import os
-import sys
+import re
+import unicodedata
+from html import unescape
 from pathlib import Path
 
 from crawlers.base import read_jsonl
-from anthropic import AsyncAnthropic
-from tqdm import tqdm
 
-MODEL = "claude-haiku-5-5"
-CONCURRENCY_LIMIT = 32  # Adjust based on your API rate limits
 
-SYSTEM = (
-    "You clean up raw IT job descriptions. Given a noisy job posting "
-    "(HTML-stripped, possibly mixed Vietnamese/English, full of boilerplate), you "
-    "rewrite it into a clean, complete, full English job description in Markdown. "
-    "Output ONLY the section headings and their content — no commentary, no code "
-    "fences, no preamble. "
-    "Use these sections, in this order, omitting any with no content: "
-    "## Company (company name plus a brief factual description of what the company "
-    "does — industry or product — stripped of marketing fluff), "
-    "## Details (a short bulleted list: Location, Seniority/Level, Salary if stated, "
-    "Work model), "
-    "## Responsibilities, ## Requirements / Qualifications, ## Benefits. "
-    "Do NOT summarize or condense: keep every meaningful responsibility, requirement, "
-    "qualification, and concrete benefit. Strip all boilerplate: HTML artifacts, "
-    "navigation/header/footer text, 'Top 3 reasons to join us' / "
-    "'Why you'll love working here' company marketing, 'Apply now' / application "
-    "instructions, equal-opportunity and legal boilerplate, phishing alerts, and "
-    "repeated title/company lines."
+# ── Boilerplate patterns to strip ────────────────────────────────────────────
+
+_BOILERPLATE_LINES_VI = [
+    r"ứng tuyển ngay",
+    r"nộp đơn ứng tuyển",
+    r"gửi cv .{0,40}(email|mail|qua)",
+    r"apply now",
+    r"click (here|vào đây)",
+    r"nếu bạn quan tâm.{0,60}(liên hệ|gửi)",
+    r"vui lòng gửi",
+    r"hồ sơ ứng tuyển (bao )?gồm",
+    r"lưu ý.{0,30}(không hoàn trả|hồ sơ)",
+    r"cảnh báo.{0,30}(lừa đảo|giả mạo)",
+    r"cảnh giác.{0,30}(lừa đảo|giả mạo)",
+    r"nhà tuyển dụng.{0,30}(không thu|miễn phí)",
+    r"top \d+ (reasons?|lý do)",
+    r"tại sao.{0,20}(nên gia nhập|chọn chúng tôi|bạn sẽ yêu)",
+    r"why you.{0,20}(love|should|will)",
+    r"equal opportunity",
+    r"chính sách bảo mật",
+    r"privacy policy",
+    r"chúng tôi cam kết.{0,40}(bình đẳng|đa dạng)",
+    r"we are (an? )?equal",
+    r"report this job",
+    r"báo cáo tin tuyển dụng",
+    r"share this job",
+    r"chia sẻ .{0,20}việc làm",
+    r"việc làm tương tự",
+    r"similar jobs",
+    r"xem thêm .{0,20}việc làm",
+    r"ngày đăng\s*:",
+    r"hạn nộp\s*:",
+    r"ngày hết hạn\s*:",
+    r"lượt xem\s*:",
+    r"số lượng tuyển\s*:",
+    r"hình thức làm việc\s*:",
+    r"cấp bậc\s*:",
+    r"mã .{0,10}(việc làm|tin tuyển dụng)\s*:",
+]
+
+_BOILERPLATE_RE = re.compile(
+    r"^(" + "|".join(_BOILERPLATE_LINES_VI) + r").*$",
+    re.IGNORECASE | re.MULTILINE,
 )
 
-USER_TEMPLATE = """Rewrite the job description below into clean English Markdown.
+# Blocks of marketing fluff that span multiple lines
+_MARKETING_BLOCKS = [
+    re.compile(
+        r"(top \d+ reasons? to join us|tại sao bạn nên gia nhập)\s*\n(.+\n){0,5}",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"(why you.{0,20}love working here)\s*\n(.+\n){0,5}",
+        re.IGNORECASE,
+    ),
+]
 
-Use these sections, in this order, omitting any section that has no content in the source:
-## Company
-## Details
-## Responsibilities
-## Requirements / Qualifications
-## Benefits
+# ── HTML / entity cleanup ────────────────────────────────────────────────────
 
-Job Title: {title}
-Company: {company}
-Location: {location}
-Salary: {salary}
-Experience: {experience_level}
-Work model: {work_model}
-Skills: {skills}
+_HTML_TAG_RE = re.compile(r"<[^>]{1,200}>")
+_HTML_ENTITY_RE = re.compile(r"&[a-zA-Z]+;|&#\d+;|&#x[0-9a-fA-F]+;")
+_URL_RE = re.compile(r"https?://\S+")
 
-Raw description:
-{description}"""
+# ── Section header normalization ─────────────────────────────────────────────
 
-
-def build_user(row: dict) -> str:
-    desc = (row.get("description") or "").strip()
-    return USER_TEMPLATE.format(
-        title=row.get("title") or "",
-        company=row.get("company") or "",
-        location=row.get("location") or "",
-        salary=row.get("salary") or "",
-        experience_level=row.get("experience_level") or "",
-        work_model=row.get("work_model") or "",
-        skills=", ".join(row.get("skills") or []),
-        description=desc[:12000],
-    )
-
-
-def parse_reply(text: str) -> str:
-    text = text.strip()
-    if text.startswith("```"):
-        lines = text.splitlines()
-        if lines and lines[0].startswith("```"):
-            lines = lines[1:]
-        if lines and lines[-1].startswith("```"):
-            lines = lines[:-1]
-        text = "\n".join(lines).strip()
-    return text
-
-
-async def process_row(
-    row: dict,
-    client: AsyncAnthropic,
-    sem: asyncio.Semaphore,
-    cache: dict,
-    cache_path: Path,
-    pbar: tqdm,
-):
-    async with sem:
-        try:
-            msg = await client.messages.create(
-                model=MODEL,
-                max_tokens=2000,
-                system=SYSTEM,
-                messages=[{"role": "user", "content": build_user(row)}],
-            )
-
-            raw_text = "".join(b.text for b in msg.content if b.type == "text")
-
-            clean = parse_reply(raw_text)
-            merged = {**row, "description": clean}
-
-            cache[row["job_url"]] = merged
-            with cache_path.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(merged, ensure_ascii=False) + "\n")
-
-            pbar.update(1)
-
-        except Exception as e:
-            # Use pbar.write instead of print to avoid breaking the progress bar visuals
-            pbar.write(f"Error processing {row.get('job_url')}: {e}")
+_SECTION_MAP = {
+    "mo ta cong viec": "## Mô tả công việc",
+    "mo ta": "## Mô tả công việc",
+    "job description": "## Mô tả công việc",
+    "responsibilities": "## Mô tả công việc",
+    "your role": "## Mô tả công việc",
+    "the job": "## Mô tả công việc",
+    "about the role": "## Mô tả công việc",
+    "job responsibilities": "## Mô tả công việc",
+    "yeu cau cong viec": "## Yêu cầu",
+    "yeu cau": "## Yêu cầu",
+    "requirements": "## Yêu cầu",
+    "qualifications": "## Yêu cầu",
+    "your skills": "## Yêu cầu",
+    "skills and experience": "## Yêu cầu",
+    "your skills and experience": "## Yêu cầu",
+    "requirements / qualifications": "## Yêu cầu",
+    "must have": "## Yêu cầu",
+    "nice to have": "## Ưu tiên",
+    "quyen loi": "## Quyền lợi",
+    "phuc loi": "## Quyền lợi",
+    "che do": "## Quyền lợi",
+    "benefits": "## Quyền lợi",
+    "benefits for you": "## Quyền lợi",
+    "what we offer": "## Quyền lợi",
+    "why join us": "## Quyền lợi",
+    "dia diem lam viec": "## Địa điểm",
+    "work location": "## Địa điểm",
+    "thoi gian lam viec": "## Thời gian làm việc",
+    "working hours": "## Thời gian làm việc",
+}
 
 
-async def async_main() -> None:
+def _remove_diacritics(text: str) -> str:
+    nfkd = unicodedata.normalize("NFKD", text)
+    return "".join(c for c in nfkd if not unicodedata.combining(c))
+
+
+def _normalize_header(line: str) -> str | None:
+    stripped = line.strip().rstrip(":").strip()
+    if not stripped or len(stripped) > 80:
+        return None
+    key = _remove_diacritics(stripped).lower().strip()
+    return _SECTION_MAP.get(key)
+
+
+# ── Main cleanup ─────────────────────────────────────────────────────────────
+
+
+def clean_description(text: str) -> str:
+    if not text or not text.strip():
+        return ""
+
+    text = unescape(text)
+    text = _HTML_TAG_RE.sub("", text)
+    text = _HTML_ENTITY_RE.sub("", text)
+
+    for block_re in _MARKETING_BLOCKS:
+        text = block_re.sub("", text)
+
+    text = _BOILERPLATE_RE.sub("", text)
+
+    lines = text.splitlines()
+    out: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            if out and out[-1] != "":
+                out.append("")
+            continue
+
+        header = _normalize_header(stripped)
+        if header:
+            if out and out[-1] != "":
+                out.append("")
+            out.append(header)
+            continue
+
+        out.append(stripped)
+
+    result = "\n".join(out).strip()
+    result = re.sub(r"\n{3,}", "\n\n", result)
+    return result
+
+
+def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Consolidate tech descriptions with Claude Haiku 5.5"
+        description="Consolidate tech descriptions (rule-based, no LLM)"
     )
-    parser.add_argument("--in", dest="src", type=str, default="data/step-04-tech.jsonl")
-    parser.add_argument("--out", type=str, default="data/step-05-consolidated.jsonl")
-    parser.add_argument(
-        "--cache", type=str, default="data/step-05-consolidate-cache.jsonl"
-    )
+    parser.add_argument("--in", dest="src", type=str, default="data/tech_filtered.jsonl")
+    parser.add_argument("--out", type=str, default="data/consolidated.jsonl")
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()
 
     rows = read_jsonl(args.src)
-    dedup = {}
+    dedup: dict[str, dict] = {}
     for r in rows:
         dedup.setdefault(r.get("job_url"), r)
     rows = list(dedup.values())
     print(f"{len(rows)} unique tech jobs", flush=True)
 
-    cache = {r["job_url"]: r for r in read_jsonl(args.cache)}
-    todo = [r for r in rows if r.get("job_url") not in cache]
     if args.limit:
-        todo = todo[: args.limit]
+        rows = rows[: args.limit]
 
-    if not todo:
-        print("all cached")
-        return
-
-    print(f"Will bill ~{len(todo)} Claude calls (model {MODEL}).", flush=True)
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise SystemExit("Set ANTHROPIC_API_KEY first.")
-
-    client = AsyncAnthropic()
-    sem = asyncio.Semaphore(CONCURRENCY_LIMIT)
-
-    cache_path = Path(args.cache)
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Initialize tqdm progress bar
-    with tqdm(total=len(todo), desc="Consolidating jobs", unit="job") as pbar:
-        tasks = [process_row(row, client, sem, cache, cache_path, pbar) for row in todo]
-        await asyncio.gather(*tasks)
-
-    # Write final consolidated output
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    if out.exists():
-        out.unlink()
+
+    count = 0
     with out.open("w", encoding="utf-8") as fh:
         for row in rows:
-            merged = cache.get(row["job_url"], row)
+            desc = row.get("description", "")
+            cleaned = clean_description(desc)
+            merged = {**row, "description_consolidated": cleaned}
             fh.write(json.dumps(merged, ensure_ascii=False) + "\n")
+            count += 1
 
-    print(f"wrote {out}")
+    print(f"wrote {count} jobs to {out}", flush=True)
 
 
 if __name__ == "__main__":
-    asyncio.run(async_main())
+    main()
