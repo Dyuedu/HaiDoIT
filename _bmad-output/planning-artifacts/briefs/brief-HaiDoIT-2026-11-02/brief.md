@@ -1,8 +1,8 @@
 ---
 title: "Product Brief: Hải Đồ IT"
-status: draft
+status: final
 created: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 ---
 
 # Product Brief: Hải Đồ IT
@@ -47,7 +47,7 @@ v1 chỉ phục vụ người tìm việc.
   - những kỹ năng cốt lõi nào còn thiếu, kèm tỷ lệ xuất hiện thật trên thị trường;
   - nên học theo thứ tự nào, với tài liệu miễn phí nào;
   - với một JD cụ thể, mình khớp đến đâu.
-- *Thành công với Minh:* rời Hải Đồ IT với một kế hoạch học cho vài tuần tới dựa trên dữ liệu, và biết JD nào đáng nộp ngay.
+- *Thành công với Minh:* rời Hải Đồ IT với một lộ trình học theo chặng dựa trên dữ liệu, và đủ dữ kiện để tự quyết JD nào đáng nộp. Hệ thống không gợi ý số tuần học, cũng không khuyên nộp hay không nộp.
 
 ## Giải pháp
 
@@ -59,8 +59,10 @@ Bốn chức năng được xây trên hai lớp nền đó.
 
 **1. Cố vấn.**
 - **Giao diện:** lộ trình học dạng đồ thị nút, tham khảo roadmap.sh.
-- **Không có CV:** người dùng nhận lộ trình học chung cho vai trò mục tiêu. Mỗi nút ghi tỷ lệ tin có kỹ năng đó.
-- **Có CV:** hệ thống đánh dấu kỹ năng đã có và sắp xếp phần còn thiếu.
+- **Hồ sơ kỹ năng:** tập kỹ năng người dùng đã có, tạo từ CV **hoặc** tự chọn trên đồ thị, lưu trong trình duyệt. Cố vấn và Soi tin dùng chung hồ sơ này.
+- **Hồ sơ trống:** người dùng nhận lộ trình học chung cho vai trò mục tiêu. Mỗi nút ghi tỷ lệ tin có kỹ năng đó.
+- **Hồ sơ có dữ liệu:** hệ thống đánh dấu kỹ năng đã có và sắp xếp phần còn thiếu. Mỗi khoảng trống có ba lựa chọn: "Tôi chưa biết", "Tôi đã biết, chỉ là CV chưa ghi", và "CV của tôi có ghi rồi (hệ thống đọc sót)".
+- **Kỹ năng nền tảng:** kỹ năng dưới ngưỡng vẫn vào lộ trình nếu là điều kiện tiên quyết của một khoảng trống (ví dụ Linux cần cho Docker), và được gắn nhãn riêng.
 - **Tài liệu:** mỗi nút kèm tài liệu và khóa học miễn phí, lấy từ danh mục đã kiểm duyệt.
 - **Cách dựng:** khung lộ trình học do thuật toán dựng:
   - đồ thị "học trước – học sau" quyết định **thứ tự học**;
@@ -68,15 +70,21 @@ Bốn chức năng được xây trên hai lớp nền đó.
 
   LLM chỉ viết lời dẫn cho khung đã dựng.
 
-**2. Soi tin.** Người dùng dán một JD và nhận hai góc nhìn.
-- **So với hồ sơ:** mỗi kỹ năng còn thiếu được xếp vào một trong ba nhóm:
-  - **cốt lõi:** có trong hơn 50% tin cùng vai trò;
-  - **thường gặp:** 10–50%;
+**2. Soi tin.** Người dùng dán một JD và nhận hai góc nhìn. Hệ thống tự nhận diện vai trò và cấp bậc của tin; người dùng đổi lại được.
+- **So với hồ sơ:** hiển thị **mức khớp** có trọng số (cốt lõi 3, thường gặp 2, riêng của công ty 1), kèm một dòng đếm thô theo nhóm. Mỗi kỹ năng còn thiếu được xếp vào một trong ba nhóm:
+  - **cốt lõi:** có trong từ 30% số tin cùng vai trò và cấp bậc trở lên;
+  - **thường gặp:** 10–30%;
   - **riêng của công ty này:** dưới 10%, chỉ cần học nếu nhắm đúng công ty đó.
+
+  Kỹ năng không có trong bộ từ vựng được hiển thị riêng là **kỹ năng chưa nhận diện** và không tính vào mức khớp.
+
+  Các ngưỡng này là tham số. Sprint 2 sẽ hiệu chỉnh trên dữ liệu thật để mỗi vai trò mục tiêu có ít nhất 3 kỹ năng cốt lõi (mục tiêu 3–5), rồi đóng băng trước đợt thử nghiệm. Lý do: với ngưỡng 50%, nhóm cốt lõi gần như rỗng. Vai trò được chia theo nhánh công nghệ khi đủ từ 30 tin trở lên (ví dụ Java Backend).
 - **So với thị trường:**
-  - phân vị của mức lương và số năm kinh nghiệm yêu cầu, chỉ hiển thị khi đủ mẫu;
-  - chất lượng JD;
-  - các **dấu hiệu cần kiểm tra**: gợi ý để người dùng tự xác minh, không phải phán quyết tin thật hay giả.
+  - phân vị của số kỹ năng yêu cầu, số năm kinh nghiệm và mức lương. Hai cái sau chỉ hiển thị khi ô thống kê có từ 30 tin có trường đó trở lên;
+  - **chất lượng JD:** danh sách kiểm tra đạt/không đạt (có lương, có tên công ty, có mô tả trách nhiệm, có phúc lợi, chức danh nhất quán với cấp bậc và kỹ năng);
+  - các **dấu hiệu cần kiểm tra** (7 dấu hiệu): yêu cầu dàn trải, tỷ lệ kỹ năng riêng cao, yêu cầu cao nhưng lương thấp, tin đăng lại nhiều lần, kênh liên hệ bất thường, đòi tiền trước, không rõ công ty. Đây là gợi ý để người dùng tự xác minh, không phải phán quyết tin thật hay giả, và giao diện ghi rõ đa số tin bị gắn dấu hiệu vẫn là tin thật. Việc tin không ghi lương **không** phải một dấu hiệu, vì khoảng 76% tin không ghi lương.
+
+**Cấp bậc.** Mọi so sánh đều tính trên **ô thống kê = vai trò mục tiêu × cấp bậc** (Intern/Fresher/Junior 0–2 năm, Mid, Senior trở lên). Nếu ô đó dưới 30 tin, hệ thống quay về tập rộng hơn theo thứ tự **giữ cấp bậc trước, giữ nhánh sau**, và luôn ghi rõ cỡ mẫu cùng cơ cấu cấp bậc của tập đang dùng. Chiều thành phố chỉ dùng cho Bản đồ và Insights.
 
 **3. Bản đồ nhu cầu.** Bản đồ 3D của Việt Nam. Chiều cao cột thể hiện **tỷ trọng và thứ hạng**, không phải số tin tuyệt đối. Bấm vào một thành phố để xem bảng chi tiết.
 
@@ -88,7 +96,7 @@ Bốn chức năng được xây trên hai lớp nền đó.
   - khác biệt giữa các thành phố;
   - ngành nổi bật.
 - **Ngưỡng hiển thị:** chỉ hiện khi đủ 30 mẫu trở lên.
-- **Vai trò của LLM:** chỉ diễn đạt câu chữ.
+- **Câu kết luận:** dùng mẫu câu cố định, điền số liệu đã tính; không dùng LLM.
 
 **Nguyên tắc chung:** mọi con số đi kèm cỡ mẫu, nguồn và ngày. Thiếu dữ liệu thì nói thiếu, không đoán.
 
@@ -125,28 +133,32 @@ Hội đồng sẽ hỏi: *"Sao không dán CV và JD vào ChatGPT cho xong?"*
 | Lộ trình học | Kiểm thử tự động xác nhận 100% lộ trình đúng thứ tự topo; rà soát một mẫu lời dẫn do LLM viết |
 | Hiệu năng | Từ lúc tải CV đến lúc có lộ trình học: < 15 giây |
 
-**Người dùng.** Mẫu thử gồm 30–50 người: khoảng 60% là sinh viên trong trường, khoảng 40% là người ngoài trường. Mỗi người dùng thử trong một phiên khoảng 15 phút, có đo trước và sau phiên, và trả lời bằng form ẩn danh.
+**Người dùng.** Mẫu thử gồm 30–50 người: khoảng 60% là sinh viên trong trường, khoảng 40% là người ngoài trường. Mỗi người dùng thử trong một phiên khoảng 15 phút. Phần khảo sát nằm **ngay trong ứng dụng**, ở chế độ thử nghiệm bật bằng link riêng, và **ẩn danh tuyệt đối**: không thu thông tin liên hệ, không hỏi lại sau phiên. Mọi chỉ số dưới đây được báo cáo cả ở dạng tổng và dạng tách theo nhóm trong trường / ngoài trường.
 
 | Chỉ số | Ngưỡng |
 |---|---|
-| Phát hiện điểm mù: tìm ra ít nhất 1 kỹ năng cốt lõi chưa có trong kế hoạch học, và người dùng xác nhận đó là kỹ năng họ thật sự còn thiếu | ≥ 70% |
+| Phát hiện điểm mù: tìm ra ít nhất 1 kỹ năng cốt lõi **hoặc thường gặp** không nằm trong 3 kỹ năng người thử tự đoán trước phiên, và người thử xác nhận "Tôi chưa biết" | ≥ 70% |
 | Có ý định sửa CV hoặc đổi thứ tự học | ≥ 60% |
-| Khi so sánh mù với câu trả lời của ChatGPT: điểm trung bình, và tỷ lệ chọn Hải Đồ IT | ≥ 4,0/5 và được chọn nhiều hơn |
+| Khi so sánh mù trên một tình huống mẫu cố định, đặt cạnh câu trả lời ChatGPT soạn sẵn: điểm trung bình, và tỷ lệ chọn Hải Đồ IT | ≥ 4,0/5 và được chọn nhiều hơn (kiểm định nhị thức, p < 0,05) |
+| Tỷ lệ bỏ sót kỹ năng đã có khi viết CV | chỉ số mô tả, không đặt ngưỡng |
+| Độ rõ ràng về kỹ năng cần học: một câu tự đánh giá 1–5, hỏi giống nhau ở đầu và cuối phiên | điểm sau cao hơn điểm trước, kiểm định Wilcoxon, p < 0,05 |
+
+**Thực nghiệm đối chứng.** Hỏi cùng một câu về lộ trình học nhiều lần trên 2–3 chatbot phổ biến, đo độ lệch thứ tự học. Kết quả đặt cạnh số đo tất định của Hải Đồ IT.
 
 **Giới hạn đã biết:**
 - người thử phần lớn là sinh viên cùng một trường và quen nhóm phát triển;
-- 2 tuần chỉ đo được nhận thức và ý định, chưa đo được kết quả xin việc thật.
+- 2 tuần chỉ đo được nhận thức và ý định, chưa đo được kết quả xin việc thật;
+- phần so sánh mù chỉ dùng một tình huống mẫu cho mỗi vai trò và một câu trả lời ChatGPT soạn sẵn.
 
 ## Phạm vi
 
-**Có trong v1:**
-- 4 chức năng, giao diện tiếng Việt;
-- web ưu tiên máy tính; trên điện thoại chỉ có Soi tin và danh sách khoảng trống kỹ năng;
-- 4–5 vai trò khi công khai;
-- bản đồ gồm Hà Nội, TP.HCM, Đà Nẵng và "Khác";
-- CV dạng PDF hoặc DOCX, chỉ xử lý khi người dùng đồng ý, không lưu file gốc;
-- không cần tài khoản: kết quả lưu ở trình duyệt, có link chia sẻ và có thể tải về;
-- dữ liệu từ các nguồn công khai, thu thập không đăng nhập (ngoại lệ: xem *Rủi ro đã chấp nhận*).
+**Có trong v1:** bảy nhóm tính năng, gồm 4 chức năng người dùng thấy, cộng ba lớp nền: thu thập và chuẩn hóa dữ liệu, hồ sơ kỹ năng, và chế độ thử nghiệm trong ứng dụng.
+- Giao diện tiếng Việt.
+- Web ưu tiên máy tính. Trên điện thoại: Soi tin đầy đủ, Cố vấn dạng thẻ, Bản đồ dạng danh sách thành phố, Insights xếp dọc, chế độ thử nghiệm chạy đầy đủ. Bắt buộc có chế độ 2D hoặc dạng bảng thay cho bản đồ 3D.
+- 4–5 vai trò khi công khai; bản đồ gồm Hà Nội, TP.HCM, Đà Nẵng và "Khác".
+- CV dạng PDF hoặc DOCX, chỉ xử lý khi người dùng đồng ý, không lưu file gốc. Hồ sơ kỹ năng cũng tạo được bằng cách tự chọn, không cần CV.
+- Không cần tài khoản: kết quả lưu ở trình duyệt, có link chia sẻ và có thể tải về. Server chỉ ghi sự kiện ẩn danh theo mã phiên, không chứa nội dung CV hay JD, và điều này được nêu trong ô đồng ý.
+- Dữ liệu từ các nguồn công khai, thu thập không đăng nhập (ngoại lệ: xem *Rủi ro đã chấp nhận*).
 
 **Không có trong v1:**
 - xu hướng theo thời gian và dự báo;
@@ -154,17 +166,27 @@ Hội đồng sẽ hỏi: *"Sao không dán CV và JD vào ChatGPT cho xong?"*
 - viết lại câu chữ CV;
 - kênh để người dùng gửi mức lương;
 - extension trình duyệt;
-- tài khoản người dùng;
-- dữ liệu LinkedIn;
+- tài khoản người dùng, và trạng thái "đang học" trong hồ sơ kỹ năng;
+- ước lượng số tuần học cho từng kỹ năng;
+- so sánh song song hai thành phố trên bản đồ;
+- OCR cho CV dạng ảnh scan;
+- hỏi lại người thử sau phiên thử nghiệm;
+- thu thập mới từ LinkedIn (dữ liệu LinkedIn lịch sử vẫn dùng, xem *Rủi ro đã chấp nhận*);
 - tính năng cho nhà trường hoặc nhà tuyển dụng;
 - ứng dụng di động.
 
 ## Ràng buộc và rủi ro
 
-**Rủi ro đã chấp nhận: crawler TopCV.**
-- **Quyết định của nhóm:** TopCV chiếm khoảng 38% dữ liệu nền. Nhóm giữ crawler TopCV kế thừa, **gồm cả kỹ thuật né phát hiện bot**, trong giai đoạn đồ án. Nhóm sẽ xin phép TopCV và bỏ kỹ thuật này trước khi thương mại hóa.
-- **Mức rủi ro:** báo cáo nghiên cứu "Hải Đồ IT khoảng trống" xếp việc né phát hiện bot vào mức rủi ro **rất cao**, có thể rơi vào Điều 289 Bộ luật Hình sự.
-- **Mâu thuẫn cần lưu ý:** đây là ngoại lệ đối với nguyên tắc thu thập ở mục Pháp lý bên dưới. Nhóm cần chuẩn bị câu trả lời nếu hội đồng hỏi.
+**Rủi ro đã chấp nhận.** Nhóm đã cân nhắc và chấp nhận có chủ đích bốn rủi ro dưới đây. Chúng là ngoại lệ đối với nguyên tắc thu thập ở mục Pháp lý. Chi tiết và hệ quả ở PRD §6.1; nhóm cần chuẩn bị câu trả lời cho từng mục nếu hội đồng hỏi.
+
+| # | Rủi ro | Phạm vi | Mức rủi ro |
+|---|---|---|---|
+| R1 | Crawler TopCV kế thừa dùng kỹ thuật né phát hiện bot. TopCV chiếm khoảng 38% dữ liệu nền | Chạy cả trên bản công khai. Nhóm xin phép TopCV, và bỏ kỹ thuật này khi thương mại hóa | **Rất cao**, có thể rơi vào Điều 289 Bộ luật Hình sự |
+| R2 | Các crawler và bước pipeline kế thừa khác dùng cùng kỹ thuật: ITviec, TopDev, và bước lấy mô tả đầy đủ | Như R1 | **Rất cao** |
+| R3 | 625 tin LinkedIn trong dữ liệu nền được thu bằng tài khoản đăng nhập | Vẫn tính vào số liệu công khai. v1 không thu thập mới từ LinkedIn | **Rất cao** |
+| R4 | 555 tin ITviec trong dữ liệu nền, trong khi điều khoản ITviec cấm thu thập khi chưa có đồng ý bằng văn bản | Vẫn tính vào số liệu công khai trong lúc chờ xin phép | **Trung bình–cao** |
+
+Nếu loại R3 và R4 ra khỏi số liệu công khai thì còn 2.289 tin, trong đó Backend còn 184 tin.
 
 **Thời gian.**
 - Nguồn lực: 3 người × 8 tuần.
@@ -173,19 +195,20 @@ Hội đồng sẽ hỏi: *"Sao không dán CV và JD vào ChatGPT cho xong?"*
 - Kế hoạch sprint chi tiết: addendum §1.
 
 **Yêu cầu học thuật.** Độ phức tạp kỹ thuật được chứng minh bằng những bài toán khó, được giải đúng và đo được:
-- loại tin trùng lặp giữa các sàn;
-- chuẩn hóa kỹ năng song ngữ;
-- tính phân vị khi mẫu thưa;
-- dựng lộ trình học tất định.
+- loại tin trùng lặp giữa các sàn (đo bằng precision/recall);
+- chuẩn hóa kỹ năng song ngữ Việt–Anh (đo tách riêng cho nhóm kỹ năng viết bằng tiếng Việt);
+- tính phân vị khi mẫu thưa (ngưỡng cộng thứ tự quay về giữ cấp bậc, kèm khoảng tin cậy bootstrap; đo bằng thí nghiệm làm thưa mẫu);
+- dựng lộ trình học tất định (đo bằng kiểm thử lặp lại, đặt cạnh độ nhất quán của chatbot).
 
 Không chứng minh bằng số lượng công nghệ sử dụng.
 
 **Pháp lý.**
 - **CV:** chỉ xử lý khi người dùng đồng ý, theo Luật Bảo vệ dữ liệu cá nhân 91/2025.
 - **Thông tin cá nhân của người đăng tin:** loại bỏ ngay lúc thu thập.
-- **Nguyên tắc thu thập:** tôn trọng `robots.txt` và điều khoản của từng sàn, không né cơ chế chống bot (ngoại lệ: crawler TopCV ở trên).
-- **Công bố:** chỉ công bố số liệu tổng hợp, kèm link về tin gốc.
-- **ITviec:** gửi email xin phép trong tuần 1. Trong khi chờ, dữ liệu ITviec chỉ dùng làm bộ kiểm tra nội bộ.
+- **Nguyên tắc thu thập:** tôn trọng `robots.txt` và điều khoản của từng sàn, gửi User-Agent có thông tin liên hệ, không đăng nhập, không né cơ chế chống bot (ngoại lệ: R1–R4 ở trên).
+- **Công bố:** chỉ công bố số liệu tổng hợp và các trường ngắn (chức danh, công ty, thành phố, khoảng lương), kèm link về tin gốc. Không đăng lại toàn văn JD.
+- **Chính sách dữ liệu và kênh gỡ:** có trang chính sách dữ liệu công khai và một kênh để nguồn hoặc nhà tuyển dụng yêu cầu gỡ, xử lý trong 48 giờ. Trang này không đăng chi tiết kỹ thuật thu thập hay bảng R1–R4, nhưng cũng không được khẳng định những điều trái với R1–R4.
+- **ITviec:** gửi email xin phép trong tuần 1. Dữ liệu ITviec đã có vẫn dùng trong số liệu công khai (R4).
 - **Repo gốc của bộ scraper:** repo không có LICENSE. Nhóm xin phép tác giả trước khi công khai sản phẩm.
 
 **Dữ liệu.** Dữ liệu còn mỏng ở ba chỗ: lương (chỉ khoảng 24% tin có số), một số vai trò, và các thành phố ngoài Hà Nội và TP.HCM. Chi tiết ở addendum §5.

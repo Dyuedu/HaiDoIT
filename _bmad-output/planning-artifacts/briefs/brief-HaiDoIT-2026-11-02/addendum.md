@@ -1,7 +1,7 @@
 ---
 title: "Addendum: Product Brief Hải Đồ IT"
 created: 2026-11-02
-updated: 2026-11-02
+updated: 2026-11-03
 ---
 
 # Addendum: chi tiết dành cho PRD, kiến trúc và lập kế hoạch sprint
@@ -10,12 +10,12 @@ updated: 2026-11-02
 
 | Sprint | Tuần | Mục tiêu | Có gì để demo |
 |---|---|---|---|
-| 1 | 2–8/11 | Kế hoạch (brief → PRD → kiến trúc). Làm sạch dữ liệu, **bật snapshot hằng ngày**. Khung repo, Compose, CI. Bộ từ vựng kỹ năng v0. Gửi email xin phép ITviec, TopCV và tác giả repo gốc | Pipeline chạy mỗi đêm |
-| 2 | 9–15/11 | Bộ máy kỹ năng: JD/CV → kỹ năng chuẩn hóa; 200 JD gán nhãn tay (kappa trên 50 JD). Bảng cốt lõi / thường gặp / riêng lẻ theo vai trò. Đồ thị "học trước" và danh mục khóa học cho Backend và Data/AI; giảng viên hướng dẫn rà soát đồ thị | Số đo precision/recall |
-| 3 | 16–22/11 | **Vertical slice Cố vấn:** tải CV → khoảng trống kỹ năng → lộ trình học cho 2 vai trò, giao diện đồ thị cơ bản | Luồng demo chính, dùng cho Review giữa kỳ (22–28/11) |
-| 4 | 23–29/11 | Soi tin: phần so với hồ sơ (dùng lại bộ máy kỹ năng) + phần so với thị trường (phân vị, chất lượng JD, dấu hiệu cần kiểm tra) | Soi tin hoàn chỉnh |
-| 5 | 30/11–6/12 | Bản đồ 3D theo tỷ trọng; thêm 2–3 vai trò cho lộ trình học; **công khai** | Bản đồ + link dùng thử |
-| 6 | 7–13/12 | Insights cắt ngang; lộ trình học chung khi không có CV; bắt đầu thử nghiệm người dùng | Insights |
+| 1 | 2–8/11 | Kế hoạch (brief → PRD → kiến trúc). Làm sạch dữ liệu, **bật snapshot hằng ngày** (FR-3). Khung repo, Compose, CI. Bộ từ vựng kỹ năng v0. Gửi email xin phép ITviec, TopCV và tác giả repo gốc. Trang chính sách dữ liệu và kênh yêu cầu gỡ (FR-47); User-Agent có thông tin liên hệ | Pipeline chạy mỗi đêm |
+| 2 | 9–15/11 | Bộ máy kỹ năng: JD/CV → kỹ năng chuẩn hóa, **song ngữ Việt–Anh** (FR-6); 200 JD gán nhãn tay từ văn bản gốc. **Phân loại cấp bậc; tách Data/AI thành 3 nhánh; tách Embedded khỏi "Other"** (FR-7). Hiệu chỉnh θ rồi đóng băng (FR-9). Bảng nhóm kỹ năng theo vai trò × cấp bậc. Đồ thị "học trước" và danh mục tài liệu cho Java Backend và Data Engineer; giảng viên rà soát đồ thị, có biên bản (FR-22) | Số đo precision/recall, kèm số liệu tách riêng cho kỹ năng tiếng Việt |
+| 3 | 16–22/11 | **Vertical slice Cố vấn:** tải CV → khoảng trống kỹ năng → lộ trình học cho 2 vai trò, giao diện đồ thị cơ bản. Kèm **tự chọn kỹ năng** (FR-13), **ba lựa chọn xác nhận** (FR-21), **sự kiện ẩn danh** (FR-17) | Luồng demo chính, dùng cho Review giữa kỳ (22–28/11) |
+| 4 | 23–29/11 | Soi tin: phần so với hồ sơ (dùng lại bộ máy kỹ năng) + phần so với thị trường (phân vị, **chất lượng JD FR-46**, dấu hiệu D1–D7). Kèm **FR-32 khớp tin được dán với tin đã thu thập** (cần cho D4) | Soi tin hoàn chỉnh |
+| 5 | 30/11–6/12 | Bản đồ 3D theo tỷ trọng, kèm **chế độ 2D/bảng bắt buộc** (FR-36); thêm 2–3 vai trò cho lộ trình học; **công khai** | Bản đồ + link dùng thử |
+| 6 | 7–13/12 | Insights cắt ngang; lộ trình học chung khi không có CV. **Chế độ thử nghiệm (FR-41–FR-45) phải xong đầu sprint này**, gồm tình huống mẫu và câu trả lời ChatGPT soạn sẵn; sau đó bắt đầu thử nghiệm người dùng | Insights + link thử nghiệm |
 | 7 | 14–20/12 | Thử nghiệm 30–50 người (60% trong trường / 40% ngoài trường), đo, sửa lỗi; thực nghiệm độ nhất quán của chatbot | Số liệu kiểm chứng |
 | 8 | 21–27/12 | Code freeze, hoàn thiện báo cáo, slide, tập dượt demo, dự phòng | — |
 
@@ -45,8 +45,8 @@ Báo cáo SEP490 được viết cuốn chiếu theo từng sprint. Nộp báo c
   - lưu kết quả trong `localStorage`;
   - link chia sẻ có URL chỉ chứa mã kỹ năng;
   - tải kết quả về máy (in trình duyệt ra PDF là phương án rẻ nhất);
-  - server không lưu CV gốc hay hồ sơ.
-- **Công tắc theo từng nguồn:** pipeline của bản công khai chỉ bật những nguồn hợp lệ. Dữ liệu của nguồn chưa được phép chỉ được dùng làm bộ kiểm tra nội bộ.
+  - server không lưu CV gốc hay hồ sơ; server chỉ lưu sự kiện ẩn danh theo mã phiên (không chứa nội dung CV hay JD) và dữ liệu chế độ thử nghiệm.
+- **Công tắc theo từng nguồn:** pipeline có công tắc bật/tắt riêng cho mỗi nguồn, kèm kết quả rà soát điều khoản sử dụng. Nguyên tắc là bản công khai chỉ bật nguồn hợp lệ; **ngoại lệ đã chấp nhận là R1–R4** (xem brief, mục Rủi ro đã chấp nhận), gồm TopCV, ITviec và dữ liệu LinkedIn lịch sử vẫn nằm trong số liệu công khai.
 
 ## 3. Stack: các phương án đã cân nhắc (chưa chốt, quyết ở bước kiến trúc)
 
@@ -65,17 +65,16 @@ Báo cáo SEP490 được viết cuốn chiếu theo từng sprint. Nộp báo c
 - **Loại tin trùng lặp:**
   - gán nhãn khoảng 100 cặp tin có độ giống nhau cao, báo cáo precision/recall của bước dedup;
   - tìm thủ công bản trùng của 100 tin ngẫu nhiên trong bảng phân tích để ước lượng tỷ lệ trùng còn sót.
-- **Trích xuất kỹ năng:** bộ chuẩn 200 JD. Mỗi JD có 2 người gán nhãn, tính Cohen's kappa trên 50 JD chung. Mục tiêu P ≥ 85%, R ≥ 80%.
+- **Trích xuất kỹ năng:** bộ chuẩn 200 JD, lấy từ **văn bản gốc của tin** (tiếng Việt hoặc trộn Việt–Anh), không lấy từ bản đã viết lại sang tiếng Anh. 200 JD chia cho 2 người gán nhãn; 50 JD được cả hai cùng gán để tính Cohen's kappa. Mục tiêu P ≥ 85%, R ≥ 80%, và báo cáo thêm số liệu tách riêng cho nhóm kỹ năng viết bằng tiếng Việt.
 - **Ảo giác của LLM:**
   - thứ tự lộ trình học được đảm bảo bằng kiểm thử tự động;
   - lời dẫn được kiểm bằng cách rà soát một mẫu;
   - link tài liệu không thể bị bịa vì chỉ lấy từ danh mục.
 - **Thử nghiệm người dùng:**
-  - phiên khoảng 15 phút, form ẩn danh;
-  - trước phiên, người dùng tự liệt kê 3 kỹ năng cần học nhất;
+  - phiên khoảng 15 phút, làm ngay trong app ở chế độ thử nghiệm, **ẩn danh tuyệt đối**: không thu email hay Zalo, không hỏi lại sau 7 ngày (quyết định ngày 02/11 trong PRD);
+  - trước phiên, người dùng chọn 3 kỹ năng cần học nhất từ bộ từ vựng kỹ năng;
   - với mỗi kỹ năng hệ thống báo thiếu, người dùng xác nhận đó là thật (câu xác nhận này cũng đo độ chính xác đọc CV ngoài thực tế);
-  - so sánh mù kết quả của Hải Đồ IT với câu trả lời ChatGPT chuẩn bị sẵn;
-  - nếu kịp, hỏi lại sau 7 ngày.
+  - so sánh mù trên một **tình huống mẫu cố định** theo vai trò (cùng một CV mẫu và JD mẫu cho cả hai phương án): kết quả của Hải Đồ IT đặt cạnh câu trả lời ChatGPT chuẩn bị sẵn, không ghi nguồn, thứ tự trái/phải đảo ngẫu nhiên.
 - **Thực nghiệm phụ:** hỏi cùng một câu về lộ trình học nhiều lần trên 2–3 chatbot, đo mức độ lệch của thứ tự học.
 
 ## 5. Dữ liệu đầu vào hiện có (2026-11-02)
