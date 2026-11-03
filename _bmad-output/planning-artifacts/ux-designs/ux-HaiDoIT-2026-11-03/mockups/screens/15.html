@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+<meta charset="utf-8">
+<title>Vai trò Backend — trang công khai</title>
+<script src="d540d90b-93f8-4ec5-9f73-27b73550c71a"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>/* vietnamese */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("4c96a669-03a4-4c57-b0df-c4c5f01a63dd") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("bc5ab0c6-8bd4-484f-b9b2-ad4d21442bd1") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("a6f343f9-fe41-4392-9297-f9a9f0b295c6") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("4f8c875f-a2c3-472f-9ec3-b75b6c9c929a") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("3366c175-a833-447c-ac84-1ba889f333cb") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("056ab326-7fab-4ea3-828c-02f084c7e315") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("d9cba8f3-9333-40d5-99e0-b6d84a74c72c") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("82a3a630-67ff-4e95-a0b9-e008700edce2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("8509e0ba-97dc-4981-99e8-d8d4aa20a017") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("77b6b6c5-5248-44a3-8282-f478d3b95285") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("d1a283b0-7bf3-4121-bec1-13b445dbfc51") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("377c9ec9-66cc-4dcb-95fd-6c8a0b3b21e0") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwhsk.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwhsk.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwhsk.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("d49fa594-124c-4927-ab6a-fbd70fa82f50") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("aeaec050-f493-4d02-b549-75c27b68d40e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1c5f9a05-af59-4605-9c8e-daa7d07476ab") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwhsk.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwhsk.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwhsk.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("d49fa594-124c-4927-ab6a-fbd70fa82f50") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("aeaec050-f493-4d02-b549-75c27b68d40e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("1c5f9a05-af59-4605-9c8e-daa7d07476ab") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwhsk.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwhsk.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwhsk.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("d49fa594-124c-4927-ab6a-fbd70fa82f50") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("aeaec050-f493-4d02-b549-75c27b68d40e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("1c5f9a05-af59-4605-9c8e-daa7d07476ab") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+body{margin:0;background:#070B10}
+a{color:#C5F36A}a:hover{color:#E4FFB5}
+.root{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#E6EDF3;background:#070B10;min-height:100vh;display:flex;flex-direction:column}
+.mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+.k{font:600 11px/1.4 'JetBrains Mono',ui-monospace,monospace;color:#9FB0C2;letter-spacing:.08em;text-transform:uppercase}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+.hdr{border-bottom:1px solid #1C2A36;background:#0A1017}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#E6EDF3;font-weight:700;font-size:16px;letter-spacing:.04em;min-height:52px}
+.logo:hover{color:#E6EDF3}
+.doc{max-width:860px;margin:0 auto;padding:40px 24px 64px;box-sizing:border-box;width:100%;display:flex;flex-direction:column;gap:28px}
+.panel{border:1px solid #1C2A36;background:#0D141C;border-radius:12px;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:0;background:#C5F36A;color:#0A0F05;font:600 15px 'Be Vietnam Pro',sans-serif;text-decoration:none}
+.btn:hover{color:#0A0F05;background:#D6FA94}
+.foot{border-top:1px solid #1C2A36;margin-top:auto}
+a:focus-visible{outline:2px solid #C5F36A;outline-offset:2px}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar{transform-origin:left center;animation:grow .9s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="root">
+<header class="hdr">
+<div class="wrap" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px">
+<a class="logo" href="Main.dc.html"><svg width="26" height="26" sc-camel-view-box="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="none" stroke="#C5F36A" stroke-width="2"></rect><circle cx="12" cy="11" r="2.8" fill="#62D9EE"></circle><circle cx="22" cy="17" r="2.8" fill="#C5F36A"></circle><circle cx="13" cy="24" r="2.8" fill="#62D9EE"></circle><path d="M12 11 L22 17 L13 24" fill="none" stroke="#E6EDF3" stroke-width="1.4" stroke-dasharray="2 2"></path></svg>HẢI ĐỒ<span style="color: #C5F36A">·</span>IT</a>
+<span class="mono" style="font-size: 12px; color: #9FB0C2">[tên miền]/vai-tro/{{slug}}</span>
+</div>
+</header>
+
+<main class="doc">
+<section style="display: flex; flex-direction: column; gap: 12px">
+<span class="k">Vai trò · mọi cấp bậc · toàn quốc</span>
+<h1 style="margin: 0; font-size: 38px; line-height: 1.15; font-weight: 700">{{role}}</h1>
+<sc-if value="{{ok}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; font-size: 19px; line-height: 1.7; color: #E6EDF3">Trong <span class="mono">374</span> tin {{role}} đăng công khai trên toàn quốc, mọi cấp bậc, <strong>SQL</strong> xuất hiện ở <span class="mono" style="color: #62D9EE">74%</span> tin, <strong>Git</strong> ở <span class="mono" style="color: #62D9EE">58%</span> và <strong>Java</strong> ở <span class="mono" style="color: #62D9EE">52%</span>. Nguồn đang bật: [Nguồn 1], [Nguồn 2]. Snapshot 02/11/2026.</p>
+</sc-if>
+<sc-if value="{{low}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 19px; line-height: 1.7; color: #F5A65B">Chưa đủ dữ liệu (n = 21).</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9B8C7">Trang sẽ hiện tỷ lệ kỹ năng khi có từ 30 tin trở lên. Nguồn đang bật: [Nguồn 1], [Nguồn 2]. Snapshot 02/11/2026.</p>
+</sc-if>
+</section>
+
+<sc-if value="{{ok}}" hint-placeholder-val="{{ true }}">
+<section class="panel" style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">Kỹ năng hay gặp</h2>
+<span class="mono" style="font-size: 12px; color: #9FB0C2">n = 374 tin · 02/11/2026</span>
+</div>
+<sc-raw-table style="width: 100%; border-collapse: collapse; font-size: 15px">
+<sc-raw-thead><sc-raw-tr class="mono" style="font-size: 11px; color: #9FB0C2; text-align: left"><sc-raw-th scope="col" style="padding: 8px 0; font-weight: 600">KỸ NĂNG</sc-raw-th><sc-raw-th scope="col" style="padding: 8px 10px; font-weight: 600; width: 50%">TỶ LỆ TIN</sc-raw-th><sc-raw-th scope="col" style="padding: 8px 0; font-weight: 600; text-align: right">SỐ TIN</sc-raw-th></sc-raw-tr></sc-raw-thead>
+<sc-raw-tbody>
+<sc-for list="{{skills}}" as="s" hint-placeholder-count="6">
+<sc-raw-tr style="border-top: 1px solid #15212B"><sc-raw-th scope="row" style="padding: 11px 0; text-align: left; font-weight: 600">{{s.name}}</sc-raw-th><sc-raw-td style="padding: 11px 10px"><span style="display: flex; align-items: center; gap: 10px"><span style="flex: 1; height: 8px; border-radius: 4px; background: #16222D; overflow: hidden; display: block"><span class="bar" style="display: block; height: 100%; width: {{s.p}}%; background: #62D9EE"></span></span><span class="mono" style="width: 44px; text-align: right">{{s.p}}%</span></span></sc-raw-td><sc-raw-td class="mono" style="padding: 11px 0; text-align: right; color: #9FB0C2">{{s.k}}/374</sc-raw-td></sc-raw-tr>
+</sc-for>
+</sc-raw-tbody>
+</sc-raw-table>
+</section>
+
+<section class="panel" style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline">
+<h2 style="margin: 0; font-size: 19px; font-weight: 700">Cơ cấu cấp bậc</h2>
+<span class="mono" style="font-size: 12px; color: #9FB0C2">n = 374 tin · 02/11/2026</span>
+</div>
+<div role="img" aria-label="Intern 13, Fresher 7, Junior 32, Middle 168, Senior trở lên 154 tin" style="display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 2px">
+<span style="width: 3.5%; background: #1F4A58"></span><span style="width: 1.9%; background: #2E5A6A"></span><span style="width: 8.6%; background: #3E8296"></span><span style="width: 44.9%; background: #62D9EE"></span><span style="width: 41.1%; background: #A8EAF5"></span>
+</div>
+<div class="mono" style="display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: #C4D0DC"><span>Intern 13</span><span>Fresher 7</span><span>Junior 32</span><span>Middle 168</span><span>Senior trở lên 154</span></div>
+</section>
+</sc-if>
+
+<section style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #1C2A36; padding-top: 20px">
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: #A9B8C7">Trang này chỉ công bố số liệu tổng hợp. Không liệt kê tin, không ghi tên công ty, không dẫn link tới tin gốc. Chỉ gồm tin đăng công khai trên các nguồn đang bật; tin trùng giữa các nguồn đã được gộp.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center">
+<a class="btn" href="Main.dc.html">Xem theo thành phố và cấp bậc trong Hải Đồ IT</a>
+<a href="chinh-sach-du-lieu.dc.html" style="font-size: 15px; min-height: 44px; display: inline-flex; align-items: center">Chính sách dữ liệu →</a>
+</div>
+</section>
+</main>
+
+<footer class="foot"><div class="wrap mono" style="display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; padding-top: 16px; padding-bottom: 16px; font-size: 12px; color: #9FB0C2"><span>Hải Đồ IT · dự án nghiên cứu học thuật · đọc không cần tài khoản</span><a href="chinh-sach-du-lieu.dc.html">Chính sách dữ liệu</a></div></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;mau&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Backend · n ≥ 30&quot;,&quot;Embedded · n &lt; 30&quot;],&quot;default&quot;:&quot;Backend · n ≥ 30&quot;,&quot;section&quot;:&quot;Trạng thái dữ liệu&quot;},&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1300}}">
+class Component extends DCLogic {
+  renderVals() {
+    var ok = (this.props.mau ?? 'Backend · n ≥ 30') === 'Backend · n ≥ 30';
+    var S = [['SQL', 277], ['Git', 217], ['Java', 194], ['Docker', 172], ['REST API', 165], ['Spring Boot', 146]];
+    return {
+      ok: ok, low: !ok,
+      role: ok ? 'Backend' : 'Embedded', slug: ok ? 'backend' : 'embedded',
+      skills: S.map(function (s) { return { name: s[0], k: s[1], p: Math.round(100 * s[1] / 374) }; })
+    };
+  }
+}
+</script>
+
+
+</body></html>
