@@ -1,0 +1,110 @@
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when its first story starts (via build's sprint sync)
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates the next story after the previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; the status view surfaces open ones
+generated: 11-04-2026 10:30
+last_updated: 11-04-2026 10:30
+project: HaiDoIT
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+development_status:
+  epic-1: backlog
+  1-1-mở-khung-hải-đồ-it-trên-máy-dev: backlog
+  1-2-chạy-một-lượt-thu-thập-lịch-sự: backlog
+  1-3-lưu-tin-đã-xóa-liên-hệ-người-đăng: backlog
+  1-4-chốt-snapshot-và-vòng-đời-tin: backlog
+  1-5-bỏ-bản-sao-trong-cùng-nguồn-trước-khi-gọi-mô-hình: backlog
+  1-6-trích-dữ-kiện-jd-theo-lô: backlog
+  1-7-quy-lượt-nhắc-về-mã-kỹ-năng: backlog
+  1-8-gom-tin-trùng-giữa-các-nguồn: backlog
+  1-9-gán-vai-trò-nhánh-cấp-bậc-và-thành-phố: backlog
+  1-10-quy-lương-về-vnd-của-snapshot: backlog
+  1-11-tính-tỷ-lệ-và-nhóm-kỹ-năng-cho-từng-ô: backlog
+  1-12-tính-phân-vị-có-khoảng-tin-cậy-tất-định: backlog
+  1-13-đọc-số-qua-api-kèm-cỡ-mẫu: backlog
+  1-14-nhập-bộ-dữ-liệu-nền-một-lần: backlog
+  1-15-xem-tỷ-trọng-ba-thành-phố: backlog
+  1-16-mở-bảng-chi-tiết-một-thành-phố: backlog
+  1-17-xoay-bản-đồ-3d: backlog
+  1-18-báo-khi-một-nguồn-gãy-hoặc-sụt-tin: backlog
+  1-19-sao-lưu-snapshot-ra-ngoài-vps: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-xem-lộ-trình-chung-của-vai-trò-đang-chọn: backlog
+  2-2-tự-chọn-kỹ-năng-và-giữ-hồ-sơ-trong-trình-duyệt: backlog
+  2-3-thấy-kỹ-năng-trùng-khi-đổi-vai-trò: backlog
+  2-4-copy-link-lộ-trình: backlog
+  2-5-ghi-thao-tác-bằng-mã-phiên-ẩn-danh: backlog
+  2-6-dựng-thứ-tự-học-từ-đồ-thị-đã-kiểm: backlog
+  2-7-bật-lộ-trình-có-thứ-tự-cho-backend: backlog
+  2-8-bật-lộ-trình-có-thứ-tự-cho-data-engineer: backlog
+  2-9-tải-cv-sau-khi-đồng-ý: backlog
+  2-10-đọc-kỹ-năng-từ-cv: backlog
+  2-11-xác-nhận-từng-khoảng-trống: backlog
+  2-12-xem-vì-sao-một-kỹ-năng-có-trên-lộ-trình: backlog
+  2-13-tải-bản-tóm-tắt-hai-phần: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-dán-tin-và-thấy-vai-trò-được-nhận: backlog
+  3-2-thấy-mức-khớp-và-nhóm-kỹ-năng-của-tin: backlog
+  3-3-thấy-tin-đứng-ở-đâu-so-với-mặt-bằng: backlog
+  3-4-khớp-tin-vừa-dán-với-tin-đã-thu-thập: backlog
+  3-5-thấy-dấu-hiệu-về-độ-rộng-yêu-cầu-và-lương: backlog
+  3-6-thấy-dấu-hiệu-về-lịch-sử-đăng-và-cách-liên-hệ: backlog
+  3-7-xem-từng-mục-chất-lượng-của-tin: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-đọc-thẻ-cửa-vào-cho-người-mới: backlog
+  4-2-đọc-thẻ-bộ-kỹ-năng-hay-đi-cùng-nhau: backlog
+  4-3-đọc-thẻ-bậc-thang-junior-sang-senior: backlog
+  4-4-đọc-thẻ-khác-biệt-giữa-các-thành-phố: backlog
+  4-5-đọc-thẻ-ngành-và-nhà-tuyển-dụng-nổi-bật: backlog
+  4-6-lọc-thẻ-theo-vai-trò: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-đọc-chính-sách-dữ-liệu-từ-chân-trang: backlog
+  5-2-gỡ-tin-khỏi-số-công-khai-ở-snapshot-sau: backlog
+  5-3-đọc-trang-vai-trò-khi-đủ-mẫu: backlog
+  5-4-giấu-số-khi-trang-vai-trò-chưa-đủ-mẫu: backlog
+  5-5-trang-vai-trò-khớp-snapshot-ứng-dụng-đang-hiển-thị: backlog
+  epic-5-retrospective: optional
+
+  epic-6: backlog
+  6-1-vào-bằng-link-thử-nghiệm: backlog
+  6-2-trả-lời-trước-khi-thấy-số: backlog
+  6-3-gửi-đánh-giá-cuối-phiên-một-lần: backlog
+  6-4-chấm-so-sánh-mù: backlog
+  6-5-xuất-một-bảng-theo-phiên: backlog
+  6-6-sao-lưu-phiên-thử-nghiệm-sau-ngày-có-người-thử: backlog
+  epic-6-retrospective: optional
