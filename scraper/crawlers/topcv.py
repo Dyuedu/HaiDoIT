@@ -71,7 +71,7 @@ class TopCVBrowserClient:
         
         # Tinh chỉnh 1: Lưu giữ cf_clearance cookie và session trong user_data_dir
         self.browser = await uc.start(
-            headless=False,
+            headless=True,
             user_data_dir=PROFILE_DIR,
             browser_args=[
                 "--disable-blink-features=AutomationControlled",

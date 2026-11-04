@@ -1,9 +1,11 @@
-"""Pipeline orchestrator — runs all 8 crawlers then deduplicates.
+"""Pipeline orchestrator — crawl, dedupe, process, sync.
 
 Usage:
-    python pipeline.py                  # crawl all 8 + dedupe
+    python pipeline.py                  # full pipeline: crawl + dedupe + process
     python pipeline.py crawl            # crawl only
     python pipeline.py dedupe           # dedupe only
+    python pipeline.py process          # step-03→06 only
+    python pipeline.py sync             # sync classified.jsonl → Supabase
     python pipeline.py crawl --sources zalo,itnavi
     python pipeline.py crawl --skip-details   # listing only for JS sites
 
@@ -12,6 +14,7 @@ pipeline — partial data is better than no data.
 """
 
 import argparse
+import os
 import subprocess
 import sys
 import time
@@ -83,7 +86,6 @@ def run_crawler(name: str, cfg: dict, extra_args: list[str]) -> bool:
     print(f"  [{name}] starting -- {cfg['module']}", flush=True)
     print(f"{'='*60}", flush=True)
 
-    import os
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     start = time.monotonic()
     result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=3600)
@@ -99,13 +101,70 @@ def run_dedupe() -> bool:
     print(f"  [dedupe] starting", flush=True)
     print(f"{'='*60}", flush=True)
 
-    import os
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     cmd = [sys.executable, "step-02-dedupe.py",
            "--raw", "data/raw", "--out", "data/dedup.jsonl"]
     result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=300)
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
     print(f"  [dedupe] {status}", flush=True)
+    return result.returncode == 0
+
+
+STEPS = [
+    {"name": "filter-tech", "script": "step-03-filter-tech.py", "needs_api": "TYPESAFE_API_KEY"},
+    {"name": "consolidate", "script": "step-04-consolidate.py", "needs_api": None},
+    {"name": "extract",     "script": "step-05-extract.py",     "needs_api": "ANTHROPIC_API_KEY"},
+    {"name": "classify",    "script": "step-06-classify.py",    "needs_api": "TYPESAFE_API_KEY"},
+]
+
+
+def run_step(step: dict) -> bool:
+    name = step["name"]
+    print(f"\n{'='*60}", flush=True)
+    print(f"  [step: {name}] starting -- {step['script']}", flush=True)
+    print(f"{'='*60}", flush=True)
+
+    api_key = step["needs_api"]
+    if api_key and not os.environ.get(api_key):
+        print(f"  [step: {name}] SKIPPED -- {api_key} not set", flush=True)
+        return False
+
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+    cmd = [sys.executable, step["script"]]
+    start = time.monotonic()
+    result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=3600)
+    elapsed = time.monotonic() - start
+
+    status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
+    print(f"  [step: {name}] {status} in {elapsed:.0f}s", flush=True)
+    return result.returncode == 0
+
+
+def run_process() -> dict[str, bool]:
+    results = {}
+    for step in STEPS:
+        ok = run_step(step)
+        results[step["name"]] = ok
+        if not ok:
+            print(f"  [process] stopping early -- {step['name']} failed", flush=True)
+            break
+    return results
+
+
+def run_sync() -> bool:
+    print(f"\n{'='*60}", flush=True)
+    print(f"  [sync] starting -- sync_supabase.py", flush=True)
+    print(f"{'='*60}", flush=True)
+
+    if not os.environ.get("SUPABASE_URL") or not os.environ.get("SUPABASE_SERVICE_KEY"):
+        print("  [sync] SKIPPED -- SUPABASE_URL or SUPABASE_SERVICE_KEY not set", flush=True)
+        return False
+
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+    cmd = [sys.executable, "sync_supabase.py"]
+    result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=600)
+    status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
+    print(f"  [sync] {status}", flush=True)
     return result.returncode == 0
 
 
@@ -121,7 +180,8 @@ def count_raw() -> dict[str, int]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="HaiDoIT scraper pipeline")
-    parser.add_argument("action", nargs="?", default="all", choices=["all", "crawl", "dedupe"])
+    parser.add_argument("action", nargs="?", default="all",
+                        choices=["all", "crawl", "dedupe", "process", "sync"])
     parser.add_argument("--sources", type=str, default="",
                         help="comma-separated list of sources (default: all)")
     parser.add_argument("--skip-details", action="store_true",
@@ -174,6 +234,18 @@ def main() -> None:
             from crawlers.base import read_jsonl
             n = len(read_jsonl(dedup))
             print(f"\n  dedup.jsonl: {n} unique jobs", flush=True)
+
+    if args.action in ("all", "process"):
+        step_results = run_process()
+        print(f"\n{'='*60}", flush=True)
+        print("  PROCESS SUMMARY", flush=True)
+        print(f"{'='*60}", flush=True)
+        for name, ok in step_results.items():
+            mark = "OK" if ok else "FAILED/SKIPPED"
+            print(f"  {name:15s} {mark}", flush=True)
+
+    if args.action in ("all", "sync"):
+        run_sync()
 
 
 if __name__ == "__main__":

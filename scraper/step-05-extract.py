@@ -20,9 +20,8 @@ from crawlers.base import read_jsonl
 from anthropic import AsyncAnthropic
 from tqdm import tqdm
 
-# Updated to Sonnet 4.6
-MODEL = "claude-sonnet-4-6"
-CONCURRENCY_LIMIT = 20
+MODEL = "claude-haiku-5-5"
+CONCURRENCY_LIMIT = 32
 
 # Minimal JSON Schema based on your exact requirements
 JSON_SCHEMA = {
@@ -108,7 +107,7 @@ async def process_row(
 
 async def async_main() -> None:
     parser = argparse.ArgumentParser(
-        description="Extract minimal tech data with Claude Sonnet 4.6 in English"
+        description="Extract minimal tech data with Claude Haiku 5.5 in English"
     )
     parser.add_argument(
         "--in", dest="src", type=str, default="data/consolidated.jsonl"
