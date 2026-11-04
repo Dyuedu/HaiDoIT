@@ -111,10 +111,8 @@ def run_dedupe() -> bool:
 
 
 STEPS = [
-    {"name": "filter-tech", "script": "step-03-filter-tech.py", "needs_api": "TYPESAFE_API_KEY"},
     {"name": "consolidate", "script": "step-04-consolidate.py", "needs_api": None},
-    {"name": "extract",     "script": "step-05-extract.py",     "needs_api": "ANTHROPIC_API_KEY"},
-    {"name": "classify",    "script": "step-06-classify.py",    "needs_api": "TYPESAFE_API_KEY"},
+    {"name": "extract", "script": "extract_gate.py", "needs_api": "ANTHROPIC_API_KEY"},
 ]
 
 

@@ -39,6 +39,7 @@ from psycopg.rows import dict_row
 
 # Richest first: whatever exists furthest down the pipeline wins.
 CANDIDATES = [
+    "data/extracted.jsonl",
     "data/classified.jsonl",
     "data/step-07-jev-extracted.jsonl",
     "data/consolidated.jsonl",
