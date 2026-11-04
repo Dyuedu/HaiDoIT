@@ -37,7 +37,7 @@ permissions:
 
 jobs:
   build:
-    name: Build và đẩy image (${{ matrix.app }})
+    name: Build and push image (${{ matrix.app }})
     if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     strategy:
@@ -80,7 +80,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Pull và chạy trên VPS
+    name: Pull and run on VPS
     if: vars.DEPLOY_ENABLED == 'true'
     needs: build
     runs-on: ubuntu-latest
@@ -88,7 +88,7 @@ jobs:
     env:
       SHA: ${{ inputs.sha || github.sha }}
     steps:
-      - name: Nạp khóa SSH và known_hosts
+      - name: Load SSH key and known_hosts
         run: |
           install -m 700 -d ~/.ssh
           printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
@@ -118,7 +118,7 @@ jobs:
             docker logout ghcr.io
           EOF
 
-      - name: Kiểm tra sống
+      - name: Health check
         env:
           HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
         run: |
@@ -133,7 +133,7 @@ jobs:
           done
           echo "không phản hồi sau 2 phút"; exit 1
 
-      - name: Quay về bản trước nếu kiểm tra sống thất bại
+      - name: Report rollback instructions on failure
         if: failure()
         env:
           HOST: ${{ secrets.VPS_HOST }}
@@ -143,6 +143,6 @@ jobs:
           echo "::warning::Deploy hỏng. Quay về bằng: chạy lại workflow này với input sha = commit trước đó."
           ssh -o BatchMode=yes "$USER@$HOST" "cd '$VPS_PATH' && docker compose -f compose.prod.yml ps" || true
 
-      - name: Xóa khóa
+      - name: Remove SSH key
         if: always()
         run: rm -rf ~/.ssh

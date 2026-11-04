@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   detect:
-    name: Dò phần mã đang có
+    name: Detect present code
     runs-on: ubuntu-latest
     outputs:
       python: ${{ steps.look.outputs.python }}
@@ -37,20 +37,20 @@ jobs:
           cat "$GITHUB_OUTPUT"
 
   gates:
-    name: Chín cổng kiến trúc (AD-24)
+    name: Architecture gates (AD-24)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
-      - name: Chạy cổng
+      - name: Run gates
         run: python tools/gates/check_gates.py
       # Khi một tầng đã xong, thêm mã cổng vào --require để cấm nó quay lại BO QUA.
       # Ví dụ sau Sprint 1:  python tools/gates/check_gates.py --require AD-1 AD-2
 
   python:
-    name: Python — ruff và pytest
+    name: Python - ruff and pytest
     needs: detect
     if: needs.detect.outputs.python == 'true'
     runs-on: ubuntu-latest
@@ -59,13 +59,13 @@ jobs:
       - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
-      - name: Cài phụ thuộc
+      - name: Install dependencies
         run: uv sync --all-extras --dev
       - name: ruff
         run: uv run ruff check .
       - name: pytest
         run: uv run pytest -q --junitxml=pytest.xml
-      - name: Kiểm thử tất định chạy hai lần cho cùng kết quả
+      - name: Determinism tests run twice
         run: |
           uv run pytest -q -m determinism --junitxml=run1.xml || exit 0
           uv run pytest -q -m determinism --junitxml=run2.xml
@@ -77,7 +77,7 @@ jobs:
           if-no-files-found: ignore
 
   alembic:
-    name: Alembic đúng một head (AD-25)
+    name: Alembic single head (AD-25)
     needs: detect
     if: needs.detect.outputs.alembic == 'true'
     runs-on: ubuntu-latest
@@ -99,18 +99,18 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --all-extras --dev
-      - name: Đúng một head
+      - name: Exactly one head
         run: |
           heads=$(uv run alembic heads | grep -c "(head)")
           echo "số head: $heads"
           [ "$heads" -eq 1 ] || { uv run alembic heads; exit 1; }
-      - name: Nâng cấp rồi hạ cấp trên Postgres trống
+      - name: Upgrade then downgrade on empty Postgres
         run: |
           uv run alembic upgrade head
           uv run alembic downgrade base
 
   web:
-    name: Web — lint và build
+    name: Web - lint and build
     needs: detect
     if: needs.detect.outputs.web == 'true'
     runs-on: ubuntu-latest
@@ -125,6 +125,6 @@ jobs:
         run: npm ci
       - working-directory: web
         run: npm run lint
-      - name: Build — phải xanh ở đây, vì prod không bao giờ chạy next build (AD-15)
+      - name: Build - must pass here, prod never runs next build (AD-15)
         working-directory: web
         run: npm run build
