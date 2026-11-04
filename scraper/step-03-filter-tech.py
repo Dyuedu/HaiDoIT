@@ -1,6 +1,6 @@
-"""Coarse filter: classify each job as tech vs non-tech using Jev (TypeSafe).
+"""Step 03: classify each job as tech vs non-tech using Jev (TypeSafe).
 
-Reads data/full.jsonl and asks Jev one `choice` question `is_tech`, using only
+Reads data/dedup.jsonl and asks Jev one `choice` question `is_tech`, using only
 title / company / skills / location / experience (NOT description).
 
 Conservative drop rule: drop only when Jev says `non_tech` with confidence >= 0.7.

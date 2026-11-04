@@ -1,10 +1,10 @@
-"""Step 06: Extract structured information from consolidated job descriptions.
+"""Step 05: Extract structured information from consolidated job descriptions.
 
-Reads data/step-05-consolidated.jsonl and uses Claude to extract strictly
+Reads data/consolidated.jsonl and uses Claude to extract strictly
 targeted structured data (Title, Tech Stack, Keywords) into a clean JSON schema.
 Ensures all extracted text is translated to English.
 
-Outputs data/step-06-extracted.jsonl with a resumable cache at data/step-06-cache.jsonl.
+Outputs data/extracted.jsonl with a resumable cache at data/extract-cache.jsonl.
 
 Needs ANTHROPIC_API_KEY in the environment.
 """
@@ -111,11 +111,11 @@ async def async_main() -> None:
         description="Extract minimal tech data with Claude Sonnet 4.6 in English"
     )
     parser.add_argument(
-        "--in", dest="src", type=str, default="data/step-05-consolidated.jsonl"
+        "--in", dest="src", type=str, default="data/consolidated.jsonl"
     )
-    parser.add_argument("--out", type=str, default="data/step-06-llm-extracted.jsonl")
+    parser.add_argument("--out", type=str, default="data/extracted.jsonl")
     parser.add_argument(
-        "--cache", type=str, default="data/step-06-llm-extracted-cache.jsonl"
+        "--cache", type=str, default="data/extract-cache.jsonl"
     )
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()

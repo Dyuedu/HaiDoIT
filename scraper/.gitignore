@@ -10,7 +10,7 @@
 # intermediate files can never publish them by accident. The one published
 # dataset is re-included explicitly below.
 data/*
-!data/step-07-jev-extracted.jsonl
+!data/classified.jsonl
 
 # --- browser profiles (session cookies, never publish) ---------------------
 chrome_topcv_profile/

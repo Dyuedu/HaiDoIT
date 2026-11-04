@@ -1,13 +1,13 @@
 
 """
-Step 07: Classify extracted job data into strict standardized categories.
+Step 06: Classify extracted job data into strict standardized categories.
 
-Reads data/step-06-extracted.jsonl and uses Typesafe Jev to map job titles
+Reads data/extracted.jsonl and uses Typesafe Jev to map job titles
 and full descriptions into fixed categories for analytics.
 
 Outputs:
-- data/step-07-classified.jsonl
-- data/step-07-classify-cache.jsonl
+- data/classified.jsonl
+- data/classify-cache.jsonl
 
 Needs TYPESAFE_API_KEY in the environment or .env.local.
 """
@@ -261,13 +261,13 @@ def main() -> None:
         description="Classify tech jobs into standardized categories using Jev"
     )
     parser.add_argument(
-        "--in", dest="src", default="data/step-06-llm-extracted.jsonl"
+        "--in", dest="src", default="data/extracted.jsonl"
     )
     parser.add_argument(
-        "--out", default="data/step-07-jev-extracted.jsonl"
+        "--out", default="data/classified.jsonl"
     )
     parser.add_argument(
-        "--cache", default="data/step-07-llm-extracted-cache.jsonl"
+        "--cache", default="data/classify-cache.jsonl"
     )
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()

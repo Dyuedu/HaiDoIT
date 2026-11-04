@@ -2,7 +2,7 @@
 
 GET /api/v2/jobs?option=queryJobs&count=N&teams=<slug> returns every open job
 of a team with full description and requirements, so one request per team is
-enough. Non-tech teams are kept; step-04 filters them out.
+enough. Non-tech teams are kept; step-03 filters them out.
 """
 
 import argparse

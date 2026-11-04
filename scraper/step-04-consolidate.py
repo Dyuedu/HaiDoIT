@@ -1,4 +1,4 @@
-"""Step 05: consolidate tech job descriptions — rule-based cleanup (no LLM).
+"""Step 04: consolidate tech job descriptions — rule-based cleanup (no LLM).
 
 Reads data/tech_filtered.jsonl, cleans each raw `description`:
   - strips residual HTML tags/entities
