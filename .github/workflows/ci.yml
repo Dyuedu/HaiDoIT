@@ -24,7 +24,7 @@ jobs:
       web: ${{ steps.look.outputs.web }}
       alembic: ${{ steps.look.outputs.alembic }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: look
         shell: bash
         run: |
@@ -40,8 +40,8 @@ jobs:
     name: Chín cổng kiến trúc (AD-24)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Chạy cổng
@@ -55,8 +55,8 @@ jobs:
     if: needs.detect.outputs.python == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - name: Cài phụ thuộc
@@ -69,7 +69,7 @@ jobs:
         run: |
           uv run pytest -q -m determinism --junitxml=run1.xml || exit 0
           uv run pytest -q -m determinism --junitxml=run2.xml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: pytest-results
@@ -94,8 +94,8 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg://postgres:ci@localhost:5432/haido_ci
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - run: uv sync --all-extras --dev
@@ -115,8 +115,8 @@ jobs:
     if: needs.detect.outputs.web == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
