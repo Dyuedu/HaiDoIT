@@ -1,0 +1,148 @@
+name: Deploy
+
+# Build image trên Actions rồi đẩy lên GHCR; VPS chỉ pull và chạy.
+# Giữ đúng AD-15: `next build` không bao giờ chạy trên máy chủ prod.
+#
+# Workflow chỉ chạy khi biến repo DEPLOY_ENABLED = true
+# (Settings > Secrets and variables > Actions > Variables).
+# Trước khi có VPS thì để false, workflow bỏ qua chứ không đỏ.
+#
+# Cần các secret: VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_KNOWN_HOSTS,
+#                 VPS_PATH, GHCR_PULL_TOKEN
+# Tùy chọn:       HEALTHCHECK_URL
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "haido_core/**"
+      - "haido_api/**"
+      - "haido_pipeline/**"
+      - "web/**"
+      - "deploy/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Commit SHA để quay về (bỏ trống = commit hiện tại)"
+        required: false
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build và đẩy image (${{ matrix.app }})
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - app: api
+            dockerfile: deploy/api.Dockerfile
+          - app: web
+            dockerfile: deploy/web.Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sha || github.sha }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}-${{ matrix.app }}
+          tags: |
+            type=sha,format=long
+            type=raw,value=main,enable={{is_default_branch}}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Pull và chạy trên VPS
+    if: vars.DEPLOY_ENABLED == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      SHA: ${{ inputs.sha || github.sha }}
+    steps:
+      - name: Nạp khóa SSH và known_hosts
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER: ${{ secrets.VPS_USER }}
+          VPS_PATH: ${{ secrets.VPS_PATH }}
+          GHCR_PULL_TOKEN: ${{ secrets.GHCR_PULL_TOKEN }}
+          REPO: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          ssh -o BatchMode=yes "$USER@$HOST" bash -se <<EOF
+            set -euo pipefail
+            cd "$VPS_PATH"
+            echo "$GHCR_PULL_TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+            export IMAGE_TAG="sha-$SHA"
+            docker compose -f compose.prod.yml pull
+            docker compose -f compose.prod.yml up -d --remove-orphans
+            docker compose -f compose.prod.yml ps
+            # 35 GB đĩa: không dọn thì image cũ ăn hết trong vài tuần
+            docker image prune -f --filter "until=168h"
+            docker logout ghcr.io
+          EOF
+
+      - name: Kiểm tra sống
+        env:
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          if [ -z "${HEALTHCHECK_URL:-}" ]; then
+            echo "chưa đặt HEALTHCHECK_URL — bỏ qua"; exit 0
+          fi
+          for i in $(seq 1 20); do
+            if curl -fsS --max-time 10 "$HEALTHCHECK_URL" > /dev/null; then
+              echo "sống sau $i lần thử"; exit 0
+            fi
+            sleep 6
+          done
+          echo "không phản hồi sau 2 phút"; exit 1
+
+      - name: Quay về bản trước nếu kiểm tra sống thất bại
+        if: failure()
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER: ${{ secrets.VPS_USER }}
+          VPS_PATH: ${{ secrets.VPS_PATH }}
+        run: |
+          echo "::warning::Deploy hỏng. Quay về bằng: chạy lại workflow này với input sha = commit trước đó."
+          ssh -o BatchMode=yes "$USER@$HOST" "cd '$VPS_PATH' && docker compose -f compose.prod.yml ps" || true
+
+      - name: Xóa khóa
+        if: always()
+        run: rm -rf ~/.ssh

@@ -1,0 +1,130 @@
+name: CI
+
+# Cổng chặn merge. Mỗi job tự tắt khi phần mã nó canh chưa tồn tại,
+# nên workflow xanh ngay từ Sprint 1 và tự bật khi mã xuất hiện.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    name: Dò phần mã đang có
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.look.outputs.python }}
+      web: ${{ steps.look.outputs.web }}
+      alembic: ${{ steps.look.outputs.alembic }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: look
+        shell: bash
+        run: |
+          has() { [ -e "$1" ] && echo true || echo false; }
+          {
+            echo "python=$( [ -d haido_core ] || [ -f pyproject.toml ] && echo true || echo false )"
+            echo "web=$(has web/package.json)"
+            echo "alembic=$(has alembic.ini)"
+          } >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
+  gates:
+    name: Chín cổng kiến trúc (AD-24)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Chạy cổng
+        run: python tools/gates/check_gates.py
+      # Khi một tầng đã xong, thêm mã cổng vào --require để cấm nó quay lại BO QUA.
+      # Ví dụ sau Sprint 1:  python tools/gates/check_gates.py --require AD-1 AD-2
+
+  python:
+    name: Python — ruff và pytest
+    needs: detect
+    if: needs.detect.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Cài phụ thuộc
+        run: uv sync --all-extras --dev
+      - name: ruff
+        run: uv run ruff check .
+      - name: pytest
+        run: uv run pytest -q --junitxml=pytest.xml
+      - name: Kiểm thử tất định chạy hai lần cho cùng kết quả
+        run: |
+          uv run pytest -q -m determinism --junitxml=run1.xml || exit 0
+          uv run pytest -q -m determinism --junitxml=run2.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-results
+          path: "*.xml"
+          if-no-files-found: ignore
+
+  alembic:
+    name: Alembic đúng một head (AD-25)
+    needs: detect
+    if: needs.detect.outputs.alembic == 'true'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: haido_ci
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+        ports: ["5432:5432"]
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:ci@localhost:5432/haido_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --all-extras --dev
+      - name: Đúng một head
+        run: |
+          heads=$(uv run alembic heads | grep -c "(head)")
+          echo "số head: $heads"
+          [ "$heads" -eq 1 ] || { uv run alembic heads; exit 1; }
+      - name: Nâng cấp rồi hạ cấp trên Postgres trống
+        run: |
+          uv run alembic upgrade head
+          uv run alembic downgrade base
+
+  web:
+    name: Web — lint và build
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - working-directory: web
+        run: npm ci
+      - working-directory: web
+        run: npm run lint
+      - name: Build — phải xanh ở đây, vì prod không bao giờ chạy next build (AD-15)
+        working-directory: web
+        run: npm run build
