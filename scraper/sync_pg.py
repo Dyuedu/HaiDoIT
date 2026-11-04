@@ -6,10 +6,17 @@ Usage:
     python sync_pg.py --dry-run            # parse and report, write nothing
 
 Needs DATABASE_URL in the environment, e.g.
-    postgresql://postgres.<ref>:<password>@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
+    postgresql://postgres.<ref>:<password>@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
 
-Port 6543 is the shared pooler in transaction mode: it does not support
-prepared statements, so the connection sets prepare_threshold=None.
+Which Supabase endpoint to use, measured from this VPS:
+  * direct   db.<ref>.supabase.co:5432   AAAA only -- unreachable, the VPS has
+             no global IPv6. Needs the IPv4 add-on.
+  * session  pooler:5432                 IPv4, prepared statements supported.
+             This is the one to use.
+  * trans.   pooler:6543                 IPv4, no prepared statements.
+
+On 6543 the connection sets prepare_threshold=None automatically, because the
+transaction-mode pooler cannot handle prepared statements:
 https://supabase.com/docs/guides/troubleshooting/disabling-prepared-statements-qL8lEL
 
 Writes two tables:
@@ -175,9 +182,15 @@ def main() -> int:
     if not dsn:
         sys.exit("DATABASE_URL not set")
 
-    # prepare_threshold=None: shared pooler, transaction mode, no prepared statements
-    with psycopg.connect(dsn, prepare_threshold=None, row_factory=dict_row,
-                         connect_timeout=30) as conn:
+    # Port 6543 is the transaction-mode pooler: no prepared statements there.
+    # Port 5432 (session pooler or direct) handles them fine, so leave the
+    # default and keep the speed-up.
+    transaction_pooler = ":6543" in dsn
+    opts = {"prepare_threshold": None} if transaction_pooler else {}
+    print("endpoint: %s" % ("transaction pooler 6543, prepared statements off"
+                            if transaction_pooler else "session 5432, prepared statements on"),
+          flush=True)
+    with psycopg.connect(dsn, row_factory=dict_row, connect_timeout=30, **opts) as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT current_database(), current_user, version()")
             info = cur.fetchone()
