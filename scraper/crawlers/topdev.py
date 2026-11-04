@@ -1,30 +1,42 @@
-"""TopDev crawler (https://topdev.vn/jobs/search) — fully automated.
+"""TopDev crawler (https://topdev.vn/jobs/search), plain HTTP, IT jobs only.
 
-Listing pages are JS-rendered (Playwright). Detail pages carry schema.org
-JobPosting JSON-LD with full descriptions. The crawler fetches both listing
-and detail in one pass, resuming from the output file.
+The board lists 4,000+ jobs and most are not IT (bank branches, garment factories).
+A job is kept when TopDev files it under its IT category OR its title or skills
+match IT_KEYWORDS. Measured on 315 classified jobs: the category alone caught 80%
+of IT jobs and missed real ones ("Chuyen vien lap trinh Back-end (Java)"); together
+they caught 97%. extract.py still labels what slips through.
+
+So every run walks the IT category and the whole listing, and only kept jobs get
+details and observations. The end of a listing is `last_page` from the page data,
+never an empty page: past the end the site keeps returning jobs. A walk counts as
+complete only if it also met nearly all of the `total` the site reports.
 """
 
 import argparse
 import json
+import re
 import time
 from pathlib import Path
 
+import requests
 from bs4 import BeautifulSoup
 
-from crawlers.base import read_jsonl, write_jsonl
-from crawlers.browser_polite import browser_polite
-from crawlers.polite import CAPTCHA_MARKERS
+from crawlers.base import read_jsonl, write_jsonl, write_seen
+from crawlers.polite import BlockedError, PoliteClient
 
 LIST_URL = "https://topdev.vn/jobs/search"
-
-
-def is_blocked(soup: BeautifulSoup) -> bool:
-    title = (soup.title.get_text(" ", strip=True) if soup.title else "").lower()
-    if any(t in title for t in ("just a moment", "cloudflare", "attention")):
-        return True
-    text = soup.get_text(" ", strip=True)[:2000].lower()
-    return any(m in text for m in CAPTCHA_MARKERS)
+IT_CATEGORY_URL = f"{LIST_URL}?job_categories_ids=1"
+MIN_COVERAGE = 0.9
+MAX_PAGES = 1000
+MAX_CONSECUTIVE_FAILURES = 10
+ZERO_RESULT_TRIES = 3
+ZERO_RESULT_WAIT = 30
+IT_KEYWORDS = re.compile(
+    r"(?i)\b(developer|engineer|lập trình|phần mềm|software|backend|back-end|frontend|front-end"
+    r"|fullstack|full-stack|devops|data|an ninh mạng|security|cntt|công nghệ thông tin|it|tester"
+    r"|qa|qc|kỹ sư|business analyst|phân tích nghiệp vụ|ba|ai|machine learning|cloud|hệ thống"
+    r"|mạng|erp|sap|game|ui/ux|mobile|android|ios)\b"
+)
 
 
 def parse_cards(soup: BeautifulSoup) -> list[dict]:
@@ -41,8 +53,10 @@ def parse_cards(soup: BeautifulSoup) -> list[dict]:
 
         card = link
         for _ in range(7):
+            if card.parent is None:
+                break
             card = card.parent
-            if card and "rounded-[16px]" in " ".join(card.get("class", [])):
+            if "rounded-[16px]" in " ".join(card.get("class", [])):
                 break
 
         company = card.select_one("span.line-clamp-1") if card else None
@@ -108,70 +122,115 @@ def extract_detail(soup: BeautifulSoup) -> dict:
     return {}
 
 
+def page_meta(html: str) -> tuple[int | None, int | None]:
+    """(last_page, total) from the data embedded in the page."""
+    text = html.replace('\\"', '"')
+    last = re.search(r'"last_page":(\d+)', text)
+    total = re.search(r'"total":(\d+)', text)
+    return (int(last.group(1)) if last else None, int(total.group(1)) if total else None)
+
+
+def fetch_results_page(client, url: str) -> tuple[str, int, int]:
+    """A page that really has results. The site now and then answers "0 positions",
+    last_page 0, with unrelated suggested jobs; that is a hiccup, not the end."""
+    for attempt in range(ZERO_RESULT_TRIES):
+        html = client.get(url).text
+        last, total = page_meta(html)
+        if last and total:
+            return html, last, total
+        if attempt + 1 < ZERO_RESULT_TRIES:
+            print(f"{url}: reported no results, retrying", flush=True)
+            time.sleep(ZERO_RESULT_WAIT)
+    raise RuntimeError(f"{url}: reported no results {ZERO_RESULT_TRIES} times")
+
+
+def walk_listing(client, base_url: str, cards: dict) -> int:
+    """Fetch pages 1..last_page into `cards`, keeping what it met if it stops.
+
+    Returns the largest total the site reported during the walk.
+    """
+    sep = "&" if "?" in base_url else "?"
+    page, last, total = 1, 0, 0
+    while page <= MAX_PAGES:
+        html, page_last, page_total = fetch_results_page(client, f"{base_url}{sep}page={page}")
+        last, total = max(last, page_last), max(total, page_total)
+        for card in parse_cards(BeautifulSoup(html, "lxml")):
+            cards.setdefault(card["job_url"], card)
+        if page % 25 == 0 or page >= last:
+            print(f"{base_url} page {page}/{last}: {len(cards)} listed", flush=True)
+        if page >= last:
+            return total
+        page += 1
+    raise RuntimeError(f"{base_url}: hit {MAX_PAGES} pages")
+
+
+def is_kept(card: dict, it_urls) -> bool:
+    if card["job_url"] in it_urls:
+        return True
+    return bool(IT_KEYWORDS.search(" ".join([card.get("title") or ""] + (card.get("skills") or []))))
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Crawl TopDev jobs (automated)")
-    parser.add_argument("--pages", type=int, default=200)
-    parser.add_argument("--limit", type=int, default=0, help="max new jobs to fetch")
+    parser = argparse.ArgumentParser(description="Crawl TopDev IT jobs")
+    parser.add_argument("--limit", type=int, default=0, help="max new job details per run, 0 = all")
     parser.add_argument("--delay", type=float, default=4.0)
     parser.add_argument("--skip-details", action="store_true")
-    parser.add_argument("--headless", action="store_true", default=True)
-    parser.add_argument("--no-headless", dest="headless", action="store_false")
     parser.add_argument("--out", type=str, default="data/raw/topdev.jsonl")
     args = parser.parse_args()
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     done = {r["job_url"] for r in read_jsonl(out) if r.get("description")}
-    done_listing = {r["job_url"] for r in read_jsonl(out)}
 
-    saved = 0
-    with browser_polite(headless=args.headless) as ctx:
-        page = ctx.new_page()
+    client = PoliteClient(delay=args.delay)
+    it_cards, all_cards = {}, {}
+    complete, error = False, None
+    try:
+        walk_listing(client, IT_CATEGORY_URL, it_cards)
+        total = walk_listing(client, LIST_URL, all_cards)
+        complete = len(all_cards) >= total * MIN_COVERAGE
+        if not complete:
+            error = f"met {len(all_cards)} of {total} listed jobs"
+    except (BlockedError, RuntimeError, requests.RequestException) as exc:
+        error = str(exc)[:300]
+        print(f"listing incomplete: {error}", flush=True)
 
-        for page_num in range(1, args.pages + 1):
-            url = LIST_URL if page_num == 1 else f"{LIST_URL}?page={page_num}"
-            page.goto(url, wait_until="domcontentloaded", timeout=60_000)
-            page.wait_for_timeout(3000)
+    kept = dict(it_cards)
+    for url, card in all_cards.items():
+        if url not in kept and is_kept(card, it_cards):
+            kept[url] = card
+    print(f"kept {len(kept)} of {len(all_cards)} listed ({len(it_cards)} in the IT category)", flush=True)
+    # Written before the details: a timeout or a block there must not lose today's observations.
+    write_seen("topdev", list(kept), complete, error=error)
 
-            soup = BeautifulSoup(page.content(), "lxml")
-            if is_blocked(soup):
-                print(f"STOP -- blocked on page {page_num}", flush=True)
-                break
-
-            cards = parse_cards(soup)
-            if not cards:
-                print(f"page {page_num}: no cards, stopping", flush=True)
-                break
-
-            for card in cards:
-                if card["job_url"] in done_listing:
-                    continue
-                if args.limit and saved >= args.limit:
-                    break
-
-                if not args.skip_details:
-                    time.sleep(args.delay)
-                    page.goto(card["job_url"], wait_until="domcontentloaded", timeout=60_000)
-                    page.wait_for_timeout(2000)
-                    detail_soup = BeautifulSoup(page.content(), "lxml")
-                    if is_blocked(detail_soup):
-                        print(f"STOP -- blocked on detail page", flush=True)
-                        break
-                    detail = extract_detail(detail_soup)
-                    card.update(detail)
-
-                write_jsonl(out, [card])
-                done_listing.add(card["job_url"])
-                if card.get("description"):
-                    done.add(card["job_url"])
-                saved += 1
-
-            print(f"page {page_num}: {saved} new jobs so far", flush=True)
+    saved = failures = 0
+    todo = [c for u, c in kept.items() if u not in done]
+    print(f"{len(todo)} details to fetch", flush=True)
+    try:
+        for card in todo:
             if args.limit and saved >= args.limit:
                 break
-            time.sleep(args.delay)
+            if not args.skip_details:
+                try:
+                    card.update(extract_detail(BeautifulSoup(client.get(card["job_url"]).text, "lxml")))
+                except requests.RequestException as exc:
+                    print(f"detail {card['job_url']}: {str(exc)[:120]}", flush=True)
+                    failures += 1
+                    if failures >= MAX_CONSECUTIVE_FAILURES:
+                        print(f"STOP -- {failures} details failed in a row", flush=True)
+                        break
+                    continue
+                failures = 0
+                if not card.get("description"):  # no empty rows: the next run retries it
+                    continue
+            write_jsonl(out, [card])
+            saved += 1
+            if saved % 25 == 0:
+                print(f"{saved}/{len(todo)} details", flush=True)
+    except BlockedError as exc:
+        print(f"STOP -- {exc}", flush=True)
 
-    print(f"saved {saved} new jobs, {len(done_listing)} total in {out}")
+    print(f"saved {saved} new jobs to {out}")
 
 
 if __name__ == "__main__":
