@@ -49,6 +49,29 @@ jobs:
       # Khi một tầng đã xong, thêm mã cổng vào --require để cấm nó quay lại BO QUA.
       # Ví dụ sau Sprint 1:  python tools/gates/check_gates.py --require AD-1 AD-2
 
+  scraper:
+    name: Scraper - observation tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: ci
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+        ports: ["5432:5432"]
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:ci@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -r scraper/requirements-vps.txt pytest
+      - working-directory: scraper
+        run: python -m pytest tests -q
+
   python:
     name: Python - ruff and pytest
     needs: detect
