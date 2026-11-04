@@ -24,5 +24,26 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
+  # MoMo, TopDev, ITviec: can Chromium. Chromium hay vo voi /dev/shm mac dinh 64 MB.
+  scraper-browser:
+    build:
+      context: ../scraper
+      dockerfile: Dockerfile.browser
+    image: haidoit-scraper-browser:local
+    env_file: [.env]
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - scraper_data:/app/data
+    shm_size: 512m
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+    restart: "no"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
 volumes:
   scraper_data:

@@ -1,7 +1,7 @@
 # Windows: make PY=.venv/Scripts/python <target>
 PY ?= .venv/bin/python
 
-.PHONY: crawl-itviec crawl-topdev crawl-vietnamworks crawl-topcv crawl-linkedin crawl-careerlink crawl-itnavi crawl-zalo crawl-momo dedupe details classify consolidate
+.PHONY: crawl-itviec crawl-topdev crawl-vietnamworks crawl-topcv crawl-linkedin crawl-careerlink crawl-itnavi crawl-zalo crawl-momo redact ingest dedupe clean extract test
 
 crawl-itviec:
 	$(PY) -m crawlers.itviec
@@ -30,20 +30,20 @@ crawl-zalo:
 crawl-momo:
 	$(PY) -m crawlers.momo
 
+redact:
+	$(PY) redact.py
+
+ingest:
+	$(PY) ingest.py
+
 dedupe:
-	$(PY) dedupe.py
+	$(PY) dedupe.py --raw data/redacted
 
-details:
-	$(PY) step-03-fetch-details.py
-
-classify:
-	$(PY) step-04-filter-tech.py
-
-consolidate:
-	$(PY) step-05-consolidate.py
+clean:
+	$(PY) clean.py
 
 extract:
-	$(PY) step-06-extract-with-llm.py
+	$(PY) extract.py
 
-jev-classify:
-	$(PY) step-07-extract-with-jev.py
+test:
+	$(PY) -m pytest tests -q

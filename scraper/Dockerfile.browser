@@ -1,0 +1,28 @@
+# Anh cho cac nguon can trinh duyet: MoMo, TopDev, ITviec. Chi lam buoc crawl;
+# moi buoc con lai chay o anh `scraper`, nhe hon nhieu.
+FROM python:3.13-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONIOENCODING=utf-8 \
+    PIP_NO_CACHE_DIR=1 \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    TZ=Asia/Ho_Chi_Minh
+
+WORKDIR /app
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates tzdata \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-vps.txt .
+RUN pip install --no-cache-dir -r requirements-vps.txt playwright \
+ && playwright install --with-deps chromium \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY . .
+
+RUN useradd -m -u 10001 runner && mkdir -p /app/data && chown -R runner:runner /app
+USER runner
+
+ENTRYPOINT ["python"]
+CMD ["pipeline.py", "--help"]

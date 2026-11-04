@@ -1,27 +1,36 @@
 #!/usr/bin/env bash
-# Nhip mot hang ngay: crawl 4 nguon HTTP -> dedupe -> sync vao Postgres.
-# Ranh gioi khong duoc vuot: job_observations phai co hang moi moi ngay.
-set -euo pipefail
+# Hai nhip cua spine. Nhip mot khong duoc phu thuoc API key hay ket qua nhip hai:
+# job_observations phai co hang moi moi ngay. Nhip hai hong thi mai chay lai.
+set -uo pipefail
 
 cd "$(dirname "$0")"
 # Mui gio tuong minh: VPS dang o Europe/London, nhung AD-15 dinh nghia
-# snapshot_id la YYYY-MM-DD theo Asia/Ho_Chi_Minh. Lay theo host se dan nhan
-# ngay hom truoc khi chay luc 2 gio sang gio VN.
+# snapshot_id la YYYY-MM-DD theo Asia/Ho_Chi_Minh.
 SNAPSHOT="$(TZ=Asia/Ho_Chi_Minh date +%F)"
 LOG_DIR="${LOG_DIR:-/opt/haidoit/logs}"
 mkdir -p "$LOG_DIR"
 LOG="$LOG_DIR/daily-$SNAPSHOT.log"
 
-dc() { docker compose -f compose.scraper.yml "$@"; }
-
-{
-  echo "=== $(date -Is) snapshot=$SNAPSHOT"
-  dc run --rm scraper pipeline.py crawl --sources zalo,itnavi,careerlink,vietnamworks || echo "crawl: co nguon loi, di tiep"
-  dc run --rm scraper pipeline.py dedupe
-  dc run --rm scraper pipeline.py process   # consolidate roi extract qua Batch API
-  dc run --rm scraper ingest.py --snapshot "$SNAPSHOT"
-  echo "=== $(date -Is) xong"
-} >> "$LOG" 2>&1
+exec 9>"$LOG_DIR/daily.lock"
+flock -n 9 || { echo "$(date -Is) luot truoc chua xong, bo qua" >> "$LOG"; exit 0; }
 
 # Giu 30 ngay log, dia chi co 33 GB
 find "$LOG_DIR" -name 'daily-*.log' -mtime +30 -delete
+
+run() { docker compose -f compose.scraper.yml run --rm -e HAIDO_SNAPSHOT="$SNAPSHOT" scraper "$@"; }
+run_browser() { docker compose -f compose.scraper.yml run --rm -e HAIDO_SNAPSHOT="$SNAPSHOT" scraper-browser "$@"; }
+
+BEAT_ONE=0
+{
+  echo "=== $(date -Is) snapshot=$SNAPSHOT nhip mot"
+  run pipeline.py crawl --sources zalo,itnavi,careerlink,vietnamworks,topdev
+  run_browser pipeline.py crawl --sources momo,itviec
+  run pipeline.py redact && run pipeline.py ingest
+  BEAT_ONE=$?
+  [ "$BEAT_ONE" -eq 0 ] || echo "NHIP MOT HONG, exit $BEAT_ONE: ngay nay co the mat quan sat"
+
+  echo "=== $(date -Is) nhip hai"
+  run pipeline.py dedupe && run pipeline.py process || echo "nhip hai hong, mai chay lai"
+  echo "=== $(date -Is) xong"
+} >> "$LOG" 2>&1
+exit "$BEAT_ONE"

@@ -1,16 +1,21 @@
-"""Pipeline orchestrator — crawl, dedupe, process, sync.
+"""Pipeline orchestrator, in the two beats of the architecture spine.
+
+Beat one, every day, no API key: crawl -> redact -> ingest.
+Beat two, needs ANTHROPIC_API_KEY: dedupe -> clean -> extract.
+If beat two fails, nothing is lost: it reruns tomorrow on what beat one kept.
 
 Usage:
-    python pipeline.py                  # full pipeline: crawl + dedupe + process
+    python pipeline.py                  # both beats
     python pipeline.py crawl            # crawl only
+    python pipeline.py redact           # remove contact details
+    python pipeline.py ingest           # write jobs and today's observations
     python pipeline.py dedupe           # dedupe only
-    python pipeline.py process          # step-03→06 only
-    python pipeline.py sync             # đổ kết quả vào Postgres qua ingest.py
+    python pipeline.py process          # clean + extract
     python pipeline.py crawl --sources zalo,itnavi
     python pipeline.py crawl --skip-details   # listing only for JS sites
 
 Each crawler runs as a subprocess. Failures are logged but do not stop the
-pipeline — partial data is better than no data.
+pipeline: partial data is better than no data.
 """
 
 import argparse
@@ -56,12 +61,14 @@ SOURCES = {
         "type": "playwright",
         "has_limit": True,
         "args": [],
+        "timeout": 6 * 3600,  # no detail limit; the seen file is written before details
     },
     "topdev": {
         "module": "crawlers.topdev",
-        "type": "playwright",
+        "type": "api",
         "has_limit": True,
         "args": [],
+        "timeout": 6 * 3600,  # no detail limit; the seen file is written before details
     },
     "topcv": {
         "module": "crawlers.topcv",
@@ -71,8 +78,8 @@ SOURCES = {
     },
 }
 
-API_FIRST = ["zalo", "itnavi", "careerlink", "vietnamworks"]
-PLAYWRIGHT_SECOND = ["momo", "itviec", "topdev", "topcv"]
+API_FIRST = ["zalo", "itnavi", "careerlink", "vietnamworks", "topdev"]
+PLAYWRIGHT_SECOND = ["momo", "itviec", "topcv"]
 ORDER = API_FIRST + PLAYWRIGHT_SECOND
 
 
@@ -88,7 +95,11 @@ def run_crawler(name: str, cfg: dict, extra_args: list[str]) -> bool:
 
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     start = time.monotonic()
-    result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=3600)
+    try:
+        result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=cfg.get("timeout", 3600))
+    except subprocess.TimeoutExpired:
+        print(f"  [{name}] FAILED (timeout)", flush=True)
+        return False
     elapsed = time.monotonic() - start
 
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
@@ -103,7 +114,7 @@ def run_dedupe() -> bool:
 
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     cmd = [sys.executable, "dedupe.py",
-           "--raw", "data/raw", "--out", "data/dedup.jsonl"]
+           "--raw", "data/redacted", "--out", "data/dedup.jsonl"]
     result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=300)
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
     print(f"  [dedupe] {status}", flush=True)
@@ -111,7 +122,7 @@ def run_dedupe() -> bool:
 
 
 STEPS = [
-    {"name": "consolidate", "script": "consolidate.py", "needs_api": None},
+    {"name": "clean", "script": "clean.py", "needs_api": None},
     {"name": "extract", "script": "extract.py", "needs_api": "ANTHROPIC_API_KEY"},
 ]
 
@@ -149,20 +160,13 @@ def run_process() -> dict[str, bool]:
     return results
 
 
-def run_sync() -> bool:
-    print(f"\n{'='*60}", flush=True)
-    print(f"  [sync] starting -- ingest.py", flush=True)
-    print(f"{'='*60}", flush=True)
-
-    if not os.environ.get("DATABASE_URL"):
-        print("  [sync] SKIPPED -- DATABASE_URL not set", flush=True)
-        return False
-
+def run_script(name: str, script: str) -> bool:
+    print(flush=True)
+    print(f"  [{name}] starting -- {script}", flush=True)
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
-    cmd = [sys.executable, "ingest.py"]
-    result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=600)
+    result = subprocess.run([sys.executable, script], env=env, cwd=str(SCRAPER_DIR), timeout=600)
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
-    print(f"  [sync] {status}", flush=True)
+    print(f"  [{name}] {status}", flush=True)
     return result.returncode == 0
 
 
@@ -179,7 +183,7 @@ def count_raw() -> dict[str, int]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="HaiDoIT scraper pipeline")
     parser.add_argument("action", nargs="?", default="all",
-                        choices=["all", "crawl", "dedupe", "process", "sync"])
+                        choices=["all", "crawl", "redact", "ingest", "dedupe", "process"])
     parser.add_argument("--sources", type=str, default="",
                         help="comma-separated list of sources (default: all)")
     parser.add_argument("--skip-details", action="store_true",
@@ -225,6 +229,14 @@ def main() -> None:
             print(f"  {name:15s} {n:>6d} jobs", flush=True)
         print(f"  {'TOTAL':15s} {total:>6d} jobs", flush=True)
 
+    if args.action in ("all", "redact"):
+        if not run_script("redact", "redact.py"):
+            sys.exit(1)
+
+    if args.action in ("all", "ingest"):
+        if not run_script("ingest", "ingest.py"):
+            sys.exit(1)
+
     if args.action in ("all", "dedupe"):
         run_dedupe()
         dedup = Path("data/dedup.jsonl")
@@ -241,9 +253,8 @@ def main() -> None:
         for name, ok in step_results.items():
             mark = "OK" if ok else "FAILED/SKIPPED"
             print(f"  {name:15s} {mark}", flush=True)
-
-    if args.action in ("all", "sync"):
-        run_sync()
+        if not all(step_results.values()):
+            sys.exit(1)
 
 
 if __name__ == "__main__":
