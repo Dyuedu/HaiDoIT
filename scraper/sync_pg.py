@@ -52,8 +52,10 @@ COLUMNS = [
     "description", "description_consolidated", "date_posted", "valid_through",
     "title_cleaned", "tech_stack", "keywords",
     "title_category", "seniority_category", "location_category", "work_model_category",
+    "skills_raw", "years_experience_min", "years_experience_max",
+    "is_it_job", "it_confidence", "model_version", "prompt_version",
 ]
-JSONB = {"skills", "tech_stack", "keywords"}
+JSONB = {"skills", "tech_stack", "keywords", "skills_raw"}
 
 
 def pick_input(explicit: str | None) -> Path:
@@ -119,6 +121,14 @@ def to_record(row: dict) -> dict | None:
         "seniority_category": classification.get("seniority_category"),
         "location_category": classification.get("location_category"),
         "work_model_category": classification.get("work_model_category"),
+        # Nguyen van, khong dich — xem FR-6 va ghi chu trong extract_gate.py
+        "skills_raw": extracted.get("skills_raw") or [],
+        "years_experience_min": extracted.get("years_experience_min"),
+        "years_experience_max": extracted.get("years_experience_max"),
+        "is_it_job": row.get("is_it_job"),
+        "it_confidence": row.get("it_confidence"),
+        "model_version": row.get("model_version"),
+        "prompt_version": row.get("prompt_version"),
     })
     for k in JSONB:
         rec[k] = json.dumps(rec[k], ensure_ascii=False)

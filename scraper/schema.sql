@@ -54,3 +54,20 @@ CREATE TABLE IF NOT EXISTS job_observations (
 
 CREATE INDEX IF NOT EXISTS idx_obs_snapshot ON job_observations (snapshot_date);
 CREATE INDEX IF NOT EXISTS idx_obs_site_snapshot ON job_observations (site, snapshot_date);
+
+-- ---------------------------------------------------------------------------
+-- Cot cua cong trich xuat (extract_gate.py).
+-- skills_raw giu NGUYEN VAN ky nang nhu tin viet, ke ca tieng Viet — FR-6 doi
+-- bao cao precision/recall tach rieng cho ky nang viet bang tieng Viet, va
+-- khong the do duoc dieu do neu chi luu ban da chuan hoa.
+-- model_version va prompt_version: FR-6 bat moi ket qua trich xuat phai truy
+-- duoc ve dung model va dung prompt da sinh ra no.
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS skills_raw JSONB DEFAULT '[]';
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS years_experience_min NUMERIC;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS years_experience_max NUMERIC;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS is_it_job BOOLEAN;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS it_confidence NUMERIC;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS model_version TEXT;
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS prompt_version TEXT;
+
+CREATE INDEX IF NOT EXISTS idx_jobs_is_it ON jobs (is_it_job);
