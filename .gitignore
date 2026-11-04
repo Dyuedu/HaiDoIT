@@ -18,3 +18,6 @@ Thumbs.db
 n# Browser profiles & local databases (never commit)
 chrome_topcv_profile/
 *.db
+
+# .env that bi cam, nhung file mau thi phai co trong repo
+!.env.example

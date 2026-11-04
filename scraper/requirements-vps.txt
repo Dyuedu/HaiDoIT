@@ -1,0 +1,9 @@
+# Phu thuoc cho VPS: chi 4 nguon HTTP thuan + dedupe + consolidate + sync.
+# Khong co playwright/nodriver — theo spine, nguon can trinh duyet chay tren
+# may nguoi that, khong chay trong container.
+requests
+beautifulsoup4
+lxml
+tqdm
+anthropic
+psycopg[binary]

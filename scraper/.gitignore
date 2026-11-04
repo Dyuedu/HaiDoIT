@@ -24,3 +24,6 @@ chrome_topcv_profile/
 __pycache__/
 *.pyc
 .DS_Store
+
+# file mau duoc phep
+!.env.example

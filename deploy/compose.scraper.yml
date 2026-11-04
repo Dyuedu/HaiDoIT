@@ -1,0 +1,28 @@
+# Nhip mot tren VPS. Mot lan chay la mot lenh, khong co service thuong tru:
+#   docker compose -f compose.scraper.yml run --rm scraper pipeline.py crawl --sources zalo,itnavi,careerlink,vietnamworks
+#
+# Dung `run --rm` chu khong `up` vi day la viec chay roi thoat, khong phai dich vu.
+
+services:
+  scraper:
+    build:
+      context: ../scraper
+      dockerfile: Dockerfile
+    image: haidoit-scraper:local
+    env_file: [.env]
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - scraper_data:/app/data
+    # 2 core / 3.8 GB: chan mot luot chay an het may
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+    restart: "no"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  scraper_data:
