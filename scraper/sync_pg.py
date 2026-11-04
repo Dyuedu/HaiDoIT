@@ -121,6 +121,14 @@ def to_record(row: dict) -> dict | None:
     })
     for k in JSONB:
         rec[k] = json.dumps(rec[k], ensure_ascii=False)
+
+    # Mot so nguon nhet nguyen object JSON-LD vao mot truong van ban — careerlink
+    # tra experience_level = {"@type": "OccupationalExperienceRequirements",
+    # "monthsOfExperience": 12}. Giu lai duoi dang JSON thay vi lam vo ca lo;
+    # viec rut ra so nam la cua buoc trich xuat (Story 1.6), khong phai cua sync.
+    for k, v in rec.items():
+        if k not in JSONB and isinstance(v, (dict, list)):
+            rec[k] = json.dumps(v, ensure_ascii=False)
     return rec
 
 
