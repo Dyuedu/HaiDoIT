@@ -428,7 +428,7 @@ flowchart LR
   pg --> backup["pg_dump hằng ngày, ra ngoài VPS, giữ 14 bản"]
 ```
 
-`web` không có đường nào tới `postgres` (AD-1). Playwright chỉ dùng ở các nguồn chạy thủ công, trên máy người thật, không trong container Dagster.
+`web` không có đường nào tới `postgres` (AD-1). Quyết ngày 04–05/11: TopDev chạy HTTP thường và chỉ lấy tin IT; MoMo và ITviec chạy Playwright tự động trên VPS, trong ảnh `scraper-browser` riêng, không trong container Dagster. TopCV vẫn thủ công. ITviec chạy trong lúc chờ thư đồng ý, xem R4 của PRD.
 
 ### Cây mã nguồn
 

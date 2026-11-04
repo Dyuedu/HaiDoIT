@@ -34,16 +34,23 @@ Bốn crawler mới dùng chung `crawlers/polite.py`: User-Agent trung thực, k
 ## Pipeline
 
 ```
-crawl                 → data/raw/<nguồn>.jsonl    4 nguồn HTTP trên VPS,
-                                                  4 nguồn cần trình duyệt chạy tay
-  dedupe.py           → data/dedup.jsonl          gom trùng
-  consolidate.py      → data/consolidated.jsonl   dọn HTML và boilerplate, không gọi API
-  extract.py          → data/extracted.jsonl      MỘT lần gọi Claude mỗi tin:
-                        data/non_it.jsonl         lọc + trích xuất + phân loại
-  ingest.py           → Postgres                  bảng jobs và job_observations
+Nhịp một, mỗi ngày, không cần API key:
+  crawl       → data/raw/<nguồn>.jsonl         những tin đang giữ
+                data/seen/<ngày>/<nguồn>.json  những gì listing hiện hôm nay
+  redact.py   → data/redacted/<nguồn>.jsonl    xóa liên hệ người đăng
+  ingest.py   → jobs, job_observations, source_runs
+
+Nhịp hai, cần ANTHROPIC_API_KEY, hỏng thì mai chạy lại:
+  dedupe.py   → data/dedup.jsonl               gom trùng
+  clean.py    → data/consolidated.jsonl        dọn HTML và boilerplate
+  extract.py  → jobs (UPDATE cột trích xuất), data/extracted.jsonl, data/non_it.jsonl
 ```
 
-Chạy cả chuỗi: `python pipeline.py`. Từng chặng: `pipeline.py crawl|dedupe|process|sync`.
+Chạy cả chuỗi: `python pipeline.py`. Từng chặng: `pipeline.py crawl|redact|ingest|dedupe|process`.
+
+`job_observations` lấy từ `data/seen`, không lấy từ file raw: crawler bỏ qua tin đã biết nên
+tin còn đăng không sinh dòng raw mới. Tin chỉ được coi là đã gỡ khi vắng mặt ở một lượt
+`source_runs.listing_complete = true`. MoMo và ITviec chạy trong ảnh `scraper-browser` có Chromium. TopDev chỉ lấy tin IT: thuộc danh mục IT của trang hoặc khớp từ khóa. TopCV không nằm trong lịch tự động và chưa ghi `data/seen`.
 
 Tên file theo từ vựng bước của `ARCHITECTURE-SPINE.md`, không đánh số — thứ tự đã
 đổi hai lần và số thứ tự mục theo mỗi lần đổi.
