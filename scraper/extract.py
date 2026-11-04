@@ -43,7 +43,7 @@ from crawlers.base import read_jsonl
 
 # Bump when the prompt or the schema changes. Stored on every row (FR-6) and
 # part of the cache key, so an old row is never mistaken for a new one.
-PROMPT_VERSION = "gate-v2-2026-11-04"
+PROMPT_VERSION = "gate-v3-2026-11-05"
 MODEL = "claude-haiku-5-5"
 
 IN_CANDIDATES = ["data/consolidated.jsonl", "data/dedup.jsonl"]
@@ -76,11 +76,11 @@ SCHEMA = {
     "properties": {
         "is_it_job": {
             "type": "boolean",
-            "description": "True if this posting is an IT/software role.",
+            "description": "See rule 3 of the system prompt.",
         },
         "it_confidence": {
             "type": "number",
-            "description": "Confidence in is_it_job, 0.0 to 1.0.",
+            "description": "How sure you are of is_it_job, 0.0 to 1.0.",
         },
         "title_cleaned": {
             "type": ["string", "null"],
@@ -128,16 +128,24 @@ SCHEMA = {
 }
 
 SYSTEM = (
-    "You read Vietnamese IT job postings and return structured facts.\n\n"
+    "You read job postings, mostly Vietnamese, some of them not IT, and return structured facts.\n\n"
     "Rules that matter more than fluency:\n"
     "1. Do NOT translate skills. Return them exactly as the posting writes them, "
-    "Vietnamese included. 'hoc may' stays 'hoc may'. Mapping to canonical codes "
+    "Vietnamese included. 'học máy' stays 'học máy'. Mapping to canonical codes "
     "happens later against a bilingual vocabulary.\n"
     "2. Never invent a number. If years of experience are not stated, return null "
-    "for both bounds. A range '2-3 nam' is min 2, max 3. 'tren 3 nam' is min 3, max null.\n"
-    "3. Judge is_it_job from the role, not from the company. A sales role at a "
-    "software company is not an IT job. Set it_confidence honestly; a posting you "
-    "are unsure about should score near 0.5, not 0.9.\n"
+    "for both bounds. A range '2-3 năm' is min 2, max 3. 'trên 3 năm' is min 3, max null.\n"
+    "3. is_it_job is true when the daily work is mainly building, testing, running or "
+    "securing software, data or IT infrastructure, or specifying software: software, "
+    "data and AI/ML engineering, embedded and firmware, QA of software, DevOps, system "
+    "and network administration, IT support, security, IT business analysis, product "
+    "and project management of software, UI/UX for software.\n"
+    "It is false for: sales, marketing, account or customer care, even when the product "
+    "is software; finance, HR, operations, teaching; QA/QC of physical products; "
+    "mechanical, electrical or power engineering; pure hardware design such as PCB "
+    "layout; business analysis of a non-software business.\n"
+    "Judge from the duties, not the title or the company. it_confidence is how sure you "
+    "are of this judgement; near 0.5 when the duties are unclear.\n"
     "4. Pick exactly one value from each category enum. Use 'Other' or 'Unknown' "
     "when the posting does not say — those are real answers, not failures.\n"
     "5. Extract only what the posting states. Do not fill gaps from what is typical."
@@ -203,7 +211,7 @@ def first_json(message) -> dict:
 
 
 def to_output_row(row: dict, facts: dict, model: str) -> dict:
-    """Keep the shape ingest.py already reads: extracted_info + classification."""
+    """Row shape for the JSONL output and for write_db."""
     out = dict(row)
     out["extracted_info"] = {
         "title_cleaned": facts.get("title_cleaned"),
@@ -278,8 +286,62 @@ def run_batch(client, todo, model, cache, poll: int):
     print("  results: %d ok, %d failed" % (ok, err), flush=True)
 
 
+UPDATE_JOB = """
+UPDATE jobs SET
+  description_consolidated = COALESCE(%(description_consolidated)s, description_consolidated),
+  title_cleaned = %(title_cleaned)s, tech_stack = %(tech_stack)s, keywords = %(keywords)s,
+  skills_raw = %(skills_raw)s,
+  years_experience_min = %(years_experience_min)s, years_experience_max = %(years_experience_max)s,
+  title_category = %(title_category)s, seniority_category = %(seniority_category)s,
+  location_category = %(location_category)s, work_model_category = %(work_model_category)s,
+  is_it_job = %(is_it_job)s, it_confidence = %(it_confidence)s,
+  model_version = %(model_version)s, prompt_version = %(prompt_version)s,
+  updated_at = now()
+WHERE job_url = %(job_url)s
+"""
+
+
+def to_update(row: dict) -> dict:
+    info, cls = row["extracted_info"], row["classification"]
+    return {
+        "job_url": row.get("job_url"),
+        "description_consolidated": row.get("description_consolidated"),
+        "title_cleaned": info["title_cleaned"],
+        "tech_stack": json.dumps(info["tech_stack"], ensure_ascii=False),
+        "keywords": json.dumps(info["keywords"], ensure_ascii=False),
+        "skills_raw": json.dumps(info["skills_raw"], ensure_ascii=False),
+        "years_experience_min": info["years_experience_min"],
+        "years_experience_max": info["years_experience_max"],
+        **cls,
+        "is_it_job": row["is_it_job"],
+        "it_confidence": row["it_confidence"],
+        "model_version": row["model_version"],
+        "prompt_version": row["prompt_version"],
+    }
+
+
+def write_db(rows: list[dict], conn=None, batch: int = 500) -> None:
+    """UPDATE, never upsert: ingest.py creates the row and owns the crawl columns."""
+    from db import connect
+
+    own = conn is None
+    conn = conn or connect()
+    updates = [to_update(r) for r in rows]
+    for i in range(0, len(updates), batch):
+        with conn.cursor() as cur:
+            cur.executemany(UPDATE_JOB, updates[i:i + batch])
+        conn.commit()
+    with conn.cursor() as cur:
+        cur.execute("SELECT count(*) AS n FROM jobs WHERE job_url = ANY(%s)", ([u["job_url"] for u in updates],))
+        found = cur.fetchone()["n"]
+    print("db      : %d rows updated, %d had no row in jobs" % (found, len(updates) - found), flush=True)
+    if own:
+        conn.close()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--no-db", action="store_true", help="write the JSONL files only")
     ap.add_argument("--input")
     ap.add_argument("--model", default=MODEL)
     ap.add_argument("--limit", type=int, default=0)
@@ -341,6 +403,8 @@ def main() -> int:
     print("\nkept    : %d -> %s" % (len(kept), OUT_PATH), flush=True)
     print("non-IT  : %d -> %s (dropped at confidence >= %.2f)"
           % (len(dropped), NON_IT_PATH, args.drop_threshold), flush=True)
+    if not args.no_db:
+        write_db(kept + dropped)
     if missing:
         print("missing : %d rows had no result — rerun to pick them up" % missing, flush=True)
     return 1 if missing and not kept else 0

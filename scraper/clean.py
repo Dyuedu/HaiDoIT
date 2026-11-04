@@ -1,4 +1,4 @@
-"""Step 04: consolidate tech job descriptions — rule-based cleanup (no LLM).
+"""Clean job descriptions: rule-based, no LLM. One record in, one record out.
 
 Reads data/dedup.jsonl, cleans each raw `description`:
   - strips residual HTML tags/entities
@@ -174,7 +174,7 @@ def clean_description(text: str) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Consolidate tech descriptions (rule-based, no LLM)"
+        description="Clean job descriptions (rule-based, no LLM)"
     )
     parser.add_argument("--in", dest="src", type=str, default="data/dedup.jsonl")
     parser.add_argument("--out", type=str, default="data/consolidated.jsonl")
@@ -186,7 +186,7 @@ def main() -> None:
     for r in rows:
         dedup.setdefault(r.get("job_url"), r)
     rows = list(dedup.values())
-    print(f"{len(rows)} unique tech jobs", flush=True)
+    print(f"{len(rows)} unique jobs", flush=True)
 
     if args.limit:
         rows = rows[: args.limit]
