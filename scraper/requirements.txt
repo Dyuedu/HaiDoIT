@@ -7,4 +7,3 @@ playwright
 matplotlib
 tqdm
 nodriver
-supabase

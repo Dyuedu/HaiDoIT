@@ -5,7 +5,7 @@ Usage:
     python pipeline.py crawl            # crawl only
     python pipeline.py dedupe           # dedupe only
     python pipeline.py process          # step-03→06 only
-    python pipeline.py sync             # sync classified.jsonl → Supabase
+    python pipeline.py sync             # đổ kết quả vào Postgres qua sync_pg.py
     python pipeline.py crawl --sources zalo,itnavi
     python pipeline.py crawl --skip-details   # listing only for JS sites
 
@@ -153,15 +153,15 @@ def run_process() -> dict[str, bool]:
 
 def run_sync() -> bool:
     print(f"\n{'='*60}", flush=True)
-    print(f"  [sync] starting -- sync_supabase.py", flush=True)
+    print(f"  [sync] starting -- sync_pg.py", flush=True)
     print(f"{'='*60}", flush=True)
 
-    if not os.environ.get("SUPABASE_URL") or not os.environ.get("SUPABASE_SERVICE_KEY"):
-        print("  [sync] SKIPPED -- SUPABASE_URL or SUPABASE_SERVICE_KEY not set", flush=True)
+    if not os.environ.get("DATABASE_URL"):
+        print("  [sync] SKIPPED -- DATABASE_URL not set", flush=True)
         return False
 
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
-    cmd = [sys.executable, "sync_supabase.py"]
+    cmd = [sys.executable, "sync_pg.py"]
     result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=600)
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
     print(f"  [sync] {status}", flush=True)
