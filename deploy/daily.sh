@@ -18,7 +18,8 @@ dc() { docker compose -f compose.scraper.yml "$@"; }
   echo "=== $(date -Is) snapshot=$SNAPSHOT"
   dc run --rm scraper pipeline.py crawl --sources zalo,itnavi,careerlink,vietnamworks || echo "crawl: co nguon loi, di tiep"
   dc run --rm scraper pipeline.py dedupe
-  dc run --rm scraper sync_pg.py --snapshot "$SNAPSHOT"
+  dc run --rm scraper pipeline.py process   # consolidate roi extract qua Batch API
+  dc run --rm scraper ingest.py --snapshot "$SNAPSHOT"
   echo "=== $(date -Is) xong"
 } >> "$LOG" 2>&1
 

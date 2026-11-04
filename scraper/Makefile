@@ -31,7 +31,7 @@ crawl-momo:
 	$(PY) -m crawlers.momo
 
 dedupe:
-	$(PY) step-02-dedupe.py
+	$(PY) dedupe.py
 
 details:
 	$(PY) step-03-fetch-details.py

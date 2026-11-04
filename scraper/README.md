@@ -34,15 +34,19 @@ Bốn crawler mới dùng chung `crawlers/polite.py`: User-Agent trung thực, k
 ## Pipeline
 
 ```
-crawl (9 crawlers)        → data/raw/*.jsonl                      7.753 tin thô (bản 26/10, 5 nguồn đầu)
-  step-02-dedupe          → data/step-02-dedup.jsonl              7.444 (bỏ trùng)
-  step-03-fetch-details   → data/step-03-full.jsonl               7.444 + mô tả đầy đủ
-  step-04-filter-tech     → data/step-04-tech.jsonl               3.469 tin IT
-                            data/step-04-non-tech.jsonl           3.975 tin không phải IT
-  step-05-consolidate     → data/step-05-consolidated.jsonl       3.469
-  step-06-extract-with-llm→ data/step-06-llm-extracted.jsonl      + title_cleaned, tech_stack, keywords
-  step-07-extract-with-jev→ data/step-07-jev-extracted.jsonl      + 4 nhóm phân loại  ← bộ dữ liệu công bố
+crawl                 → data/raw/<nguồn>.jsonl    4 nguồn HTTP trên VPS,
+                                                  4 nguồn cần trình duyệt chạy tay
+  dedupe.py           → data/dedup.jsonl          gom trùng
+  consolidate.py      → data/consolidated.jsonl   dọn HTML và boilerplate, không gọi API
+  extract.py          → data/extracted.jsonl      MỘT lần gọi Claude mỗi tin:
+                        data/non_it.jsonl         lọc + trích xuất + phân loại
+  ingest.py           → Postgres                  bảng jobs và job_observations
 ```
+
+Chạy cả chuỗi: `python pipeline.py`. Từng chặng: `pipeline.py crawl|dedupe|process|sync`.
+
+Tên file theo từ vựng bước của `ARCHITECTURE-SPINE.md`, không đánh số — thứ tự đã
+đổi hai lần và số thứ tự mục theo mỗi lần đổi.
 
 Hai mô hình, hai việc khác nhau:
 

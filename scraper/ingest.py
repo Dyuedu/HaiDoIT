@@ -1,9 +1,9 @@
 """Upsert pipeline output into Postgres (Supabase) over the shared pooler.
 
 Usage:
-    python sync_pg.py                      # auto-pick the richest file in data/
-    python sync_pg.py --input data/dedup.jsonl
-    python sync_pg.py --dry-run            # parse and report, write nothing
+    python ingest.py                      # auto-pick the richest file in data/
+    python ingest.py --input data/dedup.jsonl
+    python ingest.py --dry-run            # parse and report, write nothing
 
 Needs DATABASE_URL in the environment, e.g.
     postgresql://postgres.<ref>:<password>@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
@@ -121,7 +121,7 @@ def to_record(row: dict) -> dict | None:
         "seniority_category": classification.get("seniority_category"),
         "location_category": classification.get("location_category"),
         "work_model_category": classification.get("work_model_category"),
-        # Nguyen van, khong dich — xem FR-6 va ghi chu trong extract_gate.py
+        # Nguyen van, khong dich — xem FR-6 va ghi chu trong extract.py
         "skills_raw": extracted.get("skills_raw") or [],
         "years_experience_min": extracted.get("years_experience_min"),
         "years_experience_max": extracted.get("years_experience_max"),

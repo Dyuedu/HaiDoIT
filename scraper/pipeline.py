@@ -5,7 +5,7 @@ Usage:
     python pipeline.py crawl            # crawl only
     python pipeline.py dedupe           # dedupe only
     python pipeline.py process          # step-03→06 only
-    python pipeline.py sync             # đổ kết quả vào Postgres qua sync_pg.py
+    python pipeline.py sync             # đổ kết quả vào Postgres qua ingest.py
     python pipeline.py crawl --sources zalo,itnavi
     python pipeline.py crawl --skip-details   # listing only for JS sites
 
@@ -102,7 +102,7 @@ def run_dedupe() -> bool:
     print(f"{'='*60}", flush=True)
 
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
-    cmd = [sys.executable, "step-02-dedupe.py",
+    cmd = [sys.executable, "dedupe.py",
            "--raw", "data/raw", "--out", "data/dedup.jsonl"]
     result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=300)
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
@@ -111,8 +111,8 @@ def run_dedupe() -> bool:
 
 
 STEPS = [
-    {"name": "consolidate", "script": "step-04-consolidate.py", "needs_api": None},
-    {"name": "extract", "script": "extract_gate.py", "needs_api": "ANTHROPIC_API_KEY"},
+    {"name": "consolidate", "script": "consolidate.py", "needs_api": None},
+    {"name": "extract", "script": "extract.py", "needs_api": "ANTHROPIC_API_KEY"},
 ]
 
 
@@ -151,7 +151,7 @@ def run_process() -> dict[str, bool]:
 
 def run_sync() -> bool:
     print(f"\n{'='*60}", flush=True)
-    print(f"  [sync] starting -- sync_pg.py", flush=True)
+    print(f"  [sync] starting -- ingest.py", flush=True)
     print(f"{'='*60}", flush=True)
 
     if not os.environ.get("DATABASE_URL"):
@@ -159,7 +159,7 @@ def run_sync() -> bool:
         return False
 
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
-    cmd = [sys.executable, "sync_pg.py"]
+    cmd = [sys.executable, "ingest.py"]
     result = subprocess.run(cmd, env=env, cwd=str(SCRAPER_DIR), timeout=600)
     status = "OK" if result.returncode == 0 else f"FAILED (exit {result.returncode})"
     print(f"  [sync] {status}", flush=True)

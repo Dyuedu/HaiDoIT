@@ -4,10 +4,10 @@ Replaces step-03-filter-tech (Jev), step-05-extract (Claude) and
 step-06-classify (Jev). AD-9: one gate, one place where the operation is
 defined, one entry in REGISTRY.md.
 
-    python extract_gate.py                 # Batch API, half price, async
-    python extract_gate.py --sync          # immediate, for small runs and dev
-    python extract_gate.py --limit 20 --sync
-    python extract_gate.py --dry-run       # show what would be sent, call nothing
+    python extract.py                 # Batch API, half price, async
+    python extract.py --sync          # immediate, for small runs and dev
+    python extract.py --limit 20 --sync
+    python extract.py --dry-run       # show what would be sent, call nothing
 
 Needs ANTHROPIC_API_KEY.
 
@@ -203,7 +203,7 @@ def first_json(message) -> dict:
 
 
 def to_output_row(row: dict, facts: dict, model: str) -> dict:
-    """Keep the shape sync_pg.py already reads: extracted_info + classification."""
+    """Keep the shape ingest.py already reads: extracted_info + classification."""
     out = dict(row)
     out["extracted_info"] = {
         "title_cleaned": facts.get("title_cleaned"),
