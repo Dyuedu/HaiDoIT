@@ -4,7 +4,10 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-SNAPSHOT="$(date +%F)"
+# Mui gio tuong minh: VPS dang o Europe/London, nhung AD-15 dinh nghia
+# snapshot_id la YYYY-MM-DD theo Asia/Ho_Chi_Minh. Lay theo host se dan nhan
+# ngay hom truoc khi chay luc 2 gio sang gio VN.
+SNAPSHOT="$(TZ=Asia/Ho_Chi_Minh date +%F)"
 LOG_DIR="${LOG_DIR:-/opt/haidoit/logs}"
 mkdir -p "$LOG_DIR"
 LOG="$LOG_DIR/daily-$SNAPSHOT.log"
