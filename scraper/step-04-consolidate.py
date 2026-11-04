@@ -1,6 +1,6 @@
 """Step 04: consolidate tech job descriptions — rule-based cleanup (no LLM).
 
-Reads data/tech_filtered.jsonl, cleans each raw `description`:
+Reads data/dedup.jsonl, cleans each raw `description`:
   - strips residual HTML tags/entities
   - removes common boilerplate (apply-now, marketing fluff, nav/footer)
   - normalizes whitespace
@@ -176,7 +176,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Consolidate tech descriptions (rule-based, no LLM)"
     )
-    parser.add_argument("--in", dest="src", type=str, default="data/tech_filtered.jsonl")
+    parser.add_argument("--in", dest="src", type=str, default="data/dedup.jsonl")
     parser.add_argument("--out", type=str, default="data/consolidated.jsonl")
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()
