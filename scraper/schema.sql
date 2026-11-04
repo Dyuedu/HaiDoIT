@@ -56,7 +56,7 @@ CREATE INDEX IF NOT EXISTS idx_obs_snapshot ON job_observations (snapshot_date);
 CREATE INDEX IF NOT EXISTS idx_obs_site_snapshot ON job_observations (site, snapshot_date);
 
 -- ---------------------------------------------------------------------------
--- Cot cua cong trich xuat (extract_gate.py).
+-- Cot cua cong trich xuat (extract.py).
 -- skills_raw giu NGUYEN VAN ky nang nhu tin viet, ke ca tieng Viet — FR-6 doi
 -- bao cao precision/recall tach rieng cho ky nang viet bang tieng Viet, va
 -- khong the do duoc dieu do neu chi luu ban da chuan hoa.
@@ -71,3 +71,35 @@ ALTER TABLE jobs ADD COLUMN IF NOT EXISTS model_version TEXT;
 ALTER TABLE jobs ADD COLUMN IF NOT EXISTS prompt_version TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_jobs_is_it ON jobs (is_it_job);
+
+-- ---------------------------------------------------------------------------
+-- Moi nguon, moi ngay, mot hang. Tin vang mat khoi mot luot listing_complete = false
+-- khong chung minh duoc gi; chi luot quet het listing moi noi duoc tin da bi go.
+CREATE TABLE IF NOT EXISTS source_runs (
+    source           TEXT NOT NULL,
+    snapshot_date    DATE NOT NULL,
+    listing_complete BOOLEAN NOT NULL,
+    seen_count       INTEGER NOT NULL,
+    unresolved_count INTEGER NOT NULL DEFAULT 0,
+    error            TEXT,
+    finished_at      TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (source, snapshot_date)
+);
+
+ALTER TABLE source_runs ENABLE ROW LEVEL SECURITY;
+
+-- ---------------------------------------------------------------------------
+-- Moi noi dung khac nhau cua mot tin, mot hang. Chi de do JD doi thuong xuyen den
+-- dau; chua lam tin nao bi trich xuat lai. Bon nguon chi tai chi tiet mot lan
+-- (ITNavi, CareerLink, TopDev, ITviec) khong the hien thay doi o day.
+CREATE TABLE IF NOT EXISTS job_content_versions (
+    job_url         TEXT NOT NULL,
+    content_hash    TEXT NOT NULL,
+    site            TEXT NOT NULL,
+    first_seen_date DATE NOT NULL,
+    PRIMARY KEY (job_url, content_hash)
+);
+
+CREATE INDEX IF NOT EXISTS idx_versions_site_date ON job_content_versions (site, first_seen_date);
+
+ALTER TABLE job_content_versions ENABLE ROW LEVEL SECURITY;
