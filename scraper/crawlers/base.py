@@ -1,7 +1,9 @@
 """Shared helpers for the job-board crawlers."""
 
 import json
+import os
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -27,6 +29,42 @@ def read_jsonl(path) -> list:
             if line:
                 rows.append(json.loads(line))
     return rows
+
+
+def today_snapshot() -> str:
+    """snapshot_id is YYYY-MM-DD in Asia/Ho_Chi_Minh (AD-15), whatever the host clock says."""
+    override = os.environ.get("HAIDO_SNAPSHOT")
+    if override:
+        return override
+    return datetime.now(timezone(timedelta(hours=7))).date().isoformat()
+
+
+def write_seen(source: str, urls, complete: bool, unresolved: int = 0, error: str | None = None) -> Path:
+    """Record what the listing showed in this run, whether or not details were fetched.
+
+    This file, not the raw file, is the source of job_observations. Raw files say
+    what we hold; a crawler that skips known jobs writes nothing for a job that
+    is still open. `complete` says the whole listing was walked: only then does
+    absence from the file mean the job is gone. A second run on the same day merges.
+    """
+    path = Path("data/seen") / today_snapshot() / f"{source}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    merged = list(dict.fromkeys(u for u in urls if u))
+    if path.exists():
+        old = json.loads(path.read_text(encoding="utf-8"))
+        merged = list(dict.fromkeys(old["job_urls"] + merged))
+        complete = complete or old["listing_complete"]
+    doc = {
+        "source": source,
+        "snapshot": today_snapshot(),
+        "listing_complete": complete,
+        "unresolved": unresolved,
+        "error": None if complete else error,
+        "job_urls": merged,
+    }
+    path.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+    print(f"seen: {len(merged)} jobs, listing_complete={complete}, unresolved={unresolved}", flush=True)
+    return path
 
 
 def interactive_scrape(page, parse_fn, out_path, *, interval=2.0, label="") -> dict:

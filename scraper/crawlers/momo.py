@@ -11,11 +11,12 @@ import json
 import re
 from pathlib import Path
 
+import requests
 from bs4 import BeautifulSoup
 
-from crawlers.base import write_jsonl
+from crawlers.base import write_jsonl, write_seen
 from crawlers.browser_polite import browser_polite
-from crawlers.polite import PoliteClient
+from crawlers.polite import BlockedError, PoliteClient
 
 BASE = "https://momo.careers"
 LIST_URL = f"{BASE}/jobs-opening"
@@ -23,12 +24,14 @@ DEFAULT_GROUPS = "DGM.0001,DGM.0002"
 NEXT_DATA = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 
 
-def list_job_paths(ctx, group: str) -> list[str]:
+def list_job_paths(ctx, group: str) -> tuple[list[str], bool]:
     page = ctx.new_page()
     page.goto(f"{LIST_URL}?groups={group}", wait_until="networkidle", timeout=60_000)
     more = page.locator("div.mt-6.flex.justify-center button")
+    exhausted = False
     for _ in range(30):
         if not more.count():
+            exhausted = True
             break
         more.first.click()
         page.wait_for_timeout(3000)
@@ -36,7 +39,7 @@ def list_job_paths(ctx, group: str) -> list[str]:
         "a[href^='/jobs/']", "els => els.map(e => e.getAttribute('href'))"
     )
     page.close()
-    return list(dict.fromkeys(paths))
+    return list(dict.fromkeys(paths)), exhausted
 
 
 def text_of(html: str | None) -> str:
@@ -78,25 +81,35 @@ def main() -> None:
 
     client = PoliteClient(delay=args.delay)
     total = 0
+    seen: list[str] = []
+    complete, error = False, None
     try:
         with browser_polite(headless=args.headless) as ctx:
+            all_paths: list[str] = []
             for group in args.groups.split(","):
-                paths = list_job_paths(ctx, group)
+                paths, exhausted = list_job_paths(ctx, group)
                 print(f"{group}: {len(paths)} jobs listed", flush=True)
-                for path in paths:
-                    url = BASE + path
-                    resp = client.get(url)
-                    m = NEXT_DATA.search(resp.text)
-                    detail = (
-                        json.loads(m.group(1))["props"]["pageProps"].get("dataJobDetail")
-                        if m else None
-                    )
-                    if not detail:
-                        print(f"  no job data: {url}", flush=True)
-                        continue
-                    write_jsonl(out, [parse_job(url, detail)])
-                    total += 1
-    except Exception as exc:
+                if not paths or not exhausted:
+                    raise RuntimeError(f"{group}: listing not fully loaded ({len(paths)} jobs)")
+                all_paths.extend(p for p in paths if p not in all_paths)
+                seen = [BASE + p for p in all_paths]
+        complete = True
+    except Exception as exc:  # noqa: BLE001 - whatever stopped the walk, keep what it saw
+        error = str(exc)[:300]
+        print(f"STOP -- {error}", flush=True)
+    write_seen("momo", seen, complete, error=error)
+
+    try:
+        for url in seen:
+            resp = client.get(url)
+            m = NEXT_DATA.search(resp.text)
+            detail = json.loads(m.group(1))["props"]["pageProps"].get("dataJobDetail") if m else None
+            if not detail:
+                print(f"  no job data: {url}", flush=True)
+                continue
+            write_jsonl(out, [parse_job(url, detail)])
+            total += 1
+    except (BlockedError, requests.RequestException) as exc:
         print(f"STOP -- {exc}", flush=True)
 
     print(f"saved {total} jobs to {out}")

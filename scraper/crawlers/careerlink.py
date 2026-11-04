@@ -5,8 +5,9 @@ Listing pages give job URLs; each detail page carries a schema.org JobPosting
 
 CareerLink shows hCaptcha after ~100 requests/hour, so a run is capped at
 --max-requests (default 40) and refuses to start within an hour of the
-previous run. Progress lives in data/state/careerlink.json; re-run until the
-queue is empty.
+previous run. Each run walks the whole listing first, because that is what
+proves a job is still open, then spends what is left of the budget on details
+of jobs listed today. Skipped URLs live in data/state/careerlink.json.
 """
 
 import argparse
@@ -16,21 +17,23 @@ import time
 from pathlib import Path
 from urllib.parse import urljoin
 
+import requests
 from bs4 import BeautifulSoup
 
-from crawlers.base import read_jsonl, write_jsonl
+from crawlers.base import read_jsonl, write_jsonl, write_seen
 from crawlers.polite import BlockedError, BudgetExhausted, PoliteClient
 
 BASE = "https://www.careerlink.vn"
 CATEGORIES = ["/viec-lam/cntt-phan-mem/19", "/viec-lam/cntt-phan-cung-mang/130"]
 JOB_LINK = re.compile(r"^/tim-viec-lam/[^/]+/\d+$")
 MIN_GAP_SECONDS = 3600
+MAX_LISTING_PAGES = 100
 
 
 def load_state(path: Path) -> dict:
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
-    return {"pages": {}, "listing_done": [], "queue": [], "skipped": [], "last_run": 0}
+    return {"skipped": [], "last_run": 0}
 
 
 def save_state(path: Path, state: dict) -> None:
@@ -101,23 +104,30 @@ def parse_job(url: str, posting: dict) -> dict:
     }
 
 
-def crawl_listing(client: PoliteClient, state: dict) -> None:
-    queued = set(state["queue"])
+def crawl_listing(client: PoliteClient, seen: list) -> None:
+    """Walk every page of every category, appending to `seen` as it goes.
+
+    Stops a category on a page with no link this walk has not met yet; comparing
+    against yesterday's queue instead would stop at page 1 once nothing is new.
+    """
     for cat in CATEGORIES:
-        if cat in state["listing_done"]:
-            continue
-        page = state["pages"].get(cat, 0) + 1
-        while True:
+        met = set()
+        for page in range(1, MAX_LISTING_PAGES + 1):
             url = f"{BASE}{cat}" + (f"?page={page}" if page > 1 else "")
-            new = [u for u in job_links(client.get(url).text) if u not in queued]
-            state["pages"][cat] = page
+            try:
+                links = job_links(client.get(url).text)
+            except requests.HTTPError as exc:
+                if exc.response is not None and exc.response.status_code == 404:
+                    break  # past the last page
+                raise
+            new = [u for u in links if u not in met]
             if not new:
-                state["listing_done"].append(cat)
                 break
-            state["queue"].extend(new)
-            queued.update(new)
-            print(f"{cat} page {page}: +{len(new)} (queue {len(state['queue'])})", flush=True)
-            page += 1
+            met.update(new)
+            seen.extend(u for u in new if u not in seen)
+            print(f"{cat} page {page}: +{len(new)} (listed {len(seen)})", flush=True)
+        else:
+            raise RuntimeError(f"{cat}: hit {MAX_LISTING_PAGES} pages before the listing ended")
 
 
 def main() -> None:
@@ -126,7 +136,6 @@ def main() -> None:
     parser.add_argument("--delay", type=float, default=15.0)
     parser.add_argument("--out", type=str, default="data/raw/careerlink.jsonl")
     parser.add_argument("--state", type=str, default="data/state/careerlink.json")
-    parser.add_argument("--refresh-listing", action="store_true", help="re-scan listing pages")
     parser.add_argument("--force", action="store_true", help="ignore the 1-hour gap")
     args = parser.parse_args()
 
@@ -134,20 +143,32 @@ def main() -> None:
     state = load_state(state_path)
     since = time.time() - state["last_run"]
     if since < MIN_GAP_SECONDS and not args.force:
-        print(f"last run {since / 60:.0f} min ago — wait {(MIN_GAP_SECONDS - since) / 60:.0f} min")
+        print(f"last run {since / 60:.0f} min ago, wait {(MIN_GAP_SECONDS - since) / 60:.0f} min")
         return
-    if args.refresh_listing:
-        state["pages"], state["listing_done"] = {}, []
 
     done = {r["job_url"] for r in read_jsonl(out)}
     client = PoliteClient(delay=args.delay, max_requests=args.max_requests)
-    saved = 0
+    seen, saved = [], 0
+    complete, error = False, None
     try:
-        crawl_listing(client, state)
-        for url in state["queue"]:
+        crawl_listing(client, seen)
+        complete = True
+    except (BudgetExhausted, BlockedError, RuntimeError, requests.RequestException) as exc:
+        error = str(exc)
+        print(f"listing incomplete: {exc}", flush=True)
+    # Written before the details, so a block during details cannot lose the observation.
+    write_seen("careerlink", seen, complete, error=error)
+
+    try:
+        for url in seen:  # only jobs listed today: an old queue entry may be long gone
             if url in done or url in state["skipped"]:
                 continue
-            posting = job_posting(client.get(url).text)
+            try:
+                posting = job_posting(client.get(url).text)
+            except requests.HTTPError as exc:
+                print(f"skip {url}: {exc}", flush=True)
+                state["skipped"].append(url)
+                continue
             if not posting.get("description"):
                 state["skipped"].append(url)
                 continue
@@ -156,16 +177,14 @@ def main() -> None:
             saved += 1
     except BudgetExhausted:
         print(f"request budget used ({client.count})", flush=True)
-    except BlockedError as exc:
-        print(f"STOP — blocked: {exc}", flush=True)
+    except (BlockedError, requests.RequestException) as exc:
+        print(f"STOP -- {exc}", flush=True)
     finally:
         state["last_run"] = time.time()
         save_state(state_path, state)
 
-    left = len([u for u in state["queue"] if u not in done and u not in state["skipped"]])
-    print(f"saved {saved} jobs this run, {len(done)} total in {out}, {left} left in queue")
-    if left or len(state["listing_done"]) < len(CATEGORIES):
-        print("run again in >= 1 hour to continue")
+    left = len([u for u in seen if u not in done and u not in state["skipped"]])
+    print(f"saved {saved} jobs this run, {len(done)} total in {out}, {left} listed without detail")
 
 
 if __name__ == "__main__":

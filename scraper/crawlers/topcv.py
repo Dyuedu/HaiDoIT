@@ -5,15 +5,20 @@ import json
 import random
 import re
 from datetime import datetime
+from pathlib import Path
 from bs4 import BeautifulSoup
 import nodriver as uc
 
-DB_PATH = "topcv_jobs.db"
+from crawlers.base import write_seen
+
+DB_PATH = os.environ.get("TOPCV_DB", "data/state/topcv_jobs.db")
+CHROME_PATH = os.environ.get("CHROME_PATH")  # nodriver auto-detects when unset
 PROFILE_DIR = os.path.abspath("./chrome_topcv_profile")
 BASE_SEARCH_URL = "https://www.topcv.vn/tim-viec-lam-cong-nghe-thong-tin-cr257?page={page}"
 
 # 1. KHỞI TẠO DATABASE SQLITE LOCAL
 def init_db():
+    Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -70,14 +75,17 @@ class TopCVBrowserClient:
         os.makedirs(PROFILE_DIR, exist_ok=True)
         
         # Tinh chỉnh 1: Lưu giữ cf_clearance cookie và session trong user_data_dir
-        self.browser = await uc.start(
+        start_kwargs = dict(
             headless=True,
             user_data_dir=PROFILE_DIR,
             browser_args=[
                 "--disable-blink-features=AutomationControlled",
-                "--blink-settings=imagesEnabled=false" # Chặn tải ảnh giúp trang nhẹ và nhanh gấp 3 lần
-            ]
+                "--blink-settings=imagesEnabled=false",  # Chặn tải ảnh giúp trang nhẹ và nhanh gấp 3 lần
+            ],
         )
+        if CHROME_PATH:
+            start_kwargs["browser_executable_path"] = CHROME_PATH
+        self.browser = await uc.start(**start_kwargs)
         self.page = await self.browser.get("https://www.topcv.vn/")
         await self._wait_for_cloudflare()
 
@@ -126,19 +134,26 @@ def extract_job_id_from_url(url: str) -> str | None:
     return match.group(1) if match else None
 
 async def crawl_listing_pages(conn: sqlite3.Connection, client: TopCVBrowserClient, start_page: int = 1, max_pages: int = 10):
+    """Walk the listing. Returns (absolute URLs seen, reached_the_end)."""
     cursor = conn.cursor()
+    seen: list[str] = []
+    reached_end = False
     for page_num in range(start_page, start_page + max_pages):
         url = BASE_SEARCH_URL.format(page=page_num)
         print(f"\n[*] Đang quét trang danh sách {page_num}: {url}")
         
         html = await client.fetch(url, is_listing=True)
-        if not html or html == "NOT_FOUND":
+        if html == "NOT_FOUND":
+            reached_end = True
             break
+        if not html:
+            break  # a block or a load error: listing stays incomplete
 
         soup = BeautifulSoup(html, "lxml")
         job_cards = soup.select("div.job-item-search-result")
         
         if not job_cards:
+            reached_end = True  # an empty page is the only proof we reached the end
             print("[!] Không tìm thấy danh sách job trên trang này. Dừng phân trang.")
             break
 
@@ -166,11 +181,17 @@ async def crawl_listing_pages(conn: sqlite3.Connection, client: TopCVBrowserClie
                 VALUES (?, ?, ?, ?, ?)
             """, (str(job_id), raw_url, title, company, salary))
             
+            abs_url = raw_url if raw_url.startswith("http") else "https://www.topcv.vn" + raw_url
+            if abs_url not in seen:
+                seen.append(abs_url)
             if cursor.rowcount > 0:
                 new_jobs_count += 1
 
         conn.commit()
         print(f"[+] Trang {page_num}: Tìm thấy {len(job_cards)} jobs -> Thêm mới {new_jobs_count} jobs.")
+    else:
+        reached_end = True  # walked every page up to max_pages
+    return seen, reached_end
 
 
 # 4. PHASE 2: BÓC TÁCH CHI TIẾT JD THEO BATCH AN TOÀN
@@ -374,16 +395,28 @@ def export_jsonl(db_path: str = DB_PATH, out_path: str = "data/raw/topcv.jsonl")
 async def main():
     db_conn = init_db()
     client = TopCVBrowserClient()
+    seen, complete, error = [], False, None
     try:
         await client.start()
-        await crawl_listing_pages(db_conn, client, start_page=1, max_pages=200)
-        await process_job_queue(db_conn, client, batch_size=5000, cooldown_every=30)
+        try:
+            seen, complete = await crawl_listing_pages(db_conn, client, start_page=1, max_pages=200)
+        except Exception as exc:  # noqa: BLE001 - a block mid-walk keeps what it saw
+            error = str(exc)[:300]
+            print(f"[!] listing incomplete: {error}")
+        # Written before details, so a block during details cannot lose the observation.
+        write_seen("topcv", seen, complete, error=error)
+        if complete or seen:
+            await process_job_queue(db_conn, client, batch_size=5000, cooldown_every=30)
+    except Exception as exc:  # noqa: BLE001 - Cloudflare never cleared, or the browser died
+        error = str(exc)[:300]
+        print(f"[!] STOP -- {error}")
+        write_seen("topcv", seen, complete, error=error)
     finally:
         client.close()
         db_conn.close()
         print("\n[+] Hoàn tat phien cao du lieu TopCV!")
 
-    export_jsonl()
+    export_jsonl(out_path="data/raw/topcv.jsonl")
 
 
 if __name__ == "__main__":

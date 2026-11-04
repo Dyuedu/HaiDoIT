@@ -11,9 +11,10 @@ import argparse
 import json
 from pathlib import Path
 
+import requests
 from bs4 import BeautifulSoup
 
-from crawlers.base import write_jsonl
+from crawlers.base import write_jsonl, write_seen
 from crawlers.polite import BlockedError, PoliteClient
 
 ENDPOINT = "https://ms.vietnamworks.com/job-search/v1.0/search"
@@ -103,12 +104,14 @@ def main() -> None:
     client = PoliteClient(delay=args.delay)
     seen = set()
     total = 0
+    complete, error = False, None
     try:
         for page_num in range(args.pages):
             body = {**BODY_TEMPLATE, "page": page_num}
             resp = client.post(ENDPOINT, json=body)
             jobs = resp.json().get("data") or []
             if not jobs:
+                complete = True  # an empty page is the only proof we reached the end
                 break
             rows = [parse_job(j) for j in jobs]
             rows = [r for r in rows if r["job_url"] and r["job_url"] not in seen]
@@ -120,10 +123,15 @@ def main() -> None:
             total += len(rows)
             print(f"page {page_num + 1}: {len(rows)} jobs (total {total})", flush=True)
             if args.limit and total >= args.limit:
+                error = f"stopped at --limit {args.limit}"
                 break
-    except BlockedError as exc:
-        print(f"STOP -- blocked: {exc}", flush=True)
+        else:
+            error = f"hit --pages {args.pages} before the listing ended"
+    except (BlockedError, requests.RequestException) as exc:
+        error = str(exc)
+        print(f"STOP -- {exc}", flush=True)
 
+    write_seen("vietnamworks", seen, complete, error=error)
     print(f"saved {total} jobs to {out}")
 
 

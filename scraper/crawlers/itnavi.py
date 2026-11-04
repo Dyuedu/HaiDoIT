@@ -2,17 +2,19 @@
 
 Listing pages (10 jobs each) give job ids via `div.jsl-item[data-id]`; the
 detail comes from the JSON endpoint the page itself calls,
-/ajax/get-job-by-id/{id}. A run saves at most --limit new jobs (default 150);
-jobs already in the output file are skipped, so re-running continues.
+/ajax/get-job-by-id/{id}. A run fetches at most --limit new details (default 150)
+and skips jobs already in the output file, but always walks the whole listing:
+that walk is what proves a known job is still open.
 """
 
 import argparse
 from datetime import datetime
 from pathlib import Path
 
+import requests
 from bs4 import BeautifulSoup
 
-from crawlers.base import read_jsonl, write_jsonl
+from crawlers.base import read_jsonl, write_jsonl, write_seen
 from crawlers.polite import BlockedError, PoliteClient
 
 BASE = "https://itnavi.com.vn"
@@ -53,41 +55,57 @@ def parse_job(d: dict) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Crawl ITNavi jobs (resumable)")
-    parser.add_argument("--limit", type=int, default=150, help="new jobs per run")
+    parser.add_argument("--limit", type=int, default=150, help="new job details per run")
     parser.add_argument("--pages", type=int, default=80)
     parser.add_argument("--delay", type=float, default=3.0)
     parser.add_argument("--out", type=str, default="data/raw/itnavi.jsonl")
     args = parser.parse_args()
 
     out = Path(args.out)
-    done = {r.get("job_id") for r in read_jsonl(out)}
+    # The listing gives ids only; the URL comes from the detail we already saved.
+    known = {r.get("job_id"): r.get("job_url") for r in read_jsonl(out)}
     client = PoliteClient(delay=args.delay)
-    saved = 0
+    seen_ids, saved, unresolved = set(), 0, 0
+    complete, error = False, None
     try:
         for page in range(1, args.pages + 1):
             soup = BeautifulSoup(client.get(f"{LIST_URL}?page={page}").text, "lxml")
             ids = [int(c["data-id"]) for c in soup.select("div.jsl-item[data-id]")]
-            if not ids:
+            new_ids = [i for i in ids if i not in seen_ids]
+            if not new_ids:  # empty page, or the site repeating its last page
+                complete = True
                 break
-            for job_id in ids:
-                if job_id in done:
+            for job_id in new_ids:
+                seen_ids.add(job_id)
+                if job_id in known:
                     continue
-                payload = client.get(DETAIL_URL.format(job_id)).json()
+                if saved >= args.limit:  # keep walking the listing, stop fetching details
+                    unresolved += 1
+                    continue
+                try:
+                    payload = client.get(DETAIL_URL.format(job_id)).json()
+                except requests.RequestException as exc:
+                    print(f"detail {job_id}: {exc}", flush=True)
+                    unresolved += 1
+                    continue
                 d = payload.get("data") or {}
                 if not payload.get("success") or not d.get("job_content"):
+                    unresolved += 1
                     continue
-                write_jsonl(out, [parse_job(d)])
-                done.add(job_id)
+                row = parse_job(d)
+                write_jsonl(out, [row])
+                known[job_id] = row["job_url"]
                 saved += 1
-                if saved >= args.limit:
-                    break
-            print(f"page {page}: {saved} new jobs so far", flush=True)
-            if saved >= args.limit:
-                break
-    except BlockedError as exc:
-        print(f"STOP — blocked: {exc}", flush=True)
+            print(f"page {page}: {len(seen_ids)} listed, {saved} new details", flush=True)
+        else:
+            error = f"hit --pages {args.pages} before the listing ended"
+    except (BlockedError, requests.RequestException) as exc:
+        error = str(exc)
+        print(f"STOP -- {exc}", flush=True)
 
-    print(f"saved {saved} new jobs, {len(done)} total in {out}")
+    write_seen("itnavi", [known[i] for i in seen_ids if i in known], complete,
+               unresolved=unresolved, error=error)
+    print(f"saved {saved} new jobs, {len(known)} total in {out}")
 
 
 if __name__ == "__main__":

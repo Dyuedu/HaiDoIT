@@ -2,21 +2,31 @@
 
 GET /api/v2/jobs?option=queryJobs&count=N&teams=<slug> returns every open job
 of a team with full description and requirements, so one request per team is
-enough. Non-tech teams are kept; step-03 filters them out.
+enough. Non-tech teams are kept; extract.py labels them.
 """
 
 import argparse
+import re
 from datetime import datetime
 from pathlib import Path
 
+import requests
 from bs4 import BeautifulSoup
 
-from crawlers.base import write_jsonl
-from crawlers.polite import PoliteClient
+from crawlers.base import write_jsonl, write_seen
+from crawlers.polite import BlockedError, PoliteClient
 
 BASE = "https://zalo.careers"
 JOBS_API = f"{BASE}/api/v2/jobs"
 TEAMS_API = f"{BASE}/api/v2/teams"
+NOISE = re.compile(r"-n-[^/]*$")
+
+
+def stable_url(slug: str) -> str:
+    """Job identity. The API re-randomises the "-n-<noise>" suffix of the slug, and
+    masterJobId too, on every request, so only the name part stays the same. The
+    site needs the noise to open a page, so this URL identifies a job but 404s."""
+    return f"{BASE}/job/{NOISE.sub('', slug)}"
 
 
 def text_of(html: str | None) -> str:
@@ -36,7 +46,7 @@ def parse_job(j: dict, team: str) -> dict:
     )
     return {
         "site": "zalo",
-        "job_url": f"{BASE}/job/{j.get('slug')}",
+        "job_url": stable_url(j["slug"]),
         "title": (j.get("name") or "").strip(),
         "company": "Zalo (VNG)",
         "team": team,
@@ -59,17 +69,25 @@ def main() -> None:
         out.unlink()
 
     client = PoliteClient(delay=args.delay)
-    teams = client.get(TEAMS_API).json().get("data") or []
-    total = 0
-    for team in teams:
-        params = {"option": "queryJobs", "count": 500, "teams": team["slug"]}
-        jobs = client.get(JOBS_API, params=params).json().get("data") or []
-        rows = [parse_job(j, team["name"]) for j in jobs if j.get("slug")]
-        write_jsonl(out, rows)
-        total += len(rows)
-        print(f"{team['name']}: {len(rows)} jobs (total {total})", flush=True)
+    urls, complete, error = [], False, None
+    try:
+        teams = client.get(TEAMS_API).json().get("data") or []
+        for team in teams:
+            params = {"option": "queryJobs", "count": 500, "teams": team["slug"]}
+            jobs = client.get(JOBS_API, params=params).json().get("data") or []
+            rows = [parse_job(j, team["name"]) for j in jobs if j.get("slug")]
+            write_jsonl(out, rows)
+            urls.extend(r["job_url"] for r in rows)
+            print(f"{team['name']}: {len(rows)} jobs (total {len(urls)})", flush=True)
+        complete = bool(teams)
+        if not teams:
+            error = "teams API returned nothing"
+    except (BlockedError, requests.RequestException) as exc:
+        error = str(exc)
+        print(f"STOP -- {exc}", flush=True)
 
-    print(f"saved {total} jobs to {out}")
+    write_seen("zalo", urls, complete, error=error)
+    print(f"saved {len(urls)} jobs to {out}")
 
 
 if __name__ == "__main__":

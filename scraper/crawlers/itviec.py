@@ -13,12 +13,13 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
-from crawlers.base import read_jsonl, write_jsonl
-from crawlers.browser_polite import browser_polite
-from crawlers.polite import CAPTCHA_MARKERS
+from crawlers.base import read_jsonl, write_jsonl, write_seen
+from crawlers.browser_polite import MAX_CONSECUTIVE_FAILURES, PAGE_RECYCLE_EVERY, browser_polite, fresh_page
+from crawlers.polite import CAPTCHA_MARKERS, BlockedError
 
 BASE = "https://itviec.com"
 LIST_URL = "https://itviec.com/it-jobs"
+EMPTY_PAGE_TRIES = 3
 
 
 def is_blocked(soup: BeautifulSoup) -> bool:
@@ -96,10 +97,25 @@ def extract_detail(soup: BeautifulSoup) -> dict:
     return {}
 
 
+def fetch_detail(page, url: str, delay: float, settle_ms: int) -> dict | None:
+    """One detail page. None means it failed to load: keep the job for the next run."""
+    time.sleep(delay)
+    try:
+        page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+        page.wait_for_timeout(settle_ms)
+    except Exception as exc:  # noqa: BLE001 - playwright raises its own error types
+        print(f"detail {url}: {str(exc)[:120]}", flush=True)
+        return None
+    soup = BeautifulSoup(page.content(), "lxml")
+    if is_blocked(soup):
+        raise BlockedError(f"blocked on {url}")
+    return extract_detail(soup)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Crawl ITviec jobs (automated)")
     parser.add_argument("--pages", type=int, default=40)
-    parser.add_argument("--limit", type=int, default=0, help="max new jobs to fetch")
+    parser.add_argument("--limit", type=int, default=0, help="max new job details per run, 0 = all")
     parser.add_argument("--delay", type=float, default=4.0, help="seconds between requests")
     parser.add_argument("--skip-details", action="store_true", help="listing only, no descriptions")
     parser.add_argument("--headless", action="store_true", default=True)
@@ -112,52 +128,82 @@ def main() -> None:
     done = {r["job_url"] for r in read_jsonl(out) if r.get("description")}
 
     saved = 0
-    with browser_polite(headless=args.headless) as ctx:
-        page = ctx.new_page()
-
-        for page_num in range(1, args.pages + 1):
-            url = LIST_URL if page_num == 1 else f"{LIST_URL}?page={page_num}"
-            page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+    cards: dict[str, dict] = {}
+    complete, error = False, None
+    try:
+        with browser_polite(headless=args.headless) as ctx:
+            page = ctx.new_page()
             try:
-                page.wait_for_selector("div.job-card", timeout=15_000)
-            except Exception:
-                print(f"page {page_num}: no job cards found, stopping", flush=True)
-                break
+                for page_num in range(1, args.pages + 1):
+                    url = LIST_URL if page_num == 1 else f"{LIST_URL}?page={page_num}"
+                    if page_num % PAGE_RECYCLE_EVERY == 0:
+                        page = fresh_page(ctx, page)
+                    new = []
+                    for _ in range(EMPTY_PAGE_TRIES):  # a slow page must not look like the end
+                        page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                        try:
+                            page.wait_for_selector("div.job-card", timeout=15_000)
+                        except Exception:  # noqa: BLE001 - no cards: the end, a block, or a slow page
+                            pass
 
-            soup = BeautifulSoup(page.content(), "lxml")
-            if is_blocked(soup):
-                print(f"STOP -- blocked on page {page_num}", flush=True)
-                break
+                        soup = BeautifulSoup(page.content(), "lxml")
+                        if is_blocked(soup):
+                            raise BlockedError(f"blocked on page {page_num}")
 
-            cards = [row for c in soup.select("div.job-card") if (row := parse_card(c))]
-            if not cards:
-                break
+                        found = [row for c in soup.select("div.job-card") if (row := parse_card(c))]
+                        new = [c for c in found if c["job_url"] not in cards]
+                        if new:
+                            break
+                        time.sleep(args.delay)
+                    if not new:  # past the end, or the site repeating its last page
+                        if page_num == 1:
+                            raise BlockedError("no job cards on page 1")
+                        complete = True
+                        break
+                    cards.update((c["job_url"], c) for c in new)
+                    print(f"page {page_num}: {len(cards)} listed", flush=True)
+                    time.sleep(args.delay)
+                else:
+                    error = f"hit --pages {args.pages} before the listing ended"
+            except Exception as exc:  # noqa: BLE001 - whatever stopped the walk, keep what it saw
+                error = str(exc)[:300]
+                print(f"listing incomplete: {error}", flush=True)
 
-            for card in cards:
-                if card["job_url"] in done:
-                    continue
+            # Written before the details: with no limit they can run for hours, and
+            # a timeout or a block there must not lose today's observations.
+            write_seen("itviec", list(cards), complete, error=error)
+
+            if error and "blocked" in error:
+                return
+            todo = [c for u, c in cards.items() if u not in done]
+            print(f"{len(todo)} details to fetch", flush=True)
+            page = fresh_page(ctx, page)
+            failures = 0
+            for card in todo:
                 if args.limit and saved >= args.limit:
                     break
-
                 if not args.skip_details:
-                    time.sleep(args.delay)
-                    page.goto(card["job_url"], wait_until="domcontentloaded", timeout=60_000)
-                    page.wait_for_timeout(1500)
-                    detail_soup = BeautifulSoup(page.content(), "lxml")
-                    if is_blocked(detail_soup):
-                        print(f"STOP -- blocked on detail page", flush=True)
-                        break
-                    detail = extract_detail(detail_soup)
+                    if saved and saved % PAGE_RECYCLE_EVERY == 0:
+                        page = fresh_page(ctx, page)
+                    detail = fetch_detail(page, card["job_url"], args.delay, 1500)
+                    if detail is None:
+                        failures += 1
+                        if failures >= MAX_CONSECUTIVE_FAILURES:
+                            print(f"STOP -- {failures} details failed in a row", flush=True)
+                            break
+                        page = fresh_page(ctx, page)
+                        continue
+                    failures = 0
                     card.update(detail)
-
+                    if not card.get("description"):  # no empty rows: the next run retries it
+                        continue
                 write_jsonl(out, [card])
                 done.add(card["job_url"])
                 saved += 1
-
-            print(f"page {page_num}: {saved} new jobs so far", flush=True)
-            if args.limit and saved >= args.limit:
-                break
-            time.sleep(args.delay)
+                if saved % 25 == 0:
+                    print(f"{saved}/{len(todo)} details", flush=True)
+    except Exception as exc:  # noqa: BLE001 - browser died or a detail was blocked; next run resumes
+        print(f"STOP -- {str(exc)[:300]}", flush=True)
 
     print(f"saved {saved} new jobs, {len(done)} total in {out}")
 
