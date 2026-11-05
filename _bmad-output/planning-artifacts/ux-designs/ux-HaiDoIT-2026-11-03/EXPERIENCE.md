@@ -3,7 +3,7 @@ name: Hải Đồ IT
 description: Hành vi của bảng điều khiển số liệu kỹ năng. Một bề mặt web, không tài khoản, hồ sơ nằm trong trình duyệt.
 status: final
 created: 2026-11-03
-updated: 2026-11-04
+updated: 2026-11-05
 sources:
   - '{planning_artifacts}/prds/prd-HaiDoIT-2026-11-02/prd.md'
   - '{planning_artifacts}/prds/prd-HaiDoIT-2026-11-02/addendum.md'
@@ -120,7 +120,7 @@ Hành vi. Hình nằm ở `DESIGN.md`.
 
 | Trạng thái | Màn | Cách xử lý |
 |---|---|---|
-| Mở ứng dụng | `ban-do` | Vào Bản đồ. Vai trò mặc định “Tất cả”. Lối xem 3D. Chú thích nguồn, ngày snapshot, và ba lưu ý FR-36 đang hiện. |
+| Mở ứng dụng | `ban-do` | Vào Bản đồ. Vai trò mặc định “Tất cả”. Lối xem 3D; khi Story 1.17 chưa xong thì lối 2D, nút 3D tắt và có chú thích “Bản đồ 3D sắp có”. Chú thích nguồn, ngày snapshot, và ba lưu ý FR-36 đang hiện. |
 | Đổi vai trò | `ban-do` | Chiều cao cột đổi theo tỷ trọng toàn quốc của vai trò đó. |
 | WebGL không chạy | `ban-do` | Tự chuyển sang lối 2D hoặc bảng. Không màn hình lỗi. |
 | Bảng thành phố | `ban-do-ha-noi` | Cơ cấu vai trò, kỹ năng hàng đầu của vai trò đang chọn, ngày snapshot. Mọi số có n. |

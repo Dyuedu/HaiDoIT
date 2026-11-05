@@ -2,7 +2,7 @@
 title: "PRD: Hải Đồ IT"
 status: final
 created: 2026-11-02
-updated: 2026-11-03
+updated: 2026-11-05
 ---
 
 # PRD: Hải Đồ IT
@@ -841,7 +841,7 @@ Nhóm đã cân nhắc và **chấp nhận có chủ đích** các rủi ro dư�
 | # | Rủi ro | Phạm vi | Mức rủi ro theo báo cáo nghiên cứu |
 |---|---|---|---|
 | R1 | Crawler TopCV kế thừa dùng kỹ thuật né phát hiện bot | Chạy cả trên **bản công khai**. Nhóm sẽ xin phép TopCV, và bỏ kỹ thuật này khi thương mại hóa. TopCV chiếm khoảng 38% dữ liệu nền | **Rất cao**, có thể rơi vào Điều 289 Bộ luật Hình sự |
-| R2 | Các crawler và bước pipeline kế thừa khác dùng cùng kỹ thuật né phát hiện bot: crawler ITviec, crawler TopDev, và bước lấy mô tả đầy đủ (step-03) | Như R1 | **Rất cao** |
+| R2 | Dữ liệu nền của ITviec và TopDev, cùng bước lấy mô tả đầy đủ (step-03), từng được thu bằng kỹ thuật né phát hiện bot. Từ 04/11/2026 (commit `1a8e3f6`, `10d4c73`), hai crawler này dùng User-Agent trung thực và step-03 đã bị xóa | Chỉ còn áp cho dữ liệu nền. Lượt thu mới không thuộc R2 | **Rất cao** với dữ liệu nền |
 | R3 | 625 tin LinkedIn trong dữ liệu nền được thu bằng tài khoản đăng nhập | Được tính vào số liệu công khai. v1 **không thu thập mới** từ LinkedIn | **Rất cao**: đúng loại hành vi đã thua trong các vụ hiQ, Proxycurl, ProAPIs |
 | R4 | 555 tin ITviec trong dữ liệu nền, trong khi điều khoản §2.2 của ITviec cấm thu thập khi chưa có đồng ý bằng văn bản | Được tính vào số liệu công khai trong lúc chờ xin phép | **Trung bình–cao**: rủi ro hợp đồng và sở hữu trí tuệ |
 
