@@ -45,7 +45,7 @@ Bảng dưới đây thay bảng cũ theo `sprint-change-proposal-2026-11-05.md`
 | Ngày | Dyuedu | CaoPhanTuanAnh | GiapPhanQuang |
 |---|---|---|---|
 | Thứ Năm 05/11 | #1: Compose, khung `web/`, Alembic một head | #3 `REGISTRY.md`: chữ ký phép 2, 3, 6 trước | #2: khung Python, envelope, endpoint giả |
-| Thứ Sáu 06/11 | C-11: lịch chạy, `redact`, `ingest`; UA có email | 1.20: luật vai trò, cấp bậc, thành phố | 1.15: màn Bản đồ (bảng và 2D) trên dữ liệu giả |
+| Thứ Sáu 06/11 | C-11 phần còn lại: UA có email, ITviec và MoMo hỏi `robots.txt` qua cổng (lịch chạy, `redact`, `ingest` đã có từ 05/11) | 1.20: luật vai trò, cấp bậc, thành phố | 1.15: màn Bản đồ (bảng và 2D) trên dữ liệu giả |
 | Thứ Bảy 07/11 | C-11 xong; cổng CI của #1 | #6 (1.4): snapshot `published`/`partial`, vòng đời | 1.21: tổng hợp tỷ trọng và endpoint thật |
 | Chủ nhật 08/11 | Rà soát chéo, demo | Rà soát chéo | Nối 1.15 vào API thật; chạy `pg_dump` một lần |
 

@@ -184,7 +184,7 @@ Hội đồng sẽ hỏi: *"Sao không dán CV và JD vào ChatGPT cho xong?"*
 | R1 | Crawler TopCV kế thừa dùng kỹ thuật né phát hiện bot. TopCV chiếm khoảng 38% dữ liệu nền | Chạy cả trên bản công khai. Nhóm xin phép TopCV, và bỏ kỹ thuật này khi thương mại hóa | **Rất cao**, có thể rơi vào Điều 289 Bộ luật Hình sự |
 | R2 | Dữ liệu nền của ITviec, TopDev và bước lấy mô tả đầy đủ từng được thu bằng cùng kỹ thuật. Từ 04/11/2026, hai crawler này dùng User-Agent trung thực và bước đó đã bị xóa | Chỉ còn áp cho dữ liệu nền | **Rất cao** với dữ liệu nền |
 | R3 | 625 tin LinkedIn trong dữ liệu nền được thu bằng tài khoản đăng nhập | Vẫn tính vào số liệu công khai. v1 không thu thập mới từ LinkedIn | **Rất cao** |
-| R4 | 555 tin ITviec trong dữ liệu nền, trong khi điều khoản ITviec cấm thu thập khi chưa có đồng ý bằng văn bản | Vẫn tính vào số liệu công khai trong lúc chờ xin phép | **Trung bình–cao** |
+| R4 | 555 tin ITviec trong dữ liệu nền, cùng tin ITviec thu mới từ 05/11/2026, trong khi điều khoản ITviec cấm thu thập khi chưa có đồng ý bằng văn bản | Vẫn tính vào số liệu công khai trong lúc chờ xin phép; ITviec chạy tự động trong lúc chờ thư đồng ý | **Trung bình–cao** |
 
 Nếu loại R3 và R4 ra khỏi số liệu công khai thì còn 2.289 tin, trong đó Backend còn 184 tin.
 

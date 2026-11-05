@@ -1,7 +1,7 @@
 ---
 title: "Đề xuất đổi sprint: lát cắt Bản đồ chạy thật cuối Sprint 1"
 created: 2026-11-05
-status: approved-tentative
+status: approved
 scope: moderate
 proposer: GiapPhanQuang
 affects:
@@ -18,7 +18,7 @@ affects:
 
 # Đề xuất đổi sprint: lát cắt Bản đồ chạy thật cuối Sprint 1
 
-> **Trạng thái:** GiapPhanQuang duyệt tạm ngày 05/11/2026, **chờ Dyuedu và CaoPhanTuanAnh đồng ý**. Các tài liệu ở mục 4.3–4.7 đã được sửa trên nhánh `docs/sprint-change-2026-11-05` để mọi người kéo về xem. GitHub Issues và code `scraper/` **chưa sửa**; chỉ sửa sau khi cả nhóm thống nhất. Góp ý xin ghi thẳng vào file này hoặc nhắn trong nhóm.
+> **Trạng thái:** cả nhóm duyệt ngày 05/11/2026. Tài liệu ở mục 4.3–4.7 và GitHub Issues đã được đồng bộ: tạo #67 (C-11), #68 (1.20), #69 (1.21); dời #4, #5, #7, #10 sang Sprint 2; kéo #46 lên Sprint 1. Vài điểm đã đổi so với bản duyệt vì `origin/main` có thêm việc mới; xem mục *Cập nhật sau khi duyệt* ở cuối.
 
 ## Tóm tắt
 
@@ -369,6 +369,27 @@ DESIGN.md không đổi.
 - Ít nhất ba cổng CI xanh; `pg_dump` đã chạy một lần.
 - Từ lượt 06/11, User-Agent có email liên hệ.
 
+## Cập nhật sau khi duyệt (05/11/2026)
+
+Lúc đồng bộ, `origin/main` đã có thêm các commit của Dyuedu ngày 04–05/11. Chúng làm thay đổi một phần đề xuất:
+
+- **Nhịp một đã chạy trên VPS** (`deploy/daily.sh`):
+  - bảy nguồn tự động: CareerLink, ITNavi, Zalo Careers, VietnamWorks, TopDev (qua HTTP, chỉ lấy tin IT), MoMo và ITviec (qua Playwright trong ảnh `scraper-browser`);
+  - sau đó `redact` (commit `c49462e`), rồi `ingest` vào Postgres trên Supabase, có bảng `source_runs` và `job_content_versions`;
+  - đã có kiểm thử quan sát nhiều ngày.
+- **C-11 (#67) phần lớn đã xong.** Issue chỉ còn:
+  - thêm email liên hệ vào User-Agent;
+  - ITviec và trang danh sách MoMo hỏi `robots.txt` qua cổng;
+  - kiểm `extract` chỉ đọc dữ liệu đã qua `redact`;
+  - kiểm file thô bị xóa sau khi `ingest`.
+- **Mục 2.4 không còn đúng:** dòng "Không có VPS trong Sprint 1" và rủi ro "máy dev phải bật". Lượt crawl tay ngày 05/11 trên máy GiapPhanQuang là bản dư nên đã dừng; file raw để lại trên máy đó, không nạp vào kho.
+- **ITviec:** nhóm quyết ngày 04–05/11 cho chạy tự động trong lúc chờ thư đồng ý. Dòng R4 trong PRD và brief đã cập nhật theo.
+- **Ba chỗ lệch spine cần chốt riêng**, không thuộc đề xuất này:
+  - kho là Postgres trên Supabase, không phải Postgres 18 tự chạy;
+  - bước trích xuất đang trả nhãn phân loại, trái AD-3;
+  - bảng `jobs` ghi đè bản mới nhất, chưa có snapshot bất biến (AD-4).
+- **Cổng AD-17 trong `tools/gates/check_gates.py`** đòi model `Envelope` nằm trong `haido_core/domain/`, trong khi spec #2 đặt nó ở `haido_api/schemas/`. #2 tạm dừng cho tới khi chốt chỗ này.
+
 ## Phụ lục: trạng thái checklist
 
 | Mục | Trạng thái |
@@ -378,13 +399,13 @@ DESIGN.md không đổi.
 | 3.1 PRD | [x] Chỉ dòng R2; MVP không đổi |
 | 3.2 Kiến trúc | [x] AD-16, AD-20, AD-28 |
 | 3.3 UX | [x] Một dòng State Patterns |
-| 3.4 Tài liệu khác | [x] `sprint-status.yaml`, spec #2 đã sửa trên nhánh. [!] GitHub, `scraper/` — chờ nhóm |
+| 3.4 Tài liệu khác | [x] `sprint-status.yaml`, spec #2, GitHub Issues. Code `scraper/` thuộc #67 |
 | 4.1 Điều chỉnh trực tiếp | Khả thi · công trung bình · rủi ro trung bình–cao |
 | 4.2 Quay lui | Không áp dụng |
 | 4.3 Xem lại MVP | Không cần |
 | 4.4 Hướng đi | [x] Phương án 1 |
 | 5.1–5.5 Thành phần đề xuất | [x] |
 | 6.1–6.2 Rà soát | [x] |
-| 6.3 Duyệt | [!] GiapPhanQuang duyệt tạm 05/11; chờ hai thành viên còn lại |
+| 6.3 Duyệt | [x] Cả nhóm duyệt 05/11 |
 | 6.4 Cập nhật `sprint-status.yaml` | [x] Đã thêm `1-20`, `1-21` trên nhánh |
-| 6.5 Bàn giao | [ ] Sau khi duyệt |
+| 6.5 Bàn giao | [x] Issue đã giao người nhận: #67 Dyuedu, #68 CaoPhanTuanAnh, #69 và #46 GiapPhanQuang |

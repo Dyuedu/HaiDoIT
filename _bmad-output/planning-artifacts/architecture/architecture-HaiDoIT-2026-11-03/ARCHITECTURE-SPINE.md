@@ -189,8 +189,8 @@ flowchart LR
   - Trạng thái thu thập (hàng đợi, trang đã làm, lần chạy cuối, tin đã bỏ) chuyển ra khỏi file, vào bảng `source_crawl_state` trong Postgres.
   - Một bước `ingest` duy nhất ghi `RawJob` vào `job_postings` + `job_observations` kèm `snapshot_id`, `source`, `pipeline_run_id`.
   - **`topcv` và `linkedin` không đạt được giao diện này** và được khai đúng như vậy: `linkedin` tắt vĩnh viễn (R3, không thu mới); `topcv` ở chế độ `manual` — chạy tay, `pipeline_run` ghi rõ là nguồn thủ công, và nó **không** là một asset của pipeline hằng đêm. Một snapshot vẫn `published` khi `topcv` không chạy, vì AD-4 chỉ xét các nguồn **tự động** đang bật.
-  - Từ 04/11/2026 (commit `1a8e3f6`) có sáu nguồn tự động dùng User-Agent trung thực: CareerLink, ITNavi, Zalo Careers, MoMo Careers, VietnamWorks, TopDev. ITviec cũng chạy tự động được, nhưng chờ thư đồng ý (R4).
-  - Sprint 1 chạy nhịp một qua cầu nối tạm C-11: crawler cũ ghi JSONL theo ngày, rồi bước `ingest` đọc vào. Đây là ngoại lệ có hạn của câu "không ghi file", hết hạn khi Story 1.3 xong. File thô bị xóa ngay sau khi `ingest` thành công (AD-21). Xem `sprint-change-proposal-2026-11-05.md`.
+  - Từ 05/11/2026, nhịp một chạy trên VPS bằng pipeline trong `scraper/` (`deploy/daily.sh`): bảy nguồn tự động dùng User-Agent trung thực (CareerLink, ITNavi, Zalo Careers, VietnamWorks, TopDev qua HTTP; MoMo, ITviec qua Playwright trong ảnh `scraper-browser`), rồi `redact`, rồi `ingest` vào Postgres trên Supabase. ITviec chạy trong lúc chờ thư đồng ý (R4). TopCV vẫn thủ công, LinkedIn tắt.
+  - Pipeline này là cầu nối có hạn C-11 của câu "không ghi file": crawler cũ vẫn ghi JSONL, `ingest` đọc vào. Nó hết hạn khi Story 1.2 và 1.3 chuyển các bước sang `haido_core/`. Xem `sprint-change-proposal-2026-11-05.md`.
 
 ### AD-17 — Mọi response chứa số mang `meta`; chính sách che số có một bản cài đặt
 
@@ -225,7 +225,7 @@ flowchart LR
 
 - **Binds:** FR-1, FR-2, §6.1 R1–R4, §6.2
 - **Prevents:** FR-2 không có AD nào bind, trong khi R1–R4 được báo cáo nghiên cứu xếp mức "có thể rơi vào Điều 289". Và công tắc theo **nguồn** không tắt được R2, vì R2 nằm ở một **bước** (lấy mô tả đầy đủ), không ở một nguồn. Để trắng thì AD-16 "giữ nguyên các `parse_*`" đang bảo tồn R1/R2 vào bản công khai mà không nói ra
-- **Rule:** mọi request ra nguồn đi qua một cổng duy nhất, `haido_core/crawl/polite.py`, ratify nguyên các quy ước đã có trong code: kiểm `robots.txt` trước mỗi request, User-Agent trung thực có địa chỉ liên hệ, giãn cách cố định, trần request mỗi lượt, và `BlockedError` khi gặp 403/429 hoặc captcha nghĩa là **dừng, không lách**. Ngoại lệ R1–R4 không nằm trong code mà là hàng có tên trong bảng `crawl_exceptions`, với công tắc **hai mức**: theo nguồn **và** theo bước. Bản công khai chỉ bật những gì bảng cho phép; §6.1 là tài liệu nội bộ và không xuất hiện trên trang công khai. Crawler dùng trình duyệt (TopDev, ITviec, MoMo) cũng phải hỏi `PoliteClient.allowed()` trước mỗi lần mở trang; ngày 05/11/2026 chúng chưa làm việc này (Story 1.2).
+- **Rule:** mọi request ra nguồn đi qua một cổng duy nhất, `haido_core/crawl/polite.py`, ratify nguyên các quy ước đã có trong code: kiểm `robots.txt` trước mỗi request, User-Agent trung thực có địa chỉ liên hệ, giãn cách cố định, trần request mỗi lượt, và `BlockedError` khi gặp 403/429 hoặc captcha nghĩa là **dừng, không lách**. Ngoại lệ R1–R4 không nằm trong code mà là hàng có tên trong bảng `crawl_exceptions`, với công tắc **hai mức**: theo nguồn **và** theo bước. Bản công khai chỉ bật những gì bảng cho phép; §6.1 là tài liệu nội bộ và không xuất hiện trên trang công khai. Crawler dùng trình duyệt cũng phải hỏi `PoliteClient.allowed()` trước mỗi lần mở trang. Ngày 05/11/2026: ITviec chưa hỏi; MoMo mới hỏi ở trang chi tiết, chưa hỏi ở trang danh sách (C-11, rồi Story 1.2).
 
 ### AD-21 — Xóa PII tại biên; yêu cầu gỡ không sửa snapshot đã công bố
 
