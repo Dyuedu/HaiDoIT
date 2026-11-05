@@ -1,0 +1,30 @@
+name: haido-prod
+
+services:
+  api:
+    image: ghcr.io/dyuedu/haidoit-api:${IMAGE_TAG:?}
+    restart: unless-stopped
+    environment:
+      HAIDO_DATABASE_URL: ${HAIDO_DATABASE_URL:?}
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/openapi.json')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  web:
+    image: ghcr.io/dyuedu/haidoit-web:${IMAGE_TAG:?}
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      API_BASE_URL: http://api:8000
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

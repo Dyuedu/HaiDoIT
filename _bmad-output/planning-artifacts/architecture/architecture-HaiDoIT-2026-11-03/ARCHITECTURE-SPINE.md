@@ -177,7 +177,7 @@ flowchart LR
 - **Rule:**
   - Mỗi bước pipeline là một hàm trong `haido_core/steps/`, gọi được bằng CLI, **không `import` gì của Dagster**. `haido_pipeline/` chỉ chứa định nghĩa asset và partition.
   - Một snapshot = một daily partition, với **timezone khai tường minh** `Asia/Ho_Chi_Minh`. Mặc định của `DailyPartitionsDefinition` là UTC, lệch 7 giờ so với `snapshot_id`.
-  - Trên prod: **đúng một lượt chạy đồng thời**; bootstrap chạy theo lô có trần bộ nhớ; `next build` **không bao giờ** chạy trên prod — image build ở máy dev rồi đẩy lên; Dagster UI không bật thường trực; có swap.
+  - Trên prod: **đúng một lượt chạy đồng thời**; bootstrap chạy theo lô có trần bộ nhớ; `next build` **không bao giờ** chạy trên prod — image build trên Actions rồi đẩy lên; Dagster UI không bật thường trực; có swap.
 
 ### AD-16 — Ranh giới của scraper kế thừa, theo giao diện code thật
 
@@ -407,7 +407,7 @@ erDiagram
 
 ### Triển khai và môi trường
 
-Hai môi trường, không có staging. **Local:** Compose riêng, `dagster dev`, Postgres trong container, trên Windows. **Prod:** Compose riêng, ba service Dagster tách biệt, image `web` build ở máy dev rồi đẩy lên.
+Hai môi trường, không có staging. **Local:** Compose riêng, `dagster dev`, Postgres trong container, trên Windows. **Prod:** Compose riêng, ba service Dagster tách biệt, image `web` build trên Actions rồi đẩy lên.
 
 ```mermaid
 flowchart LR
