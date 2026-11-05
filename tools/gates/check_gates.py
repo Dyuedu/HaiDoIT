@@ -34,6 +34,7 @@ def gate(code: str, name: str):
             except Exception as exc:  # cổng hỏng thì báo, không nuốt
                 status, detail, hits = FAIL, "gate crashed: %r" % (exc,), []
             RESULTS.append((code, name, status, hits if hits else [detail]))
+            return status, detail, hits
         run.__name__ = fn.__name__
         return run
     return deco
@@ -73,19 +74,72 @@ def scan(files, pattern, flags=0):
 @gate("AD-1", "Dependency direction not inverted")
 def gate_ad1_huong_phu_thuoc():
     checks = [
-        ("haido_core/domain", r"^\s*(from|import)\s+(sqlalchemy|dagster|fastapi)\b",
+        ("haido_core/domain", r"^\s*(from|import)\s+(sqlalchemy|dagster|fastapi|psycopg|alembic)\b",
          "domain pulls in infrastructure"),
+        ("haido_core/domain", r"^\s*(from\s+haido_core\.(db|steps)\b|from\s+haido_core\s+import\s+.*\b(db|steps)\b|import\s+haido_core\.(db|steps)\b|from\s+\.{2,}\s*import\s+.*\b(db|steps)\b|from\s+\.{2,}(db|steps)\b)",
+         "domain imports outer core (db/steps)"),
         ("haido_core/steps", r"^\s*(from|import)\s+dagster\b", "steps imports Dagster"),
+        ("haido_core", r"^\s*(from|import)\s+(haido_api|haido_pipeline)\b", "core imports api or pipeline"),
+        ("haido_pipeline", r"^\s*(from|import)\s+haido_api\b", "pipeline imports api"),
         ("haido_api", r"^\s*(from|import)\s+(dagster|haido_pipeline)\b", "api imports pipeline"),
     ]
+    web_dir = ROOT / "web"
+    web_present = web_dir.is_dir()
     present = [d for d, _, _ in checks if (ROOT / d).is_dir()]
-    if not present:
-        return SKIP, "haido_core/ and haido_api/ not present yet", []
+    if not present and not web_present:
+        return SKIP, "haido_core/, haido_api/, haido_pipeline/, and web/ not present yet", []
     hits = []
     for d, pat, why in checks:
         for h in scan(py_files(d), pat, re.M):
             hits.append("%s — %s" % (why, h))
-    return (FAIL if hits else PASS), "%d directories watched" % len(present), hits
+
+    # Kiểm tra web/ không có chuỗi kết nối Postgres
+    if web_present:
+        web_files = [
+            f for f in web_dir.rglob("*")
+            if f.is_file() and "node_modules" not in f.parts and ".next" not in f.parts
+        ]
+        pg_conn_rx = re.compile(r"postgres(ql(\+psycopg)?)?://", re.I)
+        for f in web_files:
+            try:
+                txt = f.read_text(encoding="utf-8", errors="ignore")
+                for i, line in enumerate(txt.splitlines(), 1):
+                    if pg_conn_rx.search(line):
+                        hits.append("web contains postgres connection string — %s:%d" % (
+                            f.relative_to(ROOT).as_posix(), i
+                        ))
+            except Exception:
+                hits.append("unreadable file in web/ — %s" % f.relative_to(ROOT).as_posix())
+
+        # Kiểm tra web/package.json không có driver pg / postgres
+        pkg_json = web_dir / "package.json"
+        if pkg_json.is_file():
+            try:
+                import json
+                data = json.loads(pkg_json.read_text(encoding="utf-8"))
+                if not isinstance(data, dict):
+                    hits.append("web/package.json is unparsable JSON (not an object) — %s" % (
+                        pkg_json.relative_to(ROOT).as_posix()
+                    ))
+                else:
+                    deps = {}
+                    deps.update(data.get("dependencies", {}))
+                    deps.update(data.get("devDependencies", {}))
+                    deps.update(data.get("peerDependencies", {}))
+                    deps.update(data.get("optionalDependencies", {}))
+                    for driver in ("pg", "postgres"):
+                        if driver in deps:
+                            hits.append("web/package.json has postgres driver dependency: %s — %s" % (
+                                driver, pkg_json.relative_to(ROOT).as_posix()
+                            ))
+            except Exception as exc:
+                hits.append("web/package.json is unparsable JSON: %s — %s" % (
+                    exc, pkg_json.relative_to(ROOT).as_posix()
+                ))
+
+    return (FAIL if hits else PASS), "%d directories watched%s" % (
+        len(present), " (including web/)" if web_present else ""
+    ), hits
 
 
 # ---------------------------------------------------------------- AD-2
@@ -212,7 +266,9 @@ def gate_ad25_mot_head_alembic():
         if d:
             downs.add(d.group(1))
     heads = sorted(revs - downs)
-    if len(heads) > 1:
+    if len(revs) == 0:
+        return FAIL, "no parsable revisions found", []
+    if len(heads) != 1:
         return FAIL, "%d heads found" % len(heads), heads
     return PASS, "%d migrations, %d head" % (len(revs), len(heads)), []
 

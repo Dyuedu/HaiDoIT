@@ -4,8 +4,12 @@ version = "0.1.0"
 description = "Hải Đồ IT — miền nghiệp vụ và API đọc"
 requires-python = ">=3.13"
 dependencies = [
+    "alembic==1.20.1",
     "fastapi==0.162.0",
+    "greenlet>=3.1.1",
+    "psycopg[binary]==3.3.7",
     "pydantic==2.14.2",
+    "sqlalchemy==2.1.6",
     "uvicorn==0.54.0",
 ]
 
@@ -13,6 +17,7 @@ dependencies = [
 dev = [
     "httpx>=0.28",
     "pytest>=9",
+    "pyyaml>=6.0",
     "ruff==0.17.3",
 ]
 
@@ -30,3 +35,7 @@ target-version = "py313"
 # tools/ có lỗi ruff có sẵn mà #2 không được sửa (check_gates.py); các thư mục còn lại
 # không thuộc haido_* và có job hoặc môi trường riêng.
 extend-exclude = ["scraper", ".claude", "_bmad", "_bmad-output", "tools"]
+
+[tool.ruff.lint.per-file-ignores]
+"haido_core/db/migrations/*" = ["F401"]
+"haido_core/db/migrations/versions/*" = ["F401"]
