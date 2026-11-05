@@ -458,22 +458,24 @@ Phụ thuộc: Epic 2, Epic 4 và Epic 5 đứng trên Epic 1. Epic 3 cần Epic
 
 **Số epic không phải thứ tự làm.** Thứ tự làm là `WORK-SPLIT.md` §3, và nó cắt ngang các epic. Hai chỗ dễ đi sai nếu chỉ đọc số epic:
 
-- **Story 1.15, 1.16, 1.17 (bản đồ 3D) đứng sau cả Epic 2.** Chúng là P1, Sprint 5. Review giữa kỳ cần luồng CV → lộ trình có thứ tự cho Backend (nhánh Java Backend) và Data Engineer — tức Epic 2 — chứ không cần bản đồ 3D.
+- **Story 1.15 (bảng và 2D) ở Sprint 1, là lát cắt chạy thật đầu tiên. Story 1.16 và 1.17 vẫn ở Sprint 5**, vì 1.16 cần tỷ lệ kỹ năng. Review giữa kỳ vẫn cần luồng CV → lộ trình có thứ tự cho Backend (nhánh Java Backend) và Data Engineer — tức Epic 2 — chứ không cần bản đồ 3D. Xem `sprint-change-proposal-2026-11-05.md`.
 - **Epic 3, 4, 5, 6 đều là P1**, nằm sau mốc 22–28/11. Phần P0 của Epic 1 dừng ở Story 1.13 (API đọc số kèm cỡ mẫu) và Story 1.14 (dữ liệu nền).
 
 Thứ tự P0 theo sprint, để dev đi tuần tự:
 
 | Sprint | Story P0 |
 |---|---|
-| 1 (2–8/11) | 1.1, 1.2, 1.3, 1.4, 2.2 (phần `localStorage`) |
-| 2 (9–15/11) | 1.5, 1.6, 1.7, 1.9, 1.11, 1.14, 2.1, 2.6, 2.9, 2.10, 2.11 |
+| 1 (2–8/11) | 1.1, 1.4, 1.20, 1.21, 1.15 |
+| 2 (9–15/11) | 1.2, 1.3, 1.5, 1.6, 1.7, 1.9, 1.11, 1.14, 2.1, 2.2, 2.6, 2.9, 2.10, 2.11 |
 | 3 (16–22/11) | 1.8, 1.13, 2.3, 2.7, 2.8, 2.12 |
 
 Mốc 20/11: chạy tay toàn chuỗi nhịp hai cho hai vai trò trên, đóng băng snapshot dùng cho review. Sau 21/11 không đụng code tới hết buổi review.
 
-Story P1 theo sprint: Sprint 1 — 1.19, 5.1. Sprint 3 — 2.4, 2.5, 2.13. Sprint 4 — 1.10, 1.12, 1.18, 3.1–3.7. Sprint 5 — 1.15, 1.16, 1.17, 5.2–5.5. Sprint 6 — 4.1–4.6, 6.1–6.6.
+Story P1 theo sprint: Sprint 1 — 5.1. Sprint 2 — 1.19. Sprint 3 — 2.4, 2.5, 2.13. Sprint 4 — 1.10, 1.12, 1.18, 3.1–3.7. Sprint 5 — 1.16, 1.17, 5.2–5.5. Sprint 6 — 4.1–4.6, 6.1–6.6.
 
-Không được cắt dù trượt, theo `WORK-SPLIT.md` §5: nhịp một hằng ngày (1.2–1.4), sao lưu (1.19), bộ chuẩn 200 JD (1.7, 1.9), chế độ thử nghiệm (Epic 6).
+Trong Sprint 1, nhịp một chạy qua cầu nối tạm C-11 (chore trên GitHub, không có story ở đây): crawler cũ ghi JSONL theo ngày, rồi bước `ingest` xóa liên hệ người đăng và nạp vào kho. Cầu nối bị gỡ khi Story 1.3 xong.
+
+Không được cắt dù trượt, theo `WORK-SPLIT.md` §5: nhịp một hằng ngày (C-11 ở Sprint 1, rồi 1.2–1.4), sao lưu (1.19), bộ chuẩn 200 JD (1.7, 1.9), chế độ thử nghiệm (Epic 6).
 
 ## Epic 1: Thấy nhu cầu thị trường trên bản đồ
 
@@ -499,7 +501,7 @@ So that mọi màn sau có một chỗ để hiện số, và một import đi n
 
 ### Story 1.2: Chạy một lượt thu thập lịch sự
 
-**Mức ưu tiên:** P0 — Sprint 1
+**Mức ưu tiên:** P0 — Sprint 2. Trong Sprint 1, nhịp một chạy qua cầu nối C-11
 
 As a nhóm vận hành,
 I want bật hoặc tắt từng nguồn và thấy nhật ký của một lượt chạy,
@@ -515,10 +517,11 @@ So that nguồn tắt không bị gọi, và một nguồn bị chặn thì dừ
 **And** User-Agent trung thực, có địa chỉ liên hệ. Các request tới cùng nguồn giãn cách cố định. Không đăng nhập
 **And** HTTP 403, 429 hoặc captcha làm dừng nguồn đó, nhật ký ghi lý do, và nguồn không được thử lại cho tới lượt sau
 **And** mọi request đi qua một cổng duy nhất. Ngoại lệ R1–R4 là hàng có tên, có công tắc theo nguồn và theo bước
+**And** crawler dùng trình duyệt cũng hỏi cổng trước mỗi lần mở trang, nên URL bị `robots.txt` cấm không bị mở
 
 ### Story 1.3: Lưu tin đã xóa liên hệ người đăng
 
-**Mức ưu tiên:** P0 — Sprint 1
+**Mức ưu tiên:** P0 — Sprint 2. Trong Sprint 1, nhịp một chạy qua cầu nối C-11; bước `redact` làm trong C-11 rồi story này dùng lại
 
 As a nhóm vận hành,
 I want các nguồn tự động đang bật đổ tin vào kho sau khi xóa liên hệ người tuyển dụng,
@@ -635,13 +638,11 @@ So that bản đồ lọc được theo vai trò và không tính tin ngoài ng�
 
 **Acceptance Criteria:**
 
-**Given** một tin đã có cụm
+**Given** một tin đã có cụm, và đã có vai trò, cấp bậc, thành phố từ Story 1.20
 **When** phép phân loại chạy
-**Then** tin có một vai trò, một cấp bậc, một thành phố, và một nhánh nếu đủ điều kiện
+**Then** tin có thêm một nhánh nếu đủ điều kiện
 **And** nhánh chỉ xuất hiện khi có từ 30 tin. Ngưỡng này đọc từ cấu hình
-**And** Data/AI tách thành Data Analyst/BI, Data Engineer và AI/ML Engineer. Embedded không nằm trong Other
-**And** tin không thuộc IT được gắn nhãn và bị loại khỏi mọi bảng tổng hợp. Tỷ lệ loại báo cáo được theo nguồn
-**And** có cách chấm độ chính xác vai trò trên bộ fixture 200 JD
+**And** có cách chấm độ chính xác vai trò, cấp bậc và nhánh trên bộ fixture 200 JD
 
 ### Story 1.10: Quy lương về VND của snapshot
 
@@ -708,12 +709,13 @@ So that màn hình không phải tự tính, và mẫu nhỏ không bị bịa t
 **Acceptance Criteria:**
 
 **Given** một snapshot đã tổng hợp
-**When** client gọi API tỷ trọng thành phố hoặc tỷ lệ kỹ năng
+**When** client gọi API tỷ lệ kỹ năng
 **Then** thân phản hồi là `data` và `meta`. `meta` có ngày snapshot, trạng thái, nguồn đang bật, nguồn lỗi, ngưỡng, hai ý độ phủ, và một mục cho mỗi ô
 **And** mỗi mục ô có `n`, nhãn quay về, cơ cấu cấp bậc, và `n` riêng cho số kỹ năng, số năm, lương
 **And** tỷ lệ kỹ năng và phân vị dưới ngưỡng trả về trạng thái chưa đủ dữ liệu
 **And** chỉ tỷ trọng cấu phần của bản đồ được phép hiện khi n < 30, kèm cờ mẫu nhỏ
 **And** thiếu `meta` thì kiểm thử schema thất bại
+**And** endpoint tỷ trọng thành phố của Story 1.21 qua cùng kiểm thử schema
 **And** hình lỗi là `error.code`, `error.message` tiếng Việt, và `snapshot_date`
 
 ### Story 1.14: Nhập bộ dữ liệu nền một lần
@@ -738,7 +740,7 @@ So that review giữa kỳ có mặt bằng Backend và Data/AI trước khi nh�
 
 ### Story 1.15: Xem tỷ trọng ba thành phố
 
-**Mức ưu tiên:** P1 — Sprint 5
+**Mức ưu tiên:** P0 — Sprint 1
 
 As a sinh viên,
 I want mở ứng dụng và thấy Hà Nội, TP.HCM, Đà Nẵng chiếm bao nhiêu phần tin,
@@ -756,6 +758,7 @@ So that tôi biết vai trò mình chọn đang tập trung ở đâu, kể cả
 **And** mọi số có cỡ mẫu. Ô dưới 30 trên bảng không hiện tỷ lệ, chỉ "chưa đủ dữ liệu"
 **And** trên điện thoại, bản đồ là danh sách thành phố và thanh tỷ trọng, kèm gợi ý mở trên máy tính
 **And** cụm 3D / 2D / bảng cao tối thiểu 44px. Vòng focus dày 2px, màu `#C5F36A`, lệch 2px
+**And** khi Story 1.17 chưa xong, Bản đồ mở ở lối 2D. Nút 3D có mặt ở trạng thái tắt, có `aria-disabled` và chú thích "Bản đồ 3D sắp có"
 **And** đêm pipeline lỗi thì trang vẫn mở và ghi ngày của snapshot đang hiển thị
 **And** ngưỡng nhóm trên giao diện là 30% và 10%
 
@@ -811,7 +814,7 @@ So that một nguồn chết không trôi qua im lặng.
 
 ### Story 1.19: Sao lưu snapshot ra ngoài VPS
 
-**Mức ưu tiên:** P1 — Sprint 1
+**Mức ưu tiên:** P1 — Sprint 2. Sprint 1 vẫn chạy `pg_dump` một lần theo cổng ra sprint
 
 As a nhóm vận hành,
 I want mỗi ngày có một bản sao cơ sở dữ liệu ở ngoài máy chủ,
@@ -824,6 +827,44 @@ So that một snapshot đã qua không mất theo ổ đĩa.
 **Then** `pg_dump` ghi ra ngoài VPS và giữ 14 bản
 **And** một lần phục hồi từ bản dump đã chạy thành công và có biên bản
 **And** migration không `DROP COLUMN` trên bảng đang mang snapshot lịch sử
+
+### Story 1.20: Gán vai trò, cấp bậc và thành phố bằng luật tất định
+
+**Mức ưu tiên:** P0 — Sprint 1
+
+As a sinh viên,
+I want mỗi tin có một vai trò, một cấp bậc và một thành phố ngay từ tuần đầu,
+So that bản đồ lọc được theo vai trò và không tính tin ngoài ngành IT.
+
+**Acceptance Criteria:**
+
+**Given** một tin đã nạp vào kho
+**When** phép phân loại chạy
+**Then** tin có đúng một vai trò trong danh sách của cấu hình hoặc nhãn "không thuộc IT", đúng một cấp bậc, và đúng một thành phố: Hà Nội, TP.HCM, Đà Nẵng, Khác, hoặc không xác định
+**And** phép là hàm thuần trong `domain`, là phép 6 của registry, gọi được cho một tin và cho một lô. Cùng đầu vào luôn cho cùng nhãn
+**And** luật chỉ đọc chức danh, nguồn, danh mục của nguồn, cấp bậc và địa điểm nguồn ghi. Không gọi mô hình
+**And** Data/AI tách thành Data Analyst/BI, Data Engineer và AI/ML Engineer. Embedded không nằm trong Other
+**And** tin ghi nhiều thành phố được gán theo một quy tắc viết rõ trong cấu hình, có kiểm thử
+**And** tin không thuộc IT được gắn nhãn và bị loại khỏi mọi bảng tổng hợp. Tỷ lệ loại báo cáo được theo nguồn
+
+### Story 1.21: Tính và đọc tỷ trọng thành phố kèm cỡ mẫu
+
+**Mức ưu tiên:** P0 — Sprint 1
+
+As a sinh viên,
+I want số tỷ trọng thành phố đến từ snapshot thật, kèm cỡ mẫu, nguồn và ngày,
+So that màn Bản đồ không phải tự tính, và mẫu nhỏ được đánh dấu đúng.
+
+**Acceptance Criteria:**
+
+**Given** một snapshot đã nạp và đã phân loại
+**When** bước tổng hợp chạy
+**Then** có một ô thống kê cho mỗi thành phố × vai trò và một ô toàn quốc cho mỗi vai trò, kể cả "Tất cả". Mỗi ô có n và cơ cấu cấp bậc
+**And** bước tổng hợp đếm cụm, không đếm bản ghi thô. Cho tới khi có Story 1.5 và 1.8, mỗi tin là một cụm của riêng nó
+**And** với mỗi vai trò, tỷ trọng ba thành phố cộng phần Khác và phần không xác định bằng 100%
+**When** client gọi `GET /api/v1/city-shares?role=`
+**Then** thân phản hồi theo envelope của AD-17, đọc snapshot mới nhất còn đọc được, và route cùng schema giữ nguyên như bản dữ liệu giả của C-1
+**And** `haido_api` không chạy `GROUP BY`, `COUNT` hay `AVG` trên bảng `job_*`
 
 ## Epic 2: Biết mình thiếu gì và học gì trước
 
@@ -857,7 +898,7 @@ So that tôi biết thị trường đang yêu cầu gì trước khi có hồ s
 
 ### Story 2.2: Tự chọn kỹ năng và giữ hồ sơ trong trình duyệt
 
-**Mức ưu tiên:** P0 — Sprint 1-2
+**Mức ưu tiên:** P0 — Sprint 2
 
 As a sinh viên,
 I want bấm để đánh dấu kỹ năng đã có, rồi thấy chúng còn sau khi tải lại trang,
