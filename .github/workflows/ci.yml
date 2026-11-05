@@ -79,19 +79,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      # setup-uv không có tag rút gọn từ v8 trở đi (chỉ có v4..v7), nên ghim tag đầy đủ.
+      # Dependabot (.github/dependabot.yml) mở PR khi có bản mới.
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - name: Install dependencies
-        run: uv sync --all-extras --dev
+        # --locked: uv.lock lệch với pyproject.toml thì đỏ, thay vì tự giải lại phụ thuộc.
+        run: uv sync --locked --all-extras --dev
       - name: ruff
         run: uv run ruff check .
       - name: pytest
         run: uv run pytest -q --junitxml=pytest.xml
       - name: Determinism tests run twice
+        # Hai tiến trình riêng, mỗi lần một PYTHONHASHSEED khác nhau, để lộ kết quả phụ thuộc
+        # thứ tự duyệt set/dict. Mã 5 nghĩa là chưa có test determinism nào: bỏ qua, không đỏ.
+        # Mọi mã khác 0 còn lại là lỗi thật và làm job đỏ.
         run: |
-          uv run pytest -q -m determinism --junitxml=run1.xml || exit 0
-          uv run pytest -q -m determinism --junitxml=run2.xml
+          for seed in 0 1; do
+            rc=0
+            PYTHONHASHSEED=$seed uv run pytest -q -m determinism --junitxml="determinism-$seed.xml" || rc=$?
+            if [ "$rc" -eq 5 ]; then echo "Chưa có test determinism, bỏ qua."; exit 0; fi
+            [ "$rc" -eq 0 ] || exit "$rc"
+          done
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -118,10 +128,10 @@ jobs:
       DATABASE_URL: postgresql+psycopg://postgres:ci@localhost:5432/haido_ci
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3   # xem chú thích ở job python
         with:
           enable-cache: true
-      - run: uv sync --all-extras --dev
+      - run: uv sync --locked --all-extras --dev
       - name: Exactly one head
         run: |
           heads=$(uv run alembic heads | grep -c "(head)")
