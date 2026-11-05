@@ -1,7 +1,7 @@
 ---
 title: "Chia việc 3 người × 8 sprint — Hải Đồ IT"
 created: 2026-11-03
-updated: 2026-11-03
+updated: 2026-11-05
 companion: ARCHITECTURE-SPINE.md
 ---
 
@@ -40,15 +40,16 @@ Chữ **[P0]** là bắt buộc cho review giữa kỳ; **[P1]** bắt buộc tr
 
 ### Sprint 1 — 2–8/11 · Nhịp một phải sống
 
-| | A | B | C |
-|---|---|---|---|
-| | **[P0]** `crawl(cfg) -> Iterator[RawJob]` cho 4 nguồn tự động (CareerLink, ITNavi, Zalo, MoMo), bọc các `parse_*` cũ — **không viết lại chúng** (AD-16) | **[P0]** schema `meta` của AD-17 + endpoint dữ liệu giả | **[P0]** khung Next.js 16, Tailwind, module `localStorage` của AD-23 với danh sách khóa đóng |
-| | **[P0]** cổng `polite` thành `haido_core/crawl/` + bảng `crawl_exceptions` hai mức (AD-20) | **[P0]** `REGISTRY.md` với tám chữ ký (AD-2) | **[P1]** trang chính sách dữ liệu (FR-47) — tĩnh, không chờ ai |
-| | **[P0]** bước `redact` (AD-21) và `ingest` → `job_postings` + `job_observations` | **[P0]** `db/` + Alembic, **một head duy nhất** (AD-25) | |
-| | **[P0]** **bật lịch hằng ngày cho nhịp một** (AD-28) | **[P1]** bảng cấu hình có phiên bản (AD-10) | |
-| | **[P1]** `pg_dump` hằng ngày ra ngoài VPS (AD-25) | | |
+Bảng dưới đây thay bảng cũ theo `sprint-change-proposal-2026-11-05.md`: Sprint 1 phải có một story chạy thật, đạt đủ AC, là Story 1.15 (bảng và 2D) trên dữ liệu thu thật. Bảng cũ xem trong lịch sử git.
 
-Việc giấy tờ, chia đều: gửi email xin phép ITviec, TopCV, tác giả repo gốc.
+| Ngày | Dyuedu | CaoPhanTuanAnh | GiapPhanQuang |
+|---|---|---|---|
+| Thứ Năm 05/11 | #1: Compose, khung `web/`, Alembic một head | #3 `REGISTRY.md`: chữ ký phép 2, 3, 6 trước | #2: khung Python, envelope, endpoint giả |
+| Thứ Sáu 06/11 | C-11 phần còn lại: UA có email, ITviec và MoMo hỏi `robots.txt` qua cổng (lịch chạy, `redact`, `ingest` đã có từ 05/11) | 1.20: luật vai trò, cấp bậc, thành phố | 1.15: màn Bản đồ (bảng và 2D) trên dữ liệu giả |
+| Thứ Bảy 07/11 | C-11 xong; cổng CI của #1 | #6 (1.4): snapshot `published`/`partial`, vòng đời | 1.21: tổng hợp tỷ trọng và endpoint thật |
+| Chủ nhật 08/11 | Rà soát chéo, demo | Rà soát chéo | Nối 1.15 vào API thật; chạy `pg_dump` một lần |
+
+Việc chung: gửi email xin phép ITviec, TopCV, tác giả repo gốc (#8); ít nhất ba cổng CI (#9): hướng phụ thuộc, một head Alembic, hình dạng `meta`. Nếu trượt, cắt 5.1 trước.
 
 **Ranh giới không được vượt:** cuối tuần này, `job_observations` phải có hàng mới mỗi ngày. Mọi thứ khác trong sprint này có thể trượt; việc này thì không. Lý do ở AD-28: một snapshot là ảnh chụp một ngày đã qua.
 
@@ -59,6 +60,8 @@ Việc giấy tờ, chia đều: gửi email xin phép ITviec, TopCV, tác giả
 | | **[P0]** nhập dữ liệu nền thành snapshot gốc: `is_backfill`, `times_seen = 1`, `text_provenance = rewritten_en` (AD-19) | **[P0]** cổng `extract/` dùng `output_config.format`, **không** `tool_choice` cưỡng bức (AD-9) | **[P0]** luồng tải CV + ba lựa chọn xác nhận của FR-21, trên dữ liệu giả |
 | | **[P0]** `dedupe` trong nguồn, đặt **trước** `extract` để LLM không chạy trên bản sao | **[P0]** phép 1 (mapping) và phép 6 (phân loại) của registry; đổi taxonomy theo FR-7 | **[P0]** đồ thị lộ trình bằng `@xyflow/react`, trên dữ liệu giả |
 | | **[P1]** bảng `source_crawl_state`, bỏ trạng thái trong file (AD-16) | **[P0]** **một lượt trích xuất trên 3.469 tin nền** | **[P1]** `GET ...?have=` nối vào API thật khi B xong (AD-22) |
+| | **[P0]** phần còn lại của 1.2 và 1.3, dời từ Sprint 1: `crawl(cfg) -> Iterator[RawJob]`, cổng `polite` cho cả crawler dùng trình duyệt, gỡ cầu nối C-11 | | **[P0]** 2.2: module `localStorage` của AD-23, dời từ Sprint 1 |
+| | **[P1]** 1.19: `pg_dump` hằng ngày, giữ 14 bản, dời từ Sprint 1 | | |
 | | | **[P0]** phép 2 (chọn ô), phép 3 (dân số), phép 4 (nhóm kỹ năng); `stat_cells`, `stat_skill_rate` **dày** (AD-5) | |
 | | | **[P0]** hiệu chỉnh θ một lần rồi đóng băng (FR-9) | |
 
@@ -90,7 +93,7 @@ B phải đo ở sprint này: **độ trễ đường người dùng dán** đ�
 
 | | A | B | C |
 |---|---|---|---|
-| | **[P1]** `takedown_requests` + `source_exclusions` áp trước `aggregate` (AD-21) | **[P1]** API cho bản đồ với `meta` nhiều ô (AD-17) | **[P1]** bản đồ 3D theo tỷ trọng + `low_sample_shown` cho Đà Nẵng (AD-17) |
+| | **[P1]** `takedown_requests` + `source_exclusions` áp trước `aggregate` (AD-21) | **[P1]** API cho bản đồ với `meta` nhiều ô (AD-17) | **[P1]** bản đồ 3D (1.17) và bảng chi tiết thành phố (1.16). Bảng và biểu đồ 2D, kể cả `low_sample_shown` cho Đà Nẵng, đã xong ở Sprint 1 |
 | | **[P1]** phục hồi thử từ `pg_dump`, có biên bản (AD-25) | **[P1]** thêm 2–3 vai trò cho lộ trình | **[P1]** **trang nội dung công khai**: một trang cho mỗi vai trò lúc công khai (4–5, FR-48), cộng trang chính sách (FR-47); ISR + mồi `GET` (AD-13) |
 
 **Công khai cuối sprint.** Tiêu chí nghiệm thu là FR-48. Review giữa kỳ không phụ thuộc trang này.
@@ -130,6 +133,8 @@ flowchart LR
 ```
 
 Hai thứ chặn nhiều nhất: **envelope `meta`** (chặn C suốt ba sprint) và **nhịp một** (chặn bộ chuẩn 200 JD, và không mua lại được). Cả hai nằm ở Sprint 1.
+
+Đường găng riêng của Sprint 1, theo đề xuất 05/11: `#1 → C-11 → 1.20 → 1.21 → 1.15`, xong ngày 08/11.
 
 ## 5. Cắt gì nếu trượt
 
