@@ -1,0 +1,14 @@
+# Giữ phiên bản action trong .github/workflows/ không bị cũ.
+# Mỗi tháng Dependabot mở tối đa một PR gom mọi action có bản mới, kể cả action ghim tag
+# đầy đủ như astral-sh/setup-uv@v10.3.3. PR đó chạy CI như mọi PR khác trước khi merge.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
