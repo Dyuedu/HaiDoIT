@@ -45,9 +45,10 @@ jobs:
         with:
           python-version: "3.13"
       - name: Run gates
-        run: python tools/gates/check_gates.py
+        # AD-1 và AD-17 bắt buộc từ #2 (haido_core/domain và haido_api đã có): SKIP cũng tính là đỏ.
+        run: python tools/gates/check_gates.py --require AD-1 AD-17
       # Khi một tầng đã xong, thêm mã cổng vào --require để cấm nó quay lại BO QUA.
-      # Ví dụ sau Sprint 1:  python tools/gates/check_gates.py --require AD-1 AD-2
+      # Ví dụ khi có REGISTRY.md (#3) và Alembic (#1): --require AD-1 AD-17 AD-2 AD-25
 
   scraper:
     name: Scraper - observation tests

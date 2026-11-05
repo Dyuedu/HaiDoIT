@@ -1,0 +1,630 @@
+{
+  "_note": "Dữ liệu giả của C-1 (#2), đọc bởi haido_api/fake_market.py. Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng là chuỗi tạm; #16 chốt mã thật. display và insufficient_by_measure không nằm ở đây: bản giả tính chúng bằng suppression_for từ n và thresholds.min_sample. Giá trị rate/share là số thô; bản giả tự ẩn khi dưới ngưỡng.",
+  "snapshot": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ]
+  },
+  "cells": {
+    "da_nang.all": {
+      "n": 64,
+      "seniority_mix": {
+        "intern": 5,
+        "fresher": 8,
+        "junior": 22,
+        "mid": 18,
+        "senior": 11
+      },
+      "n_by_measure": {
+        "skill_count": 64,
+        "experience_years": 46,
+        "salary": 15
+      }
+    },
+    "da_nang.backend": {
+      "n": 9,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 2,
+        "mid": 4,
+        "senior": 2
+      },
+      "n_by_measure": {
+        "skill_count": 9,
+        "experience_years": 6,
+        "salary": 2
+      }
+    },
+    "da_nang.data_ai": {
+      "n": 21,
+      "seniority_mix": {
+        "intern": 2,
+        "junior": 9,
+        "mid": 7,
+        "senior": 3
+      },
+      "n_by_measure": {
+        "skill_count": 21,
+        "experience_years": 14,
+        "salary": 5
+      }
+    },
+    "ha_noi.all": {
+      "n": 1490,
+      "seniority_mix": {
+        "intern": 119,
+        "fresher": 208,
+        "junior": 521,
+        "mid": 432,
+        "senior": 210
+      },
+      "n_by_measure": {
+        "skill_count": 1490,
+        "experience_years": 1072,
+        "salary": 357
+      }
+    },
+    "ha_noi.backend": {
+      "n": 61,
+      "seniority_mix": {
+        "intern": 5,
+        "fresher": 3,
+        "junior": 12,
+        "mid": 26,
+        "senior": 15
+      },
+      "n_by_measure": {
+        "skill_count": 61,
+        "experience_years": 43,
+        "salary": 14
+      }
+    },
+    "ha_noi.data_ai": {
+      "n": 412,
+      "seniority_mix": {
+        "intern": 38,
+        "fresher": 61,
+        "junior": 142,
+        "mid": 118,
+        "senior": 53
+      },
+      "n_by_measure": {
+        "skill_count": 412,
+        "experience_years": 301,
+        "salary": 97
+      }
+    },
+    "ho_chi_minh.all": {
+      "n": 1712,
+      "seniority_mix": {
+        "intern": 136,
+        "fresher": 239,
+        "junior": 599,
+        "mid": 496,
+        "senior": 242
+      },
+      "n_by_measure": {
+        "skill_count": 1712,
+        "experience_years": 1232,
+        "salary": 410
+      }
+    },
+    "ho_chi_minh.backend": {
+      "n": 74,
+      "seniority_mix": {
+        "intern": 6,
+        "fresher": 3,
+        "junior": 15,
+        "mid": 30,
+        "senior": 20
+      },
+      "n_by_measure": {
+        "skill_count": 74,
+        "experience_years": 53,
+        "salary": 17
+      }
+    },
+    "ho_chi_minh.data_ai": {
+      "n": 333,
+      "seniority_mix": {
+        "intern": 29,
+        "fresher": 47,
+        "junior": 112,
+        "mid": 98,
+        "senior": 47
+      },
+      "n_by_measure": {
+        "skill_count": 333,
+        "experience_years": 240,
+        "salary": 81
+      }
+    },
+    "other.all": {
+      "n": 113,
+      "seniority_mix": {
+        "intern": 9,
+        "fresher": 15,
+        "junior": 39,
+        "mid": 32,
+        "senior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 113,
+        "experience_years": 81,
+        "salary": 27
+      }
+    },
+    "other.backend": {
+      "n": 5,
+      "seniority_mix": {
+        "fresher": 1,
+        "junior": 1,
+        "mid": 2,
+        "senior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 5,
+        "experience_years": 3,
+        "salary": 1
+      }
+    },
+    "other.data_ai": {
+      "n": 46,
+      "seniority_mix": {
+        "fresher": 6,
+        "junior": 18,
+        "mid": 15,
+        "senior": 7
+      },
+      "n_by_measure": {
+        "skill_count": 46,
+        "experience_years": 31,
+        "salary": 12
+      }
+    },
+    "unknown.all": {
+      "n": 207,
+      "seniority_mix": {
+        "intern": 16,
+        "fresher": 28,
+        "junior": 72,
+        "mid": 60,
+        "senior": 31
+      },
+      "n_by_measure": {
+        "skill_count": 207,
+        "experience_years": 149,
+        "salary": 49
+      }
+    },
+    "unknown.backend": {
+      "n": 8,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 2,
+        "mid": 3,
+        "senior": 2
+      },
+      "n_by_measure": {
+        "skill_count": 8,
+        "experience_years": 5,
+        "salary": 1
+      }
+    },
+    "unknown.data_ai": {
+      "n": 65,
+      "seniority_mix": {
+        "intern": 4,
+        "fresher": 9,
+        "junior": 24,
+        "mid": 19,
+        "senior": 9
+      },
+      "n_by_measure": {
+        "skill_count": 65,
+        "experience_years": 44,
+        "salary": 9
+      }
+    },
+    "vn.all": {
+      "n": 3586,
+      "seniority_mix": {
+        "intern": 285,
+        "fresher": 498,
+        "junior": 1253,
+        "mid": 1038,
+        "senior": 512
+      },
+      "n_by_measure": {
+        "skill_count": 3586,
+        "experience_years": 2580,
+        "salary": 858
+      }
+    },
+    "vn.backend": {
+      "n": 157,
+      "seniority_mix": {
+        "intern": 13,
+        "fresher": 7,
+        "junior": 32,
+        "mid": 65,
+        "senior": 40
+      },
+      "n_by_measure": {
+        "skill_count": 157,
+        "experience_years": 110,
+        "salary": 35
+      }
+    },
+    "vn.backend.entry": {
+      "n": 52,
+      "seniority_mix": {
+        "intern": 13,
+        "fresher": 7,
+        "junior": 32
+      },
+      "n_by_measure": {
+        "skill_count": 52,
+        "experience_years": 37,
+        "salary": 13
+      }
+    },
+    "vn.data_ai": {
+      "n": 877,
+      "seniority_mix": {
+        "intern": 73,
+        "fresher": 123,
+        "junior": 305,
+        "mid": 257,
+        "senior": 119
+      },
+      "n_by_measure": {
+        "skill_count": 877,
+        "experience_years": 630,
+        "salary": 204
+      }
+    },
+    "vn.data_ai.entry": {
+      "n": 501,
+      "seniority_mix": {
+        "intern": 73,
+        "fresher": 123,
+        "junior": 305
+      },
+      "n_by_measure": {
+        "skill_count": 501,
+        "experience_years": 360,
+        "salary": 120
+      }
+    },
+    "vn.data_engineer.senior": {
+      "n": 18,
+      "seniority_mix": {
+        "senior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 18,
+        "experience_years": 15,
+        "salary": 4
+      }
+    }
+  },
+  "city_shares": {
+    "data_ai": {
+      "total_cell_id": "vn.data_ai",
+      "rows": [
+        {
+          "city": "ha_noi",
+          "cell_id": "ha_noi.data_ai",
+          "share": 0.4697833523375142
+        },
+        {
+          "city": "ho_chi_minh",
+          "cell_id": "ho_chi_minh.data_ai",
+          "share": 0.37970353477765106
+        },
+        {
+          "city": "da_nang",
+          "cell_id": "da_nang.data_ai",
+          "share": 0.02394526795895097
+        },
+        {
+          "city": "other",
+          "cell_id": "other.data_ai",
+          "share": 0.052451539338654506
+        },
+        {
+          "city": "unknown",
+          "cell_id": "unknown.data_ai",
+          "share": 0.07411630558722919
+        }
+      ]
+    },
+    "backend": {
+      "total_cell_id": "vn.backend",
+      "rows": [
+        {
+          "city": "ha_noi",
+          "cell_id": "ha_noi.backend",
+          "share": 0.3885350318471338
+        },
+        {
+          "city": "ho_chi_minh",
+          "cell_id": "ho_chi_minh.backend",
+          "share": 0.4713375796178344
+        },
+        {
+          "city": "da_nang",
+          "cell_id": "da_nang.backend",
+          "share": 0.05732484076433121
+        },
+        {
+          "city": "other",
+          "cell_id": "other.backend",
+          "share": 0.03184713375796178
+        },
+        {
+          "city": "unknown",
+          "cell_id": "unknown.backend",
+          "share": 0.050955414012738856
+        }
+      ]
+    },
+    "all": {
+      "total_cell_id": "vn.all",
+      "rows": [
+        {
+          "city": "ha_noi",
+          "cell_id": "ha_noi.all",
+          "share": 0.4155047406581149
+        },
+        {
+          "city": "ho_chi_minh",
+          "cell_id": "ho_chi_minh.all",
+          "share": 0.4774121583937535
+        },
+        {
+          "city": "da_nang",
+          "cell_id": "da_nang.all",
+          "share": 0.01784718349135527
+        },
+        {
+          "city": "other",
+          "cell_id": "other.all",
+          "share": 0.03151143335192415
+        },
+        {
+          "city": "unknown",
+          "cell_id": "unknown.all",
+          "share": 0.0577244841048522
+        }
+      ]
+    }
+  },
+  "skill_rates": {
+    "data_ai": {
+      "entry": {
+        "cell_id": "vn.data_ai.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "python",
+            "rate": 0.8223552894211577,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.6746506986027944,
+            "group": "core"
+          },
+          {
+            "skill": "machine-learning",
+            "rate": 0.40119760479041916,
+            "group": "core"
+          },
+          {
+            "skill": "pandas",
+            "rate": 0.35129740518962077,
+            "group": "core"
+          },
+          {
+            "skill": "power-bi",
+            "rate": 0.19560878243512975,
+            "group": "common"
+          },
+          {
+            "skill": "spark",
+            "rate": 0.1217564870259481,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.08782435129740519,
+            "group": "company_specific"
+          },
+          {
+            "skill": "tensorflow",
+            "rate": 0.07784431137724551,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "backend": {
+      "entry": {
+        "cell_id": "vn.backend.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "java",
+            "rate": 0.6538461538461539,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.5961538461538461,
+            "group": "core"
+          },
+          {
+            "skill": "spring-boot",
+            "rate": 0.5192307692307693,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.4230769230769231,
+            "group": "core"
+          },
+          {
+            "skill": "rest-api",
+            "rate": 0.36538461538461536,
+            "group": "core"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.2692307692307692,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.23076923076923078,
+            "group": "common"
+          },
+          {
+            "skill": "microservices",
+            "rate": 0.15384615384615385,
+            "group": "common"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.07692307692307693,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "java_backend": {
+      "entry": {
+        "cell_id": "vn.backend.entry",
+        "fallback_label": "Java Backend · Entry chỉ có 26 tin, chưa đủ để tính riêng, nên số dưới đây lấy từ ô rộng hơn Backend · Entry.",
+        "rows": [
+          {
+            "skill": "java",
+            "rate": 0.6538461538461539,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.5961538461538461,
+            "group": "core"
+          },
+          {
+            "skill": "spring-boot",
+            "rate": 0.5192307692307693,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.4230769230769231,
+            "group": "core"
+          },
+          {
+            "skill": "rest-api",
+            "rate": 0.36538461538461536,
+            "group": "core"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.2692307692307692,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.23076923076923078,
+            "group": "common"
+          },
+          {
+            "skill": "microservices",
+            "rate": 0.15384615384615385,
+            "group": "common"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.07692307692307693,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "data_engineer": {
+      "senior": {
+        "cell_id": "vn.data_engineer.senior",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "airflow",
+            "rate": 0.5,
+            "group": "core"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.4444444444444444,
+            "group": "core"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.3888888888888889,
+            "group": "core"
+          },
+          {
+            "skill": "python",
+            "rate": 0.8888888888888888,
+            "group": "core"
+          },
+          {
+            "skill": "spark",
+            "rate": 0.8333333333333334,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.7777777777777778,
+            "group": "core"
+          }
+        ]
+      }
+    }
+  }
+}

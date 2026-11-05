@@ -1,0 +1,628 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hải Đồ IT API",
+    "description": "Mọi response chứa số có dạng `{data, meta}` (AD-17); mọi lỗi có dạng `{error: {code, message, snapshot_date}}`. Xem `docs/api/envelope-meta.md`.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/city-shares": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Tỷ trọng thành phố của một vai trò",
+        "description": "Tỷ trọng từng thành phố trong số tin của vai trò trên toàn quốc (FR-33).\n\nThành phố dưới ngưỡng mẫu vẫn có giá trị, kèm `display = low_sample_shown`.",
+        "operationId": "get_city_shares_api_v1_city_shares_get",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Mã vai trò, snake_case; `all` là mọi vai trò.",
+              "title": "Role"
+            },
+            "description": "Mã vai trò, snake_case; `all` là mọi vai trò."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CitySharesData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skill-rates": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Tỷ lệ xuất hiện kỹ năng của một ô",
+        "description": "Tỷ lệ xuất hiện của từng kỹ năng trong ô của vai trò × cấp bậc.\n\nKhi ô đã chọn không đủ mẫu, số lấy từ ô rộng hơn; `data.cell_id` là ô đã dùng và\n`meta.cells[data.cell_id].fallback_label` giải thích. Dưới ngưỡng thì `rate` là\n`null_data` và `group` là `null`.",
+        "operationId": "get_skill_rates_api_v1_skill_rates_get",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Mã vai trò, snake_case.",
+              "title": "Role"
+            },
+            "description": "Mã vai trò, snake_case."
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Mã cấp bậc, snake_case.",
+              "title": "Level"
+            },
+            "description": "Mã cấp bậc, snake_case."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_SkillRatesData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CellMeta": {
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "N",
+            "description": "Số tin (đếm theo cụm) của ô."
+          },
+          "fallback_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Label",
+            "description": "Nhãn giải thích khi ô này được dùng thay cho ô người dùng chọn; `null` nếu không quay về."
+          },
+          "seniority_mix": {
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0.0
+            },
+            "type": "object",
+            "title": "Seniority Mix",
+            "description": "Số tin theo cấp bậc chi tiết, ví dụ `{\"intern\": 13, \"fresher\": 7, \"junior\": 32}`."
+          },
+          "n_by_measure": {
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0.0
+            },
+            "type": "object",
+            "title": "N By Measure",
+            "description": "Số tin có giá trị của từng thước đo (`n_with_value`): số kỹ năng, số năm kinh nghiệm, lương."
+          },
+          "insufficient_by_measure": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object",
+            "title": "Insufficient By Measure",
+            "description": "`true` khi thước đo đó dưới ngưỡng mẫu. Cùng tập khóa với `n_by_measure`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "n",
+          "fallback_label",
+          "seniority_mix",
+          "n_by_measure",
+          "insufficient_by_measure"
+        ],
+        "title": "CellMeta",
+        "description": "Mục của một ô thống kê mà response dùng."
+      },
+      "CityShareRow": {
+        "properties": {
+          "city": {
+            "type": "string",
+            "title": "City",
+            "description": "Mã thành phố. `other` gom các thành phố khác, `unknown` là tin không xác định thành phố."
+          },
+          "share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ trọng, `kind = composition_share`. Dưới ngưỡng mẫu vẫn có giá trị, kèm `low_sample_shown`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "city",
+          "share"
+        ],
+        "title": "CityShareRow",
+        "description": "Tỷ trọng của một thành phố trong số tin của vai trò, trên toàn quốc (FR-33)."
+      },
+      "CitySharesData": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Vai trò đã chọn; `all` là mọi vai trò."
+          },
+          "total_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Total Cell Id",
+            "description": "Ô toàn quốc của vai trò, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/CityShareRow"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Rows",
+            "description": "Mỗi thành phố một dòng, cộng dòng `other` và `unknown`. Tổng `share.value` bằng 1."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "total_cell_id",
+          "rows"
+        ],
+        "title": "CitySharesData",
+        "description": "`data` của `GET /api/v1/city-shares`."
+      },
+      "CoverageNote": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Code",
+            "description": "Mã ổn định của lưu ý, snake_case."
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Text",
+            "description": "Câu hiển thị, tiếng Việt."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "text"
+        ],
+        "title": "CoverageNote",
+        "description": "Một lưu ý về độ phủ dữ liệu (ba lưu ý chuẩn của FR-36 và lưu ý số nguồn của §5)."
+      },
+      "DisplayState": {
+        "type": "string",
+        "enum": [
+          "shown",
+          "low_sample_shown",
+          "null_data"
+        ],
+        "title": "DisplayState",
+        "description": "Trạng thái hiển thị của một con số, do `suppression_for` quyết."
+      },
+      "Envelope_CitySharesData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CitySharesData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[CitySharesData]"
+      },
+      "Envelope_SkillRatesData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SkillRatesData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[SkillRatesData]"
+      },
+      "ErrorBody": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "title": "Code",
+            "description": "Mã lỗi snake_case, ổn định để giao diện rẽ nhánh."
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Câu giải thích tiếng Việt."
+          },
+          "snapshot_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Snapshot Date",
+            "description": "Ngày snapshot mà lỗi liên quan; `null` khi lỗi xảy ra trước khi đọc snapshot nào."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "snapshot_date"
+        ],
+        "title": "ErrorBody",
+        "description": "Nội dung lỗi."
+      },
+      "ErrorEnvelope": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorEnvelope",
+        "description": "Thân của mọi response lỗi. Không bao giờ đi cùng `data`."
+      },
+      "MeasureKind": {
+        "type": "string",
+        "enum": [
+          "composition_share",
+          "skill_rate",
+          "percentile"
+        ],
+        "title": "MeasureKind",
+        "description": "Loại thước đo của một con số."
+      },
+      "Meta": {
+        "properties": {
+          "snapshot_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Snapshot Date",
+            "description": "Ngày snapshot, `YYYY-MM-DD` theo `Asia/Ho_Chi_Minh`."
+          },
+          "snapshot_status": {
+            "$ref": "#/components/schemas/SnapshotStatus",
+            "description": "`published` khi mọi nguồn tự động đang bật đều chạy thành công, ngược lại `partial`."
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources",
+            "description": "Các nguồn đang bật."
+          },
+          "sources_failed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources Failed",
+            "description": "Các nguồn lỗi ở lượt chạy của snapshot. Rỗng khi `published`."
+          },
+          "thresholds": {
+            "$ref": "#/components/schemas/Thresholds",
+            "description": "Ngưỡng đã dùng."
+          },
+          "coverage_notes": {
+            "items": {
+              "$ref": "#/components/schemas/CoverageNote"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Coverage Notes",
+            "description": "Lưu ý độ phủ, hiển thị trên mọi màn hình có số. Ít nhất một lưu ý."
+          },
+          "cells": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CellMeta"
+            },
+            "type": "object",
+            "title": "Cells",
+            "description": "Một mục cho mỗi ô mà response dùng, khóa theo `cell_id`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "snapshot_date",
+          "snapshot_status",
+          "sources",
+          "sources_failed",
+          "thresholds",
+          "coverage_notes",
+          "cells"
+        ],
+        "title": "Meta",
+        "description": "Ngữ cảnh của mọi con số trong `data`."
+      },
+      "SkillRateRow": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill",
+            "description": "Mã kỹ năng, kebab-case, ví dụ `spring-boot`."
+          },
+          "rate": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ xuất hiện, `kind = skill_rate`. Dưới ngưỡng mẫu là `null_data`, không có giá trị."
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group",
+            "description": "Nhóm kỹ năng theo θ: `core`, `common`, `company_specific`. `null` khi `rate` bị ẩn (`null_data`)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skill",
+          "rate",
+          "group"
+        ],
+        "title": "SkillRateRow",
+        "description": "Tỷ lệ xuất hiện của một kỹ năng trong ô đã dùng."
+      },
+      "SkillRatesData": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Vai trò người dùng chọn."
+          },
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "description": "Cấp bậc người dùng chọn."
+          },
+          "cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Cell Id",
+            "description": "Ô thật sự dùng để tính. Khác ô đã chọn khi quay về ô rộng hơn; lý do ở `fallback_label`."
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/SkillRateRow"
+            },
+            "type": "array",
+            "title": "Rows",
+            "description": "Mỗi kỹ năng của ô một dòng."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "level",
+          "cell_id",
+          "rows"
+        ],
+        "title": "SkillRatesData",
+        "description": "`data` của `GET /api/v1/skill-rates`."
+      },
+      "SnapshotStatus": {
+        "type": "string",
+        "enum": [
+          "published",
+          "partial"
+        ],
+        "title": "SnapshotStatus",
+        "description": "Trạng thái kết thúc của snapshot (AD-4). Cả hai đều đọc được."
+      },
+      "Stat": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value",
+            "description": "Giá trị chưa làm tròn. Tỷ lệ và tỷ trọng là số thực 0–1. `null` khi `display = null_data`."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MeasureKind",
+            "description": "Loại thước đo."
+          },
+          "display": {
+            "$ref": "#/components/schemas/DisplayState",
+            "description": "Trạng thái hiển thị, do `suppression_for` quyết. Giao diện chỉ đọc, không tự suy."
+          },
+          "cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Cell Id",
+            "description": "Ô đã sinh ra con số; tra cỡ mẫu và nhãn ở `meta.cells[cell_id]`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "kind",
+          "display",
+          "cell_id"
+        ],
+        "title": "Stat",
+        "description": "Một con số kèm trạng thái hiển thị và ô đã sinh ra nó."
+      },
+      "Thresholds": {
+        "properties": {
+          "min_sample": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Min Sample",
+            "description": "Ngưỡng mẫu: ô có ít tin hơn mức này thì `suppression_for` ẩn số liệu (riêng tỷ trọng thì hiện mờ)."
+          },
+          "theta_core": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Theta Core",
+            "description": "Ngưỡng tỷ lệ của nhóm cốt lõi."
+          },
+          "theta_common": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Theta Common",
+            "description": "Ngưỡng tỷ lệ của nhóm thường gặp."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "min_sample",
+          "theta_core",
+          "theta_common"
+        ],
+        "title": "Thresholds",
+        "description": "Các ngưỡng đã dùng cho response, lấy từ cấu hình có phiên bản (AD-10)."
+      }
+    }
+  }
+}
