@@ -438,6 +438,55 @@ def test_redact_keeps_job_url_and_ordinary_numbers():
     assert sum(counts.values()) == 0
 
 
+def topcv_card(i):
+    return f'<div class="job-item-search-result" data-job-id="{i}"><h3 class="title"><a href="/viec-lam/x/{i}.html">t</a></h3></div>'
+
+
+@pytest.fixture
+def topcv(workdir, monkeypatch):
+    import types
+
+    monkeypatch.setitem(sys.modules, "nodriver", types.ModuleType("nodriver"))
+    import importlib
+
+    import crawlers.topcv as module
+    importlib.reload(module)
+    monkeypatch.setattr(module, "DB_PATH", "cv.db")
+    return module
+
+
+def walk_topcv(module, pages):
+    class Client:
+        async def fetch(self, url, is_listing=False):
+            value = pages.get(int(url.split("page=")[1]), [])
+            return "<html>" + "".join(topcv_card(i) for i in value) if isinstance(value, list) else value
+
+    import asyncio
+
+    return asyncio.run(module.crawl_listing_pages(module.init_db(), Client()))
+
+
+def test_topcv_walks_past_two_hundred_pages(topcv):
+    seen, complete = walk_topcv(topcv, {n: [n] for n in range(1, 251)})
+    assert len(seen) == 250 and complete is True
+
+
+def test_topcv_repeated_last_page_ends_the_walk(topcv):
+    pages = {n: [min(n, 3)] for n in range(1, 50)}
+    seen, complete = walk_topcv(topcv, pages)
+    assert len(seen) == 3 and complete is True
+
+
+@pytest.mark.parametrize("blocked", ["<title>Just a moment...</title>", None])
+def test_topcv_block_is_not_the_end_of_the_listing(topcv, blocked):
+    seen, complete = walk_topcv(topcv, {1: [1], 2: blocked})
+    assert len(seen) == 1 and complete is False
+
+
+def test_topcv_empty_first_page_is_not_a_complete_run(topcv):
+    assert walk_topcv(topcv, {1: []}) == ([], False)
+
+
 # --------------------------------------------------------------- real Postgres
 
 DSN = os.environ.get("TEST_DATABASE_URL")

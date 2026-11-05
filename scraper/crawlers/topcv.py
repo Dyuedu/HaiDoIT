@@ -16,6 +16,7 @@ CHROME_PATH = os.environ.get("CHROME_PATH")  # nodriver auto-detects when unset
 PROFILE_DIR = os.path.abspath("./chrome_topcv_profile")
 BASE_SEARCH_URL = "https://www.topcv.vn/tim-viec-lam-cong-nghe-thong-tin-cr257?page={page}"
 
+
 # 1. KHỞI TẠO DATABASE SQLITE LOCAL
 def init_db():
     Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
@@ -73,14 +74,13 @@ class TopCVBrowserClient:
     async def start(self):
         print(f"[*] Đang khởi động trình duyệt với Profile cố định tại: {PROFILE_DIR}")
         os.makedirs(PROFILE_DIR, exist_ok=True)
-        
-        # Tinh chỉnh 1: Lưu giữ cf_clearance cookie và session trong user_data_dir
+
+        # Để headless=False khi chạy tay giúp vượt Cloudflare Turnstile dễ dàng
         start_kwargs = dict(
-            headless=True,
+            headless=False,
             user_data_dir=PROFILE_DIR,
             browser_args=[
                 "--disable-blink-features=AutomationControlled",
-                "--blink-settings=imagesEnabled=false",  # Chặn tải ảnh giúp trang nhẹ và nhanh gấp 3 lần
             ],
         )
         if CHROME_PATH:
@@ -90,16 +90,20 @@ class TopCVBrowserClient:
         await self._wait_for_cloudflare()
 
     async def _wait_for_cloudflare(self):
-        for _ in range(15):
+        for i in range(20):
             try:
                 title = await self.page.evaluate("document.title")
                 if "Just a moment" in title or "Attention Required" in title:
-                    print("  [~] Đang đợi vượt Cloudflare Challenge...")
+                    if i == 0:
+                        print("  [~] Đang đợi vượt Cloudflare Challenge (hãy click ô xác thực trên Chrome nếu có)...")
+                    else:
+                        print("  [~] Đang đợi vượt Cloudflare Challenge...")
                     await asyncio.sleep(3)
                 else:
-                    break
+                    return
             except Exception:
                 await asyncio.sleep(1)
+        raise RuntimeError("Cloudflare challenge timeout sau 60s")
 
     async def fetch(self, url: str, is_listing: bool = False) -> str | None:
         try:
@@ -107,8 +111,12 @@ class TopCVBrowserClient:
             self.page = await self.browser.get(url)
             await self._wait_for_cloudflare()
 
-            # Tinh chỉnh 2: Chờ thông minh đến khi selector mục tiêu xuất hiện thay vì sleep cứng
-            target_selector = "div.job-item-search-result" if is_listing else "div.job-description__item, script[type='application/ld+json']"
+            # Chờ thông minh đến khi selector mục tiêu xuất hiện thay vì sleep cứng
+            target_selector = (
+                "div.job-item-search-result"
+                if is_listing
+                else "div.job-description__item, script[type='application/ld+json']"
+            )
             try:
                 await self.page.select(target_selector, timeout=6)
             except Exception:
@@ -125,45 +133,68 @@ class TopCVBrowserClient:
 
     def close(self):
         if self.browser:
-            self.browser.stop()
+            try:
+                self.browser.stop()
+            except Exception:
+                pass
 
 
 # 3. PHASE 1: QUÉT DANH SÁCH & LỌC TRÙNG
+def is_challenge(html: str) -> bool:
+    return any(m in html[:5000] for m in ("Just a moment", "Attention Required", "cf-challenge"))
+
+
 def extract_job_id_from_url(url: str) -> str | None:
-    match = re.search(r'(?:/|-j)(\d+)\.html', url)
+    match = re.search(r"(?:/|-j)(\d+)\.html", url)
     return match.group(1) if match else None
 
-async def crawl_listing_pages(conn: sqlite3.Connection, client: TopCVBrowserClient, start_page: int = 1, max_pages: int = 10):
-    """Walk the listing. Returns (absolute URLs seen, reached_the_end)."""
+
+async def crawl_listing_pages(
+    conn: sqlite3.Connection,
+    client: TopCVBrowserClient,
+    start_page: int = 1,
+    seen: list[str] | None = None,
+):
+    """Walk the listing until it ends. Returns (absolute URLs seen, reached_the_end).
+
+    Passing `seen` in place ensures that if the user presses Ctrl+C mid-walk,
+    all URLs collected up to that point are preserved for `write_seen`.
+    """
     cursor = conn.cursor()
-    seen: list[str] = []
+    if seen is None:
+        seen = []
     reached_end = False
-    for page_num in range(start_page, start_page + max_pages):
+    page_num = start_page - 1
+
+    while True:
+        page_num += 1
         url = BASE_SEARCH_URL.format(page=page_num)
         print(f"\n[*] Đang quét trang danh sách {page_num}: {url}")
-        
+
         html = await client.fetch(url, is_listing=True)
         if html == "NOT_FOUND":
-            reached_end = True
+            reached_end = page_num > start_page
             break
-        if not html:
-            break  # a block or a load error: listing stays incomplete
+        if not html or is_challenge(html):
+            print(f"[!] Trang {page_num}: bị chặn hoặc lỗi tải. Listing chưa hoàn chỉnh.")
+            break
 
         soup = BeautifulSoup(html, "lxml")
         job_cards = soup.select("div.job-item-search-result")
-        
+
         if not job_cards:
-            reached_end = True  # an empty page is the only proof we reached the end
+            reached_end = page_num > start_page
             print("[!] Không tìm thấy danh sách job trên trang này. Dừng phân trang.")
             break
 
         new_jobs_count = 0
+        seen_before_page = len(seen)
         for card in job_cards:
             job_id = card.get("data-job-id")
             title_tag = card.select_one("h3.title a")
             if not title_tag:
                 continue
-                
+
             raw_url = title_tag.get("href", "").split("?")[0]
             if not job_id:
                 job_id = extract_job_id_from_url(raw_url)
@@ -176,11 +207,14 @@ async def crawl_listing_pages(conn: sqlite3.Connection, client: TopCVBrowserClie
             salary_tag = card.select_one("label.title-salary")
             salary = salary_tag.get_text(strip=True) if salary_tag else ""
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT OR IGNORE INTO job_queue (job_id, url, title, company_name, salary_preview)
                 VALUES (?, ?, ?, ?, ?)
-            """, (str(job_id), raw_url, title, company, salary))
-            
+                """,
+                (str(job_id), raw_url, title, company, salary),
+            )
+
             abs_url = raw_url if raw_url.startswith("http") else "https://www.topcv.vn" + raw_url
             if abs_url not in seen:
                 seen.append(abs_url)
@@ -189,8 +223,10 @@ async def crawl_listing_pages(conn: sqlite3.Connection, client: TopCVBrowserClie
 
         conn.commit()
         print(f"[+] Trang {page_num}: Tìm thấy {len(job_cards)} jobs -> Thêm mới {new_jobs_count} jobs.")
-    else:
-        reached_end = True  # walked every page up to max_pages
+        if len(seen) == seen_before_page:  # the site is repeating a page: nothing further
+            reached_end = True
+            break
+
     return seen, reached_end
 
 
@@ -198,11 +234,20 @@ async def crawl_listing_pages(conn: sqlite3.Connection, client: TopCVBrowserClie
 def parse_jd_html(html: str) -> dict:
     soup = BeautifulSoup(html, "lxml")
     result = {
-        "title": None, "company_name": None, "salary": None,
-        "experience": None, "job_level": None, "employment_type": None,
-        "location": None, "date_posted": None, "valid_through": None,
-        "description_text": "", "requirements_text": "", "benefits_text": "",
-        "skills": [], "raw_json_ld": "{}"
+        "title": None,
+        "company_name": None,
+        "salary": None,
+        "experience": None,
+        "job_level": None,
+        "employment_type": None,
+        "location": None,
+        "date_posted": None,
+        "valid_through": None,
+        "description_text": "",
+        "requirements_text": "",
+        "benefits_text": "",
+        "skills": [],
+        "raw_json_ld": "{}",
     }
 
     for script in soup.find_all("script", type="application/ld+json"):
@@ -217,7 +262,7 @@ def parse_jd_html(html: str) -> dict:
                 result["date_posted"] = data.get("datePosted")
                 result["valid_through"] = data.get("validThrough")
                 result["employment_type"] = data.get("employmentType")
-                
+
                 loc = data.get("jobLocation")
                 if isinstance(loc, list) and loc:
                     loc = loc[0]
@@ -240,7 +285,7 @@ def parse_jd_html(html: str) -> dict:
             continue
         header_text = h3.get_text(strip=True).lower()
         clean_text = content_div.get_text(separator="\n", strip=True)
-        
+
         if "mô tả" in header_text:
             result["description_text"] = clean_text
         elif "yêu cầu" in header_text:
@@ -270,21 +315,29 @@ def parse_jd_html(html: str) -> dict:
     return result
 
 
-async def process_job_queue(conn: sqlite3.Connection, client: TopCVBrowserClient, batch_size: int = 100, cooldown_every: int = 40):
+async def process_job_queue(
+    conn: sqlite3.Connection,
+    client: TopCVBrowserClient,
+    batch_size: int = 100,
+    cooldown_every: int = 40,
+):
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT job_id, url, title, company_name, salary_preview 
         FROM job_queue 
         WHERE status = 'PENDING' 
         LIMIT ?
-    """, (batch_size,))
-    
+        """,
+        (batch_size,),
+    )
+
     pending_jobs = cursor.fetchall()
     print(f"\n[*] Bắt đầu cào chi tiết {len(pending_jobs)} jobs đang chờ...")
 
     for idx, (job_id, url, q_title, q_company, q_salary) in enumerate(pending_jobs, 1):
         print(f"  [{idx}/{len(pending_jobs)}] Job ID {job_id}: {q_title[:48]}...")
-        
+
         html = await client.fetch(url, is_listing=False)
         now = datetime.now().isoformat()
 
@@ -292,7 +345,7 @@ async def process_job_queue(conn: sqlite3.Connection, client: TopCVBrowserClient
             cursor.execute("UPDATE job_queue SET status = 'NOT_FOUND', updated_at = ? WHERE job_id = ?", (now, job_id))
             conn.commit()
             continue
-        elif not html:
+        elif not html or is_challenge(html):
             cursor.execute("UPDATE job_queue SET status = 'FAILED', updated_at = ? WHERE job_id = ?", (now, job_id))
             conn.commit()
             continue
@@ -302,25 +355,38 @@ async def process_job_queue(conn: sqlite3.Connection, client: TopCVBrowserClient
         final_company = parsed["company_name"] or q_company
         final_salary = parsed["salary"] or q_salary
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT OR REPLACE INTO job_details (
                 job_id, title, company_name, salary, experience, job_level,
                 employment_type, location, date_posted, valid_through,
                 description_text, requirements_text, benefits_text,
                 skills_json, raw_json_ld, synced_to_pg
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
-        """, (
-            job_id, final_title, final_company, final_salary,
-            parsed["experience"], parsed["job_level"], parsed["employment_type"],
-            parsed["location"], parsed["date_posted"], parsed["valid_through"],
-            parsed["description_text"], parsed["requirements_text"], parsed["benefits_text"],
-            json.dumps(parsed["skills"], ensure_ascii=False), parsed["raw_json_ld"]
-        ))
+            """,
+            (
+                job_id,
+                final_title,
+                final_company,
+                final_salary,
+                parsed["experience"],
+                parsed["job_level"],
+                parsed["employment_type"],
+                parsed["location"],
+                parsed["date_posted"],
+                parsed["valid_through"],
+                parsed["description_text"],
+                parsed["requirements_text"],
+                parsed["benefits_text"],
+                json.dumps(parsed["skills"], ensure_ascii=False),
+                parsed["raw_json_ld"],
+            ),
+        )
 
         cursor.execute("UPDATE job_queue SET status = 'COMPLETED', updated_at = ? WHERE job_id = ?", (now, job_id))
         conn.commit()
 
-        # Tinh chỉnh 3: Nghỉ giải lao giữa các cụm request để tránh Cloudflare Rate Limit theo IP
+        # Nghỉ giải lao giữa các cụm request để tránh Cloudflare Rate Limit theo IP
         if idx % cooldown_every == 0 and idx < len(pending_jobs):
             rest_sec = random.uniform(45, 75)
             print(f"  [☕] Đã cào {idx} trang liên tiếp. Tạm nghỉ {rest_sec:.0f}s làm mát IP...")
@@ -343,7 +409,6 @@ def export_jsonl(db_path: str = DB_PATH, out_path: str = "data/raw/topcv.jsonl")
         WHERE q.status = 'COMPLETED'
     """)
 
-    from pathlib import Path
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -392,32 +457,64 @@ def export_jsonl(db_path: str = DB_PATH, out_path: str = "data/raw/topcv.jsonl")
     return count
 
 
+def _load_fallback_urls_from_db(conn: sqlite3.Connection) -> list[str]:
+    """Lấy danh sách URL đã có trong bảng job_queue làm fallback nếu bấm Ctrl+C sớm."""
+    cur = conn.cursor()
+    cur.execute("SELECT url FROM job_queue")
+    urls: list[str] = []
+    for (u,) in cur.fetchall():
+        if not u:
+            continue
+        abs_u = u if u.startswith("http") else "https://www.topcv.vn" + u
+        if abs_u not in urls:
+            urls.append(abs_u)
+    return urls
+
+
 async def main():
     db_conn = init_db()
     client = TopCVBrowserClient()
-    seen, complete, error = [], False, None
+    seen: list[str] = []
+    complete = False
+    error = None
+    seen_written = False
+
     try:
         await client.start()
         try:
-            seen, complete = await crawl_listing_pages(db_conn, client, start_page=1, max_pages=200)
-        except Exception as exc:  # noqa: BLE001 - a block mid-walk keeps what it saw
-            error = str(exc)[:300]
-            print(f"[!] listing incomplete: {error}")
-        # Written before details, so a block during details cannot lose the observation.
+            seen, complete = await crawl_listing_pages(db_conn, client, start_page=1, seen=seen)
+        except (Exception, KeyboardInterrupt, asyncio.CancelledError) as exc:
+            error = f"Listing interrupted ({type(exc).__name__}): {exc}"[:300]
+            print(f"\n[!] Listing dừng sớm: {error}")
+
+        if not seen:
+            seen = _load_fallback_urls_from_db(db_conn)
+
+        # Ghi file seen ngay trước khi sang bước cào chi tiết
         write_seen("topcv", seen, complete, error=error)
+        seen_written = True
+
+        # Tiếp tục cào chi tiết các job PENDING trong queue
         if complete or seen:
-            await process_job_queue(db_conn, client, batch_size=5000, cooldown_every=30)
-    except Exception as exc:  # noqa: BLE001 - Cloudflare never cleared, or the browser died
-        error = str(exc)[:300]
-        print(f"[!] STOP -- {error}")
-        write_seen("topcv", seen, complete, error=error)
+            await process_job_queue(db_conn, client, batch_size=-1, cooldown_every=30)
+
+    except (Exception, KeyboardInterrupt, asyncio.CancelledError) as exc:
+        error = f"{type(exc).__name__}: {exc}"[:300]
+        print(f"\n[!] Dừng phiên cào: {error}")
     finally:
+        if not seen_written:
+            if not seen:
+                seen = _load_fallback_urls_from_db(db_conn)
+            write_seen("topcv", seen, complete, error=error)
         client.close()
         db_conn.close()
-        print("\n[+] Hoàn tat phien cao du lieu TopCV!")
+        print("\n[+] Hoàn tất phiên cào dữ liệu TopCV!")
 
     export_jsonl(out_path="data/raw/topcv.jsonl")
 
 
 if __name__ == "__main__":
-    uc.loop().run_until_complete(main())
+    try:
+        uc.loop().run_until_complete(main())
+    except KeyboardInterrupt:
+        pass
