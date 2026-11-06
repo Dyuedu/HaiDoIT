@@ -1,0 +1,11 @@
+# Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn.
+# Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle lưu phiên bản đã dùng.
+config_version = "2026-11-06.1"
+
+# Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
+window_days = 60
+
+[sources]
+# Nguồn thu tự động hằng ngày (đúng AUTO_SOURCES của scraper/ingest.py).
+# Nguồn ngoài danh sách này (topcv) chạy tay, lượt chạy ghi mode = "manual".
+auto = ["zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec"]
