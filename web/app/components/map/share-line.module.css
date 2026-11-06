@@ -1,0 +1,136 @@
+/*
+ * Một dòng tỷ trọng: thanh ở lối 2D, hoặc dòng chú thích Khác / không xác định.
+ * Dưới 640px: tên và số trên một hàng, rãnh xuống hàng dưới. Từ 640px: tên | rãnh | số.
+ * Màu và chữ chỉ đọc token của globals.css.
+ */
+
+.line {
+  display: grid;
+  /* Tên ngắn giữ một dòng; tên dài xuống dòng trong nửa trái; nhãn mẫu nhỏ xuống dòng ở cột số. */
+  grid-template-columns: fit-content(50%) minmax(0, 1fr);
+  grid-template-areas: "label value";
+  align-items: center;
+  gap: 6px 16px;
+  width: 100%;
+  min-height: var(--spacing-target);
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+
+.line:hover {
+  border-color: var(--color-border-chip);
+}
+
+.bar {
+  grid-template-areas:
+    "label value"
+    "track track";
+}
+
+@media (min-width: 640px) {
+  .bar {
+    grid-template-columns: 8.5rem minmax(0, 1fr) minmax(13rem, 17rem);
+    grid-template-areas: "label track value";
+  }
+
+  .legend {
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    grid-template-areas: "label value";
+  }
+
+  .legend .value {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+.label {
+  grid-area: label;
+  font-size: var(--text-ui);
+  font-weight: var(--text-ui--font-weight);
+}
+
+.value {
+  grid-area: value;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--text-mono--font-weight);
+  text-align: right;
+}
+
+/* "47,0% · 412 tin" không bị cắt giữa chừng. */
+.reading {
+  white-space: nowrap;
+}
+
+.note {
+  color: var(--color-amber);
+}
+
+.percent {
+  color: var(--color-text);
+}
+
+.count {
+  color: var(--color-text-muted);
+}
+
+.track {
+  grid-area: track;
+  position: relative;
+  display: block;
+  height: 14px;
+  overflow: hidden;
+  border-radius: var(--radius-bar);
+  background: var(--color-track);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-selected);
+  transition: width 240ms ease;
+}
+
+/* Mẫu nhỏ: nền trong suốt, phủ sọc selected (DESIGN.md, Design Notes của #46). */
+.fill[data-low-sample="true"] {
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-selected) 35%, transparent) 0 4px,
+    color-mix(in srgb, var(--color-selected) 8%, transparent) 4px 8px
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-selected) 35%, transparent);
+}
+
+/*
+ * Windows High Contrast (forced colors) xóa nền và gradient: vẽ rãnh bằng viền, phần tô bằng
+ * màu hệ thống, và thanh mẫu nhỏ bằng viền nét đứt thay cho sọc.
+ */
+@media (forced-colors: active) {
+  .track {
+    border: 1px solid CanvasText;
+  }
+
+  .fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .fill[data-low-sample="true"] {
+    box-sizing: border-box;
+    border: 1px dashed Highlight;
+    background: Canvas;
+    box-shadow: none;
+  }
+}

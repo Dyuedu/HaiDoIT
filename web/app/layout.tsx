@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Be_Vietnam_Pro, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppHeader } from "./components/app-header";
 
+// Chữ giao diện (DESIGN.md).
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin", "vietnamese"],
   display: "swap",
+  variable: "--font-be-vietnam-pro",
+});
+
+// Số, n, ngày, phần trăm, mã (DESIGN.md).
+const jetBrainsMono = JetBrains_Mono({
+  weight: ["400", "600"],
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
@@ -20,12 +30,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={beVietnamPro.className}>
-      <body className="min-h-screen bg-[#070B10] text-[#E6EDF3] antialiased">
+    <html lang="vi" className={`${beVietnamPro.variable} ${jetBrainsMono.variable}`}>
+      <body className="min-h-screen bg-canvas font-sans text-text antialiased">
         <AppHeader />
-        <main className="max-w-[1280px] mx-auto px-6 py-6">
-          {children}
-        </main>
+        <main className="mx-auto max-w-content px-page py-6">{children}</main>
       </body>
     </html>
   );

@@ -158,6 +158,9 @@ jobs:
         run: npm ci
       - working-directory: web
         run: npm run lint
+      - name: Test - Vitest (DoD dòng 11-12)
+        working-directory: web
+        run: npm run test
       - name: Build - must pass here, prod never runs next build (AD-15)
         working-directory: web
         run: npm run build

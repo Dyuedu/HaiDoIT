@@ -14,21 +14,14 @@ export function AppHeader() {
   const pathname = usePathname();
 
   return (
-    <header
-      style={{
-        backgroundColor: "#0A1017",
-        borderBottom: "1px solid #1C2A36",
-        padding: "0 24px",
-      }}
-      className="flex flex-wrap items-center justify-between min-h-[52px]"
-    >
+    <header className="flex min-h-nav flex-wrap items-center justify-between border-b border-border bg-header px-page">
       <div className="flex flex-wrap items-center gap-6">
         <Link
           href="/"
-          className="text-base font-bold tracking-wider text-[#E6EDF3] flex items-center gap-1 hover:opacity-90 transition-opacity"
+          className="flex items-center gap-1 text-logo text-text transition-opacity hover:opacity-90"
         >
           <span>HẢI ĐỒ</span>
-          <span style={{ color: "#C5F36A" }}>•</span>
+          <span className="text-primary">•</span>
           <span>IT</span>
         </Link>
 
@@ -40,11 +33,9 @@ export function AppHeader() {
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                style={{
-                  color: isActive ? "#E6EDF3" : "#9FB0C2",
-                  borderBottom: isActive ? "2px solid #62D9EE" : "2px solid transparent",
-                }}
-                className="px-3 h-[52px] flex items-center text-sm font-medium hover:text-[#E6EDF3] transition-colors"
+                className={`flex h-nav items-center border-b-2 px-3 text-ui transition-colors hover:text-text ${
+                  isActive ? "border-selected text-text" : "border-transparent text-text-muted"
+                }`}
               >
                 {item.label}
               </Link>

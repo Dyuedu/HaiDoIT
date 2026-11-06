@@ -1,18 +1,161 @@
 @import "tailwindcss";
 
-:root {
-  --background: #070b10;
-  --foreground: #e6edf3;
-  --header-bg: #0a1017;
-  --border: #1c2a36;
-  --primary: #c5f36a;
-  --selected: #62d9ee;
+/*
+ * Token của DESIGN.md (_bmad-output/planning-artifacts/ux-designs/ux-HaiDoIT-2026-11-03),
+ * khai một lần ở đây. `static`: luôn sinh biến CSS trên :root, kể cả token chưa có class nào
+ * dùng, để CSS module và `style` đọc được bằng var(--…).
+ */
+@theme static {
+  --color-canvas: #070b10;
+  --color-header: #0a1017;
+  --color-panel: #0d141c;
+  --color-inset: #0a1118;
+  --color-field: #05080c;
+  --color-notice: #141009;
+  --color-text: #e6edf3;
+  --color-text-muted: #9fb0c2;
+  --color-text-secondary: #c4d0dc;
+  --color-text-quiet: #a9b8c7;
+  --color-text-dim: #8496a6;
+  --color-text-placeholder: #7d8fa1;
+  --color-text-doc: #d5dee7;
+  --color-border: #1c2a36;
+  --color-border-strong: #243543;
+  --color-border-chip: #2e4456;
+  --color-border-row: #15212b;
+  --color-border-dashed: #3a5163;
+  --color-track: #13202b;
+  --color-track-alt: #16222d;
+  --color-primary: #c5f36a;
+  --color-primary-hover: #d6fa94;
+  --color-primary-ink: #0a0f05;
+  --color-link-hover: #e4ffb5;
+  --color-selected: #62d9ee;
+  --color-amber: #f5a65b;
+  --color-amber-deep: #5a4426;
+  --color-amber-soft: #ffd3a6;
+  --color-amber-softer: #ffe6cc;
+  --color-amber-edge: #5a3e22;
+  --color-disabled: #2a3a44;
+  --color-slate: #4a6478;
+  --color-column-face: #1f6a7c;
+  --color-column-side: #154b5b;
+  --color-map-land: #0d2836;
+  --color-map-line: #2e5a6a;
+  --color-meter-idle: #3e6a80;
+  --color-band-deep: #1f4a58;
+  --color-band-mid: #3e8296;
+  --color-band-pale: #a8eaf5;
+  --color-icon-scan: #1a140c;
+  --color-mask: #000;
+
+  --text-logo: 16px;
+  --text-logo--font-weight: 700;
+  --text-logo--letter-spacing: 0.04em;
+  --text-display: 34px;
+  --text-display--font-weight: 700;
+  --text-display--line-height: 1.2;
+  --text-skill-name: 32px;
+  --text-skill-name--font-weight: 700;
+  --text-title: 26px;
+  --text-title--font-weight: 700;
+  --text-title--line-height: 1.2;
+  --text-title-sm: 22px;
+  --text-title-sm--font-weight: 700;
+  --text-section: 20px;
+  --text-section--font-weight: 700;
+  --text-heading-sm: 18px;
+  --text-heading-sm--font-weight: 700;
+  --text-lead: 17px;
+  --text-lead--font-weight: 600;
+  --text-body: 16px;
+  --text-body--line-height: 1.7;
+  --text-body-md: 15px;
+  --text-body-md--line-height: 1.55;
+  --text-ui: 14px;
+  --text-ui--font-weight: 500;
+  --text-button: 15px;
+  --text-button--font-weight: 600;
+  --text-button-compact: 14px;
+  --text-button-compact--font-weight: 600;
+  --text-chip: 13px;
+  --text-chip--font-weight: 500;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.5;
+  --text-footer: 12px;
+  --text-kicker: 11px;
+  --text-kicker--font-weight: 600;
+  --text-kicker--line-height: 1.4;
+  --text-kicker--letter-spacing: 0.08em;
+  --text-micro: 10px;
+  --text-micro--font-weight: 600;
+  --text-micro--letter-spacing: 0.06em;
+  --text-metric: 28px;
+  --text-metric--font-weight: 700;
+  --text-match: 34px;
+  --text-match--font-weight: 600;
+  --text-mono-lg: 22px;
+  --text-mono-lg--font-weight: 600;
+  --text-mono: 13px;
+  --text-mono--font-weight: 600;
+  --text-mono-sm: 12px;
+  --text-field: 14px;
+  --text-field--font-weight: 400;
+  --text-field--line-height: 1.7;
+
+  --radius-hair: 2px;
+  --radius-bar: 4px;
+  --radius-sm: 6px;
+  --radius-segment: 7px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-drop: 14px;
+  --radius-full: 999px;
+
+  --spacing-target: 44px;
+  --spacing-nav: 52px;
+  --spacing-button: 48px;
+  --spacing-page: 24px;
+  --spacing-panel: 20px;
+  --spacing-grid: 40px;
+
+  --container-content: 1280px;
+  --container-doc: 760px;
+  --container-role-doc: 860px;
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
+/* Hai mặt chữ của DESIGN.md, nạp bằng next/font trong layout.tsx. */
+@theme inline {
+  --font-sans: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
