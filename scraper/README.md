@@ -52,6 +52,9 @@ Chạy cả chuỗi: `python pipeline.py`. Từng chặng: `pipeline.py crawl|re
 tin còn đăng không sinh dòng raw mới. Tin chỉ được coi là đã gỡ khi vắng mặt ở một lượt
 `source_runs.listing_complete = true`. MoMo và ITviec chạy trong ảnh `scraper-browser` có Chromium. TopDev chỉ lấy tin IT: thuộc danh mục IT của trang hoặc khớp từ khóa. TopCV không nằm trong lịch tự động và chưa ghi `data/seen`.
 
+`data/raw` không bị xóa sau `ingest` và còn chứa liên hệ chưa xóa (AD-21). ITviec, TopDev, CareerLink và ITNavi dựng
+tập tin đã biết từ đó; Zalo, VietnamWorks và MoMo ghi lại file của mình từ đầu mỗi lượt. `ingest` và `dedupe` chỉ đọc `data/redacted`. MoMo và ITviec không hỏi `robots.txt` khi mở trang bằng trình duyệt (AD-20).
+
 Tên file theo từ vựng bước của `ARCHITECTURE-SPINE.md`, không đánh số — thứ tự đã
 đổi hai lần và số thứ tự mục theo mỗi lần đổi.
 
@@ -109,7 +112,7 @@ sẵn cả thư mục `data/` để một lần chạy lại không vô tình pu
 
 - `data/linkedin-profile-webkit/` — profile Playwright đã đăng nhập LinkedIn
   (cookie, LocalStorage). Tuyệt đối không publish.
-- `data/raw/` — dữ liệu thô từng nguồn.
+- `data/raw/` — dữ liệu thô từng nguồn, còn liên hệ chưa xóa.
 - Các file trung gian và cache (`step-03-full`, `step-04-cache`, …), tổng cộng
   hơn 600 MB và đều tái tạo được từ pipeline.
 
