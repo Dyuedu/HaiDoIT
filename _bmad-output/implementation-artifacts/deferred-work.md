@@ -63,3 +63,9 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-gh-67-cau-noi-pipeline-scraper.md`
   summary: (Chưa xác minh, mức medium nếu đúng) `data/dedup.jsonl` hoặc `data/consolidated.jsonl` trên một máy có thể đã được dựng từ raw bằng lệnh `dedupe.py` không tham số trước #67, và `extract` sẽ vẫn đọc chúng.
   evidence: Lịch chạy VPS luôn truyền `data/redacted` nên khó xảy ra ở đó. Muốn chốt thì đếm số dòng khớp mẫu email và số điện thoại trong hai file này trên từng máy, không in giá trị.
+- source_spec: `_bmad-output/implementation-artifacts/spec-gh-6-chot-snapshot-va-vong-doi-tin.md`
+  summary: Chưa bật lịch hằng ngày cho `haido ingest` và `haido lifecycle`, chưa kiểm tay ba ngày liên tiếp (hai task cuối của issue #6).
+  evidence: Quyết định ngày 06/11: kho của Hải Đồ trên VPS chưa bật, `deploy/daily.sh` thuộc C-11 (#67), và phải chạy migration lên Supabase trước. Story này chạy tay bằng CLI.
+- source_spec: `_bmad-output/implementation-artifacts/spec-gh-6-chot-snapshot-va-vong-doi-tin.md`
+  summary: Chưa đóng gói dự án (`[build-system]`), nên `[project.scripts] haido` chưa cài được; lệnh chạy là `uv run python -m haido_core.cli`.
+  evidence: Đóng gói phải lock lại `uv.lock` và sửa `deploy/api.Dockerfile` (chỉ chép `haido_core`, `haido_api`); ngoài phạm vi #6.

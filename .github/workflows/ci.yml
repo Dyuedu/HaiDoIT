@@ -77,6 +77,19 @@ jobs:
     needs: detect
     if: needs.detect.outputs.python == 'true'
     runs-on: ubuntu-latest
+    # Test có marker `postgres` (Story 1.4) chạy thật ở đây; thiếu URL thì conftest làm đỏ, không skip.
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: haido_test
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+        ports: ["5432:5432"]
+    env:
+      HAIDO_TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@localhost:5432/haido_test
     steps:
       - uses: actions/checkout@v7
       # setup-uv không có tag rút gọn từ v8 trở đi (chỉ có v4..v7), nên ghim tag đầy đủ.

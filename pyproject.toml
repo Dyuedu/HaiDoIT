@@ -13,6 +13,9 @@ dependencies = [
     "uvicorn==0.54.0",
 ]
 
+[project.scripts]
+haido = "haido_core.cli:main"
+
 [dependency-groups]
 dev = [
     "httpx>=0.28",
@@ -28,6 +31,7 @@ testpaths = ["tests"]
 pythonpath = ["."]
 markers = [
     "determinism: chạy hai lần liên tiếp trong CI, kết quả phải giống hệt (AD-24)",
+    "postgres: cần Postgres thật qua HAIDO_TEST_DATABASE_URL; trong CI thiếu URL thì đỏ, không skip",
 ]
 
 [tool.ruff]
