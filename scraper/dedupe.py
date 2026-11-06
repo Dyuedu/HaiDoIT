@@ -1,4 +1,4 @@
-"""Phase 1.5: deduplicate raw listings.
+"""Phase 1.5: deduplicate redacted listings.
 
 1. Drop exact job_url duplicates.
 2. Drop intra-site duplicates only — the same job re-posted on the SAME board
@@ -39,8 +39,8 @@ def richer(a: dict, b: dict) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Deduplicate raw listings (Phase 1.5)")
-    parser.add_argument("--raw", type=str, default="data/raw")
+    parser = argparse.ArgumentParser(description="Deduplicate redacted listings (Phase 1.5)")
+    parser.add_argument("--raw", type=str, default="data/redacted")
     parser.add_argument("--out", type=str, default="data/dedup.jsonl")
     args = parser.parse_args()
 

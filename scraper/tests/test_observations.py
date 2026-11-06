@@ -10,17 +10,21 @@ import json
 import os
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import clean  # noqa: E402
+import dedupe  # noqa: E402
 import ingest  # noqa: E402
+import pipeline  # noqa: E402
 import redact  # noqa: E402
 from crawlers import careerlink, itnavi, itviec, topdev, vietnamworks, zalo  # noqa: E402
 from crawlers.base import write_jsonl  # noqa: E402
-from crawlers.polite import BlockedError, BudgetExhausted  # noqa: E402
+from crawlers.polite import USER_AGENT, BlockedError, BudgetExhausted, PoliteClient  # noqa: E402
 
 
 class Resp:
@@ -630,3 +634,131 @@ def test_extract_does_not_create_rows(conn):
     with conn.cursor() as cur:
         cur.execute("SELECT count(*) AS n FROM jobs")
         assert cur.fetchone()["n"] == 0
+
+
+def test_fr2_user_agent_has_team_contact_email():
+    assert "hoangduy20407@gmail.com" in USER_AGENT
+    assert PoliteClient().session.headers["User-Agent"] == USER_AGENT
+
+
+def test_fr2_browser_crawlers_send_the_same_user_agent(monkeypatch):
+    import contextlib
+    import types
+
+    from crawlers import browser_polite
+
+    captured = {}
+
+    class Context:
+        def close(self):
+            pass
+
+    class Browser:
+        def new_context(self, **kwargs):
+            captured.update(kwargs)
+            return Context()
+
+        def close(self):
+            pass
+
+    @contextlib.contextmanager
+    def sync_playwright():
+        yield SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_: Browser()))
+
+    fake = types.ModuleType("playwright.sync_api")
+    fake.sync_playwright = sync_playwright
+    monkeypatch.setitem(sys.modules, "playwright", types.ModuleType("playwright"))
+    monkeypatch.setitem(sys.modules, "playwright.sync_api", fake)
+
+    with browser_polite.browser_polite():
+        pass
+
+    assert captured["user_agent"] == USER_AGENT
+
+
+def test_fr2_robots_rule_for_our_bot_still_applies_with_contact_in_user_agent(monkeypatch):
+    robots = "User-agent: HaiDoIT-research-bot\nDisallow: /private\n"
+
+    class RobotsResp:
+        status_code = 200
+        headers = {"Content-Type": "text/plain"}
+        text = robots
+
+    client = PoliteClient()
+    monkeypatch.setattr(client.session, "get", lambda *_, **__: RobotsResp())
+    assert not client.allowed("https://x.test/private/1")
+    assert client.allowed("https://x.test/public/1")
+
+
+def run_dedupe_main(monkeypatch, *args):
+    monkeypatch.setattr(sys, "argv", ["dedupe.py", *args])
+    dedupe.main()
+    path = Path("data/dedup.jsonl")
+    return path.read_text(encoding="utf-8")
+
+
+CONTACT_ROW = {
+    "site": "itnavi", "job_url": "https://x/1", "title": "Java", "company": "A",
+    "description": "Gửi CV về tuyendung@congty.vn hoặc gọi 0912 345 678",
+}
+
+
+def test_ad21_default_dedupe_after_redact_holds_no_contact_details(workdir, monkeypatch):
+    write_jsonl(Path("data/raw/itnavi.jsonl"), [CONTACT_ROW])
+    monkeypatch.setattr(sys, "argv", ["redact.py"])
+    assert redact.main() == 0
+
+    out = run_dedupe_main(monkeypatch)
+
+    assert json.loads(out)["job_url"] == "https://x/1"
+    assert "tuyendung@congty.vn" not in out
+    patterns = {kind: rx for kind, rx, _ in redact.PATTERNS}
+    assert not patterns["email"].search(out)
+    assert not patterns["phone"].search(out)
+
+    monkeypatch.setattr(sys, "argv", ["clean.py"])
+    clean.main()
+    consolidated = Path("data/consolidated.jsonl").read_text(encoding="utf-8")
+    assert json.loads(consolidated)["job_url"] == "https://x/1"
+    assert not patterns["email"].search(consolidated)
+    assert not patterns["phone"].search(consolidated)
+
+
+def test_ad21_default_dedupe_never_reads_raw(workdir, monkeypatch):
+    write_jsonl(Path("data/raw/itnavi.jsonl"), [CONTACT_ROW])
+
+    assert run_dedupe_main(monkeypatch) == ""
+
+
+def test_ad21_dedupe_explicit_raw_argument_still_wins(workdir, monkeypatch):
+    write_jsonl(Path("elsewhere/itnavi.jsonl"), [CONTACT_ROW])
+
+    assert json.loads(run_dedupe_main(monkeypatch, "--raw", "elsewhere"))["job_url"] == "https://x/1"
+
+
+def test_ad21_ingest_default_reads_redacted_not_raw(workdir, monkeypatch, capsys):
+    write_jsonl(Path("data/raw/itnavi.jsonl"), [CONTACT_ROW])
+    monkeypatch.setattr(sys, "argv", ["ingest.py", "--dry-run", "--snapshot", "2026-11-05"])
+
+    assert ingest.main() == 0
+
+    assert "jobs    : 0 rows from data/redacted" in capsys.readouterr().out
+
+
+def test_ad21_daily_dedupe_command_reads_redacted(monkeypatch):
+    commands = []
+
+    def fake_run(cmd, **_):
+        commands.append(cmd)
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(pipeline.subprocess, "run", fake_run)
+
+    assert pipeline.run_dedupe()
+    assert commands[0][commands[0].index("--raw") + 1] == "data/redacted"
+
+
+def test_ad21_extract_input_is_never_a_raw_file():
+    import extract
+
+    assert extract.IN_CANDIDATES == ["data/consolidated.jsonl", "data/dedup.jsonl"]

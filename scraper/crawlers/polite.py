@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 import requests
 
-USER_AGENT = "HaiDoIT-research-bot/0.1 (non-commercial student research)"
+USER_AGENT = "HaiDoIT-research-bot/0.1 (non-commercial student research; contact: hoangduy20407@gmail.com)"
 CAPTCHA_MARKERS = ("hcaptcha", "g-recaptcha", "cf-challenge")
 
 

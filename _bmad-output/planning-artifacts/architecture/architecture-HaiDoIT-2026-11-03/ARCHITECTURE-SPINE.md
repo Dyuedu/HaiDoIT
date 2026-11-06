@@ -7,7 +7,7 @@ paradigm: 'pipes-and-filters (bên ghi) + read-model/CQRS-lite (bên đọc), tr
 scope: 'Toàn hệ thống Hải Đồ IT v1: pipeline thu thập/chuẩn hóa, API, web, trang nội dung công khai. Phủ FR-1..FR-47.'
 status: final
 created: '2026-11-03'
-updated: '2026-11-05'
+updated: '2026-11-06'
 binds:
   - 'FR-1..FR-9, FR-47 — Thu thập và chuẩn hóa dữ liệu'
   - 'FR-10..FR-17 — Hồ sơ kỹ năng'
@@ -225,7 +225,7 @@ flowchart LR
 
 - **Binds:** FR-1, FR-2, §6.1 R1–R4, §6.2
 - **Prevents:** FR-2 không có AD nào bind, trong khi R1–R4 được báo cáo nghiên cứu xếp mức "có thể rơi vào Điều 289". Và công tắc theo **nguồn** không tắt được R2, vì R2 nằm ở một **bước** (lấy mô tả đầy đủ), không ở một nguồn. Để trắng thì AD-16 "giữ nguyên các `parse_*`" đang bảo tồn R1/R2 vào bản công khai mà không nói ra
-- **Rule:** mọi request ra nguồn đi qua một cổng duy nhất, `haido_core/crawl/polite.py`, ratify nguyên các quy ước đã có trong code: kiểm `robots.txt` trước mỗi request, User-Agent trung thực có địa chỉ liên hệ, giãn cách cố định, trần request mỗi lượt, và `BlockedError` khi gặp 403/429 hoặc captcha nghĩa là **dừng, không lách**. Ngoại lệ R1–R4 không nằm trong code mà là hàng có tên trong bảng `crawl_exceptions`, với công tắc **hai mức**: theo nguồn **và** theo bước. Bản công khai chỉ bật những gì bảng cho phép; §6.1 là tài liệu nội bộ và không xuất hiện trên trang công khai. Crawler dùng trình duyệt cũng phải hỏi `PoliteClient.allowed()` trước mỗi lần mở trang. Ngày 05/11/2026: ITviec chưa hỏi; MoMo mới hỏi ở trang chi tiết, chưa hỏi ở trang danh sách (C-11, rồi Story 1.2).
+- **Rule:** mọi request ra nguồn đi qua một cổng duy nhất, `haido_core/crawl/polite.py`, ratify nguyên các quy ước đã có trong code: kiểm `robots.txt` trước mỗi request, User-Agent trung thực có địa chỉ liên hệ, giãn cách cố định, trần request mỗi lượt, và `BlockedError` khi gặp 403/429 hoặc captcha nghĩa là **dừng, không lách**. Ngoại lệ R1–R4 không nằm trong code mà là hàng có tên trong bảng `crawl_exceptions`, với công tắc **hai mức**: theo nguồn **và** theo bước. Bản công khai chỉ bật những gì bảng cho phép; §6.1 là tài liệu nội bộ và không xuất hiện trên trang công khai. Quyết định ngày 06/11/2026 (C-11, #67), là ngoại lệ của câu kiểm `robots.txt` trước mỗi request ở trên: crawler dùng trình duyệt không cần hỏi `robots.txt` trước khi mở trang. ITviec không hỏi; MoMo không hỏi ở trang danh sách, còn trang chi tiết đi qua `PoliteClient.get` nên vẫn kiểm. Crawler HTTP vẫn kiểm `robots.txt` qua `PoliteClient`.
 
 ### AD-21 — Xóa PII tại biên; yêu cầu gỡ không sửa snapshot đã công bố
 
@@ -233,6 +233,7 @@ flowchart LR
 - **Prevents:** FR-5 ("xóa ngay khi đọc tin và **trước khi lưu**") không có AD nào và không có bước nào trong sơ đồ dòng dữ liệu. Và FR-47 hứa xử lý yêu cầu gỡ trong 48 giờ, trong khi AD-4 cấm sửa hàng đã công bố — người xử lý dưới áp lực pháp lý sẽ `DELETE`
 - **Rule:**
   - Bước `redact` chạy **trước mọi lệnh ghi**: xóa tên, email, số điện thoại và Zalo của người tuyển dụng. Không bản ghi nào trong kho khớp mẫu email hay số điện thoại Việt Nam; nhật ký chỉ ghi **loại** thông tin đã xóa, không ghi giá trị. Chặn ở CI (AD-24).
+  - Quyết định ngày 06/11/2026 (C-11, #67), là ngoại lệ của câu "trước mọi lệnh ghi" ở trên: crawler vẫn ghi file thô `data/raw` trước `redact`, và file này không bị xóa sau `ingest`. File này còn chứa liên hệ chưa xóa, nên nó không được đi thẳng tới `ingest`, `dedupe` hay `extract`; chỉ `redact` mới được đưa dữ liệu đó đi tiếp, qua `data/redacted`.
   - Yêu cầu gỡ là hàng trong `takedown_requests`, sinh ra hàng trong `source_exclusions`. Loại trừ được áp **trước** bước `aggregate` của snapshot kế tiếp, nên tin liên quan biến khỏi số công khai từ snapshot đó — đúng FR-47, mà không sửa một hàng nào của snapshot đã công bố.
   - Nhu cầu "tính lại số công khai nếu loại R3 và R4" dùng cùng cơ chế: một lệnh CLI dựng lại sinh ra một **snapshot mới** với tập loại trừ khác. AD-4 không có ngoại lệ nào.
 
