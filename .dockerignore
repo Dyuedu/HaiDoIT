@@ -1,0 +1,29 @@
+# Secrets and env files
+**/.env
+**/.env.*
+**/*.key
+
+# Local databases and browser profiles
+**/*.db
+**/chrome_topcv_profile/
+
+# Python artifacts
+**/__pycache__/
+**/*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node / Next.js artifacts
+node_modules/
+.next/
+web/node_modules/
+web/.next/
+
+# Project & testing artifacts
+.git/
+.claude/
+tests/
+scraper/
+_bmad/
+_bmad-output/

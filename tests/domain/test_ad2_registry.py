@@ -150,7 +150,7 @@ def test_ad2_str_khong_phai_lo() -> None:
 
 def test_ad2_ci_bat_buoc_cong() -> None:
     text = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-    assert "--require AD-1 AD-17 AD-2 AD-7" in text
+    assert "--require AD-1 AD-17 AD-25 AD-2 AD-7" in text
 
 
 def test_ad2_cong_pass_khi_chi_co_chu_ky(tmp_path: Path) -> None:
@@ -207,7 +207,7 @@ def test_ad2_cong_fail_khi_file_khong_parse(tmp_path: Path) -> None:
 
 def test_ad2_cong_tren_repo_that() -> None:
     proc = subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "gates" / "check_gates.py"), "--require", "AD-1", "AD-17", "AD-2", "AD-7"],
+        [sys.executable, str(ROOT / "tools" / "gates" / "check_gates.py"), "--require", "AD-1", "AD-17", "AD-25", "AD-2", "AD-7"],
         cwd=ROOT,
         capture_output=True,
         text=True,

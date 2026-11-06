@@ -45,10 +45,9 @@ jobs:
         with:
           python-version: "3.13"
       - name: Run gates
-        # AD-1 và AD-17 bắt buộc từ #2 (haido_core/domain và haido_api đã có): SKIP cũng tính là đỏ.
-        run: python tools/gates/check_gates.py --require AD-1 AD-17 AD-2 AD-7
+        # AD-1, AD-17, AD-25 từ #1/#2; AD-2 và AD-7 từ Sprint 1. SKIP cũng tính là đỏ.
+        run: python tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7
       # Khi một tầng đã xong, thêm mã cổng vào --require để cấm nó quay lại BO QUA.
-      # Alembic (#1) xong thì thêm AD-25: --require AD-1 AD-17 AD-2 AD-7 AD-25
 
   scraper:
     name: Scraper - observation tests
@@ -126,7 +125,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 10
         ports: ["5432:5432"]
     env:
-      DATABASE_URL: postgresql+psycopg://postgres:ci@localhost:5432/haido_ci
+      HAIDO_DATABASE_URL: postgresql+psycopg://postgres:ci@localhost:5432/haido_ci
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.3   # xem chú thích ở job python
@@ -162,3 +161,52 @@ jobs:
       - name: Build - must pass here, prod never runs next build (AD-15)
         working-directory: web
         run: npm run build
+
+  smoke:
+    name: Smoke - local compose & web runtime
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Start local compose
+        run: docker compose -f deploy/compose.local.yml up -d --wait --build
+      - name: Verify web runtime and proxy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # 1. Đúng một thẻ <a> aria-current="page" trên / trỏ href="/"
+          home_html=$(curl -s http://localhost:3000/)
+          current_home_count=$(echo "$home_html" | grep -oE '<a [^>]*aria-current="page"[^>]*>' | wc -l)
+          [ "$current_home_count" -eq 1 ]
+          echo "$home_html" | grep -oE '<a [^>]*aria-current="page"[^>]*>' | grep -q 'href="/"'
+
+          # 2. Đúng một thẻ <a> aria-current="page" trên /soi-tin trỏ href="/soi-tin"
+          soitin_html=$(curl -s http://localhost:3000/soi-tin)
+          current_soitin_count=$(echo "$soitin_html" | grep -oE '<a [^>]*aria-current="page"[^>]*>' | wc -l)
+          [ "$current_soitin_count" -eq 1 ]
+          echo "$soitin_html" | grep -oE '<a [^>]*aria-current="page"[^>]*>' | grep -q 'href="/soi-tin"'
+
+          # 3. Bốn thẻ <a> trong nav
+          nav_a_count=$(echo "$home_html" | grep -oE '<nav aria-label="Điều hướng chính"[^>]*>.*</nav>' | grep -o '<a ' | wc -l)
+          [ "$nav_a_count" -eq 4 ]
+
+          # 4. /api/v1/city-shares?role=data_ai có data và meta
+          api_resp=$(curl -s http://localhost:3000/api/v1/city-shares?role=data_ai)
+          echo "$api_resp" | grep -q '"data"'
+          echo "$api_resp" | grep -q '"meta"'
+
+          # 5. /api/..%2f..%2fopenapi.json trả 404
+          status_traversal=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/..%2f..%2fopenapi.json")
+          [ "$status_traversal" -eq 404 ]
+
+          # 6. Dừng API -> 502 và code api_unavailable
+          docker compose -f deploy/compose.local.yml stop api
+          stopped_api_status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/v1/city-shares?role=data_ai")
+          [ "$stopped_api_status" -eq 502 ]
+          stopped_api_resp=$(curl -s "http://localhost:3000/api/v1/city-shares?role=data_ai")
+          echo "$stopped_api_resp" | grep -q '"api_unavailable"'
+      - name: Stop compose
+        if: always()
+        run: docker compose -f deploy/compose.local.yml down -v
