@@ -16,6 +16,7 @@ Nghiêm ngặt: python tools/gates/check_gates.py --require AD-1 AD-2 AD-25
 from __future__ import annotations
 
 import argparse
+import ast
 import re
 import sys
 from pathlib import Path
@@ -143,18 +144,111 @@ def gate_ad1_huong_phu_thuoc():
 
 
 # ---------------------------------------------------------------- AD-2
-@gate("AD-2", "Registry closed over eight operations")
-def gate_ad2_registry_dong():
-    reg = ROOT / "haido_core" / "domain" / "REGISTRY.md"
+# Tên hàm là hợp đồng SPEC-REG-03. Đổi tên thì sửa registry và cổng trong cùng PR.
+AD2_FUNCTIONS = (
+    "map_mentions",
+    "select_cell",
+    "population",
+    "group_skills",
+    "percentiles",
+    "classify",
+    "match_postings",
+    "order_path",
+)
+AD2_KEYWORDS = (
+    "mapping",
+    "chọn ô",
+    "dân số",
+    "nhóm kỹ năng",
+    "phân vị",
+    "phân loại",
+    "so khớp",
+    "xếp thứ tự",
+)
+_AD2_SKIP_DIRS = frozenset({
+    "tests",
+    "tools",
+    ".claude",
+    "_bmad",
+    "_bmad-output",
+    ".git",
+    "node_modules",
+    "__pycache__",
+    ".venv",
+    "venv",
+})
+
+
+def _ad2_is_protocol(node: ast.ClassDef) -> bool:
+    for base in node.bases:
+        if isinstance(base, ast.Name) and base.id == "Protocol":
+            return True
+        if isinstance(base, ast.Attribute) and base.attr == "Protocol":
+            return True
+    return False
+
+
+def ad2_duplicate_hits(root: Path) -> list[str]:
+    """Chỗ chữ ký thừa, chữ ký thiếu, hoặc thân hàm thứ hai. Nhận root để test."""
+    protocols: dict[str, list[str]] = {name: [] for name in AD2_FUNCTIONS}
+    concretes: dict[str, list[str]] = {name: [] for name in AD2_FUNCTIONS}
+    hits: list[str] = []
+    for path in root.rglob("*.py"):
+        if any(part in _AD2_SKIP_DIRS for part in path.parts):
+            continue
+        rel = path.relative_to(root).as_posix()
+        try:
+            tree = ast.parse(read(path), filename=rel)
+        except SyntaxError as exc:
+            hits.append("%s: không parse được (%s)" % (rel, exc.msg))
+            continue
+        parents = {child: node for node in ast.walk(tree) for child in ast.iter_child_nodes(node)}
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
+                continue
+            if node.name not in protocols:
+                continue
+            parent = parents.get(node)
+            kind = "concrete"
+            if isinstance(parent, ast.ClassDef) and _ad2_is_protocol(parent):
+                kind = "protocol"
+            where = "%s:%d: %s %s" % (rel, node.lineno, kind, node.name)
+            if kind == "protocol" and rel.startswith("haido_core/domain/"):
+                protocols[node.name].append(where)
+            else:
+                concretes[node.name].append(where)
+    domain = "haido_core/domain/"
+    for name in AD2_FUNCTIONS:
+        signed = protocols[name]
+        if len(signed) != 1:
+            hits.append("%s: cần đúng một Protocol trong domain/, thấy %d" % (name, len(signed)))
+        outside = [item for item in concretes[name] if not item.startswith(domain)]
+        inside = [item for item in concretes[name] if item.startswith(domain)]
+        hits.extend(outside)
+        if len(inside) > 1:
+            hits.append("%s: hơn một thân hàm trong domain/" % name)
+            hits.extend(inside)
+    return hits
+
+
+def ad2_status(root: Path) -> tuple[str, str, list[str]]:
+    """PASS / SKIP / FAIL của AD-2 trên một cây thư mục."""
+    reg = root / "haido_core" / "domain" / "REGISTRY.md"
     if not reg.exists():
         return SKIP, "haido_core/domain/REGISTRY.md not present yet", []
     txt = read(reg)
-    need = ["mapping", "chọn ô", "dân số", "nhóm kỹ năng", "phân vị",
-            "phân loại", "so khớp", "xếp thứ tự"]
-    missing = [n for n in need if n.lower() not in txt.lower()]
+    missing = [n for n in AD2_KEYWORDS if n.lower() not in txt.lower()]
     if missing:
         return FAIL, "REGISTRY.md is missing operations", ["missing: " + ", ".join(missing)]
+    hits = ad2_duplicate_hits(root)
+    if hits:
+        return FAIL, "registry is not closed", hits
     return PASS, "all eight operations declared", []
+
+
+@gate("AD-2", "Registry closed over eight operations")
+def gate_ad2_registry_dong():
+    return ad2_status(ROOT)
 
 
 # ---------------------------------------------------------------- AD-7

@@ -45,10 +45,9 @@ jobs:
         with:
           python-version: "3.13"
       - name: Run gates
-        # AD-1, AD-17, AD-25 bắt buộc: SKIP cũng tính là đỏ.
-        run: python tools/gates/check_gates.py --require AD-1 AD-17 AD-25
+        # AD-1, AD-17, AD-25 từ #1/#2; AD-2 và AD-7 từ Sprint 1. SKIP cũng tính là đỏ.
+        run: python tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7
       # Khi một tầng đã xong, thêm mã cổng vào --require để cấm nó quay lại BO QUA.
-      # Ví dụ khi có REGISTRY.md (#3): --require AD-1 AD-17 AD-25 AD-2
 
   scraper:
     name: Scraper - observation tests
