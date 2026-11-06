@@ -33,3 +33,12 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-gh-1-mo-khung-hai-do-it.md`
   summary: `compose.prod` chưa giới hạn bộ nhớ và chưa xoay log.
   evidence: AD-15 nêu trần bộ nhớ, `deploy.yml` ghi đĩa 35 GB; cần số đo thật trước khi bật deploy.
+- source_spec: `_bmad-output/implementation-artifacts/spec-gh-69-tinh-va-doc-ty-trong-thanh-pho.md`
+  summary: Config (ngưỡng mẫu, cửa sổ 60 ngày, θ, danh sách vai trò, lưu ý độ phủ) đang ở file `config/rules.toml`; phải chuyển sang bảng cấu hình có phiên bản.
+  evidence: AD-10 và DoD dòng 4 nói "bảng cấu hình có phiên bản". Ngày 06/11 nhóm chọn file tạm để không chờ thêm; snapshot vẫn lưu `config_version`.
+- source_spec: `_bmad-output/implementation-artifacts/spec-gh-69-tinh-va-doc-ty-trong-thanh-pho.md`
+  summary: Chưa có cách cho admin bật hoặc tắt một snapshot; hiện `publish` tự chạy sau mọi bước tính.
+  evidence: Quyết định ngày 06/11: tự động publish trước, vai trò admin để sau. Cần khi muốn giữ lại một snapshot lỗi mà không xóa.
+- source_spec: `_bmad-output/implementation-artifacts/spec-gh-46-xem-ty-trong-ba-thanh-pho.md`
+  summary: Ba trang giữ chỗ `/insights`, `/co-van`, `/soi-tin` còn màu viết cứng (`text-[#E6EDF3]`, `text-[#9FB0C2]`), chưa dùng token của `globals.css`.
+  evidence: Có từ #1; #46 chỉ chuyển `layout`, `globals.css`, header và màn Bản đồ sang token. Sửa khi làm màn thật của từng trang.
