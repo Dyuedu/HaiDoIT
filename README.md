@@ -86,3 +86,12 @@ HAIDO_DATABASE_URL=postgresql+psycopg://haido:haido_local@localhost:5433/haido u
   npm --prefix web run lint
   npm --prefix web run build
   ```
+- Chạy kiểm thử web (Vitest + Testing Library, trong jsdom; không cần API hay Docker). Cần Node `^22.22.2` hoặc `>=24.15.0` (yêu cầu của jsdom 30, ghi ở `engines` của `web/package.json`):
+  ```bash
+  npm --prefix web run test
+  ```
+  Chạy một file hoặc lọc theo tên test (tên test chứa mã FR/AD, ví dụ `fr33`):
+  ```bash
+  npm --prefix web run test -- tests/fr33-map-screen.test.tsx
+  npm --prefix web run test -- -t fr36
+  ```
