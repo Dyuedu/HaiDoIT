@@ -50,6 +50,11 @@ IN_CANDIDATES = ["data/consolidated.jsonl", "data/dedup.jsonl"]
 OUT_PATH = Path("data/extracted.jsonl")
 NON_IT_PATH = Path("data/non_it.jsonl")
 CACHE_PATH = Path("data/extract-cache.jsonl")
+# Written before the first poll. A killed run resumes this batch instead of
+# paying for the same postings again. custom_id is only unique inside one batch,
+# so the cache key has to travel with the id.
+PENDING_PATH = Path("data/extract-batch.json")
+MAX_TOKENS = 16000
 
 # Taxonomy from step-06 with two changes that Story 1.9 (FR-7) requires:
 #   - Data / AI / ML split into three. One bucket hid the difference between a
@@ -197,7 +202,7 @@ def append_cache(key: str, facts: dict) -> None:
 def params(row: dict, model: str) -> dict:
     return dict(
         model=model,
-        max_tokens=2048,
+        max_tokens=MAX_TOKENS,
         system=SYSTEM,
         messages=[{"role": "user", "content": build_user(row)}],
         output_config={"format": {"type": "json_schema", "schema": SCHEMA}},
@@ -234,41 +239,74 @@ def to_output_row(row: dict, facts: dict, model: str) -> dict:
     return out
 
 
-def run_sync(client, todo, model, cache):
-    for i, row in enumerate(todo, 1):
-        msg = client.messages.create(**params(row, model))
-        facts = first_json(msg)
-        cache[cache_key(row)] = facts
-        append_cache(cache_key(row), facts)
-        if i % 10 == 0 or i == len(todo):
-            print("  %d/%d" % (i, len(todo)), flush=True)
+def remember(cache, key: str, facts: dict) -> None:
+    cache[key] = facts
+    append_cache(key, facts)
 
 
-def run_batch(client, todo, model, cache, poll: int):
-    by_id = {}
-    requests = []
-    for n, row in enumerate(todo):
-        cid = "job-%d" % n
-        by_id[cid] = row
-        requests.append(Request(custom_id=cid,
-                                params=MessageCreateParamsNonStreaming(**params(row, model))))
+def save_pending(batch_id: str, model: str, items: list[dict]) -> None:
+    PENDING_PATH.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "batch_id": batch_id,
+        "model": model,
+        "prompt_version": PROMPT_VERSION,
+        "items": items,
+    }
+    tmp = PENDING_PATH.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(PENDING_PATH)
 
-    batch = client.messages.batches.create(requests=requests)
-    print("  batch %s submitted, %d requests" % (batch.id, len(requests)), flush=True)
 
+def load_pending() -> dict | None:
+    if not PENDING_PATH.exists():
+        return None
+    return json.loads(PENDING_PATH.read_text(encoding="utf-8"))
+
+
+def clear_pending() -> None:
+    PENDING_PATH.unlink(missing_ok=True)
+
+
+def pending_matches(pending: dict, model: str) -> bool:
+    return bool(
+        pending.get("batch_id")
+        and pending.get("items")
+        and pending.get("model") == model
+        and pending.get("prompt_version") == PROMPT_VERSION
+    )
+
+
+def missing_batch(exc: Exception) -> bool:
+    status = getattr(exc, "status_code", None)
+    if status is None and getattr(exc, "response", None) is not None:
+        status = getattr(exc.response, "status_code", None)
+    return status == 404
+
+
+def poll_until_ended(client, batch_id: str, poll: int):
+    """Return the ended batch. None means the id is gone, so the caller may submit again."""
     while True:
-        batch = client.messages.batches.retrieve(batch.id)
+        try:
+            batch = client.messages.batches.retrieve(batch_id)
+        except Exception as exc:
+            if missing_batch(exc):
+                return None
+            raise
         if batch.processing_status == "ended":
-            break
-        c = batch.request_counts
+            return batch
+        counts = batch.request_counts
         print("  %s  processing=%d succeeded=%d errored=%d"
-              % (batch.processing_status, c.processing, c.succeeded, c.errored), flush=True)
+              % (batch.processing_status, counts.processing, counts.succeeded, counts.errored),
+              flush=True)
         time.sleep(poll)
 
+
+def apply_batch_results(client, pending: dict, cache) -> tuple[int, int]:
+    by_id = {item["custom_id"]: item["key"] for item in pending["items"]}
     ok = err = 0
-    for result in client.messages.batches.results(batch.id):
-        row = by_id.get(result.custom_id)
-        if row is None:
+    for result in client.messages.batches.results(pending["batch_id"]):
+        key = by_id.get(result.custom_id)
+        if key is None:
             continue
         if result.result.type != "succeeded":
             err += 1
@@ -280,9 +318,70 @@ def run_batch(client, todo, model, cache, poll: int):
             err += 1
             print("  %s: unparseable reply (%s)" % (result.custom_id, exc), flush=True)
             continue
-        cache[cache_key(row)] = facts
-        append_cache(cache_key(row), facts)
+        remember(cache, key, facts)
         ok += 1
+    return ok, err
+
+
+def run_sync(client, todo, model, cache):
+    ok = err = 0
+    for i, row in enumerate(todo, 1):
+        msg = client.messages.create(**params(row, model))
+        try:
+            facts = first_json(msg)
+        except (StopIteration, json.JSONDecodeError) as exc:
+            err += 1
+            print("  %d/%d unparseable reply (%s)" % (i, len(todo), exc), flush=True)
+            continue
+        remember(cache, cache_key(row), facts)
+        ok += 1
+        if i % 10 == 0 or i == len(todo):
+            print("  %d/%d" % (i, len(todo)), flush=True)
+    print("  results: %d ok, %d failed" % (ok, err), flush=True)
+
+
+def run_batch(client, todo, model, cache, poll: int):
+    pending = load_pending()
+    if pending and not pending_matches(pending, model):
+        print("  ignoring saved batch %s (prompt or model changed)"
+              % pending.get("batch_id"), flush=True)
+        clear_pending()
+        pending = None
+    if pending:
+        print("  resuming batch %s" % pending["batch_id"], flush=True)
+        ended = poll_until_ended(client, pending["batch_id"], poll)
+        if ended is None:
+            print("  batch %s is gone; submitting again" % pending["batch_id"], flush=True)
+            clear_pending()
+        else:
+            ok, err = apply_batch_results(client, pending, cache)
+            clear_pending()
+            print("  results: %d ok, %d failed" % (ok, err), flush=True)
+            todo = [row for row in todo if cache_key(row) not in cache]
+            if not todo:
+                return
+
+    items = []
+    requests = []
+    for n, row in enumerate(todo):
+        cid = "job-%d" % n
+        items.append({"custom_id": cid, "key": cache_key(row)})
+        requests.append(Request(
+            custom_id=cid,
+            params=MessageCreateParamsNonStreaming(**params(row, model)),
+        ))
+
+    batch = client.messages.batches.create(requests=requests)
+    # Persist before polling. The pipeline kills this process after one hour.
+    save_pending(batch.id, model, items)
+    print("  batch %s submitted, %d requests" % (batch.id, len(requests)), flush=True)
+    ended = poll_until_ended(client, batch.id, poll)
+    if ended is None:
+        print("  batch %s disappeared before it ended" % batch.id, flush=True)
+        clear_pending()
+        return
+    ok, err = apply_batch_results(client, load_pending(), cache)
+    clear_pending()
     print("  results: %d ok, %d failed" % (ok, err), flush=True)
 
 
