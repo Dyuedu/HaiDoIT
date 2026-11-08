@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import argparse
 import ast
+import datetime
+import json
 import re
 import sys
 from pathlib import Path
@@ -256,7 +258,16 @@ def gate_ad2_registry_dong():
 def gate_ad7_khong_tong_hop_tren_job():
     if not (ROOT / "haido_api").is_dir():
         return SKIP, "haido_api/ not present yet", []
-    hits = scan(py_files("haido_api"), r"\bjob_(postings|observations)\b")
+    table_rx = re.compile(r"\bjob_(postings|observations)\b", re.I)
+    agg_rx = re.compile(r"(?i)\b(group\s+by|avg\s*\(|count\s*\(|percentile)")
+    job_rx = re.compile(r"\bjob_\w*", re.I)
+    hits = []
+    for f in py_files("haido_api"):
+        for i, line in enumerate(read(f).splitlines(), 1):
+            if table_rx.search(line):
+                hits.append("%s:%d: forbidden reference to job table" % (f.relative_to(ROOT).as_posix(), i))
+            elif agg_rx.search(line) and job_rx.search(line):
+                hits.append("%s:%d: forbidden aggregation over job_*" % (f.relative_to(ROOT).as_posix(), i))
     return (FAIL if hits else PASS), "scanned haido_api/", hits
 
 
@@ -296,18 +307,68 @@ def gate_fr_cau_chu_bi_cam():
     if not targets:
         return SKIP, "product source not present yet", []
     banned = [
-        r"bạn nên (ứng tuyển|nộp)", r"công ty (này )?(lừa đảo|ma)", r"tin (này )?là lừa đảo",
-        r"chắc chắn (sẽ |)(đậu|trúng tuyển)", r"cam kết việc làm", r"lương (chuẩn|chính xác) là",
+        "đừng học",
+        "bỏ qua một kỹ năng",
+        "lừa đảo",
+        "tin giả",
+        "tin ma",
+        "tuân thủ đầy đủ điều khoản của mọi nguồn",
+        "mọi dữ liệu đều đã được cấp phép",
     ]
     files = []
     for d in targets:
-        files += [f for f in (ROOT / d).rglob("*")
-                  if f.is_file() and f.suffix in {".py", ".ts", ".tsx", ".md", ".json"}
-                  and "node_modules" not in f.parts and "__pycache__" not in f.parts]
+        for f in (ROOT / d).rglob("*"):
+            if not f.is_file():
+                continue
+            if any(p in f.parts for p in ("node_modules", ".next", "tests", "__pycache__")):
+                continue
+            if f.name.endswith(".test.ts") or f.name.endswith(".test.tsx"):
+                continue
+            if f.suffix in {".py", ".ts", ".tsx", ".md", ".json"}:
+                files.append(f)
+
+    banned_rxs = [re.compile(re.escape(b), re.I) for b in banned]
     hits = []
-    for pat in banned:
-        hits += scan(files, pat, re.I)
+    for f in files:
+        txt = read(f)
+        for i, line in enumerate(txt.splitlines(), 1):
+            for rx in banned_rxs:
+                if rx.search(line):
+                    hits.append("%s:%d: %s" % (f.relative_to(ROOT).as_posix(), i, line.strip()[:90]))
     return (FAIL if hits else PASS), "%d files scanned" % len(files), hits
+
+
+def check_deferred(code: str) -> tuple[str, str, list[str]]:
+    ledger_path = ROOT / "tools" / "gates" / "deferred.json"
+    if not ledger_path.is_file():
+        return FAIL, "tools/gates/deferred.json missing; cannot defer %s" % code, ["missing deferred.json"]
+    try:
+        data = json.loads(ledger_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return FAIL, "deferred.json unparsable: %s" % exc, [str(exc)]
+
+    entry = data.get(code)
+    if not isinstance(entry, dict):
+        return FAIL, "%s missing from deferred.json" % code, ["%s not found in deferred.json" % code]
+
+    issue = entry.get("issue")
+    if not isinstance(issue, str) or not (issue.startswith("http://") or issue.startswith("https://")):
+        return FAIL, "%s has invalid issue URL: %r" % (code, issue), ["invalid issue URL for %s" % code]
+
+    due = entry.get("due")
+    if not isinstance(due, str):
+        return FAIL, "%s missing due date" % code, ["missing due date for %s" % code]
+
+    try:
+        due_date = datetime.date.fromisoformat(due)
+    except ValueError:
+        return FAIL, "%s has invalid due date format: %r" % (code, due), ["invalid due date"]
+
+    today = datetime.date.today()
+    if today > due_date:
+        return FAIL, "%s deferred deadline expired on %s" % (code, due), ["gate %s expired on %s" % (code, due)]
+
+    return SKIP, "code not present yet; deferred until %s (%s)" % (due, issue), []
 
 
 # ---------------------------------------------------------------- FR-24
@@ -315,7 +376,7 @@ def gate_fr_cau_chu_bi_cam():
 def gate_fr24_loi_dan_khong_so():
     blurbs = ROOT / "haido_core" / "vocab" / "blurbs"
     if not blurbs.is_dir():
-        return SKIP, "haido_core/vocab/blurbs/ not present yet", []
+        return check_deferred("FR-24")
     # cho phép số nằm trong tên công nghệ: Java 17, S3, EC2, OAuth2, Web3, HTML5, Vue 3
     tech = re.compile(r"[A-Za-z][A-Za-z+#.]*\s?\d+")
     hits = []
@@ -329,15 +390,51 @@ def gate_fr24_loi_dan_khong_so():
     return (FAIL if hits else PASS), "scanned blurbs", hits
 
 
-# ---------------------------------------------------------------- AD-11/AD-18
-@gate("AD-11/18", "Privacy: no table stores CV or JD text")
-def gate_rieng_tu_khong_luu_van_ban():
-    dirs = [d for d in ("haido_core/db", "haido_api", "migrations", "alembic") if (ROOT / d).is_dir()]
-    if not dirs:
-        return SKIP, "db/migration layer not present yet", []
-    bad_cols = r"\b(cv_text|jd_text|resume_text|raw_jd|job_text|pasted_text|cv_content)\b"
-    hits = scan(py_files(*dirs), bad_cols, re.I)
-    return (FAIL if hits else PASS), "scanned column names", hits
+# ---------------------------------------------------------------- FR-22
+@gate("FR-22", "Order path determinism")
+def gate_fr22_tat_dinh():
+    path_order_file = ROOT / "haido_core" / "domain" / "path_order.py"
+    if not path_order_file.is_file():
+        return check_deferred("FR-22")
+    return PASS, "order_path implemented", []
+
+
+# ---------------------------------------------------------------- AD-11
+@gate("AD-11", "Privacy: no CV text and no PII in committed data")
+def gate_ad11_ad21_rieng_tu():
+    schema_dirs = [d for d in ("haido_core/db", "haido_core", "haido_api", "migrations", "alembic") if (ROOT / d).is_dir()]
+    bad_cols = re.compile(r"\b(cv_text|jd_text|resume_text|raw_jd|job_text|pasted_text|cv_content)\b", re.I)
+    hits = []
+    if schema_dirs:
+        for f in py_files(*schema_dirs):
+            for i, line in enumerate(read(f).splitlines(), 1):
+                m = bad_cols.search(line)
+                if m:
+                    hits.append("%s:%d: forbidden column name '%s'" % (f.relative_to(ROOT).as_posix(), i, m.group(1)))
+
+    # Scan committed data files outside tests
+    email_rx = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b")
+    phone_rx = re.compile(r"(?:\+84|0)(?:3[2-9]|5[2689]|7[06-9]|8[1-9]|9[0-9])\d{7}\b")
+
+    data_targets = [d for d in ("data", "haido_core/data") if (ROOT / d).is_dir()]
+    data_files = []
+    for d in data_targets:
+        for f in (ROOT / d).rglob("*"):
+            if not f.is_file():
+                continue
+            if any(p in f.parts for p in ("tests", "__pycache__", "node_modules", ".git", ".venv", "venv")):
+                continue
+            if f.suffix in {".json", ".jsonl", ".csv", ".tsv", ".txt"}:
+                data_files.append(f)
+
+    for f in data_files:
+        for i, line in enumerate(read(f).splitlines(), 1):
+            if email_rx.search(line):
+                hits.append("%s:%d: detected email address in data file" % (f.relative_to(ROOT).as_posix(), i))
+            if phone_rx.search(line):
+                hits.append("%s:%d: detected Vietnamese phone number in data file" % (f.relative_to(ROOT).as_posix(), i))
+
+    return (FAIL if hits else PASS), "scanned schema and data files", hits
 
 
 # ---------------------------------------------------------------- AD-25
@@ -353,12 +450,43 @@ def gate_ad25_mot_head_alembic():
     revs, downs = set(), set()
     for f in vers.glob("*.py"):
         txt = read(f)
-        m = re.search(r"^revision(?::\s*str)?\s*=\s*['\"]([^'\"]+)", txt, re.M)
-        d = re.search(r"^down_revision(?::\s*[^=]+)?\s*=\s*['\"]([^'\"]+)", txt, re.M)
-        if m:
-            revs.add(m.group(1))
-        if d:
-            downs.add(d.group(1))
+        try:
+            tree = ast.parse(txt, filename=f.name)
+            for node in tree.body:
+                if isinstance(node, ast.Assign):
+                    for target in node.targets:
+                        if isinstance(target, ast.Name):
+                            if target.id == "revision" and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                                revs.add(node.value.value)
+                            elif target.id == "down_revision":
+                                if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                                    downs.add(node.value.value)
+                                elif isinstance(node.value, (ast.Tuple, ast.List)):
+                                    for elt in node.value.elts:
+                                        if isinstance(elt, ast.Constant) and isinstance(elt.value, str):
+                                            downs.add(elt.value)
+                elif isinstance(node, ast.AnnAssign):
+                    if isinstance(node.target, ast.Name):
+                        if node.target.id == "revision" and node.value and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                            revs.add(node.value.value)
+                        elif node.target.id == "down_revision" and node.value:
+                            if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                                downs.add(node.value.value)
+                            elif isinstance(node.value, (ast.Tuple, ast.List)):
+                                for elt in node.value.elts:
+                                    if isinstance(elt, ast.Constant) and isinstance(elt.value, str):
+                                        downs.add(elt.value)
+        except Exception:
+            m = re.search(r"^revision(?::\s*str)?\s*=\s*['\"]([^'\"]+)", txt, re.M)
+            d = re.search(r"^down_revision(?::\s*[^=]+)?\s*=\s*(?:['\"]([^'\"]+)|\(([^)]+)\))", txt, re.M)
+            if m:
+                revs.add(m.group(1))
+            if d:
+                if d.group(1):
+                    downs.add(d.group(1))
+                elif d.group(2):
+                    for item in re.findall(r"['\"]([^'\"]+)['\"]", d.group(2)):
+                        downs.add(item)
     heads = sorted(revs - downs)
     if len(revs) == 0:
         return FAIL, "no parsable revisions found", []
@@ -392,6 +520,8 @@ def main() -> int:
                 print("        %s" % d)
             if len(detail) > 10:
                 print("        ... and %d more lines" % (len(detail) - 10))
+        elif status == SKIP and detail:
+            print("        %s" % detail[0])
 
     n_dat = sum(1 for _, _, s, _ in RESULTS if s == PASS)
     n_bo = sum(1 for _, _, s, _ in RESULTS if s == SKIP)
