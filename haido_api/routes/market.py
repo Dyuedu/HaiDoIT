@@ -2,7 +2,7 @@
 
 Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake`:
 
-- `HAIDO_MARKET_SOURCE_CITY_SHARES` cho `GET /api/v1/city-shares` (bản thật: Story 1.21);
+- `HAIDO_MARKET_SOURCE_CITY_SHARES` cho `GET /api/v1/city-shares` (bản thật `stat`: #93, đọc `stat_*`);
 - `HAIDO_MARKET_SOURCE_SKILL_RATES` cho `GET /api/v1/skill-rates` (bản thật: #27).
 
 Thêm bản thật là thêm một mục vào `IMPLEMENTATIONS`; route và schema không đổi.
@@ -18,6 +18,7 @@ from haido_api.fake_market import FakeMarket
 from haido_api.market_source import MarketReadModel
 from haido_api.schemas.error import ErrorEnvelope
 from haido_api.schemas.market import CitySharesData, SkillRatesData
+from haido_api.stat_market import StatMarket
 from haido_core.domain.envelope import Envelope
 
 SOURCE_ENV: dict[str, str] = {
@@ -27,6 +28,7 @@ SOURCE_ENV: dict[str, str] = {
 DEFAULT_SOURCE = "fake"
 IMPLEMENTATIONS: dict[str, Callable[[], MarketReadModel]] = {
     "fake": FakeMarket,
+    "stat": StatMarket,
 }
 
 

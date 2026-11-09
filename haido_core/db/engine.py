@@ -4,6 +4,7 @@
   `HAIDO_ALLOW_REMOTE_WRITE=1`.
 - Engine nguồn (`HAIDO_SCRAPER_DATABASE_URL`, bảng của scraper) luôn chỉ-đọc ở phía DB:
   mỗi transaction mở bằng `BEGIN READ ONLY`, nên cả pooler Supabase cũng không ghi được.
+- Engine đọc của API (`make_read_engine`) cùng URL đích nhưng chỉ-đọc ở phía DB.
 - Thông báo lỗi không bao giờ chứa URL, host hay mật khẩu.
 """
 
@@ -83,4 +84,22 @@ def make_source_engine(url: str | None = None) -> Engine:
         normalize_source_url(url),
         connect_args={"prepare_threshold": None, "connect_timeout": CONNECT_TIMEOUT},
         execution_options={"postgresql_readonly": True, "isolation_level": "REPEATABLE READ"},
+    )
+
+
+def make_read_engine(url: str | None = None) -> Engine:
+    """Engine đọc kho của Hải Đồ cho API (`HAIDO_DATABASE_URL`). Không kết nối ngay.
+
+    Chỉ-đọc ở phía DB nên không áp danh sách host của engine ghi: đọc từ host ngoài không đổi dữ liệu.
+    """
+    url = url if url is not None else os.getenv(TARGET_ENV, "")
+    if not url:
+        raise DatabaseConfigError(f"{TARGET_ENV} chưa được thiết lập.")
+    if _parse(url, TARGET_ENV).drivername != DRIVER:
+        raise DatabaseConfigError(f"{TARGET_ENV} phải dùng driver postgresql+psycopg://.")
+    return create_engine(
+        url,
+        connect_args={"prepare_threshold": None, "connect_timeout": CONNECT_TIMEOUT},
+        execution_options={"postgresql_readonly": True},
+        pool_pre_ping=True,
     )

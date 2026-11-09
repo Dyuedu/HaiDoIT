@@ -1,6 +1,8 @@
-"""CLI `haido` (Story 1.4): `haido ingest|lifecycle --snapshot YYYY-MM-DD`.
+"""CLI `haido` (Story 1.4, #93): `haido ingest|lifecycle|aggregate|publish --snapshot YYYY-MM-DD`.
 
 Mỗi lệnh là một bước ở `haido_core/steps/`, chạy tay hoặc từ lịch; không phụ thuộc Dagster.
+Thứ tự: `ingest → lifecycle → aggregate → publish`. Nếu `ingest` chạy lại cho S thì chạy lại
+`lifecycle` trước `aggregate`.
 Mã thoát 0 là thành công, 1 là lỗi đã biết (thông báo tiếng Việt ở stderr, không in URL hay
 mật khẩu), 2 là cú pháp lệnh sai.
 
@@ -23,9 +25,11 @@ from haido_core.db.engine import (
 )
 from haido_core.db.scraper_source import ScraperPostgresReader
 from haido_core.domain.lifecycle import snapshot_id_at
+from haido_core.steps.aggregate import aggregate_snapshot
 from haido_core.steps.common import StepError, parse_snapshot_id
 from haido_core.steps.ingest import ingest_snapshot
 from haido_core.steps.lifecycle import lifecycle_snapshot
+from haido_core.steps.publish import publish_snapshot
 
 
 def _now() -> datetime:
@@ -63,7 +67,36 @@ def _run_lifecycle(snapshot_id: str) -> str:
     )
 
 
-COMMANDS: dict[str, Callable[[str], str]] = {"ingest": _run_ingest, "lifecycle": _run_lifecycle}
+def _run_aggregate(snapshot_id: str) -> str:
+    rules = load_rules()
+    target = make_write_engine()
+    try:
+        result = aggregate_snapshot(snapshot_id, engine=target, rules=rules)
+    finally:
+        target.dispose()
+    return (
+        f"Đã tổng hợp snapshot {result.snapshot_id.isoformat()}: {result.cells} ô, {result.shares} tỷ trọng "
+        f"thành phố (config_version {result.config_version})."
+    )
+
+
+def _run_publish(snapshot_id: str) -> str:
+    rules = load_rules()
+    target = make_write_engine()
+    try:
+        result = publish_snapshot(snapshot_id, engine=target, rules=rules)
+    finally:
+        target.dispose()
+    failed = f"; nguồn lỗi: {', '.join(result.sources_failed)}" if result.sources_failed else ""
+    return f"Đã chốt snapshot {result.snapshot_id.isoformat()} ({result.status}){failed}."
+
+
+COMMANDS: dict[str, Callable[[str], str]] = {
+    "ingest": _run_ingest,
+    "lifecycle": _run_lifecycle,
+    "aggregate": _run_aggregate,
+    "publish": _run_publish,
+}
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -72,6 +105,8 @@ def _build_parser() -> argparse.ArgumentParser:
     helps = {
         "ingest": "Mở snapshot S rồi chép lượt chạy, quan sát, dữ kiện tin của S từ bảng scraper (chỉ thêm).",
         "lifecycle": "Tính vòng đời tin tới S và ghi stat_job_lifecycle.",
+        "aggregate": "Tính ô thống kê và tỷ trọng thành phố của S, ghi stat_cells và stat_city_shares.",
+        "publish": "Chốt S thành published (mọi nguồn tự động chạy thành công) hoặc partial.",
     }
     for name, text in helps.items():
         cmd = sub.add_parser(name, help=text, description=text)

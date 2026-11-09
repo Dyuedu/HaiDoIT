@@ -1,9 +1,10 @@
-"""Bảng của schema `haido` (Story 1.4). Phải khớp migration `0002_haido_snapshot`.
+"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot` và `0003_haido_city_share`.
 
 Chỉ `haido_core/steps/` ghi các bảng này. `haido_api` không đọc `job_*` (AD-5, AD-7).
 """
 
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import JSONB
 
 SCHEMA = "haido"
 
@@ -71,4 +72,26 @@ stat_job_lifecycle = sa.Table(
     sa.Column("absent", sa.Boolean(), nullable=False),
     sa.Column("in_window", sa.Boolean(), nullable=False),
     sa.Column("config_version", sa.Text(), nullable=False),
+)
+
+stat_cells = sa.Table(
+    "stat_cells",
+    metadata,
+    sa.Column("snapshot_id", sa.Date(), sa.ForeignKey("haido.snapshots.snapshot_id"), primary_key=True),
+    sa.Column("role", sa.Text(), primary_key=True),
+    sa.Column("branch", sa.Text(), primary_key=True),
+    sa.Column("seniority", sa.Text(), primary_key=True),
+    sa.Column("scope", sa.Text(), primary_key=True),
+    sa.Column("n", sa.Integer(), nullable=False),
+    sa.Column("seniority_mix", JSONB(), nullable=False),
+    sa.Column("config_version", sa.Text(), nullable=False),
+)
+
+stat_city_shares = sa.Table(
+    "stat_city_shares",
+    metadata,
+    sa.Column("snapshot_id", sa.Date(), sa.ForeignKey("haido.snapshots.snapshot_id"), primary_key=True),
+    sa.Column("role", sa.Text(), primary_key=True),
+    sa.Column("city", sa.Text(), primary_key=True),
+    sa.Column("share", sa.Float(precision=53), nullable=False),
 )
