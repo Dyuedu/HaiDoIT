@@ -243,6 +243,14 @@ def lifecycle_postings(conn: Connection, day: date) -> list[tuple[int, str, date
     return [(r.posting_id, r.source, r.last_seen) for r in conn.execute(stmt)]
 
 
+def posting_urls(conn: Connection, posting_ids: Sequence[int]) -> dict[int, str]:
+    """`source_url` của các tin. Tin không có thì vắng trong kết quả."""
+    if not posting_ids:
+        return {}
+    stmt = sa.select(job_postings.c.id, job_postings.c.source_url).where(job_postings.c.id.in_(list(posting_ids)))
+    return {row.id: row.source_url for row in conn.execute(stmt)}
+
+
 def unaccounted_postings(conn: Connection, day: date) -> int:
     """Số tin thấy tại S ở lượt chạy thành công nhưng chưa có dòng vòng đời tại S với `last_seen = S`."""
     life = sa.exists().where(
