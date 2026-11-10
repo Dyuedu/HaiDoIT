@@ -17,6 +17,7 @@ TABLES = {
     "stat_job_lifecycle",
     "stat_cells",
     "stat_city_shares",
+    "stat_sources",
 }
 
 

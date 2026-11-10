@@ -35,8 +35,8 @@ OPENAPI_DOC = ROOT / "docs" / "api" / "openapi.json"
 # Mỗi route dưới /api/v1 phải có ở đây một truy vấn hợp lệ. Thêm route mà quên thêm dòng
 # này thì test_ad17_moi_route_tra_envelope đỏ.
 SAMPLE_QUERY: dict[str, dict[str, str]] = {
-    "/api/v1/city-shares": {"role": "data_ai"},
-    "/api/v1/skill-rates": {"role": "data_ai", "level": "entry"},
+    "/api/v1/city-shares": {"role": "ai_ml"},
+    "/api/v1/skill-rates": {"role": "ai_ml", "level": "entry"},
 }
 
 
@@ -128,7 +128,7 @@ def test_ad17_display_chi_do_suppression_for_quyet(
 
 
 def test_ad17_ty_trong_thanh_pho_du_mau_va_mau_nho(client: TestClient) -> None:
-    body = _get(client, "/api/v1/city-shares", role="data_ai")
+    body = _get(client, "/api/v1/city-shares", role="ai_ml")
     cells = body["meta"]["cells"]
     rows = {row["city"]: row["share"] for row in body["data"]["rows"]}
 
@@ -178,7 +178,7 @@ def test_ad17_o_duoi_nguong_tra_null_data(client: TestClient) -> None:
     [
         ("/api/v1/city-shares", {"role": "khong_ton_tai"}),
         ("/api/v1/skill-rates", {"role": "khong_ton_tai", "level": "entry"}),
-        ("/api/v1/skill-rates", {"role": "data_ai", "level": "khong_ton_tai"}),
+        ("/api/v1/skill-rates", {"role": "ai_ml", "level": "khong_ton_tai"}),
     ],
 )
 def test_ad17_khong_co_o_tra_404(client: TestClient, path: str, params: dict[str, str]) -> None:
@@ -203,7 +203,7 @@ def test_ad17_tham_so_sai_dinh_dang_tra_422(client: TestClient) -> None:
 
 def test_ad17_loi_404_va_405_cua_starlette_cung_hinh_chuan(client: TestClient) -> None:
     _assert_error(client.get("/api/v1/khong-co"), 404, "not_found")
-    resp = client.post("/api/v1/city-shares", params={"role": "data_ai"})
+    resp = client.post("/api/v1/city-shares", params={"role": "ai_ml"})
     _assert_error(resp, 405, "method_not_allowed")
     assert resp.headers["allow"] == "GET"
 
@@ -217,7 +217,7 @@ def test_ad17_nguong_doc_tu_fixture(tmp_path: Path) -> None:
     fixture = tmp_path / "fake_market.json"
     fixture.write_text(json.dumps(raw), encoding="utf-8")
 
-    env = FakeMarket(fixture).city_shares(role="data_ai")
+    env = FakeMarket(fixture).city_shares(role="ai_ml")
     shares = {row.city: row.share for row in env.data.rows}
     assert shares["ha_noi"].display is DisplayState.LOW_SAMPLE_SHOWN
     assert env.meta.thresholds.min_sample == 500
@@ -234,9 +234,9 @@ def test_ad17_chon_nguon_rieng_cho_tung_phep() -> None:
             raise AssertionError("skill_rates không được đi qua nguồn này")
 
     test_client = TestClient(create_app({"city_shares": _CityOnly(), "skill_rates": fake}))
-    error = _assert_error(test_client.get("/api/v1/city-shares?role=data_ai"), 404, "unknown_cell")
+    error = _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 404, "unknown_cell")
     assert error["snapshot_date"] == "2026-11-04"
-    assert test_client.get("/api/v1/skill-rates?role=data_ai&level=entry").status_code == 200
+    assert test_client.get("/api/v1/skill-rates?role=ai_ml&level=entry").status_code == 200
 
 
 def test_ad17_bien_moi_truong_chon_nguon() -> None:
@@ -266,9 +266,9 @@ def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
     test_client = TestClient(
         create_app({"city_shares": broken, "skill_rates": broken}), raise_server_exceptions=False
     )
-    _assert_error(test_client.get("/api/v1/city-shares?role=data_ai"), 500, "invalid_response")
+    _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 500, "invalid_response")
     _assert_error(
-        test_client.get("/api/v1/skill-rates?role=data_ai&level=entry"), 500, "internal_error"
+        test_client.get("/api/v1/skill-rates?role=ai_ml&level=entry"), 500, "internal_error"
     )
 
 
@@ -282,7 +282,7 @@ def test_ad17_nguon_dung_model_sai_thanh_invalid_response() -> None:
 
     source = _BuildsBadStat()
     test_client = TestClient(create_app({"city_shares": source, "skill_rates": source}))
-    _assert_error(test_client.get("/api/v1/city-shares?role=data_ai"), 500, "invalid_response")
+    _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 500, "invalid_response")
 
 
 def test_ad17_instance_sua_bang_model_copy_van_bi_kiem_lai() -> None:

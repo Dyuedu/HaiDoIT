@@ -34,7 +34,7 @@ describe("fr33 — ba thanh thành phố", () => {
   });
 
   it("fr33: Khác và không xác định không thành thanh mà là hai dòng chú thích riêng", () => {
-    const view = buildCitySharesView(fakeEnvelope("data_ai"));
+    const view = buildCitySharesView(fakeEnvelope("ai_ml"));
 
     expect(view.bars.map((bar) => bar.city)).not.toContain("other");
     expect(view.bars.map((bar) => bar.city)).not.toContain("unknown");
@@ -45,7 +45,7 @@ describe("fr33 — ba thanh thành phố", () => {
   });
 
   it("fr33: Đà Nẵng mẫu nhỏ vẫn có thanh, kèm nhãn mẫu nhỏ đọc n và min_sample từ envelope", () => {
-    const view = buildCitySharesView(fakeEnvelope("data_ai"));
+    const view = buildCitySharesView(fakeEnvelope("ai_ml"));
     const daNang = view.bars[2];
 
     expect(daNang.city).toBe("da_nang");
@@ -57,7 +57,7 @@ describe("fr33 — ba thanh thành phố", () => {
   });
 
   it("fr33: tên đọc được của mỗi dòng gồm tên nơi, phần trăm, n và câu mẫu nhỏ nếu có", () => {
-    const view = buildCitySharesView(fakeEnvelope("data_ai"));
+    const view = buildCitySharesView(fakeEnvelope("ai_ml"));
 
     expect(view.bars[0].accessibleName).toBe("Hà Nội: 47,0%, 412 tin");
     expect(view.bars[2].accessibleName).toBe(`Đà Nẵng: 2,4%, 21 tin. ${LOW_SAMPLE_21}`);
@@ -97,7 +97,7 @@ describe("fr33 — ba thanh thành phố", () => {
 
   it("fr33: trạng thái chỉ đọc từ display, không so n với ngưỡng", () => {
     const envelope = buildEnvelope({
-      role: "data_ai",
+      role: "ai_ml",
       totalN: 200,
       rows: [
         // n nhỏ nhưng máy chủ nói shown; n lớn nhưng máy chủ nói low_sample_shown.
@@ -115,7 +115,7 @@ describe("fr33 — ba thanh thành phố", () => {
 
   it("fr33: nhãn mẫu nhỏ đọc min_sample của envelope, không viết cứng 30", () => {
     const envelope = buildEnvelope({
-      role: "data_ai",
+      role: "ai_ml",
       totalN: 100,
       minSample: 50,
       rows: [
@@ -134,7 +134,7 @@ describe("fr33 — ba thanh thành phố", () => {
 
 describe("fr33 — bảng", () => {
   it("fr33: bảng có năm dòng; dòng mẫu nhỏ ghi 'chưa đủ dữ liệu' nhưng vẫn ghi n", () => {
-    const view = buildCitySharesView(fakeEnvelope("data_ai"));
+    const view = buildCitySharesView(fakeEnvelope("ai_ml"));
 
     expect(view.table.rows.map((row) => [row.label, row.share, row.nText])).toEqual([
       ["Hà Nội", "47,0%", "412"],
@@ -173,7 +173,7 @@ describe("fr33 — bảng", () => {
   });
 
   it("fr33: dòng tổng lấy n của total_cell_id kể cả khi các dòng không cộng ra n đó", () => {
-    const envelope = fakeEnvelope("data_ai");
+    const envelope = fakeEnvelope("ai_ml");
     envelope.meta.cells[envelope.data.total_cell_id].n = 999;
 
     expect(buildCitySharesView(envelope).table.total.nText).toBe("999");
@@ -238,23 +238,32 @@ describe("fr33 — chú thích snapshot", () => {
 });
 
 describe("fr33 — nhãn từ labels.ts", () => {
-  it("fr33: chip vai trò khớp bản giả, mặc định là all", () => {
+  it("fr33: chip vai trò là all cộng các vai trò trong config/rules.toml, mặc định là all", () => {
     expect(ROLE_OPTIONS).toEqual([
       { code: "all", label: "Tất cả" },
-      { code: "data_ai", label: "Data/AI" },
+      { code: "embedded", label: "Nhúng" },
+      { code: "ai_ml", label: "AI/ML" },
+      { code: "data_engineer", label: "Kỹ sư dữ liệu" },
+      { code: "data_analyst", label: "Phân tích dữ liệu" },
+      { code: "qa", label: "Kiểm thử (QA)" },
+      { code: "devops", label: "DevOps" },
+      { code: "mobile", label: "Mobile" },
+      { code: "frontend", label: "Frontend" },
       { code: "backend", label: "Backend" },
+      { code: "other", label: "Vai trò khác" },
     ]);
     expect(DEFAULT_ROLE).toBe("all");
-    expect(roleLabel("data_ai")).toBe("Data/AI");
+    expect(roleLabel("ai_ml")).toBe("AI/ML");
+    expect(roleLabel("other")).toBe("Vai trò khác");
     expect(cityLabel("ho_chi_minh")).toBe("TP.HCM");
   });
 
   it("fr33: mã không có trong labels.ts thì hiện chính mã đó", () => {
-    expect(roleLabel("qa")).toBe("qa");
+    expect(roleLabel("khong_co_vai_tro")).toBe("khong_co_vai_tro");
     expect(cityLabel("hai_phong")).toBe("hai_phong");
 
     const envelope = buildEnvelope({
-      role: "qa",
+      role: "khong_co_vai_tro",
       totalN: 100,
       rows: [
         { city: "ha_noi", n: 40, value: 0.4, display: "shown" },
@@ -267,7 +276,7 @@ describe("fr33 — nhãn từ labels.ts", () => {
     });
     const view = buildCitySharesView(envelope);
 
-    expect(view.roleLabel).toBe("qa");
+    expect(view.roleLabel).toBe("khong_co_vai_tro");
     expect(view.bars.map((bar) => bar.city)).toEqual(["ha_noi", "ho_chi_minh", "da_nang"]);
     // Dòng lạ không thành thanh; nằm sau Khác và không xác định, nhãn là chính mã.
     expect(view.legend.map((line) => line.label)).toEqual([

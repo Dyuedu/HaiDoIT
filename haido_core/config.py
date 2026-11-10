@@ -31,6 +31,8 @@ class RulesConfig:
     config_version: str
     window_days: int
     auto_sources: tuple[str, ...]
+    excluded_sources: tuple[str, ...]
+    """Nguồn không bao giờ được đếm và không được liệt kê (#263): tin của nguồn này bị loại khỏi `aggregate`."""
     min_sample: int
     theta_core: float
     theta_common: float
@@ -85,6 +87,12 @@ def _coverage_notes(raw: dict[str, Any]) -> tuple[CoverageNoteRule, ...]:
     return tuple(CoverageNoteRule(n["code"], n["text"]) for n in notes)
 
 
+_EXCLUDED_ERROR = (
+    "sources.excluded phải là danh sách tên nguồn (chuỗi không rỗng, không trùng sau khi chuẩn hóa) "
+    "và không chứa nguồn trong sources.auto."
+)
+
+
 def load_rules(path: Path | str | None = None) -> RulesConfig:
     target = Path(path) if path is not None else DEFAULT_RULES_PATH
     try:
@@ -114,6 +122,15 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         raise ConfigError("Cấu hình thiếu khóa sources.auto.")
     if not isinstance(auto, list) or not auto or not all(isinstance(s, str) and s for s in auto):
         raise ConfigError("sources.auto phải là danh sách tên nguồn (chuỗi), không rỗng.")
+
+    excluded = sources.get("excluded") if isinstance(sources, dict) else None
+    if excluded is None:
+        raise ConfigError("Cấu hình thiếu khóa sources.excluded.")
+    if not isinstance(excluded, list) or not all(isinstance(s, str) for s in excluded):
+        raise ConfigError(_EXCLUDED_ERROR)
+    excluded = [s.strip().lower() for s in excluded]  # so khớp không phân biệt hoa thường và khoảng trắng đầu cuối
+    if not all(excluded) or len(set(excluded)) != len(excluded) or set(excluded) & {s.strip().lower() for s in auto}:
+        raise ConfigError(_EXCLUDED_ERROR)
 
     min_sample = raw.get("min_sample")
     if min_sample is None:
@@ -159,6 +176,7 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         config_version=version,
         window_days=window,
         auto_sources=tuple(auto),
+        excluded_sources=tuple(excluded),
         min_sample=min_sample,
         theta_core=thetas["theta_core"],
         theta_common=thetas["theta_common"],

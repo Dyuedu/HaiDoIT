@@ -1,6 +1,6 @@
 # Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn, bảng nhãn.
 # Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle và stat_cells lưu phiên bản đã dùng.
-config_version = "2026-11-09.1"
+config_version = "2026-11-10.1"
 
 # Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
 # Phép dân số đếm đúng window_days ngày kết thúc ở S, gồm cả S: S - (window_days - 1) <= last_seen <= S.
@@ -31,8 +31,12 @@ roles = [
 # Nguồn ngoài danh sách này (topcv) chạy tay, lượt chạy ghi mode = "manual".
 auto = ["zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec"]
 
+# Nguồn không bao giờ vào số công khai (#263). `aggregate` bỏ tin của nguồn này khỏi mọi ô và khỏi
+# danh sách nguồn của snapshot. linkedin: tin cũ trong dữ liệu seed thu bằng tài khoản đã đăng nhập (PRD §6.1, R3).
+excluded = ["linkedin"]
+
 # Lưu ý độ phủ hiển thị trên mọi màn hình có số: ba lưu ý của FR-36 và lưu ý số nguồn.
-# `{n}` trong n_sources là số nguồn đang bật ở snapshot.
+# `{n}` trong n_sources là số nguồn có tin được đếm trong cửa sổ của snapshot.
 [[coverage_notes]]
 code = "n_sources"
 text = "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên {n} nguồn."

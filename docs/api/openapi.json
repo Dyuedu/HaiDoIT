@@ -423,7 +423,7 @@
             },
             "type": "array",
             "title": "Sources",
-            "description": "Các nguồn đang bật."
+            "description": "Các nguồn có tin được đếm trong cửa sổ của snapshot."
           },
           "sources_failed": {
             "items": {

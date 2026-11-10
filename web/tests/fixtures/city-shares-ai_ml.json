@@ -1,7 +1,7 @@
 {
   "data": {
-    "role": "data_ai",
-    "total_cell_id": "vn.data_ai",
+    "role": "ai_ml",
+    "total_cell_id": "vn.ai_ml",
     "rows": [
       {
         "city": "ha_noi",
@@ -9,7 +9,7 @@
           "value": 0.4697833523375142,
           "kind": "composition_share",
           "display": "shown",
-          "cell_id": "ha_noi.data_ai"
+          "cell_id": "ha_noi.ai_ml"
         }
       },
       {
@@ -18,7 +18,7 @@
           "value": 0.37970353477765106,
           "kind": "composition_share",
           "display": "shown",
-          "cell_id": "ho_chi_minh.data_ai"
+          "cell_id": "ho_chi_minh.ai_ml"
         }
       },
       {
@@ -27,7 +27,7 @@
           "value": 0.02394526795895097,
           "kind": "composition_share",
           "display": "low_sample_shown",
-          "cell_id": "da_nang.data_ai"
+          "cell_id": "da_nang.ai_ml"
         }
       },
       {
@@ -36,7 +36,7 @@
           "value": 0.052451539338654506,
           "kind": "composition_share",
           "display": "shown",
-          "cell_id": "other.data_ai"
+          "cell_id": "other.ai_ml"
         }
       },
       {
@@ -45,7 +45,7 @@
           "value": 0.07411630558722919,
           "kind": "composition_share",
           "display": "shown",
-          "cell_id": "unknown.data_ai"
+          "cell_id": "unknown.ai_ml"
         }
       }
     ]
@@ -87,7 +87,7 @@
       }
     ],
     "cells": {
-      "vn.data_ai": {
+      "vn.ai_ml": {
         "n": 877,
         "fallback_label": null,
         "seniority_mix": {
@@ -108,7 +108,7 @@
           "salary": false
         }
       },
-      "ha_noi.data_ai": {
+      "ha_noi.ai_ml": {
         "n": 412,
         "fallback_label": null,
         "seniority_mix": {
@@ -129,7 +129,7 @@
           "salary": false
         }
       },
-      "ho_chi_minh.data_ai": {
+      "ho_chi_minh.ai_ml": {
         "n": 333,
         "fallback_label": null,
         "seniority_mix": {
@@ -150,7 +150,7 @@
           "salary": false
         }
       },
-      "da_nang.data_ai": {
+      "da_nang.ai_ml": {
         "n": 21,
         "fallback_label": null,
         "seniority_mix": {
@@ -170,7 +170,7 @@
           "salary": true
         }
       },
-      "other.data_ai": {
+      "other.ai_ml": {
         "n": 46,
         "fallback_label": null,
         "seniority_mix": {
@@ -190,7 +190,7 @@
           "salary": true
         }
       },
-      "unknown.data_ai": {
+      "unknown.ai_ml": {
         "n": 65,
         "fallback_label": null,
         "seniority_mix": {

@@ -17,6 +17,7 @@ from haido_core.domain.population import (
     NATIONWIDE,
     ClusterPopulation,
     CountedPosting,
+    window_start,
 )
 from haido_core.domain.registry import CellKey, PopulationRequest
 
@@ -96,3 +97,13 @@ def aggregate_city_shares(
                 share = 1.0 if city == UNKNOWN_CITY else 0.0
             shares.append(ShareRow(role, city, share))
     return CityShareAggregate(tuple(cells), tuple(shares))
+
+
+def sources_in_window(day: date, rows: Sequence[tuple[str, date]], *, window_days: int) -> tuple[str, ...]:
+    """Nguồn có ít nhất một tin được đếm trong cửa sổ của S, A–Z (#259).
+
+    `rows` là `(nguồn, last_seen)` của các tin đã vào phép đếm (đã loại tin ngoài IT và nguồn bị loại).
+    Cửa sổ là cửa sổ của phép đếm (`window_start`), nên một nguồn chỉ được liệt kê khi tin của nó góp vào `n`.
+    """
+    first = window_start(day, window_days)
+    return tuple(sorted({source for source, last_seen in rows if first <= last_seen <= day}))

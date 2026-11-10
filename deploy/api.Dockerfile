@@ -17,6 +17,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY haido_core ./haido_core
 COPY haido_api ./haido_api
 COPY alembic.ini ./
+COPY config ./config
 
 # Sync project
 RUN uv sync --frozen --no-dev

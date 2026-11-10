@@ -208,8 +208,8 @@ jobs:
           nav_a_count=$(echo "$home_html" | grep -oE '<nav aria-label="Điều hướng chính"[^>]*>.*</nav>' | grep -o '<a ' | wc -l)
           [ "$nav_a_count" -eq 4 ]
 
-          # 4. /api/v1/city-shares?role=data_ai có data và meta
-          api_resp=$(curl -s http://localhost:3000/api/v1/city-shares?role=data_ai)
+          # 4. /api/v1/city-shares?role=ai_ml có data và meta
+          api_resp=$(curl -s http://localhost:3000/api/v1/city-shares?role=ai_ml)
           echo "$api_resp" | grep -q '"data"'
           echo "$api_resp" | grep -q '"meta"'
 
@@ -219,9 +219,9 @@ jobs:
 
           # 6. Dừng API -> 502 và code api_unavailable
           docker compose -f deploy/compose.local.yml stop api
-          stopped_api_status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/v1/city-shares?role=data_ai")
+          stopped_api_status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/v1/city-shares?role=ai_ml")
           [ "$stopped_api_status" -eq 502 ]
-          stopped_api_resp=$(curl -s "http://localhost:3000/api/v1/city-shares?role=data_ai")
+          stopped_api_resp=$(curl -s "http://localhost:3000/api/v1/city-shares?role=ai_ml")
           echo "$stopped_api_resp" | grep -q '"api_unavailable"'
       - name: Stop compose
         if: always()

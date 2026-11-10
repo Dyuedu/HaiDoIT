@@ -37,6 +37,11 @@ class CountedPosting:
     seniority: str
 
 
+def window_start(day: date, window_days: int) -> date:
+    """Ngày đầu của cửa sổ đếm: cửa sổ gồm `window_days` ngày kết thúc ở `day`, gồm cả `day`."""
+    return day - timedelta(days=window_days - 1)
+
+
 def _matches(posting: CountedPosting, cell: CellKey) -> bool:
     return (
         (cell.role == ALL or posting.role == cell.role)
@@ -70,6 +75,6 @@ class ClusterPopulation:
     def _window(self, day: date, window_days: int) -> tuple[CountedPosting, ...]:
         key = (day, window_days)
         if key not in self._in_window:
-            first = day - timedelta(days=window_days - 1)
+            first = window_start(day, window_days)
             self._in_window[key] = tuple(p for p in self._postings if first <= p.last_seen <= day)
         return self._in_window[key]

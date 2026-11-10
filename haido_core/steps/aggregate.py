@@ -1,9 +1,16 @@
-"""Bước `aggregate`: tỷ trọng thành phố của snapshot S, ghi `stat_cells` và `stat_city_shares` (#93).
+"""Bước `aggregate`: tỷ trọng thành phố của snapshot S, ghi `stat_cells`, `stat_city_shares` và `stat_sources` (#93).
 
 Thứ tự các bước là `ingest → lifecycle → aggregate → publish`. Bước này đọc dữ kiện tại S
 (`facts_at`) và dòng vòng đời tại S, phân loại từng tin bằng `RuleClassifier`, đổi nhãn tiếng
 Việt sang mã snake_case theo bảng ở `config/rules.toml`, rồi giao cho `aggregate_city_shares`
 đếm. Nhãn chưa có trong bảng thì dừng, không đoán mã.
+
+Tin của nguồn trong `sources.excluded` (linkedin, #263) bị bỏ ngay từ đầu: không phân loại, không vào ô nào,
+không làm nguồn nào được liệt kê. `stat_job_lifecycle` vẫn có dòng của các tin này (không phải số công khai,
+API không đọc).
+
+`stat_sources` là các nguồn có ít nhất một tin được đếm trong cửa sổ của S (#259, DEC-12), không phải
+các nguồn có lượt chạy ở S. API đọc danh sách này theo khóa.
 
 Tin không có dòng vòng đời tại S (chỉ thấy ở lượt chạy lỗi, AD-4) không được đếm. Nếu `ingest`
 chạy lại cho S thì phải chạy lại `lifecycle` trước khi `aggregate`.
@@ -19,7 +26,7 @@ from sqlalchemy import Engine
 
 from haido_core.config import RulesConfig
 from haido_core.db import snapshot_store
-from haido_core.domain.aggregate import aggregate_city_shares
+from haido_core.domain.aggregate import aggregate_city_shares, sources_in_window
 from haido_core.domain.classify import (
     RuleClassifier,
     counts_in_aggregate,
@@ -35,6 +42,7 @@ class AggregateResult:
     snapshot_id: date
     cells: int
     shares: int
+    sources: tuple[str, ...]
     config_version: str
 
 
@@ -66,7 +74,8 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
                 f"Snapshot {day.isoformat()} có {missing} tin thấy ở lượt chạy thành công nhưng chưa có dòng "
                 "vòng đời mới; chạy lại `haido lifecycle` trước."
             )
-        lives = snapshot_store.lifecycle_postings(conn, day)
+        excluded = set(rules.excluded_sources)
+        lives = [row for row in snapshot_store.lifecycle_postings(conn, day) if row[1].strip().lower() not in excluded]
         facts = snapshot_store.facts_at(conn, day)
         empty = snapshot_store.FactVersion(None, None, None, None, None)
         inputs = []
@@ -76,6 +85,11 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
             inputs.append(PostingFacts(fact.title or "", source, None, level_text or None, fact.location_text))
         results = classifier.classify(inputs)
         assert isinstance(results, tuple)
+        kept = [
+            (posting_id, source, last_seen, result)
+            for (posting_id, source, last_seen), result in zip(lives, results, strict=True)
+            if counts_in_aggregate(result)
+        ]
         counted = [
             CountedPosting(
                 cluster_id=str(posting_id),
@@ -84,8 +98,7 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
                 city=_code(rules.city_codes, "thành phố", "city", result.city),
                 seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
             )
-            for (posting_id, _, last_seen), result in zip(lives, results, strict=True)
-            if counts_in_aggregate(result)
+            for posting_id, _, last_seen, result in kept
         ]
         try:
             aggregate = aggregate_city_shares(
@@ -98,5 +111,6 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc
-        snapshot_store.replace_stats(conn, day, rules.config_version, aggregate.cells, aggregate.shares)
-    return AggregateResult(day, len(aggregate.cells), len(aggregate.shares), rules.config_version)
+        sources = sources_in_window(day, [(source, last_seen) for _, source, last_seen, _ in kept], window_days=rules.window_days)
+        snapshot_store.replace_stats(conn, day, rules.config_version, aggregate.cells, aggregate.shares, sources)
+    return AggregateResult(day, len(aggregate.cells), len(aggregate.shares), sources, rules.config_version)

@@ -11,7 +11,7 @@ const LOADING = "Đang tải số liệu…";
 const LOW_SAMPLE_21 = "Cỡ mẫu nhỏ (n = 21 < 30): số liệu chỉ để tham khảo";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
 
-const ok = (role: "all" | "data_ai" | "backend") => () => jsonResponse(200, fakeEnvelope(role));
+const ok = (role: "all" | "ai_ml" | "backend") => () => jsonResponse(200, fakeEnvelope(role));
 
 function chip(name: string) {
   return within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name });
@@ -42,11 +42,11 @@ async function pickRole(user: ReturnType<typeof userEvent.setup>, name: string) 
   await user.click(chip(name));
 }
 
-/** Mở màn, chọn Data/AI, trả dòng Đà Nẵng (mẫu nhỏ, n = 21) với phần trăm đang ẩn. */
-async function openDataAi() {
-  routeCityShares({ all: [ok("all")], data_ai: [ok("data_ai")] });
+/** Mở màn, chọn AI/ML, trả dòng Đà Nẵng (mẫu nhỏ, n = 21) với phần trăm đang ẩn. */
+async function openAiMl() {
+  routeCityShares({ all: [ok("all")], ai_ml: [ok("ai_ml")] });
   const { user } = await openScreen();
-  await pickRole(user, "Data/AI");
+  await pickRole(user, "AI/ML");
   const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
   expect(daNang.textContent).not.toContain("2,4%");
   return { user, daNang };
@@ -62,7 +62,7 @@ describe("fr33 — mở trang", () => {
 
     expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all");
     expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("true");
-    expect(chip("Data/AI").getAttribute("aria-pressed")).toBe("false");
+    expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("false");
     expect(modeButton("Biểu đồ 2D").getAttribute("aria-pressed")).toBe("true");
     expect(modeButton("Bảng").getAttribute("aria-pressed")).toBe("false");
     expect(screen.getByRole("status").textContent).toBe("");
@@ -99,9 +99,9 @@ describe("fr33 — mở trang", () => {
 
 describe("fr33 — mẫu nhỏ", () => {
   it("fr33: Đà Nẵng mẫu nhỏ mờ có sọc, nhãn luôn hiện, % chỉ hiện khi trỏ chuột", async () => {
-    routeCityShares({ all: [ok("all")], data_ai: [ok("data_ai")] });
+    routeCityShares({ all: [ok("all")], ai_ml: [ok("ai_ml")] });
     const { user } = await openScreen();
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
 
     expect(daNang.getAttribute("aria-label")).toBe(`Đà Nẵng: 2,4%, 21 tin. ${LOW_SAMPLE_21}`);
@@ -122,9 +122,9 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: % hiện khi focus và Esc ẩn lại", async () => {
-    routeCityShares({ all: [ok("all")], data_ai: [ok("data_ai")] });
+    routeCityShares({ all: [ok("all")], ai_ml: [ok("ai_ml")] });
     const { user } = await openScreen();
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
 
     act(() => daNang.focus());
@@ -136,9 +136,9 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: chạm hiện %, chạm lần nữa ẩn", async () => {
-    routeCityShares({ all: [ok("all")], data_ai: [ok("data_ai")] });
+    routeCityShares({ all: [ok("all")], ai_ml: [ok("ai_ml")] });
     const { user } = await openScreen();
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
 
     await user.pointer({ keys: "[TouchA]", target: daNang });
@@ -149,7 +149,7 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: trỏ chuột rồi bấm thì phần trăm vẫn hiện; bấm lần nữa thì ẩn", async () => {
-    const { user, daNang } = await openDataAi();
+    const { user, daNang } = await openAiMl();
 
     await user.hover(daNang);
     await user.click(daNang);
@@ -160,7 +160,7 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: focus rồi Enter giữ phần trăm, Enter lần nữa ẩn", async () => {
-    const { user, daNang } = await openDataAi();
+    const { user, daNang } = await openAiMl();
 
     act(() => daNang.focus());
     await user.keyboard("{Enter}");
@@ -171,7 +171,7 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: focus rồi Tab sang chỗ khác thì phần trăm ẩn", async () => {
-    const { user, daNang } = await openDataAi();
+    const { user, daNang } = await openAiMl();
 
     act(() => daNang.focus());
     expect(daNang.textContent).toContain("2,4%");
@@ -182,7 +182,7 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: trỏ chuột, focus, rồi rời chuột thì phần trăm vẫn hiện khi còn focus", async () => {
-    const { user, daNang } = await openDataAi();
+    const { user, daNang } = await openAiMl();
 
     await user.hover(daNang);
     act(() => daNang.focus());
@@ -192,7 +192,7 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: bút trỏ cũng hiện phần trăm như chuột", async () => {
-    const { daNang } = await openDataAi();
+    const { daNang } = await openAiMl();
 
     fireEvent.pointerEnter(daNang, { pointerType: "pen" });
     expect(daNang.textContent).toContain("2,4%");
@@ -217,9 +217,9 @@ describe("fr33 — mẫu nhỏ", () => {
   });
 
   it("fr33: tỷ trọng 0 vẫn có rãnh, button focus được, nhãn n = 0", async () => {
-    routeCityShares({ all: [ok("all")], data_ai: [() => jsonResponse(200, statEnvelope())] });
+    routeCityShares({ all: [ok("all")], ai_ml: [() => jsonResponse(200, statEnvelope())] });
     const { user } = await openScreen();
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
 
     expect(daNang.querySelector('[data-part="track"]')).not.toBeNull();
@@ -245,9 +245,9 @@ describe("fr33 — mẫu nhỏ", () => {
 
 describe("fr33 — lối Bảng", () => {
   it("fr33: bảng có cột Nơi, Tỷ trọng, Số tin, Ghi chú; ĐN mẫu nhỏ ghi 'chưa đủ dữ liệu' và 21", async () => {
-    routeCityShares({ all: [ok("all")], data_ai: [ok("data_ai")] });
+    routeCityShares({ all: [ok("all")], ai_ml: [ok("ai_ml")] });
     const { user } = await openScreen();
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     await screen.findByRole("button", { name: /^Đà Nẵng:/ });
     await user.click(modeButton("Bảng"));
 
@@ -299,37 +299,37 @@ describe("fr33 — lối Bảng", () => {
 describe("fr33 — đổi vai trò", () => {
   it("fr33: đổi vai trò hiện trạng thái đang tải thay cho số cũ, aria-pressed đổi theo", async () => {
     const pending = deferred<Response>();
-    routeCityShares({ all: [ok("all")], data_ai: [() => pending.promise] });
+    routeCityShares({ all: [ok("all")], ai_ml: [() => pending.promise] });
     const { user } = await openScreen();
 
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
 
     expect(screen.getByRole("status").textContent).toBe(LOADING);
     expect(screen.queryByRole("button", { name: /^Hà Nội:/ })).toBeNull();
-    expect(chip("Data/AI").getAttribute("aria-pressed")).toBe("true");
+    expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("true");
     expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("false");
 
-    await act(async () => pending.resolve(jsonResponse(200, fakeEnvelope("data_ai"))));
+    await act(async () => pending.resolve(jsonResponse(200, fakeEnvelope("ai_ml"))));
     expect((await screen.findByRole("button", { name: /^Đà Nẵng:/ })).textContent).toContain(
       LOW_SAMPLE_21,
     );
   });
 
   it("fr33: đổi vai trò nhanh thì bỏ response về muộn của vai trò cũ", async () => {
-    const slowDataAi = deferred<Response>();
+    const slowAiMl = deferred<Response>();
     routeCityShares({
       all: [ok("all")],
-      data_ai: [() => slowDataAi.promise],
+      ai_ml: [() => slowAiMl.promise],
       backend: [ok("backend")],
     });
     const { user } = await openScreen();
 
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     await pickRole(user, "Backend");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
     expect(daNang.textContent).toContain("n = 9 < 30");
 
-    await act(async () => slowDataAi.resolve(jsonResponse(200, fakeEnvelope("data_ai"))));
+    await act(async () => slowAiMl.resolve(jsonResponse(200, fakeEnvelope("ai_ml"))));
 
     expect(cityButton("Đà Nẵng").textContent).toContain("n = 9 < 30");
     expect(screen.queryByText(LOW_SAMPLE_21)).toBeNull();
@@ -340,11 +340,11 @@ describe("fr33 — đổi vai trò", () => {
 describe("fr33 — trạng thái tải sau lỗi và khi quay lại vai trò cũ", () => {
   it("fr33: quay lại vai trò đã tải trong lúc lượt khác chưa về thì hiện đang tải, không hiện số cũ", async () => {
     const allAgain = deferred<Response>();
-    const dataAi = deferred<Response>();
-    routeCityShares({ all: [ok("all"), () => allAgain.promise], data_ai: [() => dataAi.promise] });
+    const aiMl = deferred<Response>();
+    routeCityShares({ all: [ok("all"), () => allAgain.promise], ai_ml: [() => aiMl.promise] });
     const { user } = await openScreen();
 
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     await pickRole(user, "Tất cả");
 
     expect(screen.getByRole("status").textContent).toBe(LOADING);
@@ -352,7 +352,7 @@ describe("fr33 — trạng thái tải sau lỗi và khi quay lại vai trò cũ
   });
 
   it("fr33: đổi vai trò từ lỗi unknown_cell hiện đang tải, không còn thông báo lỗi", async () => {
-    const dataAi = deferred<Response>();
+    const aiMl = deferred<Response>();
     routeCityShares({
       all: [
         () =>
@@ -360,13 +360,13 @@ describe("fr33 — trạng thái tải sau lỗi và khi quay lại vai trò cũ
             error: { code: "unknown_cell", message: "Không có ô.", snapshot_date: "2026-11-03" },
           }),
       ],
-      data_ai: [() => dataAi.promise],
+      ai_ml: [() => aiMl.promise],
     });
     const user = userEvent.setup();
     render(<MapScreen />);
     await screen.findByRole("alert");
 
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
 
     expect(screen.getByRole("status").textContent).toBe(LOADING);
     expect(screen.queryByRole("alert")).toBeNull();
@@ -457,7 +457,7 @@ describe("fr33 — lỗi", () => {
             error: { code: "unknown_cell", message, snapshot_date: "2026-11-03" },
           }),
       ],
-      data_ai: [ok("data_ai")],
+      ai_ml: [ok("ai_ml")],
     });
     const user = userEvent.setup();
     render(<MapScreen />);
@@ -468,7 +468,7 @@ describe("fr33 — lỗi", () => {
     expect(screen.queryByRole("button", { name: "Thử lại" })).toBeNull();
     expect(screen.queryByRole("figure")).toBeNull();
 
-    await pickRole(user, "Data/AI");
+    await pickRole(user, "AI/ML");
     await screen.findByRole("button", { name: /^Đà Nẵng:/ });
     expect(screen.queryByRole("alert")).toBeNull();
   });
@@ -509,7 +509,7 @@ describe("fr33 — bàn phím", () => {
     const { user } = await openScreen();
     const stops: string[] = [];
 
-    for (let i = 0; i < 11; i += 1) {
+    for (let i = 0; i < 19; i += 1) {
       await user.tab();
       const active = document.activeElement as HTMLElement;
       stops.push(active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? "");
@@ -517,8 +517,16 @@ describe("fr33 — bàn phím", () => {
 
     expect(stops).toEqual([
       "Tất cả",
-      "Data/AI",
+      "Nhúng",
+      "AI/ML",
+      "Kỹ sư dữ liệu",
+      "Phân tích dữ liệu",
+      "Kiểm thử (QA)",
+      "DevOps",
+      "Mobile",
+      "Frontend",
       "Backend",
+      "Vai trò khác",
       "3D",
       "Biểu đồ 2D",
       "Bảng",

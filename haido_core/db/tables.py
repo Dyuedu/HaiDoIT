@@ -1,4 +1,4 @@
-"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot` và `0003_haido_city_share`.
+"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot`, `0003_haido_city_share` và `0004_haido_stat_sources`.
 
 Chỉ `haido_core/steps/` ghi các bảng này. `haido_api` không đọc `job_*` (AD-5, AD-7).
 """
@@ -94,4 +94,11 @@ stat_city_shares = sa.Table(
     sa.Column("role", sa.Text(), primary_key=True),
     sa.Column("city", sa.Text(), primary_key=True),
     sa.Column("share", sa.Float(precision=53), nullable=False),
+)
+
+stat_sources = sa.Table(
+    "stat_sources",
+    metadata,
+    sa.Column("snapshot_id", sa.Date(), sa.ForeignKey("haido.snapshots.snapshot_id"), primary_key=True),
+    sa.Column("source", sa.Text(), primary_key=True),
 )
