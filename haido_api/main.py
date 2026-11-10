@@ -10,7 +10,7 @@ from fastapi import FastAPI
 
 from haido_api.errors import install_error_handlers
 from haido_api.market_source import MarketReadModel
-from haido_api.routes import market
+from haido_api.routes import market, skills
 
 
 def create_app(sources: Mapping[str, MarketReadModel] | None = None) -> FastAPI:
@@ -31,6 +31,7 @@ def create_app(sources: Mapping[str, MarketReadModel] | None = None) -> FastAPI:
     app.state.market_sources = chosen
     install_error_handlers(app)
     app.include_router(market.router)
+    app.include_router(skills.router)
     return app
 
 
