@@ -1,0 +1,29 @@
+# Proxy công khai cho haidoit.io.vn. Project riêng, không bị up --remove-orphans của haido-prod dọn.
+# Cổng quản trị 81 chỉ trên localhost. Vào bằng: ssh -L 81:127.0.0.1:81 haidoit
+name: haido-proxy
+
+services:
+  npm:
+    image: jc21/nginx-proxy-manager:2.16.0
+    restart: unless-stopped
+    environment:
+      INITIAL_ADMIN_EMAIL: ${NPM_ADMIN_EMAIL:?}
+      INITIAL_ADMIN_PASSWORD: ${NPM_ADMIN_PASSWORD:?}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:81:81"
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - edge
+
+networks:
+  edge:
+    name: haido-edge
+    external: true
+
+volumes:
+  npm_data:
+  npm_letsencrypt:

@@ -160,6 +160,7 @@ jobs:
             docker compose -f compose.prod.yml pull
             docker logout ghcr.io
             docker compose -f compose.prod.yml run --rm --no-deps -T -e HAIDO_ALLOW_REMOTE_MIGRATION=1 api alembic upgrade head < /dev/null
+            docker network inspect haido-edge >/dev/null 2>&1 || docker network create haido-edge
             docker compose -f compose.prod.yml up -d --remove-orphans
             docker compose -f compose.prod.yml ps
             # 35 GB đĩa: không dọn thì image cũ ăn hết trong vài tuần

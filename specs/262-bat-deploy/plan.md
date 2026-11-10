@@ -51,10 +51,12 @@ specs/262-bat-deploy/
 ```text
 .github/workflows/deploy.yml
 deploy/compose.prod.yml
+deploy/compose.proxy.yml
 tests/deploy/test_gh262_bat_deploy.py
+tests/deploy/test_proxy_npm.py
 ```
 
-**Structure Decision**: Sửa workflow và một test đọc file. Không thêm service Compose.
+**Structure Decision**: Sửa workflow và một test đọc file. Không thêm service vào `compose.prod.yml`. Đợt 2: proxy đứng file `compose.proxy.yml` với project riêng `haido-proxy`, chạy tay một lần trên VPS, workflow không đụng. Web vào thêm mạng ngoài `haido-edge`.
 
 ## Complexity Tracking
 
