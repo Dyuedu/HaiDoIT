@@ -1,6 +1,6 @@
 # Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn, bảng nhãn.
 # Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle và stat_cells lưu phiên bản đã dùng.
-config_version = "2026-11-10.2"
+config_version = "2026-11-10.3"
 
 # Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
 # Phép dân số đếm đúng window_days ngày kết thúc ở S, gồm cả S: S - (window_days - 1) <= last_seen <= S.
@@ -11,6 +11,11 @@ min_sample = 30
 # Ngưỡng nhóm kỹ năng (θ), dùng cho tỷ lệ kỹ năng.
 theta_core = 0.3
 theta_common = 0.1
+
+# Tải CV lên (#140, AD-11): cỡ tối đa tính bằng byte (5 MiB) và kiểu file được nhận (PDF, DOCX).
+# haido_api.uploads kiểm cả hai trước khi đọc thân request, rồi đối chiếu byte đầu của file.
+cv_max_bytes = 5242880
+cv_types = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
 
 # Mã vai trò, theo thứ tự hiển thị. `all` (mọi vai trò) luôn có thêm và không nằm ở đây.
 roles = [

@@ -412,6 +412,30 @@ def gate_ad11_ad21_rieng_tu():
                 if m:
                     hits.append("%s:%d: forbidden column name '%s'" % (f.relative_to(ROOT).as_posix(), i, m.group(1)))
 
+    # CV chỉ được xử lý trong bộ nhớ (#140): haido_api không dùng đường upload có thể ghi file tạm ra đĩa.
+    upload_rx = {
+        "UploadFile": re.compile(r"\bUploadFile\b"),
+        "File(": re.compile(r"\bFile\s*\("),
+        ".form(": re.compile(r"\.form\s*\("),
+        "tempfile": re.compile(r"\btempfile\b"),
+        "formparsers": re.compile(r"\bformparsers\b"),
+        "MultiPartParser": re.compile(r"\bMultiPartParser\b"),
+        "FormParser": re.compile(r"\bFormParser\b"),
+        "parse_form": re.compile(r"\bparse_form\b"),
+        "create_form_parser": re.compile(r"\bcreate_form_parser\b"),
+        "_get_form": re.compile(r"\b_get_form\b"),
+        "SpooledTemporaryFile": re.compile(r"\bSpooledTemporaryFile\b"),
+        "NamedTemporaryFile": re.compile(r"\bNamedTemporaryFile\b"),
+        "Form(": re.compile(r"\bForm\s*\("),
+    }
+    for f in py_files("haido_api"):
+        if "tests" in f.relative_to(ROOT).parts:
+            continue
+        for i, line in enumerate(read(f).splitlines(), 1):
+            for name, rx in upload_rx.items():
+                if rx.search(line):
+                    hits.append("%s:%d: forbidden upload API '%s' (AD-11: CV is handled in memory)" % (f.relative_to(ROOT).as_posix(), i, name))
+
     # Scan committed data files outside tests
     email_rx = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b")
     phone_rx = re.compile(r"(?:\+84|0)(?:3[2-9]|5[2689]|7[06-9]|8[1-9]|9[0-9])\d{7}\b")

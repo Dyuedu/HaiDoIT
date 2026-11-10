@@ -3,6 +3,7 @@
 Thiếu khóa hoặc sai kiểu thì báo lỗi tiếng Việt, không tự điền giá trị mặc định.
 """
 
+import re
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -38,6 +39,10 @@ class RulesConfig:
     min_sample: int
     theta_core: float
     theta_common: float
+    cv_max_bytes: int
+    """Cỡ tối đa của file CV, tính bằng byte (#140). Kiểm trước khi đọc thân request."""
+    cv_types: tuple[str, ...]
+    """Kiểu MIME được nhận cho file CV (chữ thường, dạng `loại/phụ`)."""
     roles: tuple[str, ...]
     coverage_notes: tuple[CoverageNoteRule, ...]
     city_codes: dict[str, str]
@@ -45,6 +50,23 @@ class RulesConfig:
     role_codes: dict[str, str]
     level_codes: dict[str, str]
 
+
+CV_SIGNATURES: dict[str, bytes] = {
+    "application/pdf": b"%PDF-",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": b"PK\x03\x04",
+}
+"""Kiểu MIME CV được hỗ trợ và chữ ký (byte đầu file) của từng kiểu. `cv_types` chỉ được chọn trong bảng này."""
+
+CV_TYPE_NAMES: dict[str, str] = {
+    "application/pdf": "PDF",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "DOCX",
+}
+"""Tên ngắn hiển thị cho người dùng của từng kiểu CV được hỗ trợ."""
+
+CV_MAX_BYTES_LIMIT = 50 * 1024 * 1024
+"""Trần tuyệt đối của `cv_max_bytes`, để cấu hình sai không mở cửa cho tệp quá lớn vào bộ nhớ."""
+
+_MIME = re.compile(r"[a-z0-9][a-z0-9.+-]*/[a-z0-9][a-z0-9.+-]*")
 
 CITY_CODES = frozenset({"ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"})
 UNKNOWN = "unknown"
@@ -164,6 +186,25 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
     if thetas["theta_common"] > thetas["theta_core"]:
         raise ConfigError("theta_common không được lớn hơn theta_core.")
 
+    cv_max_bytes = raw.get("cv_max_bytes")
+    if cv_max_bytes is None:
+        raise ConfigError("Cấu hình thiếu khóa cv_max_bytes.")
+    if isinstance(cv_max_bytes, bool) or not isinstance(cv_max_bytes, int) or not 1 <= cv_max_bytes <= CV_MAX_BYTES_LIMIT:
+        raise ConfigError(f"cv_max_bytes phải là số nguyên byte từ 1 đến {CV_MAX_BYTES_LIMIT}.")
+
+    cv_types = raw.get("cv_types")
+    if cv_types is None:
+        raise ConfigError("Cấu hình thiếu khóa cv_types.")
+    if (
+        not isinstance(cv_types, list)
+        or not cv_types
+        or not all(isinstance(t, str) and _MIME.fullmatch(t) for t in cv_types)
+        or len(set(cv_types)) != len(cv_types)
+    ):
+        raise ConfigError("cv_types phải là danh sách kiểu MIME chữ thường dạng loại/phụ, không rỗng và không trùng.")
+    if not set(cv_types) <= CV_SIGNATURES.keys():
+        raise ConfigError(f"cv_types chỉ được chọn trong các kiểu hỗ trợ: {', '.join(CV_SIGNATURES)}.")
+
     roles = raw.get("roles")
     if roles is None:
         raise ConfigError("Cấu hình thiếu khóa roles.")
@@ -196,6 +237,8 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         min_sample=min_sample,
         theta_core=thetas["theta_core"],
         theta_common=thetas["theta_common"],
+        cv_max_bytes=cv_max_bytes,
+        cv_types=tuple(cv_types),
         roles=tuple(roles),
         coverage_notes=notes,
         city_codes=city_codes,

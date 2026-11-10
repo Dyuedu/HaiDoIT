@@ -141,6 +141,10 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 | 404 | `not_found` | Sai đường dẫn |
 | 405 | `method_not_allowed` | Sai phương thức; hai route này chỉ nhận `GET` |
 | khác 4xx/5xx | `http_error` | Lỗi HTTP khác của tầng định tuyến; mã HTTP giữ nguyên |
+| 411 | `length_required` | Tải CV thiếu `Content-Length`, nên chưa biết cỡ tệp trước khi đọc |
+| 413 | `cv_too_large` | Tệp CV lớn hơn `cv_max_bytes`, hoặc `Content-Length` vượt mức cho phép |
+| 415 | `cv_unsupported_type` | Yêu cầu không phải `multipart/form-data` có boundary, hoặc loại tệp CV không được nhận, hoặc byte đầu không khớp định dạng đã khai |
+| 400 | `cv_invalid_upload` | Tải CV sai cấu trúc: chưa chọn tệp, thiếu hoặc thừa tệp `cv`, thân bị cắt, `Content-Length` không hợp lệ. Mọi lỗi tải CV kèm `Connection: close` |
 | 500 | `invalid_response` | Máy chủ tạo ra dữ liệu sai hợp đồng này, ở response hoặc trong lúc dựng nó |
 | 500 | `internal_error` | Lỗi khác của máy chủ |
 
@@ -148,7 +152,7 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 Rẽ nhánh theo `code`, không theo `message`.
 
 `snapshot_date` chỉ có giá trị ở `unknown_cell`. Mọi mã còn lại (`invalid_query`, `not_found`,
-`method_not_allowed`, `http_error`, `invalid_response`, `internal_error`) luôn trả `snapshot_date = null`.
+`method_not_allowed`, `length_required`, `cv_too_large`, `cv_unsupported_type`, `cv_invalid_upload`, `http_error`, `invalid_response`, `internal_error`) luôn trả `snapshot_date = null`.
 
 ## Dữ liệu giả hiện có
 
