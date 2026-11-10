@@ -121,62 +121,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           ACTOR: ${{ github.actor }}
+        # Script nằm ở deploy/vps-deploy.sh. Biến đi trước dưới dạng gán, %q giữ nguyên ký tự lạ.
+        # Token đi qua stdin, không nằm trên dòng lệnh của VPS.
         run: |
-          ssh -o BatchMode=yes "$USER@$HOST" bash -se <<EOF
-            set -euo pipefail
-            cd "$VPS_PATH"
-            line=\$(grep -m1 '^HAIDO_DATABASE_URL=' .env || true)
-            haido_url=\${line#*=}
-            haido_url=\${haido_url%\$'\\r'}
-            case "\$haido_url" in
-              \"*\") haido_url=\${haido_url#\\\"}; haido_url=\${haido_url%\\\"} ;;
-              \'*\') haido_url=\${haido_url#\\\'}; haido_url=\${haido_url%\\\'} ;;
-            esac
-            if [ -z "\$haido_url" ]; then
-              line=\$(grep -m1 '^DATABASE_URL=' .env || true)
-              base=\${line#*=}
-              base=\${base%\$'\\r'}
-              case "\$base" in
-                \"*\") base=\${base#\\\"}; base=\${base%\\\"} ;;
-                \'*\') base=\${base#\\\'}; base=\${base%\\\'} ;;
-              esac
-              case "\$base" in
-                postgresql+psycopg://*) haido_url=\$base ;;
-                postgresql://*) haido_url="postgresql+psycopg://\${base#postgresql://}" ;;
-                postgres://*) haido_url="postgresql+psycopg://\${base#postgres://}" ;;
-                *) echo "Không suy ra được URL kho"; exit 1 ;;
-              esac
-            fi
-            export HAIDO_DATABASE_URL="\$haido_url"
-            unset line haido_url base
-            token="${GHCR_PULL_TOKEN:-$GITHUB_TOKEN}"
-            if [ -z "\$token" ]; then
-              echo "Thiếu token kéo image"
-              exit 1
-            fi
-            printf '%s\n' "\$token" | docker login ghcr.io -u "$ACTOR" --password-stdin
-            unset token
-            export IMAGE_TAG="sha-$SHA"
-            docker compose -f compose.prod.yml pull
-            docker logout ghcr.io
-            docker compose -f compose.prod.yml run --rm --no-deps -T -e HAIDO_ALLOW_REMOTE_MIGRATION=1 api alembic upgrade head < /dev/null
-            docker network inspect haido-edge >/dev/null 2>&1 || docker network create haido-edge
-            docker compose -f compose.prod.yml up -d --remove-orphans
-            docker compose -f compose.prod.yml ps
-            # 35 GB đĩa: không dọn thì image cũ ăn hết trong vài tuần
-            docker image prune -f --filter "until=168h"
-            ok=0
-            for i in \$(seq 1 20); do
-              if curl -fsS --max-time 10 http://127.0.0.1:8000/openapi.json >/dev/null \
-                && curl -fsS --max-time 10 -o /dev/null http://127.0.0.1:3000; then
-                echo "sống sau \$i lần thử"
-                ok=1
-                break
-              fi
-              sleep 6
-            done
-            [ "\$ok" -eq 1 ] || { echo "không phản hồi sau 2 phút"; exit 1; }
-          EOF
+          {
+            printf 'VPS_PATH=%q\nSHA=%q\nACTOR=%q\nPULL_TOKEN=%q\n' \
+              "$VPS_PATH" "$SHA" "$ACTOR" "${GHCR_PULL_TOKEN:-$GITHUB_TOKEN}"
+            cat deploy/vps-deploy.sh
+          } | ssh -o BatchMode=yes "$USER@$HOST" bash -se
 
       - name: Health check
         env:

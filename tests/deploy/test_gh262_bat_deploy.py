@@ -6,6 +6,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 DEPLOY = ROOT / ".github" / "workflows" / "deploy.yml"
+VPS_SCRIPT = ROOT / "deploy" / "vps-deploy.sh"
 
 
 def _workflow() -> tuple[str, dict]:
@@ -13,6 +14,10 @@ def _workflow() -> tuple[str, dict]:
     data = yaml.safe_load(text)
     assert isinstance(data, dict)
     return text, data
+
+
+def _vps_script() -> str:
+    return VPS_SCRIPT.read_text(encoding="utf-8")
 
 
 def _on(data: dict) -> dict:
@@ -42,7 +47,7 @@ def test_gh262_job_deploy_checkout_va_chep_compose_prod() -> None:
 
 
 def test_gh262_alembic_truoc_up_khong_an_stdin() -> None:
-    text, _ = _workflow()
+    text = _vps_script()
     migrate = text.index("alembic upgrade head")
     up = text.index("up -d --remove-orphans")
     assert migrate < up
@@ -63,7 +68,7 @@ def test_gh262_project_prod_khac_scraper() -> None:
 
 
 def test_gh262_suc_khoe_api_va_web_tren_may_chu_sau_up() -> None:
-    text, _ = _workflow()
+    text = _vps_script()
     up = text.index("up -d --remove-orphans")
     api = text.index("http://127.0.0.1:8000/openapi.json")
     web = text.index("http://127.0.0.1:3000")
@@ -75,9 +80,10 @@ def test_gh262_khoa_deploy_enabled_va_token_keo_image() -> None:
     assert "vars.DEPLOY_ENABLED == 'true'" in text
     deploy_runs = "\n".join(step.get("run", "") for step in _deploy_steps(data) if step.get("run"))
     assert "${GHCR_PULL_TOKEN:-$GITHUB_TOKEN}" in deploy_runs
+    deploy_runs += "\n" + _vps_script()
     assert "docker login ghcr.io" in deploy_runs
     assert "Không suy ra được URL kho" in deploy_runs
     assert "postgresql+psycopg://" in deploy_runs
-    assert "export HAIDO_DATABASE_URL=" in deploy_runs
+    assert "export HAIDO_DATABASE_URL" in deploy_runs
     assert 'echo "$HAIDO_DATABASE_URL"' not in deploy_runs
     assert 'echo "$DATABASE_URL"' not in deploy_runs

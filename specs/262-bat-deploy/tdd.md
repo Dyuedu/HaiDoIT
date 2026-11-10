@@ -31,3 +31,27 @@ Các hành vi:
 RED (chạy với `compose.prod.yml` và `deploy.yml` của `main`): 2 failed, 1 passed. Test 1 xanh vì `compose.proxy.yml` là file mới. Test 2 lỗi `KeyError: 'networks'`, test 3 lỗi vì không thấy `docker network create haido-edge`.
 
 GREEN: `uv run pytest tests/deploy -q` → 21 passed.
+
+## Đợt 3 — 2026-11-10: script VPS lỗi cú pháp
+
+Lý do: run 42851541091 (lần deploy thật đầu tiên sau khi bật `DEPLOY_ENABLED`) đỏ ở bước Deploy với `bash: line 52: unexpected EOF while looking for matching "`. Test cũ chỉ so chữ trong `deploy.yml` nên không bắt được. Dựng lại heredoc như Actions bung ra rồi `bash -n` cho đúng lỗi ở dòng 52.
+
+Lệnh:
+
+```text
+uv run pytest tests/deploy -q
+```
+
+Các hành vi:
+
+1. Bước Deploy không còn `<<EOF`, gửi `deploy/vps-deploy.sh` qua `bash -se`, token lấy `${GHCR_PULL_TOKEN:-$GITHUB_TOKEN}`.
+2. `deploy/vps-deploy.sh` qua `bash -n`.
+3. `resolve_db_url` trả đúng URL với nháy kép, nháy đơn, CRLF, và khi suy từ `DATABASE_URL` dạng `postgresql://`, `postgres://`, `postgresql+psycopg://`.
+4. Thiếu cả hai khóa thì trả mã khác 0, báo "Không suy ra được URL kho", không in gì ra stdout.
+5. Các test thứ tự cũ (Alembic trước `up`, tạo `haido-edge` trước `up`, kiểm hai cổng sau `up`) đọc script mới.
+
+RED: 12 failed, 18 passed. Script chưa có nên mọi test đọc nó đều đỏ; test workflow đỏ vì còn heredoc.
+
+GREEN: 30 passed.
+
+Chạy thử bước Deploy trên máy với `ssh`, `docker`, `curl` giả ghi lại lệnh: thứ tự login → pull → logout → alembic → tạo mạng → up → ps → prune → hai cổng. Token có dấu cách và `$` tới `docker login` qua stdin nguyên vẹn. Cho `compose run` trả 3 thì script dừng với mã 3 và không có `up`.

@@ -43,7 +43,7 @@ def test_web_vao_mang_edge_api_khong() -> None:
 
 
 def test_deploy_tao_mang_edge_truoc_khi_up() -> None:
-    text = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    text = (ROOT / "deploy" / "vps-deploy.sh").read_text(encoding="utf-8")
     create = text.index("docker network create haido-edge")
     up = text.index("up -d --remove-orphans")
     assert create < up
