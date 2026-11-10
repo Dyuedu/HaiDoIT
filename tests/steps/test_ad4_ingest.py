@@ -1,11 +1,12 @@
 """AD-4 — bước `ingest`: mở snapshot S và chép lượt chạy, quan sát, dữ kiện tin (Story 1.4)."""
 
+from dataclasses import replace
 from datetime import date
 
 import pytest
 from sqlalchemy import text
 
-from haido_core.config import RulesConfig
+from haido_core.config import load_rules
 from haido_core.db import snapshot_store
 from haido_core.db.scraper_source import (
     SourceFactsRow,
@@ -17,7 +18,7 @@ from haido_core.steps.common import SnapshotClosedError, StepError
 from haido_core.steps.ingest import ingest_snapshot, plan_ingest
 from tests.steps.conftest import Env
 
-RULES = RulesConfig(config_version="t", window_days=60, auto_sources=("itviec", "zalo"))
+RULES = replace(load_rules(), config_version="t", window_days=60, auto_sources=("itviec", "zalo"))
 S = "2026-11-03"
 
 

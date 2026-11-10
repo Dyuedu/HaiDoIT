@@ -20,8 +20,11 @@ from haido_core.db.tables import (
     job_postings,
     pipeline_runs,
     snapshots,
+    stat_cells,
+    stat_city_shares,
     stat_job_lifecycle,
 )
+from haido_core.domain.aggregate import CellRow, ShareRow
 
 
 @dataclass(frozen=True, slots=True)
@@ -216,4 +219,93 @@ def replace_lifecycle(conn: Connection, day: date, config_version: str, rows: Se
             }
             for r in rows
         ],
+    )
+
+
+# ----------------------------------------------------------------------------- aggregate
+
+ALL = "all"
+"""Giá trị của `branch` và `seniority` trong `stat_cells` cho tới khi có nhánh và cấp bậc riêng."""
+
+
+def lifecycle_postings(conn: Connection, day: date) -> list[tuple[int, str, date]]:
+    """`(posting_id, source, last_seen)` của mọi tin có dòng vòng đời tại S, theo `posting_id`.
+
+    Tin không có dòng vòng đời (chỉ thấy ở lượt chạy lỗi, AD-4) không nằm ở đây, nên không được đếm.
+    """
+    stmt = (
+        sa.select(stat_job_lifecycle.c.posting_id, job_postings.c.source, stat_job_lifecycle.c.last_seen)
+        .join(job_postings, job_postings.c.id == stat_job_lifecycle.c.posting_id)
+        .where(stat_job_lifecycle.c.snapshot_id == day)
+        .order_by(stat_job_lifecycle.c.posting_id)
+    )
+    return [(r.posting_id, r.source, r.last_seen) for r in conn.execute(stmt)]
+
+
+def unaccounted_postings(conn: Connection, day: date) -> int:
+    """Số tin thấy tại S ở lượt chạy thành công nhưng chưa có dòng vòng đời tại S với `last_seen = S`."""
+    life = sa.exists().where(
+        stat_job_lifecycle.c.snapshot_id == day,
+        stat_job_lifecycle.c.posting_id == job_observations.c.posting_id,
+        stat_job_lifecycle.c.last_seen == day,
+    )
+    stmt = (
+        sa.select(sa.func.count())
+        .select_from(job_observations)
+        .join(pipeline_runs, pipeline_runs.c.id == job_observations.c.pipeline_run_id)
+        .where(job_observations.c.snapshot_id == day, pipeline_runs.c.success.is_(True), ~life)
+    )
+    return conn.execute(stmt).scalar_one()
+
+
+def has_city_shares(conn: Connection, day: date) -> bool:
+    stmt = sa.select(sa.literal(1)).where(stat_city_shares.c.snapshot_id == day).limit(1)
+    return conn.execute(stmt).first() is not None
+
+
+def replace_stats(
+    conn: Connection, day: date, config_version: str, cells: Sequence[CellRow], shares: Sequence[ShareRow]
+) -> None:
+    """Ghi lại `stat_cells` và `stat_city_shares` của S (bảng dẫn xuất, chỉ ghi khi S còn `open`)."""
+    conn.execute(sa.delete(stat_cells).where(stat_cells.c.snapshot_id == day))
+    conn.execute(sa.delete(stat_city_shares).where(stat_city_shares.c.snapshot_id == day))
+    if cells:
+        conn.execute(
+            sa.insert(stat_cells),
+            [
+                {
+                    "snapshot_id": day,
+                    "role": c.role,
+                    "branch": ALL,
+                    "seniority": ALL,
+                    "scope": c.scope,
+                    "n": c.n,
+                    "seniority_mix": c.seniority_mix,
+                    "config_version": config_version,
+                }
+                for c in cells
+            ],
+        )
+    if shares:
+        conn.execute(
+            sa.insert(stat_city_shares),
+            [{"snapshot_id": day, "role": r.role, "city": r.city, "share": r.share} for r in shares],
+        )
+
+
+# ----------------------------------------------------------------------------- publish
+
+
+def runs_at(conn: Connection, day: date) -> dict[str, bool]:
+    """`{source: success}` của các lượt chạy ghi cho đúng S."""
+    stmt = sa.select(pipeline_runs.c.source, pipeline_runs.c.success).where(pipeline_runs.c.snapshot_id == day)
+    return {r.source: r.success for r in conn.execute(stmt)}
+
+
+def close_snapshot(conn: Connection, day: date, status: str, sources_failed: Sequence[str]) -> None:
+    """Chốt S thành `published` hoặc `partial`, kèm các nguồn lỗi. Chỉ gọi khi S đang `open` và đã khóa."""
+    conn.execute(
+        sa.update(snapshots)
+        .where(snapshots.c.snapshot_id == day)
+        .values(status=status, sources_failed=list(sources_failed), closed_at=sa.func.now())
     )

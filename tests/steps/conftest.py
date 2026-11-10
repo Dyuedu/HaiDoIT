@@ -8,8 +8,10 @@ from sqlalchemy import Engine, text
 from haido_core.config import RulesConfig, load_rules
 from haido_core.db.engine import make_source_engine
 from haido_core.db.scraper_source import ScraperPostgresReader
+from haido_core.steps.aggregate import aggregate_snapshot
 from haido_core.steps.ingest import ingest_snapshot
 from haido_core.steps.lifecycle import lifecycle_snapshot
+from haido_core.steps.publish import publish_snapshot
 
 S = "2026-11-03"
 
@@ -25,6 +27,12 @@ class Env:
 
     def lifecycle(self, day: str = S, rules: RulesConfig | None = None):
         return lifecycle_snapshot(day, engine=self.write, rules=rules or self.rules)
+
+    def aggregate(self, day: str = S, rules: RulesConfig | None = None):
+        return aggregate_snapshot(day, engine=self.write, rules=rules or self.rules)
+
+    def publish(self, day: str = S, rules: RulesConfig | None = None):
+        return publish_snapshot(day, engine=self.write, rules=rules or self.rules)
 
     def count(self, table: str) -> int:
         with self.write.connect() as conn:
