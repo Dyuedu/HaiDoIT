@@ -52,11 +52,13 @@ specs/262-bat-deploy/
 .github/workflows/deploy.yml
 deploy/compose.prod.yml
 deploy/compose.proxy.yml
+deploy/vps-deploy.sh
 tests/deploy/test_gh262_bat_deploy.py
 tests/deploy/test_proxy_npm.py
+tests/deploy/test_gh262_vps_script.py
 ```
 
-**Structure Decision**: Sửa workflow và một test đọc file. Không thêm service vào `compose.prod.yml`. Đợt 2: proxy đứng file `compose.proxy.yml` với project riêng `haido-proxy`, chạy tay một lần trên VPS, workflow không đụng. Web vào thêm mạng ngoài `haido-edge`.
+**Structure Decision**: Sửa workflow và một test đọc file. Không thêm service vào `compose.prod.yml`. Đợt 2: proxy đứng file `compose.proxy.yml` với project riêng `haido-proxy`, chạy tay một lần trên VPS, workflow không đụng. Web vào thêm mạng ngoài `haido-edge`. Đợt 3: script chạy trên VPS ra file `deploy/vps-deploy.sh`, workflow chỉ ghép biến và `cat` file đó vào `ssh`.
 
 ## Complexity Tracking
 

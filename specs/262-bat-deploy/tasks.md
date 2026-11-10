@@ -37,3 +37,10 @@
 - [x] T012 [US5] Test script deploy tạo `haido-edge` trước `up -d --remove-orphans`
 - [x] T013 Thêm `deploy/compose.proxy.yml`, sửa `deploy/compose.prod.yml` và `.github/workflows/deploy.yml` cho các test trên xanh
 - [ ] T014 Bật `DEPLOY_ENABLED`, merge, xem run deploy xanh, kiểm `haidoit.io.vn` và hai cổng localhost
+
+## Phase 7: Sửa script VPS (đợt 2026-11-10, sau run 42851541091)
+
+- [x] T015 Test `deploy/vps-deploy.sh` qua `bash -n` và workflow không còn heredoc trong `tests/deploy/test_gh262_vps_script.py`
+- [x] T016 Test `resolve_db_url` đọc `.env` có nháy kép, nháy đơn, CRLF, và suy từ `DATABASE_URL`; thiếu URL thì dừng
+- [x] T017 Cho test thứ tự lệnh trong `test_gh262_bat_deploy.py` và `test_proxy_npm.py` đọc script mới
+- [x] T018 Viết `deploy/vps-deploy.sh`, sửa bước Deploy của `.github/workflows/deploy.yml`

@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Đường deploy đã ở `main` (#268). Đợt 2 (2026-11-10) đưa web vào mạng `haido-edge` của proxy trước khi bật `DEPLOY_ENABLED`.
+**Status**: Đường deploy đã ở `main` (#268, #269), `DEPLOY_ENABLED` đã bật. Đợt 3 (2026-11-10) chuyển script chạy trên VPS ra `deploy/vps-deploy.sh` sau khi run 42851541091 lỗi cú pháp bash.
 
 **Input**: GitHub issue [#262](https://github.com/Dyuedu/HaiDoIT/issues/262) — Merges to `main` reach the VPS: the deploy workflow is switched on, the production compose file is on the VPS, and migrations run as a deploy step.
 
@@ -87,6 +87,8 @@ Sửa `pyproject.toml`, `uv.lock`, `alembic.ini` hoặc `.dockerignore` cũng k�
 
 ### Edge Cases
 
+- Script chạy trên VPS không nhúng heredoc trong workflow. Heredoc không nháy làm `\\\"` thành `\\"` và mở một chuỗi không đóng (run 42851541091, `unexpected EOF`). Script nằm ở `deploy/vps-deploy.sh`, biến đi trước qua stdin bằng `printf %q`, và `main` chạy ở dòng cuối nên bash đọc hết script trước khi lệnh docker nào chạy.
+- `.env` có thể có CRLF và nháy đơn hoặc kép quanh URL. Script bỏ cả hai trước khi dùng.
 - `docker compose run` đọc stdin. Script đi qua `bash -s` phải gắn `< /dev/null` vào lệnh migrate, nếu không phần còn lại của script bị nuốt.
 - `HAIDO_ALLOW_REMOTE_MIGRATION` chỉ nhận đúng `1`. Giá trị `true` bị Alembic từ chối.
 - Không có `GHCR_PULL_TOKEN` thì dùng `GITHUB_TOKEN` của chính job (workflow đã có `packages: write`). Cả hai đều trống thì dừng trước `pull`, không in token.
@@ -104,6 +106,7 @@ Sửa `pyproject.toml`, `uv.lock`, `alembic.ini` hoặc `.dockerignore` cũng k�
 - **FR-005**: `on.push.paths` gồm `pyproject.toml`, `uv.lock`, `alembic.ini`, `.dockerignore`, cùng các đường dẫn ứng dụng đã có.
 - **FR-006**: Sau `up`, kiểm `http://127.0.0.1:8000/openapi.json` và `http://127.0.0.1:3000` trên VPS. Hết số lần thử thì job đỏ.
 - **FR-007**: Không in URL cơ sở dữ liệu hay token ra log.
+- **FR-009**: Script chạy trên VPS là file `deploy/vps-deploy.sh`, qua được `bash -n`, và workflow gửi nó qua stdin của `ssh ... bash -se`. Token kéo image đi qua stdin, không nằm trên dòng lệnh.
 - **FR-008**: `web` ở trong mạng ngoài `haido-edge`, `api` thì không. Script deploy tạo `haido-edge` khi chưa có, trước `up`. Proxy nằm ở project `haido-proxy`, cổng 81 chỉ trên localhost.
 
 ### Key Entities
@@ -116,7 +119,7 @@ Sửa `pyproject.toml`, `uv.lock`, `alembic.ini` hoặc `.dockerignore` cũng k�
 
 ### Measurable Outcomes
 
-- **SC-001**: `uv run pytest tests/deploy/test_gh262_bat_deploy.py tests/deploy/test_proxy_npm.py` xanh.
+- **SC-001**: `uv run pytest tests/deploy/test_gh262_bat_deploy.py tests/deploy/test_proxy_npm.py tests/deploy/test_gh262_vps_script.py` xanh.
 - **SC-002**: `compose.prod.yml` có mặt tại `VPS_PATH` và `name` trong file đó là `haido-prod`.
 - **SC-003**: Secret SSH mà workflow đọc (`VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`, `VPS_PATH`) đã tồn tại. Token kéo image dùng `GHCR_PULL_TOKEN` nếu có, không thì `GITHUB_TOKEN`.
 - **SC-004**: Một lần chạy workflow trên `main` làm API và web trả lời ở hai cổng localhost. Biến `DEPLOY_ENABLED` chỉ được bật khi commit này đã ở `main`, để lần push trước đó không deploy bằng workflow cũ.
