@@ -31,6 +31,8 @@ class RulesConfig:
     config_version: str
     window_days: int
     auto_sources: tuple[str, ...]
+    source_priority: tuple[str, ...]
+    """Hạng đại diện cụm (#100). Tên đứng trước thắng. Đã chuẩn hóa chữ thường."""
     excluded_sources: tuple[str, ...]
     """Nguồn không bao giờ được đếm và không được liệt kê (#263): tin của nguồn này bị loại khỏi `aggregate`."""
     min_sample: int
@@ -132,6 +134,19 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
     if not all(excluded) or len(set(excluded)) != len(excluded) or set(excluded) & {s.strip().lower() for s in auto}:
         raise ConfigError(_EXCLUDED_ERROR)
 
+    priority = sources.get("priority")
+    if priority is None:
+        raise ConfigError("Cấu hình thiếu khóa sources.priority.")
+    if not isinstance(priority, list) or not priority or not all(isinstance(item, str) for item in priority):
+        raise ConfigError("sources.priority phải là danh sách tên nguồn (chuỗi), không rỗng.")
+    priority_norm = [item.strip().casefold() for item in priority]
+    if not all(priority_norm) or len(set(priority_norm)) != len(priority_norm):
+        raise ConfigError("sources.priority phải là danh sách tên nguồn không rỗng, không trùng.")
+    if set(priority_norm) & set(excluded):
+        raise ConfigError("sources.priority không được chứa nguồn trong sources.excluded.")
+    if not {item.strip().casefold() for item in auto} <= set(priority_norm):
+        raise ConfigError("sources.priority phải chứa mọi nguồn trong sources.auto.")
+
     min_sample = raw.get("min_sample")
     if min_sample is None:
         raise ConfigError("Cấu hình thiếu khóa min_sample.")
@@ -176,6 +191,7 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         config_version=version,
         window_days=window,
         auto_sources=tuple(auto),
+        source_priority=tuple(priority_norm),
         excluded_sources=tuple(excluded),
         min_sample=min_sample,
         theta_core=thetas["theta_core"],

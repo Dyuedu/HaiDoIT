@@ -509,3 +509,28 @@ def test_dat263_nguon_bi_loai_khong_phan_biet_hoa_thuong_o_du_lieu(env: Env, scr
     env.aggregate()
     assert _n(env, "all", "vn") == 1
     assert _sources(env) == ["itviec"]
+
+
+def test_dat28_hai_nguon_cung_cong_ty_va_chuc_danh_dem_mot_va_lay_thanh_pho_dai_dien(env: Env, scraper_db) -> None:
+    _post(scraper_db, "https://itviec.test/backend", "itviec", title="Backend Dev", company="FPT", location="Đà Nẵng")
+    _post(
+        scraper_db,
+        "https://topcv.test/backend",
+        "topcv",
+        title="Backend Dev",
+        company="Công ty TNHH FPT",
+        location="Hà Nội",
+        job_level="Senior",
+    )
+    _run(
+        env,
+        scraper_db,
+        {"itviec": ["https://itviec.test/backend"], "topcv": ["https://topcv.test/backend"]},
+    )
+    env.lifecycle()
+    env.aggregate()
+    assert _n(env, "all", "vn") == 1
+    assert _n(env, "backend", "vn") == 1
+    assert _n(env, "backend", "da_nang") == 1
+    assert _n(env, "backend", "ha_noi") == 0
+    assert _sources(env) == ["itviec", "topcv"]

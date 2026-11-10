@@ -11,7 +11,7 @@ from haido_core.config import ConfigError, load_rules
 AUTO = ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec")
 
 NOTE = '[[coverage_notes]]\ncode = "n_sources"\ntext = "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên {n} nguồn."\n'
-SOURCES = '[sources]\nauto = ["a", "b"]\nexcluded = ["x"]\n'
+SOURCES = '[sources]\nauto = ["a", "b"]\nexcluded = ["x"]\npriority = ["a", "b"]\n'
 CITY = (
     '[labels.city]\n"Hà Nội" = "ha_noi"\n"Hồ Chí Minh" = "ho_chi_minh"\n"Đà Nẵng" = "da_nang"\n'
     '"Khác" = "other"\n"không xác định" = "unknown"\n'
@@ -229,3 +229,10 @@ def test_ad10_sources_excluded_sai_thi_bao_loi(tmp_path: Path, value: str) -> No
 
 def test_ad10_config_version_da_tang_khi_them_nguon_bi_loai() -> None:
     assert load_rules().config_version not in {"2026-11-06.1", "2026-11-09.1"}
+
+
+def test_ad10_thu_hang_nguon_cho_dai_dien_cum() -> None:
+    rules = load_rules()
+    assert rules.source_priority[0] == "itviec"
+    assert "topcv" in rules.source_priority
+    assert set(rules.auto_sources) <= set(rules.source_priority)

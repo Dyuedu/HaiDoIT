@@ -1,0 +1,22 @@
+---
+description: Trước khi implement, viết SDD và TDD theo template trong docs/templates
+alwaysApply: true
+---
+
+# SDD rồi TDD trước khi implement
+
+Khi được giao một chức năng mới hoặc một issue:
+
+1. Spec sản phẩm vẫn là issue trên GitHub. Không viết spec vào `_bmad-output/`.
+2. Trước khi sửa code hành vi, tạo SDD trong `specs/<số-issue>-<slug>/` theo `docs/templates/spec-driven-sdd/`: `spec.md`, `plan.md`, `research.md`, `data-model.md`, `tasks.md`.
+3. Viết kiểm thử theo `docs/templates/test-driven-tdd/test-driven-development.md` trước code. Một hành vi một test, assert kết quả. Chạy `uv run pytest` đúng file đó, thấy test mới fail, rồi mới viết code tối thiểu cho xanh.
+4. Chức năng chưa có trong repo thì đối chiếu một repo GitHub công khai trước khi chốt cách làm, và ghi nguồn vào `research.md`.
+
+```text
+specs/90-kho-hang-ngay/
+├── spec.md
+├── plan.md
+├── research.md
+├── data-model.md
+└── tasks.md
+```

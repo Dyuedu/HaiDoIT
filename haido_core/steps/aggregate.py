@@ -3,7 +3,8 @@
 Thứ tự các bước là `ingest → lifecycle → aggregate → publish`. Bước này đọc dữ kiện tại S
 (`facts_at`) và dòng vòng đời tại S, phân loại từng tin bằng `RuleClassifier`, đổi nhãn tiếng
 Việt sang mã snake_case theo bảng ở `config/rules.toml`, rồi giao cho `aggregate_city_shares`
-đếm. Nhãn chưa có trong bảng thì dừng, không đoán mã.
+đếm. Hai tin cùng công ty và chức danh đã chuẩn hóa là một cụm (#100): nhãn lấy từ tin đại diện,
+`last_seen` là ngày thấy gần nhất của các thành viên. Nhãn chưa có trong bảng thì dừng, không đoán mã.
 
 Tin của nguồn trong `sources.excluded` (linkedin, #263) bị bỏ ngay từ đầu: không phân loại, không vào ô nào,
 không làm nguồn nào được liệt kê. `stat_job_lifecycle` vẫn có dòng của các tin này (không phải số công khai,
@@ -32,6 +33,7 @@ from haido_core.domain.classify import (
     counts_in_aggregate,
     default_classify_config,
 )
+from haido_core.domain.cluster import ClusterMember, collapse_clusters
 from haido_core.domain.population import CountedPosting
 from haido_core.domain.registry import PostingFacts
 from haido_core.steps.common import SnapshotClosedError, StepError, parse_snapshot_id
@@ -77,29 +79,52 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
         excluded = set(rules.excluded_sources)
         lives = [row for row in snapshot_store.lifecycle_postings(conn, day) if row[1].strip().lower() not in excluded]
         facts = snapshot_store.facts_at(conn, day)
+        urls = snapshot_store.posting_urls(conn, [posting_id for posting_id, _, _ in lives])
         empty = snapshot_store.FactVersion(None, None, None, None, None)
-        inputs = []
-        for posting_id, source, _ in lives:
+        members: list[ClusterMember] = []
+        last_seen: dict[str, date] = {}
+        for posting_id, source, seen in lives:
             fact = facts.get(posting_id, empty)
-            level_text = " ".join(part for part in (fact.job_level, fact.experience_level) if part)
-            inputs.append(PostingFacts(fact.title or "", source, None, level_text or None, fact.location_text))
-        results = classifier.classify(inputs)
-        assert isinstance(results, tuple)
-        kept = [
-            (posting_id, source, last_seen, result)
-            for (posting_id, source, last_seen), result in zip(lives, results, strict=True)
-            if counts_in_aggregate(result)
-        ]
-        counted = [
-            CountedPosting(
-                cluster_id=str(posting_id),
-                last_seen=last_seen,
-                role=_code(rules.role_codes, "vai trò", "role", result.role),
-                city=_code(rules.city_codes, "thành phố", "city", result.city),
-                seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
+            member_id = str(posting_id)
+            members.append(
+                ClusterMember(
+                    member_id,
+                    source,
+                    urls.get(posting_id, ""),
+                    fact.company,
+                    fact.title,
+                    fact.location_text,
+                    fact.experience_level,
+                    fact.job_level,
+                )
             )
-            for posting_id, _, last_seen, result in kept
-        ]
+            last_seen[member_id] = seen
+        by_id = {member.posting_id: member for member in members}
+        clusters = collapse_clusters(members, source_rank=rules.source_priority)
+        rep_inputs = []
+        for cluster in clusters:
+            rep = by_id[cluster.representative_id]
+            fact = facts.get(int(rep.posting_id), empty)
+            level_text = " ".join(part for part in (fact.job_level, fact.experience_level) if part)
+            rep_inputs.append(PostingFacts(fact.title or "", rep.source, None, level_text or None, fact.location_text))
+        results = classifier.classify(rep_inputs)
+        assert isinstance(results, tuple)
+        counted = []
+        source_rows: list[tuple[str, date]] = []
+        for cluster, result in zip(clusters, results, strict=True):
+            if not counts_in_aggregate(result):
+                continue
+            counted.append(
+                CountedPosting(
+                    cluster_id=cluster.cluster_id,
+                    last_seen=max(last_seen[member_id] for member_id in cluster.member_ids),
+                    role=_code(rules.role_codes, "vai trò", "role", result.role),
+                    city=_code(rules.city_codes, "thành phố", "city", result.city),
+                    seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
+                )
+            )
+            for member_id in cluster.member_ids:
+                source_rows.append((by_id[member_id].source, last_seen[member_id]))
         try:
             aggregate = aggregate_city_shares(
                 day,
@@ -111,6 +136,6 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc
-        sources = sources_in_window(day, [(source, last_seen) for _, source, last_seen, _ in kept], window_days=rules.window_days)
+        sources = sources_in_window(day, source_rows, window_days=rules.window_days)
         snapshot_store.replace_stats(conn, day, rules.config_version, aggregate.cells, aggregate.shares, sources)
     return AggregateResult(day, len(aggregate.cells), len(aggregate.shares), sources, rules.config_version)

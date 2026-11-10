@@ -4,8 +4,7 @@ Một ô là `(snapshot, vai trò, nhánh, cấp bậc, phạm vi)`. Dân số l
 `window_days` ngày kết thúc ở S, gồm cả S: `S - (window_days - 1) <= last_seen <= S`. Với 60 thì
 đúng 60 ngày, không phải 61 như cột `in_window` của vòng đời.
 
-Đối tượng nhận tin lúc dựng. Khi chưa có cụm chéo nguồn (#100) thì mỗi tin là một cụm
-(`cluster_id` = mã tin); hai tin cùng `cluster_id` chỉ đếm một lần.
+Đối tượng nhận tin lúc dựng. `cluster_id` là cụm đã gộp (#100); hai tin cùng `cluster_id` chỉ đếm một lần.
 
 Giá trị đặc biệt của khóa ô: vai trò `all` là mọi tin IT, phạm vi `vn` là toàn quốc, nhánh và
 cấp bậc `None` hoặc `all` là không lọc. Phạm vi thành phố không bao giờ trả số toàn quốc.
