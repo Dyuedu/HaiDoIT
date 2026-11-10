@@ -1,3 +1,5 @@
+# name tách khỏi project của compose.scraper.yml (project lấy theo tên thư mục trên VPS).
+# `up --remove-orphans` chỉ dọn container của project này.
 name: haido-prod
 
 services:
