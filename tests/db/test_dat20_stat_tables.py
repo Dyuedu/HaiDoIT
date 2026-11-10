@@ -53,11 +53,47 @@ def _cell(engine: Engine, **over: object) -> None:
         )
 
 
-def test_dat20_migration_0003_noi_tiep_0002_va_chi_con_mot_head() -> None:
+def test_dat20_migration_0003_noi_tiep_0002() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0003_haido_city_share"]
     revision = script.get_revision("0003_haido_city_share")
     assert revision is not None and revision.down_revision == "0002_haido_snapshot"
+
+
+def test_dat259_migration_0004_noi_tiep_0003_va_chi_con_mot_head() -> None:
+    script = ScriptDirectory.from_config(alembic_config())
+    assert script.get_heads() == ["0004_haido_stat_sources"]
+    revision = script.get_revision("0004_haido_stat_sources")
+    assert revision is not None and revision.down_revision == "0003_haido_city_share"
+
+
+def test_dat259_stat_sources_co_dung_cot_va_khoa_trong_schema_haido(pg_engine: Engine) -> None:
+    cols = _columns(pg_engine, "stat_sources")
+    assert set(cols) == {"snapshot_id", "source"}
+    assert all(nullable == "NO" for _, nullable in cols.values())
+    assert _primary_key(pg_engine, "stat_sources") == ["snapshot_id", "source"]
+    assert set(tables.stat_sources.c.keys()) == set(cols)
+    assert tables.stat_sources.schema == "haido"
+
+
+def test_dat259_stat_sources_phai_thuoc_snapshot_co_that_va_khong_trung_khoa(pg_engine: Engine) -> None:
+    insert = text("INSERT INTO haido.stat_sources (snapshot_id, source) VALUES (:s, 'itviec')")
+    with pytest.raises(exc.IntegrityError), pg_engine.begin() as conn:
+        conn.execute(insert, {"s": S})
+    _snapshot(pg_engine)
+    with pg_engine.begin() as conn:
+        conn.execute(insert, {"s": S})
+    with pytest.raises(exc.IntegrityError), pg_engine.begin() as conn:
+        conn.execute(insert, {"s": S})
+
+
+def test_dat259_ha_cap_0004_chi_bo_stat_sources_va_nang_cap_lai_duoc(pg_engine: Engine) -> None:
+    _snapshot(pg_engine)
+    _cell(pg_engine)
+    command.downgrade(alembic_config(), "0003_haido_city_share")
+    assert _columns(pg_engine, "stat_sources") == {}
+    assert _columns(pg_engine, "stat_cells") != {}
+    command.upgrade(alembic_config(), "head")
+    assert _columns(pg_engine, "stat_sources") != {}
 
 
 def test_dat20_stat_cells_co_dung_cot_va_khoa(pg_engine: Engine) -> None:

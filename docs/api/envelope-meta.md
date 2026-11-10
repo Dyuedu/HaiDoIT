@@ -24,7 +24,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 ## `Stat`
 
 ```json
-{ "value": 0.02394526795895097, "kind": "composition_share", "display": "low_sample_shown", "cell_id": "da_nang.data_ai" }
+{ "value": 0.02394526795895097, "kind": "composition_share", "display": "low_sample_shown", "cell_id": "da_nang.ai_ml" }
 ```
 
 | Trường | Kiểu | Ý nghĩa |
@@ -46,7 +46,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 |---|---|---|
 | `snapshot_date` | `YYYY-MM-DD` | Ngày snapshot, giờ Việt Nam |
 | `snapshot_status` | `published` · `partial` | `partial` khi có nguồn lỗi; vẫn đọc được |
-| `sources` | chuỗi[] | Nguồn đang bật |
+| `sources` | chuỗi[] | Nguồn có ít nhất một tin được đếm trong cửa sổ 60 ngày của snapshot, A–Z (#259); `linkedin` không bao giờ có mặt (#263) |
 | `sources_failed` | chuỗi[] | Nguồn lỗi; rỗng khi `published` |
 | `thresholds` | `{min_sample, theta_core, theta_common}` | Ngưỡng đã dùng cho response này |
 | `coverage_notes` | `{code, text}[]` | Lưu ý độ phủ, ít nhất một; hiện `text` trên mọi màn hình có số |
@@ -62,7 +62,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 | `n_by_measure` | Số tin có giá trị của từng thước đo: `skill_count`, `experience_years`, `salary` |
 | `insufficient_by_measure` | `true` khi thước đo đó dưới ngưỡng. Phân vị lương xét `n_by_measure.salary`, không xét `n` |
 
-Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng hiện là chuỗi tạm (`data_ai`, `entry`, `ha_noi`, `core`…);
+Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng hiện là chuỗi tạm (`ai_ml`, `entry`, `ha_noi`, `core`…);
 #16 chốt mã thật. Chuỗi hiển thị tiếng Việt sẽ đến từ bảng tra, không suy từ mã.
 
 ## `GET /api/v1/city-shares?role=<mã>`
@@ -72,18 +72,18 @@ Tỷ trọng từng thành phố trong số tin của vai trò trên toàn quố
 ```json
 {
   "data": {
-    "role": "data_ai",
-    "total_cell_id": "vn.data_ai",
+    "role": "ai_ml",
+    "total_cell_id": "vn.ai_ml",
     "rows": [
       { "city": "da_nang",
         "share": { "value": 0.02394526795895097, "kind": "composition_share",
-                   "display": "low_sample_shown", "cell_id": "da_nang.data_ai" } }
+                   "display": "low_sample_shown", "cell_id": "da_nang.ai_ml" } }
     ]
   },
   "meta": { "…": "…",
     "cells": {
-      "vn.data_ai": { "n": 877, "fallback_label": null, "…": "…" },
-      "da_nang.data_ai": { "n": 21, "fallback_label": null,
+      "vn.ai_ml": { "n": 877, "fallback_label": null, "…": "…" },
+      "da_nang.ai_ml": { "n": 21, "fallback_label": null,
         "seniority_mix": { "intern": 2, "junior": 9, "mid": 7, "senior": 3 },
         "n_by_measure": { "skill_count": 21, "experience_years": 14, "salary": 5 },
         "insufficient_by_measure": { "skill_count": true, "experience_years": true, "salary": true } } } }
@@ -156,10 +156,10 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 
 | Truy vấn | Trường hợp |
 |---|---|
-| `city-shares?role=data_ai` | Hà Nội n = 412 `shown`; Đà Nẵng n = 21 `low_sample_shown`; có `other`, `unknown` |
+| `city-shares?role=ai_ml` | Hà Nội n = 412 `shown`; Đà Nẵng n = 21 `low_sample_shown`; có `other`, `unknown` |
 | `city-shares?role=backend` | Mọi thành phố dưới ngưỡng trừ Hà Nội và TP.HCM |
 | `city-shares?role=all` | Mọi vai trò; Đà Nẵng n = 64 |
-| `skill-rates?role=data_ai&level=entry` | Ô đủ mẫu, có cả ba nhóm kỹ năng |
+| `skill-rates?role=ai_ml&level=entry` | Ô đủ mẫu, có cả ba nhóm kỹ năng |
 | `skill-rates?role=java_backend&level=entry` | Quay về ô Backend · Entry (n = 52), có `fallback_label` |
 | `skill-rates?role=backend&level=entry` | Cùng ô trên, chọn thẳng nên `fallback_label = null` |
 | `skill-rates?role=data_engineer&level=senior` | n = 18: mọi `rate` là `null_data`, `group = null` |
@@ -177,7 +177,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 
 | Biến | Route | Bản thật |
 |---|---|---|
-| `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | Story 1.21 |
+| `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | #27 |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.

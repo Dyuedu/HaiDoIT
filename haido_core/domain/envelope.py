@@ -175,7 +175,7 @@ class Meta(BaseModel):
     """`published` khi mọi nguồn tự động đang bật đều chạy thành công, ngược lại `partial`."""
 
     sources: list[str]
-    """Các nguồn đang bật."""
+    """Các nguồn có tin được đếm trong cửa sổ của snapshot."""
 
     sources_failed: list[str]
     """Các nguồn lỗi ở lượt chạy của snapshot. Rỗng khi `published`."""

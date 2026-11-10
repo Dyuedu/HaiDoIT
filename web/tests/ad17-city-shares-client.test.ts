@@ -31,13 +31,13 @@ function errorBody(code: string, message: string, snapshotDate: string | null = 
 
 describe("ad17 — đọc city-shares qua proxy", () => {
   it("ad17: gọi /api/v1/city-shares?role= qua proxy và trả envelope", async () => {
-    const envelope = fakeEnvelope("data_ai");
+    const envelope = fakeEnvelope("ai_ml");
     const fetchMock = stubFetch(200, envelope);
 
-    const result = await fetchCityShares("data_ai");
+    const result = await fetchCityShares("ai_ml");
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=data_ai");
+    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=ai_ml");
     expect(result).toEqual({ kind: "ok", envelope });
   });
 
@@ -62,7 +62,7 @@ describe("ad17 — đọc city-shares qua proxy", () => {
     const envelope = statEnvelope();
     stubFetch(200, envelope);
 
-    expect(await fetchCityShares("data_ai")).toEqual({ kind: "ok", envelope });
+    expect(await fetchCityShares("ai_ml")).toEqual({ kind: "ok", envelope });
   });
 });
 
@@ -334,16 +334,16 @@ describe("ad17 — envelope hỏng thì không đọc được", () => {
   ];
 
   it.each(broken)("ad17: %s", async (_name, breakIt) => {
-    stubFetch(200, breakIt(fakeEnvelope("data_ai")));
+    stubFetch(200, breakIt(fakeEnvelope("ai_ml")));
 
-    expect(await fetchCityShares("data_ai")).toEqual({ kind: "unreadable" });
+    expect(await fetchCityShares("ai_ml")).toEqual({ kind: "unreadable" });
   });
 
   it("ad17: value NaN", async () => {
-    const envelope = fakeEnvelope("data_ai");
+    const envelope = fakeEnvelope("ai_ml");
     envelope.data.rows[0].share.value = Number.NaN;
     stubFetchParsed(envelope);
 
-    expect(await fetchCityShares("data_ai")).toEqual({ kind: "unreadable" });
+    expect(await fetchCityShares("ai_ml")).toEqual({ kind: "unreadable" });
   });
 });

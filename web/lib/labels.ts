@@ -1,8 +1,9 @@
 /**
  * Mã và nhãn tiếng Việt của vai trò và thành phố trên màn Bản đồ.
  *
- * Mã hiện là chuỗi tạm, khớp bản giả của #2 (`haido_api/fixtures/fake_market.json`). Khi #68
- * chốt mã thật, chỉ sửa file này: web không suy nhãn từ mã ở chỗ nào khác.
+ * Mã vai trò là `all` cộng các mã trong `roles` của `config/rules.toml`, cùng thứ tự; nhãn là tiếng
+ * Việt. `tests/deploy/test_gh162_ban_do_doc_snapshot_that.py` so danh sách này với config mỗi lần chạy
+ * pytest. Thêm hay đổi vai trò thì sửa config rồi sửa file này: web không suy nhãn từ mã ở chỗ nào khác.
  */
 
 export interface RoleOption {
@@ -13,8 +14,16 @@ export interface RoleOption {
 /** Chip vai trò, theo thứ tự hiện trên màn. */
 export const ROLE_OPTIONS: readonly RoleOption[] = [
   { code: "all", label: "Tất cả" },
-  { code: "data_ai", label: "Data/AI" },
+  { code: "embedded", label: "Nhúng" },
+  { code: "ai_ml", label: "AI/ML" },
+  { code: "data_engineer", label: "Kỹ sư dữ liệu" },
+  { code: "data_analyst", label: "Phân tích dữ liệu" },
+  { code: "qa", label: "Kiểm thử (QA)" },
+  { code: "devops", label: "DevOps" },
+  { code: "mobile", label: "Mobile" },
+  { code: "frontend", label: "Frontend" },
   { code: "backend", label: "Backend" },
+  { code: "other", label: "Vai trò khác" },
 ];
 
 /** Vai trò khi mở trang. */

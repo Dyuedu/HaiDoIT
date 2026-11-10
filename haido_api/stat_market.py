@@ -4,8 +4,10 @@
 lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). Con số trả về là số đã ghi bởi bước
 `aggregate`; `display` do `suppression_for` quyết, không tự so với ngưỡng ở đây.
 
-- Snapshot đọc được là `published` hoặc `partial` mới nhất có `stat_city_shares`.
-- `meta.sources` là các nguồn có lượt chạy ở snapshot đó, A–Z; `meta.sources_failed` lấy từ snapshot.
+- Snapshot đọc được là `published` hoặc `partial` mới nhất có `stat_city_shares` và ít nhất một hàng `stat_sources`
+  (thiếu nguồn thì web coi là không đọc được, nên bỏ qua và lùi về snapshot cũ đầy đủ).
+- `meta.sources` là `stat_sources` của snapshot đó, A–Z: các nguồn có ít nhất một tin được đếm trong cửa sổ 60 ngày
+  (#259, DEC-12), do `aggregate` ghi, không phải các nguồn có lượt chạy ở S. `meta.sources_failed` lấy từ snapshot.
 - Ngưỡng và lưu ý độ phủ lấy từ `config/rules.toml`.
 - Kết nối mở ở yêu cầu đầu tiên, không mở lúc import hay lúc dựng nguồn.
 - Vai trò không có tin nào ở snapshot (n toàn quốc bằng 0, hoặc không có hàng) thì `UnknownCell`
@@ -24,7 +26,7 @@ from haido_api.market_source import UnknownCell
 from haido_api.schemas.market import CityShareRow, CitySharesData, SkillRatesData
 from haido_core.config import RulesConfig, load_rules
 from haido_core.db.engine import make_read_engine
-from haido_core.db.tables import pipeline_runs, snapshots, stat_cells, stat_city_shares
+from haido_core.db.tables import snapshots, stat_cells, stat_city_shares, stat_sources
 from haido_core.domain.display_policy import MeasureKind, suppression_for
 from haido_core.domain.envelope import (
     CellMeta,
@@ -116,9 +118,10 @@ class StatMarket:
 
 def _latest_readable(conn: Connection) -> Any:
     has_shares = sa.exists().where(stat_city_shares.c.snapshot_id == snapshots.c.snapshot_id)
+    has_sources = sa.exists().where(stat_sources.c.snapshot_id == snapshots.c.snapshot_id)
     stmt = (
         sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed)
-        .where(snapshots.c.status.in_(READABLE), has_shares)
+        .where(snapshots.c.status.in_(READABLE), has_shares, has_sources)
         .order_by(snapshots.c.snapshot_id.desc())
         .limit(1)
     )
@@ -140,5 +143,5 @@ def _cells(conn: Connection, day: date, role: str) -> dict[str, tuple[int, dict[
 
 
 def _sources(conn: Connection, day: date) -> list[str]:
-    stmt = sa.select(pipeline_runs.c.source).where(pipeline_runs.c.snapshot_id == day).order_by(pipeline_runs.c.source)
+    stmt = sa.select(stat_sources.c.source).where(stat_sources.c.snapshot_id == day).order_by(stat_sources.c.source)
     return list(conn.execute(stmt).scalars())

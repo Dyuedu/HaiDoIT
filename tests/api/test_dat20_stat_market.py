@@ -46,10 +46,14 @@ def _seed(
     *,
     failed: tuple[str, ...] = (),
     sources: tuple[str, ...] = ("zalo", "itviec"),
+    runs: tuple[str, ...] = (),
     roles: dict[str, dict[str, int]] | None = None,
     with_shares: bool = True,
 ) -> None:
-    """Dựng thẳng hàng `stat_*` của một snapshot, không có tin nào trong bảng tin."""
+    """Dựng thẳng hàng `stat_*` của một snapshot, không có tin nào trong bảng tin.
+
+    `sources` là `stat_sources` (nguồn có tin được đếm); `runs` là lượt chạy ở S, mặc định không có.
+    """
     roles = {"backend": {"ha_noi": 40, "da_nang": 3, "unknown": 7}} if roles is None else roles
     with engine.begin() as conn:
         conn.execute(
@@ -57,6 +61,10 @@ def _seed(
             {"d": day, "s": status, "f": list(failed)},
         )
         for source in sources:
+            conn.execute(
+                text("INSERT INTO haido.stat_sources (snapshot_id, source) VALUES (:d, :s)"), {"d": day, "s": source}
+            )
+        for source in runs:
             conn.execute(
                 text(
                     "INSERT INTO haido.pipeline_runs (snapshot_id, source, mode, success, seen_count) "
@@ -335,3 +343,57 @@ def test_dat20_chi_dung_hang_stat_cells_all_all_khi_cung_pham_vi_co_hang_khac(
     assert cells["vn.backend"]["n"] == 50
     assert cells["ha_noi.backend"]["n"] == 40
     assert cells["da_nang.backend"]["n"] == 3
+
+
+# ---------------------------------------------------------------- #259: meta.sources đọc từ stat_sources theo khóa
+
+
+def test_dat259_meta_sources_la_stat_sources_a_z_khong_phai_nguon_co_luot_chay_o_s(
+    pg_engine: Engine, client: TestClient
+) -> None:
+    # topcv chạy tay mười ngày trước (có tin trong cửa sổ, không có lượt chạy ở S); zalo chạy ở S nhưng không có tin nào được đếm.
+    _seed(pg_engine, sources=("topcv", "itviec"), runs=("zalo", "itviec"))
+    meta = _ok(client)["meta"]
+    assert meta["sources"] == ["itviec", "topcv"]
+    notes = {n["code"]: n["text"] for n in meta["coverage_notes"]}
+    assert notes["n_sources"] == "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 2 nguồn."
+
+
+def test_dat259_n_trong_ghi_chu_bang_do_dai_danh_sach_nguon(pg_engine: Engine, client: TestClient) -> None:
+    _seed(pg_engine, sources=("zalo", "momo", "topdev", "itviec", "topcv"))
+    meta = _ok(client)["meta"]
+    assert meta["sources"] == ["itviec", "momo", "topcv", "topdev", "zalo"]
+    notes = {n["code"]: n["text"] for n in meta["coverage_notes"]}
+    assert notes["n_sources"] == "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 5 nguồn."
+
+
+def test_dat259_snapshot_khong_co_stat_sources_thi_bi_bo_qua_va_lui_ve_snapshot_cu_day_du(
+    pg_engine: Engine, client: TestClient
+) -> None:
+    # snapshot mới hơn có số nhưng không có hàng stat_sources (aggregate trước migration 0004): web sẽ coi là không đọc được.
+    _seed(pg_engine, "2026-11-01", sources=("itviec",), roles={"backend": {"ha_noi": 1}})
+    _seed(pg_engine, "2026-11-02", sources=(), roles={"backend": {"ha_noi": 9}})
+    meta = _ok(client)["meta"]
+    assert meta["snapshot_date"] == "2026-11-01"
+    assert meta["sources"] == ["itviec"]
+
+
+def test_dat259_chi_co_snapshot_khong_co_stat_sources_thi_404_unknown_cell_khong_co_ngay(
+    pg_engine: Engine, client: TestClient
+) -> None:
+    _seed(pg_engine, sources=())
+    resp = _get(client)
+    assert resp.status_code == 404
+    assert resp.json()["error"]["code"] == "unknown_cell"
+    assert resp.json()["error"]["snapshot_date"] is None
+
+
+def test_dat259_api_doc_stat_sources_theo_khoa_va_khong_dung_pipeline_runs(
+    pg_engine: Engine, client: TestClient, statements: list[str]
+) -> None:
+    _seed(pg_engine, runs=("zalo",))
+    statements.clear()
+    assert _get(client).status_code == 200
+    assert any("stat_sources" in s for s in statements)
+    for sql in statements:
+        assert "pipeline_runs" not in sql and "job_" not in sql

@@ -23,6 +23,7 @@ from haido_core.db.tables import (
     stat_cells,
     stat_city_shares,
     stat_job_lifecycle,
+    stat_sources,
 )
 from haido_core.domain.aggregate import CellRow, ShareRow
 
@@ -264,11 +265,19 @@ def has_city_shares(conn: Connection, day: date) -> bool:
 
 
 def replace_stats(
-    conn: Connection, day: date, config_version: str, cells: Sequence[CellRow], shares: Sequence[ShareRow]
+    conn: Connection,
+    day: date,
+    config_version: str,
+    cells: Sequence[CellRow],
+    shares: Sequence[ShareRow],
+    sources: Sequence[str],
 ) -> None:
-    """Ghi lại `stat_cells` và `stat_city_shares` của S (bảng dẫn xuất, chỉ ghi khi S còn `open`)."""
+    """Ghi lại `stat_cells`, `stat_city_shares` và `stat_sources` của S (bảng dẫn xuất, chỉ ghi khi S còn `open`)."""
     conn.execute(sa.delete(stat_cells).where(stat_cells.c.snapshot_id == day))
     conn.execute(sa.delete(stat_city_shares).where(stat_city_shares.c.snapshot_id == day))
+    conn.execute(sa.delete(stat_sources).where(stat_sources.c.snapshot_id == day))
+    if sources:
+        conn.execute(sa.insert(stat_sources), [{"snapshot_id": day, "source": source} for source in sources])
     if cells:
         conn.execute(
             sa.insert(stat_cells),

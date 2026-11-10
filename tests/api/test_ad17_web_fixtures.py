@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 WEB_FIXTURES = ROOT / "web" / "tests" / "fixtures"
 
 
-@pytest.mark.parametrize("role", ["all", "data_ai", "backend"])
+@pytest.mark.parametrize("role", ["all", "ai_ml", "backend"])
 def test_ad17_fixture_web_khop_response_city_shares(role: str) -> None:
     resp = TestClient(app).get("/api/v1/city-shares", params={"role": role})
     assert resp.status_code == 200, resp.text

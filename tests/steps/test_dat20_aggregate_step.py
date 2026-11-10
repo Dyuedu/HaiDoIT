@@ -342,3 +342,170 @@ def test_dat20_loi_value_error_cua_tong_hop_thanh_step_error_tieng_viet(
     with pytest.raises(StepError, match="Không tổng hợp được"):
         env.aggregate()
     assert env.count("stat_cells") == 0
+
+
+# ---------------------------------------------------------------- #259: nguồn có tin được đếm trong cửa sổ 60 ngày
+
+
+def _sources(env: Env, day: str = S) -> list[str]:
+    return [r[0] for r in env.query("SELECT source FROM haido.stat_sources WHERE snapshot_id = :d ORDER BY source", d=day)]
+
+
+def test_dat259_nguon_chay_tay_muoi_ngay_truoc_van_duoc_liet_ke_du_khong_chay_o_s(env: Env, scraper_db) -> None:
+    _post(scraper_db, "tc", "topcv", title="Backend Dev", location="Hà Nội")
+    _post(scraper_db, "iv", "itviec", title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {"topcv": ["tc"]}, _day(10))  # chạy tay, không chạy ở S
+    _run(env, scraper_db, {"itviec": ["iv"]})
+    env.lifecycle()
+    env.aggregate()
+    assert env.query("SELECT 1 FROM haido.pipeline_runs WHERE snapshot_id = :d AND source = 'topcv'", d=S) == []
+    assert _sources(env) == ["itviec", "topcv"]
+
+
+def test_dat259_nguon_chay_o_s_nhung_khong_co_tin_nao_duoc_dem_thi_khong_liet_ke(env: Env, scraper_db) -> None:
+    _post(scraper_db, "iv", "itviec", title="Backend Dev", location="Hà Nội")
+    _post(scraper_db, "old", "momo", title="Backend Dev", location="Hà Nội")
+    _post(scraper_db, "kt", "vietnamworks", title="Kế toán trưởng", location="Hà Nội")  # không thuộc IT: không đếm
+    _run(env, scraper_db, {"momo": ["old"]}, _day(60))  # last_seen ngoài cửa sổ 60 ngày
+    _run(
+        env,
+        scraper_db,
+        {"itviec": ["iv"], "momo": [], "zalo": [], "vietnamworks": ["kt"]},
+    )
+    env.lifecycle()
+    env.aggregate()
+    assert _n(env, "all", "vn") == 1
+    assert _sources(env) == ["itviec"]  # momo, zalo, vietnamworks chạy ở S nhưng không có tin nào được đếm
+
+
+def test_dat259_bien_cua_so_59_ngay_trong_60_ngay_ngoai(env: Env, scraper_db) -> None:
+    _post(scraper_db, "a", "topcv", title="Backend Dev", location="Hà Nội")
+    _post(scraper_db, "b", "momo", title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {"topcv": ["a"]}, _day(59))
+    _run(env, scraper_db, {"momo": ["b"]}, _day(60))
+    _run(env, scraper_db, {"itviec": []})
+    env.lifecycle()
+    env.aggregate()
+    assert _sources(env) == ["topcv"]
+
+
+def test_dat259_danh_sach_a_z_khong_phu_thuoc_thu_tu_va_n_bang_do_dai(env: Env, scraper_db) -> None:
+    for source in ("zalo", "topdev", "momo", "itviec"):
+        _post(scraper_db, f"u-{source}", source, title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {s: [f"u-{s}"] for s in ("zalo", "topdev", "momo", "itviec")})
+    env.lifecycle()
+    env.aggregate()
+    assert _sources(env) == ["itviec", "momo", "topdev", "zalo"]
+
+
+def test_dat259_chay_lai_aggregate_ghi_de_danh_sach_nguon_khong_nhan_doi(env: Env, scraper_db) -> None:
+    _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
+    assert _sources(env) == ["itviec"]
+    _post(scraper_db, "z", "zalo", title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {"zalo": ["z"]})
+    env.lifecycle()
+    env.aggregate()
+    env.aggregate()
+    assert _sources(env) == ["itviec", "zalo"]
+
+
+def test_dat259_nguon_ghi_cung_transaction_voi_so_lieu_loi_giua_chung_thi_giu_danh_sach_cu(
+    env: Env, scraper_db, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
+    cells_before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope")
+    shares_before = env.query("SELECT * FROM haido.stat_city_shares ORDER BY role, city")
+    _post(scraper_db, "z", "zalo", title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {"zalo": ["z"]})
+    env.lifecycle()
+    from haido_core.db import snapshot_store
+
+    real = snapshot_store.replace_stats
+
+    def after_write(*args, **kwargs):
+        real(*args, **kwargs)
+        raise RuntimeError("giả lập lỗi sau khi ghi")
+
+    monkeypatch.setattr(snapshot_store, "replace_stats", after_write)
+    with pytest.raises(RuntimeError):
+        env.aggregate()
+    assert _sources(env) == ["itviec"]
+    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope") == cells_before
+    assert env.query("SELECT * FROM haido.stat_city_shares ORDER BY role, city") == shares_before
+
+
+def test_dat259_ghi_de_nguon_cua_s2_khong_dong_den_nguon_cua_snapshot_s1_da_chot(env: Env, scraper_db) -> None:
+    s1 = _day(1)
+    _post(scraper_db, "a", "itviec", title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {"itviec": ["a"]}, s1)
+    env.lifecycle(s1)
+    env.aggregate(s1)
+    env.publish(s1)
+    assert _sources(env, s1) == ["itviec"]
+    _post(scraper_db, "z", "zalo", title="Backend Dev", location="Hà Nội")
+    _run(env, scraper_db, {"zalo": ["z"]})
+    env.lifecycle()
+    env.aggregate()
+    assert "zalo" in _sources(env)
+    assert _sources(env, s1) == ["itviec"]
+
+
+def test_dat259_snapshot_khong_co_tin_nao_thi_khong_co_nguon_nao(env: Env, scraper_db) -> None:
+    scraper_db.run("itviec", S)
+    env.ingest()
+    env.lifecycle()
+    env.aggregate()
+    assert _sources(env) == []
+
+
+# ---------------------------------------------------------------- #263: tin LinkedIn không vào số công khai
+
+
+def test_dat263_tin_linkedin_khong_vao_stat_cells_stat_city_shares_va_danh_sach_nguon(env: Env, scraper_db) -> None:
+    _post(scraper_db, "li", "linkedin", title="Backend Developer", location="Hà Nội")
+    _post(scraper_db, "li2", "linkedin", title="QA Tester", location="Hồ Chí Minh")
+    _post(scraper_db, "iv", "itviec", title="Backend Developer", location="Đà Nẵng")
+    _run(env, scraper_db, {"linkedin": ["li", "li2"]}, _day(5))
+    _run(env, scraper_db, {"itviec": ["iv"]})
+    env.lifecycle()
+    env.aggregate()
+    assert _n(env, "all", "vn") == 1
+    assert _n(env, "backend", "ha_noi") == 0
+    assert _n(env, "qa", "vn") == 0
+    assert _shares(env, "backend")["da_nang"] == 1.0
+    assert _sources(env) == ["itviec"]
+    # không hàng stat_* nào đếm tin LinkedIn: tổng n các thành phố của mọi vai trò chỉ là tin của itviec
+    [(total,)] = env.query("SELECT sum(n) FROM haido.stat_cells WHERE scope <> 'vn' AND role = 'all'")
+    assert total == 1
+
+
+def test_dat263_snapshot_chi_co_linkedin_thi_so_bang_0_va_khong_co_nguon(env: Env, scraper_db) -> None:
+    _post(scraper_db, "li", "linkedin", title="Backend Developer", location="Hà Nội")
+    _run(env, scraper_db, {"linkedin": ["li"]})
+    env.lifecycle()
+    env.aggregate()
+    assert _n(env, "all", "vn") == 0
+    assert _sources(env) == []
+
+
+def test_dat263_nguon_bi_loai_lay_tu_config_khong_viet_cung_trong_ma(env: Env, scraper_db) -> None:
+    _post(scraper_db, "li", "linkedin", title="Backend Developer", location="Hà Nội")
+    _post(scraper_db, "iv", "itviec", title="Backend Developer", location="Hà Nội")
+    _run(env, scraper_db, {"linkedin": ["li"], "itviec": ["iv"]})
+    env.lifecycle()
+    env.aggregate(rules=replace(env.rules, excluded_sources=("itviec",)))
+    assert _n(env, "all", "vn") == 1
+    assert _sources(env) == ["linkedin"]
+    env.aggregate(rules=replace(env.rules, excluded_sources=()))
+    assert _n(env, "all", "vn") == 2
+    assert _sources(env) == ["itviec", "linkedin"]
+
+
+def test_dat263_nguon_bi_loai_khong_phan_biet_hoa_thuong_o_du_lieu(env: Env, scraper_db) -> None:
+    _post(scraper_db, "li", "LinkedIn", title="Backend Developer", location="Hà Nội")
+    _post(scraper_db, "iv", "itviec", title="Backend Developer", location="Hà Nội")
+    _run(env, scraper_db, {"LinkedIn": ["li"], "itviec": ["iv"]})
+    env.lifecycle()
+    env.aggregate()
+    assert _n(env, "all", "vn") == 1
+    assert _sources(env) == ["itviec"]

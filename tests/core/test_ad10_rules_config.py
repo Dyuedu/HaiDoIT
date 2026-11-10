@@ -11,7 +11,7 @@ from haido_core.config import ConfigError, load_rules
 AUTO = ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec")
 
 NOTE = '[[coverage_notes]]\ncode = "n_sources"\ntext = "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên {n} nguồn."\n'
-SOURCES = '[sources]\nauto = ["a", "b"]\n'
+SOURCES = '[sources]\nauto = ["a", "b"]\nexcluded = ["x"]\n'
 CITY = (
     '[labels.city]\n"Hà Nội" = "ha_noi"\n"Hồ Chí Minh" = "ho_chi_minh"\n"Đà Nẵng" = "da_nang"\n'
     '"Khác" = "other"\n"không xác định" = "unknown"\n'
@@ -193,3 +193,39 @@ def test_ad10_bang_nhan_khop_voi_luat_cua_bo_phan_loai() -> None:
     assert set(rules.role_codes) == {r.label for r in cfg.role_rules} | {OTHER_ROLE}
     assert NON_IT not in rules.role_codes
     assert set(rules.level_codes) == {r.label for r in cfg.seniority_rules} | {UNKNOWN}
+
+
+# ---------------------------------------------------------------- #263: nguồn không bao giờ được đếm
+
+
+def test_ad10_nguon_bi_loai_nam_trong_config_va_gom_linkedin() -> None:
+    rules = load_rules()
+    assert rules.excluded_sources == ("linkedin",)
+    assert not set(rules.excluded_sources) & set(rules.auto_sources)
+
+
+def test_ad10_nguon_bi_loai_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
+    assert load_rules(_base(tmp_path)).excluded_sources == ("x",)
+    empty = _write(tmp_path, BASE.replace('excluded = ["x"]', "excluded = []"))
+    assert load_rules(empty).excluded_sources == ()
+
+
+def test_ad10_nguon_bi_loai_duoc_chuan_hoa_cat_khoang_trang_va_ha_chu_thuong(tmp_path: Path) -> None:
+    rules = load_rules(_write(tmp_path, BASE.replace('excluded = ["x"]', 'excluded = ["LinkedIn ", " Foo"]')))
+    assert rules.excluded_sources == ("linkedin", "foo")
+
+
+def test_ad10_thieu_sources_excluded_thi_bao_loi_tieng_viet(tmp_path: Path) -> None:
+    with pytest.raises(ConfigError, match="thiếu") as exc:
+        load_rules(_write(tmp_path, BASE.replace('excluded = ["x"]\n', "")))
+    assert "sources.excluded" in str(exc.value)
+
+
+@pytest.mark.parametrize("value", ['"linkedin"', "[1]", '[""]', '["  "]', '["x", "x"]', '["x", " X"]', '["a"]', '[" A "]'])
+def test_ad10_sources_excluded_sai_thi_bao_loi(tmp_path: Path, value: str) -> None:
+    with pytest.raises(ConfigError, match="sources.excluded"):
+        load_rules(_write(tmp_path, BASE.replace('excluded = ["x"]', f"excluded = {value}")))
+
+
+def test_ad10_config_version_da_tang_khi_them_nguon_bi_loai() -> None:
+    assert load_rules().config_version not in {"2026-11-06.1", "2026-11-09.1"}

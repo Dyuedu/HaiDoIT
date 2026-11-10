@@ -67,7 +67,7 @@
         "salary": 2
       }
     },
-    "da_nang.data_ai": {
+    "da_nang.ai_ml": {
       "n": 21,
       "seniority_mix": {
         "intern": 2,
@@ -111,7 +111,7 @@
         "salary": 14
       }
     },
-    "ha_noi.data_ai": {
+    "ha_noi.ai_ml": {
       "n": 412,
       "seniority_mix": {
         "intern": 38,
@@ -156,7 +156,7 @@
         "salary": 17
       }
     },
-    "ho_chi_minh.data_ai": {
+    "ho_chi_minh.ai_ml": {
       "n": 333,
       "seniority_mix": {
         "intern": 29,
@@ -200,7 +200,7 @@
         "salary": 1
       }
     },
-    "other.data_ai": {
+    "other.ai_ml": {
       "n": 46,
       "seniority_mix": {
         "fresher": 6,
@@ -243,7 +243,7 @@
         "salary": 1
       }
     },
-    "unknown.data_ai": {
+    "unknown.ai_ml": {
       "n": 65,
       "seniority_mix": {
         "intern": 4,
@@ -301,7 +301,7 @@
         "salary": 13
       }
     },
-    "vn.data_ai": {
+    "vn.ai_ml": {
       "n": 877,
       "seniority_mix": {
         "intern": 73,
@@ -316,7 +316,7 @@
         "salary": 204
       }
     },
-    "vn.data_ai.entry": {
+    "vn.ai_ml.entry": {
       "n": 501,
       "seniority_mix": {
         "intern": 73,
@@ -342,32 +342,32 @@
     }
   },
   "city_shares": {
-    "data_ai": {
-      "total_cell_id": "vn.data_ai",
+    "ai_ml": {
+      "total_cell_id": "vn.ai_ml",
       "rows": [
         {
           "city": "ha_noi",
-          "cell_id": "ha_noi.data_ai",
+          "cell_id": "ha_noi.ai_ml",
           "share": 0.4697833523375142
         },
         {
           "city": "ho_chi_minh",
-          "cell_id": "ho_chi_minh.data_ai",
+          "cell_id": "ho_chi_minh.ai_ml",
           "share": 0.37970353477765106
         },
         {
           "city": "da_nang",
-          "cell_id": "da_nang.data_ai",
+          "cell_id": "da_nang.ai_ml",
           "share": 0.02394526795895097
         },
         {
           "city": "other",
-          "cell_id": "other.data_ai",
+          "cell_id": "other.ai_ml",
           "share": 0.052451539338654506
         },
         {
           "city": "unknown",
-          "cell_id": "unknown.data_ai",
+          "cell_id": "unknown.ai_ml",
           "share": 0.07411630558722919
         }
       ]
@@ -434,9 +434,9 @@
     }
   },
   "skill_rates": {
-    "data_ai": {
+    "ai_ml": {
       "entry": {
-        "cell_id": "vn.data_ai.entry",
+        "cell_id": "vn.ai_ml.entry",
         "fallback_label": null,
         "rows": [
           {

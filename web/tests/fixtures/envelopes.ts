@@ -8,12 +8,12 @@ import type {
 
 import allJson from "./city-shares-all.json";
 import backendJson from "./city-shares-backend.json";
-import dataAiJson from "./city-shares-data_ai.json";
+import aiMlJson from "./city-shares-ai_ml.json";
 
 // Ba file JSON là response thật của API giả (#2), sinh từ `haido_api` qua TestClient:
-// `GET /api/v1/city-shares?role=all|data_ai|backend`. `tests/api/test_ad17_web_fixtures.py`
+// `GET /api/v1/city-shares?role=all|ai_ml|backend`. `tests/api/test_ad17_web_fixtures.py`
 // so chúng với API mỗi lần chạy pytest, nên API đổi mà quên sinh lại thì CI đỏ.
-const FAKE = { all: allJson, data_ai: dataAiJson, backend: backendJson } as const;
+const FAKE = { all: allJson, ai_ml: aiMlJson, backend: backendJson } as const;
 
 export type FakeRole = keyof typeof FAKE;
 
@@ -103,7 +103,7 @@ export function buildEnvelope(spec: EnvelopeSpec): CitySharesEnvelope {
  * Envelope có hình như output của #69: `n_by_measure = {}`, Đà Nẵng `n = 0` với `share = 0`,
  * Khác và không xác định dưới ngưỡng, bốn câu `coverage_notes`.
  */
-export function statEnvelope(role = "data_ai"): CitySharesEnvelope {
+export function statEnvelope(role = "ai_ml"): CitySharesEnvelope {
   return buildEnvelope({
     role,
     totalN: 80,
