@@ -22,6 +22,7 @@ web/.next/
 
 # Project & testing artifacts
 .git/
+logs/
 .claude/
 tests/
 scraper/

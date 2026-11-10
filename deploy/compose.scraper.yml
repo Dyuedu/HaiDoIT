@@ -24,6 +24,27 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
+  # Sau ingest của scraper: chép ngày đó vào schema haido rồi tính vòng đời.
+  # Build context là gốc repo. Không mở cổng.
+  warehouse:
+    build:
+      context: ..
+      dockerfile: deploy/warehouse.Dockerfile
+    image: haidoit-warehouse:local
+    env_file: [.env]
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      HAIDO_ALLOW_REMOTE_WRITE: "1"
+      HAIDO_ALLOW_REMOTE_MIGRATION: "1"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    restart: "no"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
   # MoMo, TopDev, ITviec: can Chromium. Chromium hay vo voi /dev/shm mac dinh 64 MB.
   scraper-browser:
     build:
