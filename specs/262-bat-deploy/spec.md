@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Implemented locally. `DEPLOY_ENABLED` stays off until this commit is on `main`.
+**Status**: Đường deploy đã ở `main` (#268). Đợt 2 (2026-11-10) đưa web vào mạng `haido-edge` của proxy trước khi bật `DEPLOY_ENABLED`.
 
 **Input**: GitHub issue [#262](https://github.com/Dyuedu/HaiDoIT/issues/262) — Merges to `main` reach the VPS: the deploy workflow is switched on, the production compose file is on the VPS, and migrations run as a deploy step.
 
@@ -69,6 +69,22 @@ Sửa `pyproject.toml`, `uv.lock`, `alembic.ini` hoặc `.dockerignore` cũng k�
 
 ---
 
+### User Story 5 - Deploy không cắt web khỏi proxy công khai (Priority: P1)
+
+`haidoit.io.vn` đi qua Nginx Proxy Manager ở project Compose riêng `haido-proxy`. Proxy tới web qua mạng ngoài `haido-edge`. Mỗi lần deploy, web vẫn ở trong mạng đó.
+
+**Why this priority**: Trên VPS, web đang nằm trong `haido-edge` và tên miền trả 200. Nếu `compose.prod.yml` của `main` không khai mạng này, lần deploy đầu sẽ tạo lại web ngoài mạng và tên miền sập. Không bật được `DEPLOY_ENABLED` trước khi sửa.
+
+**Independent Test**: `compose.prod.yml` cho `web` vào `default` và `edge`, còn `api` không vào `edge`. `edge` là mạng ngoài tên `haido-edge`. Script deploy tạo mạng khi chưa có, trước `up -d --remove-orphans`. `compose.proxy.yml` có `name: haido-proxy` và cổng quản trị 81 chỉ trên `127.0.0.1`.
+
+**Acceptance Scenarios**:
+
+1. **Given** proxy đang chạy trong project `haido-proxy`, **When** deploy chạy `up -d --remove-orphans` với `compose.prod.yml`, **Then** container proxy không bị dọn và web vẫn trong `haido-edge`.
+2. **Given** VPS mới chưa có mạng `haido-edge`, **When** deploy chạy, **Then** mạng được tạo trước `up` và `up` không lỗi vì thiếu mạng ngoài.
+3. **Given** cổng 81 của proxy, **When** nhìn từ Internet, **Then** không mở được. Chỉ vào được qua `ssh -L 81:127.0.0.1:81`.
+
+---
+
 ### Edge Cases
 
 - `docker compose run` đọc stdin. Script đi qua `bash -s` phải gắn `< /dev/null` vào lệnh migrate, nếu không phần còn lại của script bị nuốt.
@@ -88,17 +104,19 @@ Sửa `pyproject.toml`, `uv.lock`, `alembic.ini` hoặc `.dockerignore` cũng k�
 - **FR-005**: `on.push.paths` gồm `pyproject.toml`, `uv.lock`, `alembic.ini`, `.dockerignore`, cùng các đường dẫn ứng dụng đã có.
 - **FR-006**: Sau `up`, kiểm `http://127.0.0.1:8000/openapi.json` và `http://127.0.0.1:3000` trên VPS. Hết số lần thử thì job đỏ.
 - **FR-007**: Không in URL cơ sở dữ liệu hay token ra log.
+- **FR-008**: `web` ở trong mạng ngoài `haido-edge`, `api` thì không. Script deploy tạo `haido-edge` khi chưa có, trước `up`. Proxy nằm ở project `haido-proxy`, cổng 81 chỉ trên localhost.
 
 ### Key Entities
 
 - **Compose project**: Tên `haido-prod` cho API và web. Scraper đứng ở project khác.
+- **Mạng `haido-edge`**: Mạng Docker ngoài, chung giữa `haido-proxy` và web của `haido-prod`.
 - **Image tag**: `sha-<commit>` như workflow đang gắn vào `IMAGE_TAG`.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: `uv run pytest tests/deploy/test_gh262_bat_deploy.py` xanh.
+- **SC-001**: `uv run pytest tests/deploy/test_gh262_bat_deploy.py tests/deploy/test_proxy_npm.py` xanh.
 - **SC-002**: `compose.prod.yml` có mặt tại `VPS_PATH` và `name` trong file đó là `haido-prod`.
 - **SC-003**: Secret SSH mà workflow đọc (`VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`, `VPS_PATH`) đã tồn tại. Token kéo image dùng `GHCR_PULL_TOKEN` nếu có, không thì `GITHUB_TOKEN`.
 - **SC-004**: Một lần chạy workflow trên `main` làm API và web trả lời ở hai cổng localhost. Biến `DEPLOY_ENABLED` chỉ được bật khi commit này đã ở `main`, để lần push trước đó không deploy bằng workflow cũ.

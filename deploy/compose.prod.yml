@@ -26,6 +26,9 @@ services:
       - api
     environment:
       API_BASE_URL: http://api:8000
+    networks:
+      - default
+      - edge
     ports:
       - "127.0.0.1:3000:3000"
     healthcheck:
@@ -33,3 +36,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
+networks:
+  edge:
+    name: haido-edge
+    external: true
