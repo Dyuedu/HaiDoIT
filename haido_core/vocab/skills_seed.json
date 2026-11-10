@@ -1,0 +1,810 @@
+{
+  "version": "seed-2026-11-11",
+  "note": "Danh sách mồi cho hồ sơ trình duyệt (#205). Bộ từ vựng v1 (#96) sẽ thay file này.",
+  "skills": [
+    {
+      "code": "agile",
+      "name_en": "Agile",
+      "name_vi": "Agile",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 21 of 3469 postings"
+    },
+    {
+      "code": "android",
+      "name_en": "Android",
+      "name_vi": "Android",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "angular",
+      "name_en": "Angular",
+      "name_vi": "Angular",
+      "aliases": [
+        "angularjs"
+      ],
+      "source": "base-2026-11: tagged on 20 of 3469 postings"
+    },
+    {
+      "code": "api_testing",
+      "name_en": "API testing",
+      "name_vi": "Kiểm thử API",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 9 of 3469 postings"
+    },
+    {
+      "code": "automation_testing",
+      "name_en": "Automation testing",
+      "name_vi": "Kiểm thử tự động",
+      "aliases": [
+        "automation test"
+      ],
+      "source": "base-2026-11: tagged on 46 of 3469 postings"
+    },
+    {
+      "code": "autosar",
+      "name_en": "AUTOSAR",
+      "name_vi": "AUTOSAR",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "aws",
+      "name_en": "Amazon Web Services",
+      "name_vi": "Amazon Web Services",
+      "aliases": [
+        "aws"
+      ],
+      "source": "base-2026-11: tagged on 73 of 3469 postings"
+    },
+    {
+      "code": "azure",
+      "name_en": "Microsoft Azure",
+      "name_vi": "Microsoft Azure",
+      "aliases": [
+        "azure"
+      ],
+      "source": "base-2026-11: tagged on 24 of 3469 postings"
+    },
+    {
+      "code": "business_analysis",
+      "name_en": "Business analysis",
+      "name_vi": "Phân tích nghiệp vụ",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 26 of 3469 postings"
+    },
+    {
+      "code": "business_intelligence",
+      "name_en": "Business intelligence",
+      "name_vi": "Trí tuệ doanh nghiệp (BI)",
+      "aliases": [
+        "bi"
+      ],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "c",
+      "name_en": "C",
+      "name_vi": "Ngôn ngữ C",
+      "aliases": [
+        "c language"
+      ],
+      "source": "base-2026-11: tagged on 5 of 3469 postings"
+    },
+    {
+      "code": "ci_cd",
+      "name_en": "CI/CD",
+      "name_vi": "CI/CD",
+      "aliases": [
+        "ci/cd methodologies"
+      ],
+      "source": "base-2026-11: tagged on 69 of 3469 postings"
+    },
+    {
+      "code": "communication",
+      "name_en": "Communication",
+      "name_vi": "Giao tiếp",
+      "aliases": [
+        "communication skills",
+        "kỹ năng giao tiếp"
+      ],
+      "source": "base-2026-11: tagged on 28 of 3469 postings"
+    },
+    {
+      "code": "computer_vision",
+      "name_en": "Computer vision",
+      "name_vi": "Thị giác máy tính",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 13 of 3469 postings"
+    },
+    {
+      "code": "cpp",
+      "name_en": "C++",
+      "name_vi": "C++",
+      "aliases": [
+        "c/c++"
+      ],
+      "source": "base-2026-11: tagged on 50 of 3469 postings"
+    },
+    {
+      "code": "csharp",
+      "name_en": "C#",
+      "name_vi": "C#",
+      "aliases": [
+        "c sharp"
+      ],
+      "source": "base-2026-11: tagged on 43 of 3469 postings"
+    },
+    {
+      "code": "css",
+      "name_en": "CSS",
+      "name_vi": "CSS",
+      "aliases": [
+        "css3"
+      ],
+      "source": "base-2026-11: tagged on 11 of 3469 postings"
+    },
+    {
+      "code": "cybersecurity",
+      "name_en": "Cybersecurity",
+      "name_vi": "An toàn thông tin",
+      "aliases": [
+        "it security",
+        "information security",
+        "bảo mật thông tin",
+        "an ninh thông tin"
+      ],
+      "source": "base-2026-11: tagged on 49 of 3469 postings"
+    },
+    {
+      "code": "data_analysis",
+      "name_en": "Data analysis",
+      "name_vi": "Phân tích dữ liệu",
+      "aliases": [
+        "data analytics"
+      ],
+      "source": "base-2026-11: tagged on 68 of 3469 postings"
+    },
+    {
+      "code": "data_governance",
+      "name_en": "Data governance",
+      "name_vi": "Quản trị dữ liệu",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 17 of 3469 postings"
+    },
+    {
+      "code": "data_modeling",
+      "name_en": "Data modeling",
+      "name_vi": "Mô hình hóa dữ liệu",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 14 of 3469 postings"
+    },
+    {
+      "code": "data_warehouse",
+      "name_en": "Data warehouse",
+      "name_vi": "Kho dữ liệu",
+      "aliases": [
+        "data warehousing"
+      ],
+      "source": "base-2026-11: tagged on 15 of 3469 postings"
+    },
+    {
+      "code": "databricks",
+      "name_en": "Databricks",
+      "name_vi": "Databricks",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 5 of 3469 postings"
+    },
+    {
+      "code": "deep_learning",
+      "name_en": "Deep learning",
+      "name_vi": "Học sâu",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 11 of 3469 postings"
+    },
+    {
+      "code": "devsecops",
+      "name_en": "DevSecOps",
+      "name_vi": "DevSecOps",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 11 of 3469 postings"
+    },
+    {
+      "code": "docker",
+      "name_en": "Docker",
+      "name_vi": "Docker",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 49 of 3469 postings"
+    },
+    {
+      "code": "dotnet",
+      "name_en": ".NET",
+      "name_vi": ".NET",
+      "aliases": [
+        ".net core",
+        "asp.net"
+      ],
+      "source": "base-2026-11: tagged on 45 of 3469 postings"
+    },
+    {
+      "code": "english",
+      "name_en": "English",
+      "name_vi": "Tiếng Anh",
+      "aliases": [
+        "english communication",
+        "english fluency"
+      ],
+      "source": "base-2026-11: tagged on 135 of 3469 postings"
+    },
+    {
+      "code": "etl",
+      "name_en": "ETL",
+      "name_vi": "ETL",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "excel",
+      "name_en": "Excel",
+      "name_vi": "Excel",
+      "aliases": [
+        "microsoft excel"
+      ],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "fastapi",
+      "name_en": "FastAPI",
+      "name_vi": "FastAPI",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 8 of 3469 postings"
+    },
+    {
+      "code": "firmware",
+      "name_en": "Firmware",
+      "name_vi": "Firmware",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 4 of 3469 postings"
+    },
+    {
+      "code": "gcp",
+      "name_en": "Google Cloud",
+      "name_vi": "Google Cloud",
+      "aliases": [
+        "gcp",
+        "google cloud platform"
+      ],
+      "source": "base-2026-11: tagged on 12 of 3469 postings"
+    },
+    {
+      "code": "generative_ai",
+      "name_en": "Generative AI",
+      "name_vi": "AI tạo sinh",
+      "aliases": [
+        "genai"
+      ],
+      "source": "base-2026-11: tagged on 9 of 3469 postings"
+    },
+    {
+      "code": "git",
+      "name_en": "Git",
+      "name_vi": "Git",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 12 of 3469 postings"
+    },
+    {
+      "code": "gitlab_ci",
+      "name_en": "GitLab CI",
+      "name_vi": "GitLab CI",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 5 of 3469 postings"
+    },
+    {
+      "code": "golang",
+      "name_en": "Go",
+      "name_vi": "Go",
+      "aliases": [
+        "golang"
+      ],
+      "source": "base-2026-11: tagged on 38 of 3469 postings"
+    },
+    {
+      "code": "html",
+      "name_en": "HTML",
+      "name_vi": "HTML",
+      "aliases": [
+        "html5"
+      ],
+      "source": "base-2026-11: tagged on 21 of 3469 postings"
+    },
+    {
+      "code": "ios",
+      "name_en": "iOS",
+      "name_vi": "iOS",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 4 of 3469 postings"
+    },
+    {
+      "code": "iot",
+      "name_en": "Internet of Things",
+      "name_vi": "Internet vạn vật (IoT)",
+      "aliases": [
+        "iot"
+      ],
+      "source": "base-2026-11: tagged on 5 of 3469 postings"
+    },
+    {
+      "code": "japanese",
+      "name_en": "Japanese",
+      "name_vi": "Tiếng Nhật",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 6 of 3469 postings"
+    },
+    {
+      "code": "java",
+      "name_en": "Java",
+      "name_vi": "Java",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 125 of 3469 postings"
+    },
+    {
+      "code": "javascript",
+      "name_en": "JavaScript",
+      "name_vi": "JavaScript",
+      "aliases": [
+        "js"
+      ],
+      "source": "base-2026-11: tagged on 43 of 3469 postings"
+    },
+    {
+      "code": "jenkins",
+      "name_en": "Jenkins",
+      "name_vi": "Jenkins",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 5 of 3469 postings"
+    },
+    {
+      "code": "jira",
+      "name_en": "Jira",
+      "name_vi": "Jira",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "kafka",
+      "name_en": "Apache Kafka",
+      "name_vi": "Apache Kafka",
+      "aliases": [
+        "kafka"
+      ],
+      "source": "base-2026-11: tagged on 14 of 3469 postings"
+    },
+    {
+      "code": "kotlin",
+      "name_en": "Kotlin",
+      "name_vi": "Kotlin",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "kubernetes",
+      "name_en": "Kubernetes",
+      "name_vi": "Kubernetes",
+      "aliases": [
+        "k8s"
+      ],
+      "source": "base-2026-11: tagged on 39 of 3469 postings"
+    },
+    {
+      "code": "laravel",
+      "name_en": "Laravel",
+      "name_vi": "Laravel",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 5 of 3469 postings"
+    },
+    {
+      "code": "linux",
+      "name_en": "Linux",
+      "name_vi": "Linux",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 50 of 3469 postings"
+    },
+    {
+      "code": "llm",
+      "name_en": "Large language models",
+      "name_vi": "Mô hình ngôn ngữ lớn",
+      "aliases": [
+        "llms"
+      ],
+      "source": "base-2026-11: tagged on 4 of 3469 postings"
+    },
+    {
+      "code": "machine_learning",
+      "name_en": "Machine Learning",
+      "name_vi": "Học máy",
+      "aliases": [
+        "ml"
+      ],
+      "source": "base-2026-11: tagged on 32 of 3469 postings"
+    },
+    {
+      "code": "manual_testing",
+      "name_en": "Manual testing",
+      "name_vi": "Kiểm thử thủ công",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 6 of 3469 postings"
+    },
+    {
+      "code": "microservices",
+      "name_en": "Microservices",
+      "name_vi": "Kiến trúc microservices",
+      "aliases": [
+        "microservices architecture"
+      ],
+      "source": "base-2026-11: tagged on 37 of 3469 postings"
+    },
+    {
+      "code": "mlops",
+      "name_en": "MLOps",
+      "name_vi": "MLOps",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 11 of 3469 postings"
+    },
+    {
+      "code": "mongodb",
+      "name_en": "MongoDB",
+      "name_vi": "MongoDB",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 17 of 3469 postings"
+    },
+    {
+      "code": "mysql",
+      "name_en": "MySQL",
+      "name_vi": "MySQL",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 41 of 3469 postings"
+    },
+    {
+      "code": "nestjs",
+      "name_en": "NestJS",
+      "name_vi": "NestJS",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 9 of 3469 postings"
+    },
+    {
+      "code": "network_security",
+      "name_en": "Network security",
+      "name_vi": "Bảo mật mạng",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 8 of 3469 postings"
+    },
+    {
+      "code": "networking",
+      "name_en": "Computer networking",
+      "name_vi": "Mạng máy tính",
+      "aliases": [
+        "networking",
+        "network",
+        "quản trị mạng"
+      ],
+      "source": "base-2026-11: tagged on 32 of 3469 postings"
+    },
+    {
+      "code": "nextjs",
+      "name_en": "Next.js",
+      "name_vi": "Next.js",
+      "aliases": [
+        "nextjs"
+      ],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "nlp",
+      "name_en": "Natural language processing",
+      "name_vi": "Xử lý ngôn ngữ tự nhiên",
+      "aliases": [
+        "nlp"
+      ],
+      "source": "base-2026-11: tagged on 15 of 3469 postings"
+    },
+    {
+      "code": "nodejs",
+      "name_en": "Node.js",
+      "name_vi": "Node.js",
+      "aliases": [
+        "nodejs"
+      ],
+      "source": "base-2026-11: tagged on 42 of 3469 postings"
+    },
+    {
+      "code": "nosql",
+      "name_en": "NoSQL",
+      "name_vi": "NoSQL",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "oracle_db",
+      "name_en": "Oracle Database",
+      "name_vi": "Oracle Database",
+      "aliases": [
+        "oracle"
+      ],
+      "source": "base-2026-11: tagged on 55 of 3469 postings"
+    },
+    {
+      "code": "owasp",
+      "name_en": "OWASP",
+      "name_vi": "OWASP",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "penetration_testing",
+      "name_en": "Penetration testing",
+      "name_vi": "Kiểm thử xâm nhập",
+      "aliases": [
+        "pentest"
+      ],
+      "source": "base-2026-11: tagged on 14 of 3469 postings"
+    },
+    {
+      "code": "php",
+      "name_en": "PHP",
+      "name_vi": "PHP",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 21 of 3469 postings"
+    },
+    {
+      "code": "playwright",
+      "name_en": "Playwright",
+      "name_vi": "Playwright",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 15 of 3469 postings"
+    },
+    {
+      "code": "postgresql",
+      "name_en": "PostgreSQL",
+      "name_vi": "PostgreSQL",
+      "aliases": [
+        "postgres"
+      ],
+      "source": "base-2026-11: tagged on 52 of 3469 postings"
+    },
+    {
+      "code": "postman",
+      "name_en": "Postman",
+      "name_vi": "Postman",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "power_bi",
+      "name_en": "Power BI",
+      "name_vi": "Power BI",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 32 of 3469 postings"
+    },
+    {
+      "code": "powershell",
+      "name_en": "PowerShell",
+      "name_vi": "PowerShell",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "python",
+      "name_en": "Python",
+      "name_vi": "Python",
+      "aliases": [
+        "python programming"
+      ],
+      "source": "base-2026-11: tagged on 186 of 3469 postings"
+    },
+    {
+      "code": "pytorch",
+      "name_en": "PyTorch",
+      "name_vi": "PyTorch",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "react",
+      "name_en": "React",
+      "name_vi": "React",
+      "aliases": [
+        "reactjs",
+        "react.js"
+      ],
+      "source": "base-2026-11: tagged on 46 of 3469 postings"
+    },
+    {
+      "code": "react_native",
+      "name_en": "React Native",
+      "name_vi": "React Native",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 6 of 3469 postings"
+    },
+    {
+      "code": "redis",
+      "name_en": "Redis",
+      "name_vi": "Redis",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "rest_api",
+      "name_en": "REST API",
+      "name_vi": "REST API",
+      "aliases": [
+        "restful api",
+        "restful"
+      ],
+      "source": "base-2026-11: tagged on 25 of 3469 postings"
+    },
+    {
+      "code": "ruby",
+      "name_en": "Ruby",
+      "name_vi": "Ruby",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 4 of 3469 postings"
+    },
+    {
+      "code": "ruby_on_rails",
+      "name_en": "Ruby on Rails",
+      "name_vi": "Ruby on Rails",
+      "aliases": [
+        "rails"
+      ],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "sap",
+      "name_en": "SAP",
+      "name_vi": "SAP",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 16 of 3469 postings"
+    },
+    {
+      "code": "scrum",
+      "name_en": "Scrum",
+      "name_vi": "Scrum",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 12 of 3469 postings"
+    },
+    {
+      "code": "selenium",
+      "name_en": "Selenium",
+      "name_vi": "Selenium",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 14 of 3469 postings"
+    },
+    {
+      "code": "siem",
+      "name_en": "SIEM",
+      "name_vi": "SIEM",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 6 of 3469 postings"
+    },
+    {
+      "code": "software_architecture",
+      "name_en": "Software architecture",
+      "name_vi": "Kiến trúc phần mềm",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 21 of 3469 postings"
+    },
+    {
+      "code": "software_testing",
+      "name_en": "Software testing",
+      "name_vi": "Kiểm thử phần mềm",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 12 of 3469 postings"
+    },
+    {
+      "code": "spring",
+      "name_en": "Spring Framework",
+      "name_vi": "Spring Framework",
+      "aliases": [
+        "spring"
+      ],
+      "source": "base-2026-11: tagged on 18 of 3469 postings"
+    },
+    {
+      "code": "spring_boot",
+      "name_en": "Spring Boot",
+      "name_vi": "Spring Boot",
+      "aliases": [
+        "java spring boot"
+      ],
+      "source": "base-2026-11: tagged on 36 of 3469 postings"
+    },
+    {
+      "code": "sql",
+      "name_en": "SQL",
+      "name_vi": "SQL",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 143 of 3469 postings"
+    },
+    {
+      "code": "sql_server",
+      "name_en": "Microsoft SQL Server",
+      "name_vi": "Microsoft SQL Server",
+      "aliases": [
+        "sql server",
+        "ms sql",
+        "mssql"
+      ],
+      "source": "base-2026-11: tagged on 25 of 3469 postings"
+    },
+    {
+      "code": "swift",
+      "name_en": "Swift",
+      "name_vi": "Swift",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 6 of 3469 postings"
+    },
+    {
+      "code": "tableau",
+      "name_en": "Tableau",
+      "name_vi": "Tableau",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "tensorflow",
+      "name_en": "TensorFlow",
+      "name_vi": "TensorFlow",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 7 of 3469 postings"
+    },
+    {
+      "code": "terraform",
+      "name_en": "Terraform",
+      "name_vi": "Terraform",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 16 of 3469 postings"
+    },
+    {
+      "code": "typescript",
+      "name_en": "TypeScript",
+      "name_vi": "TypeScript",
+      "aliases": [
+        "ts"
+      ],
+      "source": "base-2026-11: tagged on 52 of 3469 postings"
+    },
+    {
+      "code": "unit_testing",
+      "name_en": "Unit testing",
+      "name_vi": "Kiểm thử đơn vị",
+      "aliases": [
+        "unit test"
+      ],
+      "source": "base-2026-11: tagged on 8 of 3469 postings"
+    },
+    {
+      "code": "vmware",
+      "name_en": "VMware",
+      "name_vi": "VMware",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 12 of 3469 postings"
+    },
+    {
+      "code": "vue",
+      "name_en": "Vue.js",
+      "name_vi": "Vue.js",
+      "aliases": [
+        "vuejs",
+        "vue"
+      ],
+      "source": "base-2026-11: tagged on 10 of 3469 postings"
+    },
+    {
+      "code": "windows_server",
+      "name_en": "Windows Server",
+      "name_vi": "Windows Server",
+      "aliases": [],
+      "source": "base-2026-11: tagged on 8 of 3469 postings"
+    }
+  ]
+}

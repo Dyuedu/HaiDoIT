@@ -39,6 +39,10 @@ SAMPLE_QUERY: dict[str, dict[str, str]] = {
     "/api/v1/skill-rates": {"role": "ai_ml", "level": "entry"},
 }
 
+# Route không trả con số nào nên không dùng Envelope (AD-17 chỉ áp cho response chứa số).
+# Test bên dưới kiểm response của chúng không có số. Thêm route vào đây phải có lý do.
+NUMBERLESS_ROUTES: frozenset[str] = frozenset({"/api/v1/skills"})
+
 
 @pytest.fixture(scope="module")
 def client() -> TestClient:
@@ -75,14 +79,32 @@ def _api_routes() -> dict[str, APIRoute]:
 
 
 def test_ad17_moi_route_tra_envelope(client: TestClient) -> None:
-    routes = _api_routes()
+    all_routes = _api_routes()
     openapi_paths = {p for p in app.openapi()["paths"] if p.startswith("/api/v1")}
-    assert set(routes) == openapi_paths == set(SAMPLE_QUERY)
+    assert set(all_routes) == openapi_paths
+    routes = {p: r for p, r in all_routes.items() if p not in NUMBERLESS_ROUTES}
+    assert set(routes) == set(SAMPLE_QUERY)
+    for path in NUMBERLESS_ROUTES:
+        assert path in all_routes, path
+        assert _numbers(_get(client, path)) == [], f"{path} có số nhưng không dùng Envelope"
     for path, route in routes.items():
         model = route.response_model
         assert isinstance(model, type) and issubclass(model, Envelope), path
         assert model.__pydantic_generic_metadata__["args"], f"{path}: Envelope chưa gắn kiểu data"
         model.model_validate(_get(client, path, **SAMPLE_QUERY[path]))
+
+
+def _numbers(node: Any) -> list[Any]:
+    """Mọi số trong JSON, bỏ qua bool."""
+    if isinstance(node, bool):
+        return []
+    if isinstance(node, int | float):
+        return [node]
+    if isinstance(node, dict):
+        return [n for v in node.values() for n in _numbers(v)]
+    if isinstance(node, list):
+        return [n for v in node for n in _numbers(v)]
+    return []
 
 
 def _stats(node: Any) -> list[dict[str, Any]]:

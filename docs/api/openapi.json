@@ -155,6 +155,38 @@
           }
         }
       }
+    },
+    "/api/v1/skills": {
+      "get": {
+        "tags": [
+          "vocabulary"
+        ],
+        "summary": "Danh sách kỹ năng để tìm và tick",
+        "description": "Mọi kỹ năng của bộ từ vựng đang dùng, tên song ngữ và bí danh. Web tìm trên danh sách này.",
+        "operationId": "get_skills_api_v1_skills_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -540,6 +572,87 @@
         ],
         "title": "SkillRatesData",
         "description": "`data` của `GET /api/v1/skill-rates`."
+      },
+      "SkillRow": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 40,
+            "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+            "title": "Code",
+            "description": "Mã kỹ năng, snake_case ASCII. Đây là thứ lưu trong hồ sơ trình duyệt và trong link chia sẻ."
+          },
+          "name_en": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Name En",
+            "description": "Tên tiếng Anh."
+          },
+          "name_vi": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Name Vi",
+            "description": "Tên tiếng Việt."
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases",
+            "description": "Cách viết khác trong tin tuyển dụng, cả hai ngôn ngữ. Ô tìm kiếm dò cả ở đây."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "name_en",
+          "name_vi",
+          "aliases"
+        ],
+        "title": "SkillRow",
+        "description": "Một kỹ năng web hiển thị và cho tìm."
+      },
+      "SkillsData": {
+        "properties": {
+          "vocab_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Vocab Version",
+            "description": "Phiên bản bộ từ vựng, ví dụ `seed-2026-11-11`."
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillRow"
+            },
+            "type": "array",
+            "title": "Skills",
+            "description": "Mọi kỹ năng, theo thứ tự mã."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "vocab_version",
+          "skills"
+        ],
+        "title": "SkillsData",
+        "description": "Danh sách kỹ năng của bộ từ vựng đang dùng."
+      },
+      "SkillsResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SkillsData"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "SkillsResponse",
+        "description": "`{data}`. Không có `meta` vì không có con số nào cần ngữ cảnh snapshot."
       },
       "SnapshotStatus": {
         "type": "string",
