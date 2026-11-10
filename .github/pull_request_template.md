@@ -1,32 +1,33 @@
 Closes #
 
-## Thay đổi gì
+## What changed
 
-<!-- Một đoạn. Người rà soát đọc được mà không cần hỏi lại. -->
+<!-- One paragraph. A reviewer should understand it without asking back. -->
 
 ## Acceptance Criteria
 
-<!-- Dán từng dòng Given/When/Then của issue, và chỉ ra chỗ nào trong code hoặc test thỏa dòng đó. -->
+<!-- Paste each AC line from the issue and point to the code or test that satisfies it. -->
 
-- [ ] Mọi dòng AC của issue đã đạt
+- [ ] Every AC line of the issue is met
 
 ## Definition of Done
 
-Đầy đủ ở [`DOD.md`](../_bmad-output/planning-artifacts/DOD.md). Tick những dòng áp dụng cho PR này:
+Full list in [`DOD.md`](../_bmad-output/planning-artifacts/DOD.md). Tick the lines that apply to this PR:
 
-- [ ] Số hiển thị kèm cỡ mẫu, ngày snapshot, nguồn — tách khỏi lời dẫn
-- [ ] Mẫu nhỏ chặn qua `display_policy.suppression_for`, không so `n < 30` rải rác
-- [ ] Ngưỡng và tham số đọc từ cấu hình có phiên bản, không hardcode
-- [ ] Phép dùng lại có đúng một chữ ký trong `REGISTRY.md`
-- [ ] Alembic đúng một head
-- [ ] Hướng phụ thuộc không đảo
-- [ ] Thao tác người dùng không gọi mô hình ngoài hai đường cho phép
-- [ ] Không có nội dung CV hay JD trong bảng, log, sự kiện, file tạm
-- [ ] Có kiểm thử cho AC chính, tên test chứa mã FR hoặc AD
-- [ ] Cổng CI của AD liên quan còn xanh
-- [ ] Màn hình chạy đủ trên điện thoại, có `aria-*`, focus thấy được
-- [ ] Lệnh CLI mới đã ghi vào `README` hoặc `docs/`
+- [ ] Displayed numbers carry sample size, snapshot date and source, kept apart from the narrative text
+- [ ] Small samples are suppressed via `display_policy.suppression_for`, not scattered `n < 30` checks
+- [ ] Thresholds and parameters come from versioned config, not hardcoded
+- [ ] Each reused operation has exactly one signature in `REGISTRY.md`
+- [ ] Alembic has a single head
+- [ ] Dependency direction is not inverted
+- [ ] User actions call no external model outside the two allowed paths
+- [ ] No CV or JD content in tables, logs, events or temp files
+- [ ] Main ACs have tests, and test names carry the FR or AD code
+- [ ] CI gates for the related ADs are still green
+- [ ] Screens work fully on mobile, with `aria-*` and visible focus
+- [ ] New CLI commands are documented in `README` or `docs/`
+- [ ] `specs/<issue>-<slug>/` is updated for this issue and for every issue whose code this PR touches
 
-## Người rà soát cần nhìn kỹ chỗ nào
+## Where reviewers should look closely
 
-<!-- Chỉ thẳng file và lý do. Không để trống. -->
+<!-- Name the files and say why. Do not leave empty. -->

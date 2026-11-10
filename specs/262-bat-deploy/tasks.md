@@ -36,7 +36,7 @@
 - [x] T011 [US5] Test `web` vào `default` và `edge`, `api` không vào `edge`
 - [x] T012 [US5] Test script deploy tạo `haido-edge` trước `up -d --remove-orphans`
 - [x] T013 Thêm `deploy/compose.proxy.yml`, sửa `deploy/compose.prod.yml` và `.github/workflows/deploy.yml` cho các test trên xanh
-- [ ] T014 Bật `DEPLOY_ENABLED`, merge, xem run deploy xanh, kiểm `haidoit.io.vn` và hai cổng localhost
+- [x] T014 Bật `DEPLOY_ENABLED`, merge, xem run deploy xanh, kiểm `haidoit.io.vn` và hai cổng localhost
 
 ## Phase 7: Sửa script VPS (đợt 2026-11-10, sau run 42851541091)
 

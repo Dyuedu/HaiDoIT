@@ -3,7 +3,37 @@
 ## Cách làm việc
 
 - Khi thực hiện một chức năng chưa quen, không làm từ con số 0. Trước tiên, hãy research các repo GitHub public để so sánh ý tưởng và tham khảo cách làm, rồi mới bắt tay vào làm.
-- Spec của việc cần làm là issue trên GitHub. Không tạo hoặc cập nhật spec trong `_bmad-output/`. Thư mục `_bmad-output/` là lưu trữ tài liệu kế hoạch cũ. Phần máy BMAD (`_bmad/`, skill `bmad-*`) đã gỡ.
+- Yêu cầu của việc cần làm là issue trên GitHub. Thiết kế và nhật ký test của issue nằm trong `specs/` (xem mục SDD và TDD). Không tạo hoặc cập nhật spec trong `_bmad-output/`. Thư mục `_bmad-output/` là lưu trữ tài liệu kế hoạch cũ. Phần máy BMAD (`_bmad/`, skill `bmad-*`) đã gỡ.
+
+## SDD và TDD
+
+**Khi bắt đầu một issue.** Trước khi viết code, tạo thư mục `specs/<số issue>-<slug>/` (ví dụ `specs/262-bat-deploy/`) gồm:
+
+| File | Viết theo |
+|---|---|
+| `spec.md` | `docs/templates/spec-driven-sdd/spec-template.md`. Dòng `Input` trỏ tới issue. Mỗi AC của issue phải có một scenario tương ứng. |
+| `plan.md` | `docs/templates/spec-driven-sdd/plan-template.md`. Liệt kê các file code và test sẽ sửa. |
+| `tasks.md` | `docs/templates/spec-driven-sdd/tasks-template.md`. Task test đứng trước task code. |
+| `research.md` | Kết quả research repo GitHub public (xem "Cách làm việc"): link có commit, lấy gì, không lấy gì và vì sao. |
+| `data-model.md` | Bảng, cột, revision Alembic thay đổi. Không đổi thì ghi rõ là không đổi. |
+| `tdd.md` | `docs/templates/test-driven-tdd/test-driven-development.md`. Ghi lệnh test, danh sách hành vi, kết quả RED (bao nhiêu fail và vì sao), rồi kết quả GREEN. |
+
+Bỏ các chỉ dẫn và lệnh riêng của Spec Kit trong template. Given/When/Then trong `spec.md` được dùng; quy định cấm Given/When/Then chỉ áp dụng cho thân issue.
+
+**Làm theo TDD.** Viết test trước, chạy cho thấy đỏ, ghi kết quả RED vào `tdd.md`, rồi mới sửa code cho xanh và ghi GREEN. Không ghi RED mà chưa chạy thật.
+
+**Khi sửa code thuộc một issue đã có spec.** Trước khi sửa một file, tìm các issue đã đụng tới nó:
+
+- `git log --format='%h %s' -- <file>` và lấy các số `#N` trong commit message;
+- tìm đường dẫn file trong `specs/*/plan.md` và `specs/*/tasks.md`.
+
+Với mỗi issue tìm được mà có thư mục `specs/`, cập nhật cùng commit với code:
+
+- `spec.md`: hành vi hoặc scenario đã đổi, và dòng `Status`;
+- `plan.md`, `tasks.md`, `data-model.md`: file, task, schema thay đổi;
+- `tdd.md`: thêm một đợt RED/GREEN mới có ngày và lý do sửa, không xóa các đợt cũ.
+
+Nếu thay đổi làm một AC của issue không còn đúng thì dừng lại và báo người dùng, không lặng lẽ sửa spec cho khớp code. Issue cũ chưa có thư mục `specs/` thì không bắt buộc dựng lại, nhưng phải ghi tên issue đó trong mô tả PR.
 
 ## Backlog
 
@@ -51,4 +81,5 @@ Task ràng buộc không phục vụ một story thì thay `## Serves` bằng `#
 
 ## Git
 
+- Commit message và mô tả PR viết bằng tiếng Anh, theo `.github/pull_request_template.md`. Các file trong `specs/` (SDD, TDD) vẫn viết tiếng Việt.
 - Khi tạo commit, KHÔNG thêm dòng `Co-Authored-By` (kể cả `Co-Authored-By: Claude ...`) vào commit message.
