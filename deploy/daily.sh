@@ -19,6 +19,7 @@ find "$LOG_DIR" -name 'daily-*.log' -mtime +30 -delete
 
 run() { docker compose -f compose.scraper.yml run --rm -e HAIDO_SNAPSHOT="$SNAPSHOT" scraper "$@"; }
 run_browser() { docker compose -f compose.scraper.yml run --rm -e HAIDO_SNAPSHOT="$SNAPSHOT" scraper-browser "$@"; }
+run_warehouse() { docker compose -f compose.scraper.yml run --rm warehouse "$SNAPSHOT"; }
 
 BEAT_ONE=0
 {
@@ -27,7 +28,15 @@ BEAT_ONE=0
   run_browser pipeline.py crawl --sources momo,itviec
   run pipeline.py redact && run pipeline.py ingest
   BEAT_ONE=$?
-  [ "$BEAT_ONE" -eq 0 ] || echo "NHIP MOT HONG, exit $BEAT_ONE: ngay nay co the mat quan sat"
+  if [ "$BEAT_ONE" -eq 0 ]; then
+    echo "=== $(date -Is) kho ingest+lifecycle+aggregate+publish snapshot=$SNAPSHOT"
+    run_warehouse || {
+      echo "KHO HONG: snapshot $SNAPSHOT"
+      BEAT_ONE=1
+    }
+  else
+    echo "NHIP MOT HONG, exit $BEAT_ONE: ngay nay co the mat quan sat"
+  fi
 
   echo "=== $(date -Is) nhip hai"
   run pipeline.py dedupe && run pipeline.py process || echo "nhip hai hong, mai chay lai"
