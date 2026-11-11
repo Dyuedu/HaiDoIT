@@ -1,0 +1,50 @@
+# TDD: Hình response của màn người mới và dữ liệu giả
+
+Theo `docs/templates/test-driven-tdd/test-driven-development.md`.
+
+Mỗi test một hành vi. Test Python không mạng, không database, chạy API qua `TestClient` với nguồn giả. Test web đọc fixture JSON, không gọi API.
+
+Lệnh:
+
+```text
+uv run pytest tests/api tests/domain -q
+cd web && npx vitest run tests/fr37-newcomer-roles-fixture.test.ts
+```
+
+## Các hành vi
+
+Python:
+
+1. `suppression_for(level_share)` dưới ngưỡng ra `null_data`, đủ ngưỡng ra `shown` (cả trong bảng của `test_ad17_display_policy.py`).
+2. `Stat` loại `level_share` không được `low_sample_shown`, giá trị phải trong 0–1.
+3. `NewcomerRoleRow` từ chối `share` sai loại, `share.cell_id` khác `total_cell_id`, `entry_cell_id` trùng `total_cell_id`.
+4. `NewcomerRolesData` từ chối vai trò lặp, `rows` rỗng, `levels` rỗng.
+5. Route trả `{data, meta}`, `levels` là Intern/Fresher/Junior, mỗi dòng đủ bốn trường, `display` khớp `suppression_for` trên n của vai trò, entry ≤ n.
+6. Dữ liệu giả có đúng tập vai trò của `config/rules.toml`.
+7. Số entry-level bằng Intern+Fresher+Junior của ô vai trò; `share.value` = entry/n khi `shown`, `null` khi `null_data`.
+8. Dữ liệu giả có bốn trường hợp: đủ mẫu, đủ mẫu mà 0 entry-level, dưới 30, không có tin.
+9. Thứ tự dòng: có tỷ lệ trước, entry giảm dần, rồi mã.
+10. Route mới có trong `SAMPLE_QUERY` của AD-17 và trong danh sách truy vấn kiểm `display`.
+11. Fixture web giống hệt response của API giả.
+
+Web:
+
+12. Mọi dòng của fixture có hai ô trong `meta.cells`, `share` là `level_share` của ô vai trò.
+13. `rowCounts` tra đúng `{entry: 501, n: 877}` cho `ai_ml`.
+14. Vai trò dưới ngưỡng: `share.value = null`, vẫn có entry và n.
+15. Vai trò đủ mẫu mà 0 entry-level: `share.value = 0`.
+16. `rowCounts` ném lỗi khi thiếu ô.
+
+## RED
+
+- `uv run pytest tests/api tests/domain -q` → 2 errors lúc thu thập: `ImportError: cannot import name 'NewcomerRoleRow'` (`test_fr37_newcomer_roles.py`) và `AttributeError: type object 'MeasureKind' has no attribute 'LEVEL_SHARE'` (`test_ad17_display_policy.py`).
+- `uv run pytest tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py -q` → 3 failed, 38 passed: `test_ad17_moi_route_tra_envelope` (chưa có route trong app), `test_ad17_display_chi_do_suppression_for_quyet[/api/v1/newcomer-roles]` (404), `test_ad17_fixture_web_khop_response_newcomer_roles` (404).
+- `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 1 file failed: `Failed to resolve import "./fixtures/newcomer-roles.json"`.
+
+## GREEN
+
+- `uv run pytest tests/api -q` với `HAIDO_UPDATE_OPENAPI=1` để sinh lại `docs/api/openapi.json` → 116 passed, 22 skipped.
+- `uv run pytest -q` → 498 passed, 126 skipped. Skip là test Postgres (`HAIDO_TEST_DATABASE_URL` chưa đặt trên máy); các lời gọi `create_app` đã sửa trong `test_dat20_stat_market.py` và `test_dat20_api_end_to_end.py` chạy trong CI.
+- `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed. Toàn bộ `npx vitest run` → 120 passed.
+- `uv run ruff check .`, `npx tsc --noEmit`, `npm run lint` sạch.
+- `uv run python tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.

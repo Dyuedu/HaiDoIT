@@ -1,9 +1,10 @@
-"""Hai route số liệu thị trường. Route chỉ chuyển tham số cho nguồn; không tính gì (AD-5).
+"""Các route số liệu thị trường. Route chỉ chuyển tham số cho nguồn; không tính gì (AD-5).
 
 Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake`:
 
 - `HAIDO_MARKET_SOURCE_CITY_SHARES` cho `GET /api/v1/city-shares` (bản thật `stat`: #93, đọc `stat_*`);
-- `HAIDO_MARKET_SOURCE_SKILL_RATES` cho `GET /api/v1/skill-rates` (bản thật: #27).
+- `HAIDO_MARKET_SOURCE_SKILL_RATES` cho `GET /api/v1/skill-rates` (bản thật: #27);
+- `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` cho `GET /api/v1/newcomer-roles` (bản thật: #145, #146).
 
 Thêm bản thật là thêm một mục vào `IMPLEMENTATIONS`; route và schema không đổi.
 """
@@ -17,13 +18,14 @@ from fastapi import APIRouter, Depends, Query, Request
 from haido_api.fake_market import FakeMarket
 from haido_api.market_source import MarketReadModel
 from haido_api.schemas.error import ErrorEnvelope
-from haido_api.schemas.market import CitySharesData, SkillRatesData
+from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
 from haido_api.stat_market import StatMarket
 from haido_core.domain.envelope import Envelope
 
 SOURCE_ENV: dict[str, str] = {
     "city_shares": "HAIDO_MARKET_SOURCE_CITY_SHARES",
     "skill_rates": "HAIDO_MARKET_SOURCE_SKILL_RATES",
+    "newcomer_roles": "HAIDO_MARKET_SOURCE_NEWCOMER_ROLES",
 }
 DEFAULT_SOURCE = "fake"
 IMPLEMENTATIONS: dict[str, Callable[[], MarketReadModel]] = {
@@ -104,3 +106,19 @@ def get_skill_rates(
     `null_data` và `group` là `null`.
     """
     return source.skill_rates(role=role, level=level)
+
+
+@router.get(
+    "/newcomer-roles",
+    response_model=Envelope[NewcomerRolesData],
+    summary="Số tin entry-level của từng vai trò",
+)
+def get_newcomer_roles(
+    source: Annotated[MarketReadModel, Depends(_source_for("newcomer_roles"))],
+) -> Envelope[NewcomerRolesData]:
+    """Mỗi vai trò một dòng: số tin Intern/Fresher/Junior, tỷ lệ trong số tin của vai trò, và n (#110).
+
+    Số tin entry-level là `meta.cells[entry_cell_id].n`, n là `meta.cells[total_cell_id].n`.
+    Vai trò dưới ngưỡng mẫu có `share.display = null_data`. Dòng đã theo thứ tự hiển thị.
+    """
+    return source.newcomer_roles()

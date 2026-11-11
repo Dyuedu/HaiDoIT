@@ -9,7 +9,7 @@
 import { BAR_CITIES, LEGEND_CITIES } from "./labels";
 
 export type DisplayState = "shown" | "low_sample_shown" | "null_data";
-export type MeasureKind = "composition_share" | "skill_rate" | "percentile";
+export type MeasureKind = "composition_share" | "skill_rate" | "percentile" | "level_share";
 export type SnapshotStatus = "published" | "partial";
 
 /** Một con số kèm trạng thái hiển thị và ô đã sinh ra nó. */

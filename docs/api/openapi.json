@@ -156,6 +156,58 @@
         }
       }
     },
+    "/api/v1/newcomer-roles": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Số tin entry-level của từng vai trò",
+        "description": "Mỗi vai trò một dòng: số tin Intern/Fresher/Junior, tỷ lệ trong số tin của vai trò, và n (#110).\n\nSố tin entry-level là `meta.cells[entry_cell_id].n`, n là `meta.cells[total_cell_id].n`.\nVai trò dưới ngưỡng mẫu có `share.display = null_data`. Dòng đã theo thứ tự hiển thị.",
+        "operationId": "get_newcomer_roles_api_v1_newcomer_roles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_NewcomerRolesData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/skills": {
       "get": {
         "tags": [
@@ -357,6 +409,25 @@
         ],
         "title": "Envelope[CitySharesData]"
       },
+      "Envelope_NewcomerRolesData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/NewcomerRolesData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[NewcomerRolesData]"
+      },
       "Envelope_SkillRatesData_": {
         "properties": {
           "data": {
@@ -432,7 +503,8 @@
         "enum": [
           "composition_share",
           "skill_rate",
-          "percentile"
+          "percentile",
+          "level_share"
         ],
         "title": "MeasureKind",
         "description": "Loại thước đo của một con số."
@@ -500,6 +572,71 @@
         ],
         "title": "Meta",
         "description": "Ngữ cảnh của mọi con số trong `data`."
+      },
+      "NewcomerRoleRow": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Mã vai trò."
+          },
+          "total_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Total Cell Id",
+            "description": "Ô toàn quốc của vai trò (`vn.<role>`); `n` của ô là số tin của vai trò, mẫu số của `share`."
+          },
+          "entry_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Entry Cell Id",
+            "description": "Ô entry-level của vai trò (`vn.<role>.entry`); `n` của ô là số tin entry-level."
+          },
+          "share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ tin entry-level trong số tin của vai trò, `kind = level_share`, `cell_id = total_cell_id`.\nVai trò dưới ngưỡng mẫu là `null_data`, không có giá trị."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "total_cell_id",
+          "entry_cell_id",
+          "share"
+        ],
+        "title": "NewcomerRoleRow",
+        "description": "Một vai trò trên màn người mới (#110): số tin entry-level, tỷ lệ, và n.\n\nHai con số đếm nằm ở `meta.cells`: số tin entry-level là `meta.cells[entry_cell_id].n`,\nn của vai trò là `meta.cells[total_cell_id].n`."
+      },
+      "NewcomerRolesData": {
+        "properties": {
+          "levels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Levels",
+            "description": "Các cấp bậc được tính là entry-level, ví dụ `[\"intern\", \"fresher\", \"junior\"]`."
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/NewcomerRoleRow"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Rows",
+            "description": "Mỗi vai trò một dòng, theo thứ tự hiển thị: dòng có tỷ lệ trước, rồi dòng `null_data`;\ntrong mỗi nhóm, số tin entry-level giảm dần rồi theo mã vai trò. Web không sắp xếp lại."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "levels",
+          "rows"
+        ],
+        "title": "NewcomerRolesData",
+        "description": "`data` của `GET /api/v1/newcomer-roles`."
       },
       "SkillRateRow": {
         "properties": {

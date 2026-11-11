@@ -1,4 +1,4 @@
-"""Hình `data` của hai route thị trường. Envelope bọc ngoài nằm ở `haido_core.domain.envelope`.
+"""Hình `data` của các route thị trường. Envelope bọc ngoài nằm ở `haido_core.domain.envelope`.
 
 Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng là chuỗi snake_case tạm, chỉ dữ liệu biết;
 #16 chốt mã thật. Ở đây không có enum nào cho chúng.
@@ -109,4 +109,59 @@ class SkillRatesData(BaseModel):
         lech = sorted({row.rate.cell_id for row in self.rows} - {self.cell_id})
         if lech:
             raise ValueError(f"Mọi rate phải thuộc ô {self.cell_id!r}, có ô lạ: {', '.join(lech)}.")
+        return self
+
+
+class NewcomerRoleRow(BaseModel):
+    """Một vai trò trên màn người mới (#110): số tin entry-level, tỷ lệ, và n.
+
+    Hai con số đếm nằm ở `meta.cells`: số tin entry-level là `meta.cells[entry_cell_id].n`,
+    n của vai trò là `meta.cells[total_cell_id].n`.
+    """
+
+    model_config = _CONFIG
+
+    role: str
+    """Mã vai trò."""
+
+    total_cell_id: CellId
+    """Ô toàn quốc của vai trò (`vn.<role>`); `n` của ô là số tin của vai trò, mẫu số của `share`."""
+
+    entry_cell_id: CellId
+    """Ô entry-level của vai trò (`vn.<role>.entry`); `n` của ô là số tin entry-level."""
+
+    share: Stat
+    """Tỷ lệ tin entry-level trong số tin của vai trò, `kind = level_share`, `cell_id = total_cell_id`.
+    Vai trò dưới ngưỡng mẫu là `null_data`, không có giá trị."""
+
+    @model_validator(mode="after")
+    def _ty_le_cua_vai_tro(self) -> Self:
+        if self.share.kind is not MeasureKind.LEVEL_SHARE:
+            raise ValueError(f"share phải là level_share, nhận {self.share.kind}.")
+        if self.share.cell_id != self.total_cell_id:
+            raise ValueError(
+                f"share.cell_id phải là total_cell_id {self.total_cell_id!r}, nhận {self.share.cell_id!r}."
+            )
+        if self.entry_cell_id == self.total_cell_id:
+            raise ValueError("entry_cell_id phải khác total_cell_id.")
+        return self
+
+
+class NewcomerRolesData(BaseModel):
+    """`data` của `GET /api/v1/newcomer-roles`."""
+
+    model_config = _CONFIG
+
+    levels: Annotated[list[str], Field(min_length=1)]
+    """Các cấp bậc được tính là entry-level, ví dụ `["intern", "fresher", "junior"]`."""
+
+    rows: Annotated[list[NewcomerRoleRow], Field(min_length=1)]
+    """Mỗi vai trò một dòng, theo thứ tự hiển thị: dòng có tỷ lệ trước, rồi dòng `null_data`;
+    trong mỗi nhóm, số tin entry-level giảm dần rồi theo mã vai trò. Web không sắp xếp lại."""
+
+    @model_validator(mode="after")
+    def _khong_trung_vai_tro(self) -> Self:
+        trung = sorted(role for role, k in Counter(r.role for r in self.rows).items() if k > 1)
+        if trung:
+            raise ValueError(f"Mã vai trò bị trùng: {', '.join(trung)}.")
         return self

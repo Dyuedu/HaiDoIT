@@ -30,7 +30,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 | Trường | Kiểu | Ý nghĩa |
 |---|---|---|
 | `value` | số thực hoặc `null` | Chưa làm tròn. Tỷ lệ, tỷ trọng là 0–1; giao diện tự làm tròn khi hiển thị, đúng một lần |
-| `kind` | `composition_share` · `skill_rate` · `percentile` | Loại thước đo |
+| `kind` | `composition_share` · `skill_rate` · `percentile` · `level_share` | Loại thước đo |
 | `display` | `shown` · `low_sample_shown` · `null_data` | Cách hiển thị, xem bảng dưới |
 | `cell_id` | chuỗi | Mã ô, opaque. Chỉ dùng để tra `meta.cells` |
 
@@ -38,7 +38,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 |---|---|---|
 | `shown` | có | Hiện bình thường |
 | `low_sample_shown` | có | Hiện mờ, kèm nhãn cỡ mẫu nhỏ với `n` của ô (FR-33). Chỉ xảy ra với `composition_share` |
-| `null_data` | `null` | Ghi "chưa đủ dữ liệu". Tỷ lệ kỹ năng và phân vị dưới ngưỡng luôn ở trạng thái này |
+| `null_data` | `null` | Ghi "chưa đủ dữ liệu". Tỷ lệ kỹ năng, tỷ lệ cấp bậc và phân vị dưới ngưỡng luôn ở trạng thái này |
 
 ## `meta`
 
@@ -126,6 +126,44 @@ Tỷ lệ xuất hiện của từng kỹ năng trong ô vai trò × cấp bậc
   thì `group = null`: không hiện tên nhóm, không hiện phần trăm. Khi ô bị ẩn số liệu, thứ tự dòng
   không mang nghĩa xếp hạng (bản giả xếp theo mã kỹ năng).
 
+## `GET /api/v1/newcomer-roles`
+
+Màn người mới (#110): mỗi vai trò một dòng, có số tin entry-level (Intern, Fresher, Junior), tỷ lệ
+trong số tin của vai trò, và n. Không có tham số.
+
+```json
+{
+  "data": {
+    "levels": ["intern", "fresher", "junior"],
+    "rows": [
+      { "role": "ai_ml", "total_cell_id": "vn.ai_ml", "entry_cell_id": "vn.ai_ml.entry",
+        "share": { "value": 0.5712656784492588, "kind": "level_share", "display": "shown", "cell_id": "vn.ai_ml" } },
+      { "role": "embedded", "total_cell_id": "vn.embedded", "entry_cell_id": "vn.embedded.entry",
+        "share": { "value": null, "kind": "level_share", "display": "null_data", "cell_id": "vn.embedded" } }
+    ]
+  },
+  "meta": { "…": "…",
+    "cells": {
+      "vn.ai_ml": { "n": 877, "…": "…" }, "vn.ai_ml.entry": { "n": 501, "…": "…" },
+      "vn.embedded": { "n": 12, "…": "…" }, "vn.embedded.entry": { "n": 6, "…": "…" } } }
+}
+```
+
+| Con số | Đọc ở |
+|---|---|
+| Số tin entry-level | `meta.cells[entry_cell_id].n` |
+| Tỷ lệ | `share.value`, chỉ khi `share.display = shown` |
+| n của vai trò | `meta.cells[total_cell_id].n` |
+
+- `share.kind = level_share`, `share.cell_id = total_cell_id`. Vai trò có n dưới `min_sample` thì
+  `share.display = null_data`: ghi "not enough data (n/min_sample)", vẫn hiện số tin entry-level.
+- Vai trò đủ mẫu mà không có tin entry-level có `share.value = 0`: hiện 0 và giữ trong danh sách.
+- Mọi vai trò của `config/rules.toml` có mặt, kể cả vai trò không có tin nào (n = 0).
+- `rows` đã theo thứ tự hiển thị: dòng có tỷ lệ trước, rồi dòng `null_data`; trong mỗi nhóm, số tin
+  entry-level giảm dần rồi theo mã vai trò. Web không sắp xếp lại.
+- Kiểu TypeScript và hàm tra số: `web/lib/newcomer-roles.ts`. Fixture cho test web:
+  `web/tests/fixtures/newcomer-roles.json`.
+
 ## Hình lỗi
 
 Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ có `data` trong response lỗi.
@@ -139,7 +177,7 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 | 404 | `unknown_cell` | Không có ô cho tham số đã chọn. `snapshot_date` là snapshot đã tìm |
 | 422 | `invalid_query` | Thiếu tham số, hoặc mã sai định dạng (chỉ `a-z`, `0-9`, `_`, tối đa 64 ký tự) |
 | 404 | `not_found` | Sai đường dẫn |
-| 405 | `method_not_allowed` | Sai phương thức; hai route này chỉ nhận `GET` |
+| 405 | `method_not_allowed` | Sai phương thức; các route số liệu chỉ nhận `GET` |
 | khác 4xx/5xx | `http_error` | Lỗi HTTP khác của tầng định tuyến; mã HTTP giữ nguyên |
 | 411 | `length_required` | Tải CV thiếu `Content-Length`, nên chưa biết cỡ tệp trước khi đọc |
 | 413 | `cv_too_large` | Tệp CV lớn hơn `cv_max_bytes`, hoặc `Content-Length` vượt mức cho phép |
@@ -169,6 +207,7 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `skill-rates?role=data_engineer&level=senior` | n = 18: mọi `rate` là `null_data`, `group = null` |
 | `city-shares?role=khong_ton_tai` | 404 `unknown_cell` |
 | `skill-rates?role=data_engineer` | 422 `invalid_query` |
+| `newcomer-roles` | 10 vai trò: 6 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_engineer` dưới 30; `other` không có tin |
 
 ## Chạy và chọn nguồn
 
@@ -183,6 +222,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 |---|---|---|
 | `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | #27 |
+| `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | #145, #146; `stat` hiện trả 404 `unknown_cell` |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.
 Thêm bản thật: cài `MarketReadModel` (`haido_api/market_source.py`), thêm một mục vào `IMPLEMENTATIONS`,

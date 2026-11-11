@@ -28,3 +28,11 @@ def test_ad17_fixture_web_khop_response_city_shares(role: str) -> None:
 
     fixture = json.loads((WEB_FIXTURES / f"city-shares-{role}.json").read_text(encoding="utf-8"))
     assert resp.json() == fixture
+
+
+def test_ad17_fixture_web_khop_response_newcomer_roles() -> None:
+    resp = TestClient(app).get("/api/v1/newcomer-roles")
+    assert resp.status_code == 200, resp.text
+
+    fixture = json.loads((WEB_FIXTURES / "newcomer-roles.json").read_text(encoding="utf-8"))
+    assert resp.json() == fixture

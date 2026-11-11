@@ -22,7 +22,7 @@ def test_dat20_so_tren_api_la_so_aggregate_da_ghi_tu_buoc_that(env: Env, scraper
     env.lifecycle()
     env.aggregate()
     env.publish()
-    app = create_app({"city_shares": StatMarket(engine_factory=lambda: env.write, rules=env.rules), "skill_rates": FakeMarket()})
+    app = create_app({"city_shares": StatMarket(engine_factory=lambda: env.write, rules=env.rules), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
     body = TestClient(app).get("/api/v1/city-shares", params={"role": "backend"}).json()
     rows = {r["city"]: r["share"]["value"] for r in body["data"]["rows"]}
     assert rows == {"ha_noi": pytest.approx(2 / 3), "ho_chi_minh": 0.0, "da_nang": pytest.approx(1 / 3), "other": 0.0, "unknown": 0.0}
@@ -48,7 +48,7 @@ def test_dat259_dat263_api_liet_ke_nguon_chay_tay_va_khong_dem_linkedin(env: Env
     env.lifecycle()
     env.aggregate()
     env.publish()
-    app = create_app({"city_shares": StatMarket(engine_factory=lambda: env.write, rules=env.rules), "skill_rates": FakeMarket()})
+    app = create_app({"city_shares": StatMarket(engine_factory=lambda: env.write, rules=env.rules), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
     body = TestClient(app).get("/api/v1/city-shares", params={"role": "all"}).json()
     assert body["meta"]["sources"] == ["itviec", "topcv"]
     assert body["meta"]["cells"]["vn.all"]["n"] == 2  # linkedin không được đếm

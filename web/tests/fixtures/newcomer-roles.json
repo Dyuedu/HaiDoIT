@@ -1,0 +1,538 @@
+{
+  "data": {
+    "levels": [
+      "intern",
+      "fresher",
+      "junior"
+    ],
+    "rows": [
+      {
+        "role": "ai_ml",
+        "total_cell_id": "vn.ai_ml",
+        "entry_cell_id": "vn.ai_ml.entry",
+        "share": {
+          "value": 0.5712656784492588,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.ai_ml"
+        }
+      },
+      {
+        "role": "frontend",
+        "total_cell_id": "vn.frontend",
+        "entry_cell_id": "vn.frontend.entry",
+        "share": {
+          "value": 0.5833333333333334,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.frontend"
+        }
+      },
+      {
+        "role": "qa",
+        "total_cell_id": "vn.qa",
+        "entry_cell_id": "vn.qa.entry",
+        "share": {
+          "value": 0.6307692307692307,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.qa"
+        }
+      },
+      {
+        "role": "data_analyst",
+        "total_cell_id": "vn.data_analyst",
+        "entry_cell_id": "vn.data_analyst.entry",
+        "share": {
+          "value": 0.5625,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.data_analyst"
+        }
+      },
+      {
+        "role": "backend",
+        "total_cell_id": "vn.backend",
+        "entry_cell_id": "vn.backend.entry",
+        "share": {
+          "value": 0.33121019108280253,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        }
+      },
+      {
+        "role": "mobile",
+        "total_cell_id": "vn.mobile",
+        "entry_cell_id": "vn.mobile.entry",
+        "share": {
+          "value": 0.4,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.mobile"
+        }
+      },
+      {
+        "role": "devops",
+        "total_cell_id": "vn.devops",
+        "entry_cell_id": "vn.devops.entry",
+        "share": {
+          "value": 0.0,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.devops"
+        }
+      },
+      {
+        "role": "embedded",
+        "total_cell_id": "vn.embedded",
+        "entry_cell_id": "vn.embedded.entry",
+        "share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.embedded"
+        }
+      },
+      {
+        "role": "data_engineer",
+        "total_cell_id": "vn.data_engineer",
+        "entry_cell_id": "vn.data_engineer.entry",
+        "share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.data_engineer"
+        }
+      },
+      {
+        "role": "other",
+        "total_cell_id": "vn.other",
+        "entry_cell_id": "vn.other.entry",
+        "share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.other"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.ai_ml": {
+        "n": 877,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 73,
+          "fresher": 123,
+          "junior": 305,
+          "mid": 257,
+          "senior": 119
+        },
+        "n_by_measure": {
+          "skill_count": 877,
+          "experience_years": 630,
+          "salary": 204
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.ai_ml.entry": {
+        "n": 501,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 73,
+          "fresher": 123,
+          "junior": 305
+        },
+        "n_by_measure": {
+          "skill_count": 501,
+          "experience_years": 360,
+          "salary": 120
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.frontend": {
+        "n": 240,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 20,
+          "fresher": 34,
+          "junior": 86,
+          "mid": 70,
+          "senior": 30
+        },
+        "n_by_measure": {
+          "skill_count": 240,
+          "experience_years": 168,
+          "salary": 48
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.frontend.entry": {
+        "n": 140,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 20,
+          "fresher": 34,
+          "junior": 86
+        },
+        "n_by_measure": {
+          "skill_count": 140,
+          "experience_years": 98,
+          "salary": 28
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.qa": {
+        "n": 130,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 12,
+          "fresher": 25,
+          "junior": 45,
+          "mid": 35,
+          "senior": 13
+        },
+        "n_by_measure": {
+          "skill_count": 130,
+          "experience_years": 91,
+          "salary": 26
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.qa.entry": {
+        "n": 82,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 12,
+          "fresher": 25,
+          "junior": 45
+        },
+        "n_by_measure": {
+          "skill_count": 82,
+          "experience_years": 57,
+          "salary": 16
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.data_analyst": {
+        "n": 96,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 10,
+          "fresher": 14,
+          "junior": 30,
+          "mid": 30,
+          "senior": 12
+        },
+        "n_by_measure": {
+          "skill_count": 96,
+          "experience_years": 67,
+          "salary": 19
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.data_analyst.entry": {
+        "n": 54,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 10,
+          "fresher": 14,
+          "junior": 30
+        },
+        "n_by_measure": {
+          "skill_count": 54,
+          "experience_years": 38,
+          "salary": 11
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.backend": {
+        "n": 157,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32,
+          "mid": 65,
+          "senior": 40
+        },
+        "n_by_measure": {
+          "skill_count": 157,
+          "experience_years": 110,
+          "salary": 35
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.backend.entry": {
+        "n": 52,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32
+        },
+        "n_by_measure": {
+          "skill_count": 52,
+          "experience_years": 37,
+          "salary": 13
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.mobile": {
+        "n": 75,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "fresher": 6,
+          "junior": 20,
+          "mid": 30,
+          "senior": 15
+        },
+        "n_by_measure": {
+          "skill_count": 75,
+          "experience_years": 52,
+          "salary": 15
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.mobile.entry": {
+        "n": 30,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "fresher": 6,
+          "junior": 20
+        },
+        "n_by_measure": {
+          "skill_count": 30,
+          "experience_years": 21,
+          "salary": 6
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.devops": {
+        "n": 48,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 30,
+          "senior": 18
+        },
+        "n_by_measure": {
+          "skill_count": 48,
+          "experience_years": 34,
+          "salary": 10
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.devops.entry": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {
+          "skill_count": 0,
+          "experience_years": 0,
+          "salary": 0
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.embedded": {
+        "n": 12,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 2,
+          "fresher": 1,
+          "junior": 3,
+          "mid": 4,
+          "senior": 2
+        },
+        "n_by_measure": {
+          "skill_count": 12,
+          "experience_years": 8,
+          "salary": 2
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.embedded.entry": {
+        "n": 6,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 2,
+          "fresher": 1,
+          "junior": 3
+        },
+        "n_by_measure": {
+          "skill_count": 6,
+          "experience_years": 4,
+          "salary": 1
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.data_engineer": {
+        "n": 22,
+        "fallback_label": null,
+        "seniority_mix": {
+          "junior": 4,
+          "senior": 18
+        },
+        "n_by_measure": {
+          "skill_count": 22,
+          "experience_years": 15,
+          "salary": 4
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.data_engineer.entry": {
+        "n": 4,
+        "fallback_label": null,
+        "seniority_mix": {
+          "junior": 4
+        },
+        "n_by_measure": {
+          "skill_count": 4,
+          "experience_years": 3,
+          "salary": 1
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.other": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {
+          "skill_count": 0,
+          "experience_years": 0,
+          "salary": 0
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.other.entry": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {
+          "skill_count": 0,
+          "experience_years": 0,
+          "salary": 0
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      }
+    }
+  }
+}

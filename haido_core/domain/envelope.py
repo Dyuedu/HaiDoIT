@@ -51,7 +51,9 @@ Fraction = Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)]
 # revalidate_instances: một instance sửa bằng `model_copy(update=...)` vẫn qua validator khi
 # lồng vào model khác hoặc khi FastAPI kiểm response.
 _CONFIG = ConfigDict(extra="forbid", use_attribute_docstrings=True, revalidate_instances="always")
-_RATIO_KINDS = frozenset({MeasureKind.COMPOSITION_SHARE, MeasureKind.SKILL_RATE})
+_RATIO_KINDS = frozenset(
+    {MeasureKind.COMPOSITION_SHARE, MeasureKind.SKILL_RATE, MeasureKind.LEVEL_SHARE}
+)
 
 
 class Stat(BaseModel):

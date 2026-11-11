@@ -8,7 +8,7 @@ riêng qua biến môi trường (xem `routes/market.py`), nên route và schema
 from datetime import date
 from typing import Protocol
 
-from haido_api.schemas.market import CitySharesData, SkillRatesData
+from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
 from haido_core.domain.envelope import Envelope
 
 
@@ -37,5 +37,15 @@ class MarketReadModel(Protocol):
 
         Raises:
             UnknownCell: không có ô nào, kể cả sau khi quay về.
+        """
+        ...
+
+    def newcomer_roles(self) -> Envelope[NewcomerRolesData]:
+        """Mỗi vai trò: số tin entry-level, tỷ lệ trong số tin của vai trò, và n (#144).
+
+        Dòng theo thứ tự của `NewcomerRolesData.rows`.
+
+        Raises:
+            UnknownCell: chưa có snapshot nào đọc được.
         """
         ...

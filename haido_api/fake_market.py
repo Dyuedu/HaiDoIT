@@ -17,6 +17,8 @@ from haido_api.market_source import UnknownCell
 from haido_api.schemas.market import (
     CityShareRow,
     CitySharesData,
+    NewcomerRoleRow,
+    NewcomerRolesData,
     SkillRateRow,
     SkillRatesData,
 )
@@ -35,7 +37,7 @@ FIXTURE = Path(__file__).parent / "fixtures" / "fake_market.json"
 
 
 class FakeMarket:
-    """Nguồn giả cho cả hai phép. Đọc fixture một lần lúc khởi tạo."""
+    """Nguồn giả cho mọi phép. Đọc fixture một lần lúc khởi tạo."""
 
     def __init__(self, fixture: Path = FIXTURE) -> None:
         raw: dict[str, Any] = json.loads(fixture.read_text(encoding="utf-8"))
@@ -49,6 +51,7 @@ class FakeMarket:
         self._cells: dict[str, dict[str, Any]] = raw["cells"]
         self._city_shares: dict[str, dict[str, Any]] = raw["city_shares"]
         self._skill_rates: dict[str, dict[str, dict[str, Any]]] = raw["skill_rates"]
+        self._newcomer_roles: dict[str, Any] = raw["newcomer_roles"]
 
     def city_shares(self, *, role: str) -> Envelope[CitySharesData]:
         entry = self._city_shares.get(role)
@@ -85,7 +88,30 @@ class FakeMarket:
         meta = self._meta([cell_id], {cell_id: entry["fallback_label"]})
         return Envelope[SkillRatesData](data=data, meta=meta)
 
-    def _stat(self, value: float, kind: MeasureKind, cell_id: str) -> Stat:
+    def newcomer_roles(self) -> Envelope[NewcomerRolesData]:
+        rows = [
+            NewcomerRoleRow(
+                role=row["role"],
+                total_cell_id=row["total_cell_id"],
+                entry_cell_id=row["entry_cell_id"],
+                share=self._stat(row["share"], MeasureKind.LEVEL_SHARE, row["total_cell_id"]),
+            )
+            for row in self._newcomer_roles["rows"]
+        ]
+        # Thứ tự hiển thị do máy chủ quyết: dòng có tỷ lệ trước, rồi số tin entry-level giảm dần,
+        # rồi mã vai trò. Bản thật (#146) theo cùng quy tắc.
+        rows.sort(
+            key=lambda r: (
+                r.share.display is DisplayState.NULL_DATA,
+                -self._cells[r.entry_cell_id]["n"],
+                r.role,
+            )
+        )
+        data = NewcomerRolesData(levels=self._newcomer_roles["levels"], rows=rows)
+        cell_ids = [cid for r in rows for cid in (r.total_cell_id, r.entry_cell_id)]
+        return Envelope[NewcomerRolesData](data=data, meta=self._meta(cell_ids, {}))
+
+    def _stat(self, value: float | None, kind: MeasureKind, cell_id: str) -> Stat:
         display = suppression_for(
             kind, self._cells[cell_id]["n"], min_sample=self._thresholds.min_sample
         )
