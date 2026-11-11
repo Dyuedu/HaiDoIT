@@ -120,7 +120,11 @@ def _stats(node: Any) -> list[dict[str, Any]]:
 
 def _all_fixture_requests() -> list[tuple[str, dict[str, str]]]:
     raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    reqs = [("/api/v1/city-shares", {"role": role}) for role in raw["city_shares"]]
+    reqs = [
+        ("/api/v1/city-shares", {"role": role, "level": level})  # #163: mỗi vai trò có `all` và `entry`
+        for role, levels in raw["city_shares"].items()
+        for level in levels
+    ]
     reqs += [
         ("/api/v1/skill-rates", {"role": role, "level": level})
         for role, levels in raw["skill_rates"].items()
@@ -251,7 +255,7 @@ def test_ad17_chon_nguon_rieng_cho_tung_phep() -> None:
     fake = FakeMarket()
 
     class _CityOnly:
-        def city_shares(self, *, role: str) -> Any:
+        def city_shares(self, *, role: str, level: str) -> Any:
             raise UnknownCell("nguồn thử", snapshot_date=date(2026, 11, 4))
 
         def skill_rates(self, *, role: str, level: str) -> Any:
@@ -280,8 +284,8 @@ def test_ad17_thieu_nguon_cho_mot_phep_la_loi_khoi_dong() -> None:
 
 def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
     class _Broken:
-        def city_shares(self, *, role: str) -> Any:
-            return {"data": {"role": role, "total_cell_id": "vn.x", "rows": []}}
+        def city_shares(self, *, role: str, level: str) -> Any:
+            return {"data": {"role": role, "level": level, "total_cell_id": "vn.x", "rows": []}}
 
         def skill_rates(self, *, role: str, level: str) -> Any:
             raise RuntimeError("hỏng")
@@ -298,7 +302,7 @@ def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
 
 def test_ad17_nguon_dung_model_sai_thanh_invalid_response() -> None:
     class _BuildsBadStat:
-        def city_shares(self, *, role: str) -> Any:
+        def city_shares(self, *, role: str, level: str) -> Any:
             return Stat(value=0.5, kind="skill_rate", display="low_sample_shown", cell_id="o")
 
         def skill_rates(self, *, role: str, level: str) -> Any:
@@ -313,8 +317,8 @@ def test_ad17_instance_sua_bang_model_copy_van_bi_kiem_lai() -> None:
     fake = FakeMarket()
 
     class _CopiesWithGroup:
-        def city_shares(self, *, role: str) -> Any:
-            return fake.city_shares(role=role)
+        def city_shares(self, *, role: str, level: str) -> Any:
+            return fake.city_shares(role=role, level=level)
 
         def skill_rates(self, *, role: str, level: str) -> Any:
             env = fake.skill_rates(role=role, level=level)
@@ -363,7 +367,7 @@ def test_ad17_share_phai_la_composition_share() -> None:
 )
 def test_ad17_city_shares_data_sai_la_loi(rows: list[dict], match: str) -> None:
     with pytest.raises(ValidationError, match=match):
-        CitySharesData.model_validate({"role": "r", "total_cell_id": "vn.r", "rows": rows})
+        CitySharesData.model_validate({"role": "r", "level": "all", "total_cell_id": "vn.r", "rows": rows})
 
 
 def test_ad17_rate_phai_la_skill_rate() -> None:

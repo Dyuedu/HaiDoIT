@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Implemented
+**Status**: Implemented. Cập nhật 2026-11-11 theo #163: ô theo cấp bậc lọc được cũng đếm cụm (một cụm một lần, ở cấp của đại diện). Không AC nào của #100 đổi.
 
 **Input**: GitHub issue [#100](https://github.com/Dyuedu/HaiDoIT/issues/100) — Operation 7 collapses cross-source duplicates into clusters. Later counts use clusters, and the representative is chosen by an explicit rule.
 
@@ -39,6 +39,7 @@ Thành phố, cấp bậc và vai trò của cụm lấy từ một tin đại d
 1. **Given** ITviec đứng trước TopCV trong `sources.priority`, TopCV có nhiều trường hơn, **When** chọn đại diện, **Then** ITviec thắng.
 2. **Given** hai tin cùng hạng nguồn, **When** một tin có nhiều trường thống kê hơn, **Then** tin nhiều trường thắng.
 3. **Given** cùng hạng nguồn và cùng số trường, **When** so URL, **Then** URL có giá trị thắng URL trống, rồi URL xếp A–Z, rồi mã tin A–Z.
+4. **Given** (thêm ở #163) đại diện của cụm là Junior và một thành viên khác là Senior, **When** `aggregate` ghi ô theo cấp bậc lọc được, **Then** cụm chỉ được đếm ở nhóm `entry` và cấp `junior`, không đếm ở `senior`; ô `all` vẫn đếm một lần.
 
 ---
 

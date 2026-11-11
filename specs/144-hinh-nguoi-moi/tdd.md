@@ -48,3 +48,13 @@ Web:
 - `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed. Toàn bộ `npx vitest run` → 120 passed.
 - `uv run ruff check .`, `npx tsc --noEmit`, `npm run lint` sạch.
 - `uv run python tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Đợt 2 — 2026-11-11, sau khi ghép #163
+
+Lý do: #163 sửa `fake_market.json`, route, schema và tài liệu API dùng chung với #144. Rebase #163 lên `main` (đã có #144) gặp xung đột trong `haido_api/fixtures/fake_market.json`; ghép theo nội dung JSON.
+
+- RED: không có test nào của #144 đỏ. Hành vi của #144 không đổi, nên không có RED mới cho issue này.
+- GREEN:
+  - `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` → 59 passed.
+  - `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed.
+  - `uv run pytest -q` (có Postgres) → 715 passed.

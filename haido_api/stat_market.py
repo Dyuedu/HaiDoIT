@@ -4,14 +4,17 @@
 lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). Con số trả về là số đã ghi bởi bước
 `aggregate`; `display` do `suppression_for` quyết, không tự so với ngưỡng ở đây.
 
-- Snapshot đọc được là `published` hoặc `partial` mới nhất có `stat_city_shares` và ít nhất một hàng `stat_sources`
-  (thiếu nguồn thì web coi là không đọc được, nên bỏ qua và lùi về snapshot cũ đầy đủ).
+- Snapshot đọc được là `published` hoặc `partial` mới nhất có `stat_city_shares` của cấp đã chọn và ít nhất một hàng
+  `stat_sources` (thiếu nguồn thì web coi là không đọc được, nên bỏ qua và lùi về snapshot cũ đầy đủ). Snapshot công bố
+  trước migration 0005 chỉ có hàng `all` và không sửa được, nên cấp khác `all` lùi về snapshot có hàng của cấp đó.
 - `meta.sources` là `stat_sources` của snapshot đó, A–Z: các nguồn có ít nhất một tin được đếm trong cửa sổ 60 ngày
   (#259, DEC-12), do `aggregate` ghi, không phải các nguồn có lượt chạy ở S. `meta.sources_failed` lấy từ snapshot.
 - Ngưỡng và lưu ý độ phủ lấy từ `config/rules.toml`.
 - Kết nối mở ở yêu cầu đầu tiên, không mở lúc import hay lúc dựng nguồn.
-- Vai trò không có tin nào ở snapshot (n toàn quốc bằng 0, hoặc không có hàng) thì `UnknownCell`
-  kèm ngày snapshot; không có snapshot nào đọc được thì `UnknownCell` không có ngày.
+- Cấp bậc lọc (#163): `level` chọn hàng `seniority = level` của hai bảng; `all` là mọi cấp. Mã ô là `<scope>.<role>` ở
+  `all` và `<scope>.<role>.<level>` ở cấp khác. Mẫu nhỏ theo n của ô ở cấp đã chọn.
+- Vai trò không có tin nào ở snapshot đã chọn ở cấp đã chọn (n toàn quốc bằng 0) thì `UnknownCell` kèm ngày snapshot;
+  không có snapshot nào đọc được cho cấp đó thì `UnknownCell` không có ngày.
 """
 
 import threading
@@ -65,33 +68,36 @@ class StatMarket:
                 self._engine = self._factory()
             return self._engine
 
-    def city_shares(self, *, role: str) -> Envelope[CitySharesData]:
+    def city_shares(self, *, role: str, level: str = ALL) -> Envelope[CitySharesData]:
         with self._db().connect() as conn:
-            latest = _latest_readable(conn)
+            latest = _latest_readable(conn, level)
             if latest is None:
-                raise UnknownCell("Chưa có snapshot nào đã công bố để đọc.", snapshot_date=None)
+                raise UnknownCell(
+                    "Chưa có snapshot nào đã công bố được tính cho cấp bậc này.", snapshot_date=None
+                )
             day: date = latest.snapshot_id
-            share_by_city = _shares(conn, day, role)
-            cell_rows = _cells(conn, day, role)
+            share_by_city = _shares(conn, day, role, level)
+            cell_rows = _cells(conn, day, role, level)
             sources = _sources(conn, day)
         total = cell_rows.get(NATIONWIDE)
         if not share_by_city or total is None or total[0] == 0:
-            raise UnknownCell("Vai trò đã chọn không có tin nào ở snapshot này.", snapshot_date=day)
+            raise UnknownCell("Vai trò đã chọn không có tin nào ở cấp bậc này của snapshot này.", snapshot_date=day)
 
         order = {city: i for i, city in enumerate(self._rules.city_codes.values())}
         cities = sorted(share_by_city, key=lambda c: (order.get(c, len(order)), c))
         min_sample = self._rules.min_sample
+        suffix = "" if level == ALL else f".{level}"  # mã ô của mọi cấp giữ nguyên `<scope>.<role>`
         rows = []
         for city in cities:
-            cell_id = f"{city}.{role}"
+            cell_id = f"{city}.{role}{suffix}"
             if city not in cell_rows:
                 raise RuntimeError(f"stat_cells thiếu ô {cell_id} của snapshot {day.isoformat()}.")
             display = suppression_for(MeasureKind.COMPOSITION_SHARE, cell_rows[city][0], min_sample=min_sample)
             share = Stat(value=share_by_city[city], kind=MeasureKind.COMPOSITION_SHARE, display=display, cell_id=cell_id)
             rows.append(CityShareRow(city=city, share=share))
-        total_cell_id = f"{NATIONWIDE}.{role}"
+        total_cell_id = f"{NATIONWIDE}.{role}{suffix}"
         cells = {
-            f"{scope}.{role}": CellMeta(
+            f"{scope}.{role}{suffix}": CellMeta(
                 n=n,
                 fallback_label=None,
                 seniority_mix=mix,
@@ -114,7 +120,7 @@ class StatMarket:
             ],
             cells=cells,
         )
-        data = CitySharesData(role=role, total_cell_id=total_cell_id, rows=rows)
+        data = CitySharesData(role=role, level=level, total_cell_id=total_cell_id, rows=rows)
         return Envelope[CitySharesData](data=data, meta=meta)
 
     def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:
@@ -124,8 +130,10 @@ class StatMarket:
         raise UnknownCell("Số tin cho người mới chưa có số liệu thật.", snapshot_date=None)
 
 
-def _latest_readable(conn: Connection) -> Any:
-    has_shares = sa.exists().where(stat_city_shares.c.snapshot_id == snapshots.c.snapshot_id)
+def _latest_readable(conn: Connection, level: str) -> Any:
+    has_shares = sa.exists().where(
+        stat_city_shares.c.snapshot_id == snapshots.c.snapshot_id, stat_city_shares.c.seniority == level
+    )
     has_sources = sa.exists().where(stat_sources.c.snapshot_id == snapshots.c.snapshot_id)
     stmt = (
         sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed)
@@ -136,16 +144,16 @@ def _latest_readable(conn: Connection) -> Any:
     return conn.execute(stmt).one_or_none()
 
 
-def _shares(conn: Connection, day: date, role: str) -> dict[str, float]:
+def _shares(conn: Connection, day: date, role: str, level: str) -> dict[str, float]:
     t = stat_city_shares
-    stmt = sa.select(t.c.city, t.c.share).where(t.c.snapshot_id == day, t.c.role == role)
+    stmt = sa.select(t.c.city, t.c.share).where(t.c.snapshot_id == day, t.c.role == role, t.c.seniority == level)
     return {r.city: r.share for r in conn.execute(stmt)}
 
 
-def _cells(conn: Connection, day: date, role: str) -> dict[str, tuple[int, dict[str, int]]]:
+def _cells(conn: Connection, day: date, role: str, level: str) -> dict[str, tuple[int, dict[str, int]]]:
     t = stat_cells
     stmt = sa.select(t.c.scope, t.c.n, t.c.seniority_mix).where(
-        t.c.snapshot_id == day, t.c.role == role, t.c.branch == ALL, t.c.seniority == ALL
+        t.c.snapshot_id == day, t.c.role == role, t.c.branch == ALL, t.c.seniority == level
     )
     return {r.scope: (r.n, dict(r.seniority_mix)) for r in conn.execute(stmt)}
 

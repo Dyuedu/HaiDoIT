@@ -13,7 +13,7 @@ export function ShareTable({ view }: { view: CitySharesView }) {
     <div className="rounded-xl border border-border bg-panel p-panel">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-ui">
-          <caption className="sr-only">Tỷ trọng tin theo thành phố · {view.roleLabel}</caption>
+          <caption className="sr-only">Tỷ trọng tin theo thành phố · {view.roleLabel} · {view.levelLabel}</caption>
           <thead>
             <tr className="border-b border-border-row">
               <th scope="col" className={`${HEAD} text-left`}>

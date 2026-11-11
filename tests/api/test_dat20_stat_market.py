@@ -85,7 +85,10 @@ def _seed(
                 if scope != "vn" and with_shares:
                     share = n / total if total else (1.0 if scope == "unknown" else 0.0)
                     conn.execute(
-                        text("INSERT INTO haido.stat_city_shares VALUES (:d, :r, :sc, :v)"),
+                        text(
+                            "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, city, share) "
+                            "VALUES (:d, :r, 'all', :sc, :v)"
+                        ),
                         {"d": day, "r": role, "sc": scope, "v": share},
                     )
 

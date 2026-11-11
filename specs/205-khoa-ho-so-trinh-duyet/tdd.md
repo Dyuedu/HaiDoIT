@@ -49,3 +49,17 @@ Web:
 - `uv run python tools/gates/check_gates.py` → AD-23 PASS, 8 pass, 2 skip, 0 fail.
 - `npm run lint`, `npx tsc --noEmit`, `uv run ruff check .` sạch.
 - Chạy `uvicorn` trên máy, `curl /api/v1/skills` trả `seed-2026-11-11` và 100 kỹ năng.
+
+## Đợt 2 — 2026-11-11, sửa theo #163 (tham số `level` của city-shares)
+
+Lý do: #163 thêm `level` và `data.level` cho `GET /api/v1/city-shares`, nên ảnh chụp `docs/api/openapi.json` và các stub trong `tests/api/test_ad17_routes.py` đổi. Hành vi của `/api/v1/skills` không đổi.
+
+Lệnh: `uv run pytest tests/api -q`.
+
+### RED
+
+Sau khi thêm `data.level` và tham số `level`: `tests/api/test_ad17_routes.py` 7 failed (3 stub nguồn không nhận `level`, 3 test dựng `CitySharesData` thiếu `level`, 1 `test_ad17_openapi_da_commit_khop_voi_code` vì ảnh chụp cũ).
+
+### GREEN
+
+Sửa stub và dữ liệu thử, sinh lại ảnh chụp bằng `HAIDO_UPDATE_OPENAPI=1 uv run pytest tests/api -q`: `tests/api` xanh, mục `/api/v1/skills` trong `openapi.json` không đổi. Các đợt trước giữ nguyên.

@@ -75,3 +75,12 @@ tests/steps/test_dat20_api_end_to_end.py
 
 - `create_app` đòi nguồn cho mọi phép, nên các test của #2 (`test_ad17_routes.py`) và #93 (`test_dat20_stat_market.py`, `test_dat20_api_end_to_end.py`) truyền thêm `newcomer_roles`. Hai issue đó chưa có `specs/`; ghi trong mô tả PR.
 - `display_policy.py`, `envelope.py` thuộc #2: thêm một `MeasureKind`, không đổi hành vi của ba loại cũ.
+
+## Thay đổi sau merge (2026-11-11, #163)
+
+#163 (lọc bản đồ theo cấp bậc) sửa các file dùng chung với issue này. Hành vi của `GET /api/v1/newcomer-roles` không đổi.
+
+- `haido_api/fixtures/fake_market.json`: `city_shares` đổi sang dạng `city_shares[role][level]`; thêm ô `<scope>.<role>.entry`. Các ô và mục `newcomer_roles` của #144 giữ nguyên (ghép theo nội dung JSON, không ô nào bị hai bên sửa khác nhau).
+- `haido_api/routes/market.py`, `schemas/market.py`, `market_source.py`, `fake_market.py`, `stat_market.py`: `city-shares` nhận tham số tùy chọn `level`, response có `data.level`.
+- `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm `level` của `city-shares`.
+- `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `web/lib/city-shares.ts`: cập nhật cho `level`.

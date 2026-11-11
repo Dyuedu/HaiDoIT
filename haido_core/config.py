@@ -14,6 +14,9 @@ DEFAULT_RULES_PATH = Path(__file__).resolve().parents[1] / "config" / "rules.tom
 ALL_ROLES = "all"
 """Mã dành riêng cho "mọi vai trò"; không được nằm trong danh sách `roles`."""
 
+ALL_LEVELS = "all"
+"""Mã dành riêng cho "mọi cấp bậc"; không được là tên nhóm, mã cấp hay phần tử của `level_options`."""
+
 
 class ConfigError(ValueError):
     """Lỗi cấu hình. Thông báo bằng tiếng Việt."""
@@ -49,6 +52,11 @@ class RulesConfig:
     """Nhãn thành phố của bộ phân loại sang mã snake_case, theo thứ tự hiển thị."""
     role_codes: dict[str, str]
     level_codes: dict[str, str]
+    level_options: tuple[str, ...]
+    """Mã cấp bậc lọc được của bản đồ, theo thứ tự hiển thị, không gồm `all` (#163, #134). Mỗi mã là một nhóm
+    trong `level_groups` hoặc một mã của `level_codes`."""
+    level_groups: dict[str, tuple[str, ...]]
+    """Nhóm cấp bậc: tên nhóm sang các mã cấp thành viên (`entry` = intern, fresher, junior; #134)."""
 
 
 CV_SIGNATURES: dict[str, bytes] = {
@@ -89,6 +97,57 @@ def _label_table(raw: dict[str, Any], name: str) -> dict[str, str]:
     ):
         raise ConfigError(f"labels.{name} phải ánh xạ nhãn sang mã (chuỗi không rỗng), mỗi mã một nhãn.")
     return dict(table)
+
+
+_CODE_SHAPE = re.compile(r"[a-z0-9_]+")
+
+
+def _level_filter(
+    raw: dict[str, Any], level_codes: dict[str, str]
+) -> tuple[tuple[str, ...], dict[str, tuple[str, ...]]]:
+    """`level_options` và `level_groups` (#163, #134), kiểm với mã cấp của `labels.level`."""
+    options = raw.get("level_options")
+    if options is None:
+        raise ConfigError("Cấu hình thiếu khóa level_options.")
+    groups = raw.get("level_groups")
+    if groups is None:
+        raise ConfigError("Cấu hình thiếu bảng level_groups.")
+    levels = set(level_codes.values())
+    if not isinstance(groups, dict):
+        raise ConfigError("level_groups phải là bảng ánh xạ tên nhóm sang danh sách mã cấp bậc.")
+    seen: set[str] = set()
+    for name, members in groups.items():
+        if not _CODE_SHAPE.fullmatch(name):
+            raise ConfigError(f"level_groups: tên nhóm chỉ gồm a-z0-9_ (chữ thường, số, gạch dưới), gặp {name!r}.")
+        if name == ALL_LEVELS or name in levels:
+            raise ConfigError(f"level_groups: tên nhóm không được là {ALL_LEVELS!r} hay một mã cấp bậc ({name!r}).")
+        if (
+            not isinstance(members, list)
+            or not members
+            or not all(isinstance(m, str) for m in members)
+            or len(set(members)) != len(members)
+        ):
+            raise ConfigError(f"level_groups.{name} phải là danh sách mã cấp bậc không rỗng, không trùng.")
+        if not set(members) <= levels or UNKNOWN in members:
+            raise ConfigError(
+                f"level_groups.{name} chỉ được chứa mã trong labels.level và không chứa {UNKNOWN!r}."
+            )
+        if seen & set(members):
+            raise ConfigError("level_groups: hai nhóm không được chung thành viên.")
+        seen |= set(members)
+    if (
+        not isinstance(options, list)
+        or not options
+        or not all(isinstance(o, str) and o for o in options)
+        or len(set(options)) != len(options)
+        or ALL_LEVELS in options
+    ):
+        raise ConfigError(f"level_options phải là danh sách mã không rỗng, không trùng và không có {ALL_LEVELS!r}.")
+    if not all(_CODE_SHAPE.fullmatch(o) for o in options):
+        raise ConfigError("level_options: mỗi mã chỉ gồm a-z0-9_ (chữ thường, số, gạch dưới).")
+    if set(options) != levels | set(groups):
+        raise ConfigError("level_options phải đúng bằng các mã trong labels.level cộng tên các nhóm trong level_groups.")
+    return tuple(options), {name: tuple(members) for name, members in groups.items()}
 
 
 def _coverage_notes(raw: dict[str, Any]) -> tuple[CoverageNoteRule, ...]:
@@ -227,6 +286,7 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         raise ConfigError(f"labels.level phải có mã {UNKNOWN!r}.")
     if set(role_codes.values()) != set(roles):
         raise ConfigError("roles phải đúng bằng tập mã trong labels.role.")
+    level_options, level_groups = _level_filter(raw, level_codes)
 
     return RulesConfig(
         config_version=version,
@@ -244,4 +304,6 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         city_codes=city_codes,
         role_codes=role_codes,
         level_codes=level_codes,
+        level_options=level_options,
+        level_groups=level_groups,
     )

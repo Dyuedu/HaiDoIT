@@ -1,5 +1,5 @@
 /**
- * Đọc `GET /api/v1/city-shares?role=` qua proxy `/api/*` của web.
+ * Đọc `GET /api/v1/city-shares?role=&level=` qua proxy `/api/*` của web.
  *
  * Kiểu của envelope `{data, meta}` theo `docs/api/openapi.json` (`Envelope[CitySharesData]`,
  * `Stat`, `Meta`, `CellMeta`, `ErrorEnvelope`). `fetchCityShares` không ném lỗi: nó trả dữ liệu,
@@ -68,6 +68,8 @@ export interface CityShareRow {
 
 export interface CitySharesData {
   role: string;
+  /** Cấp bậc lọc đã dùng (#163): `all`, `entry`, hoặc một cấp. */
+  level: string;
   total_cell_id: string;
   rows: CityShareRow[];
 }
@@ -108,14 +110,21 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const SHARE_DISPLAYS: readonly string[] = ["shown", "low_sample_shown"];
 const SNAPSHOT_STATUSES: readonly string[] = ["published", "partial"];
 
+/**
+ * `level` là cấp bậc lọc (#163). Màn Bản đồ luôn gửi; bỏ trống thì không có tham số và API trả mọi cấp. Envelope có
+ * `data.level` khác cấp đã hỏi là sai hợp đồng: không dùng, như khi `data.role` lệch.
+ */
 export async function fetchCityShares(
   role: string,
-  options: { signal?: AbortSignal } = {},
+  options: { level?: string; signal?: AbortSignal } = {},
 ): Promise<CitySharesResult> {
   let response: Response;
   let body: unknown;
+  const query =
+    `role=${encodeURIComponent(role)}` +
+    (options.level === undefined ? "" : `&level=${encodeURIComponent(options.level)}`);
   try {
-    response = await fetch(`/api/v1/city-shares?role=${encodeURIComponent(role)}`, {
+    response = await fetch(`/api/v1/city-shares?${query}`, {
       headers: { accept: "application/json" },
       cache: "no-store",
       signal: options.signal,
@@ -137,7 +146,9 @@ export async function fetchCityShares(
     };
   }
 
-  return isCitySharesEnvelope(body, role) ? { kind: "ok", envelope: body } : { kind: "unreadable" };
+  return isCitySharesEnvelope(body, role, options.level)
+    ? { kind: "ok", envelope: body }
+    : { kind: "unreadable" };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -193,7 +204,11 @@ function isMeta(meta: unknown): meta is Meta {
  * Kiểm phần hợp đồng mà màn Bản đồ đọc. Sai một chỗ là cả envelope không dùng được: màn không
  * đoán, không vá số.
  */
-function isCitySharesEnvelope(body: unknown, role: string): body is CitySharesEnvelope {
+function isCitySharesEnvelope(
+  body: unknown,
+  role: string,
+  level: string | undefined,
+): body is CitySharesEnvelope {
   if (!isRecord(body) || !isRecord(body.data) || !isMeta(body.meta)) return false;
   const { data, meta } = body;
   const hasCell = (cellId: unknown) =>
@@ -202,7 +217,13 @@ function isCitySharesEnvelope(body: unknown, role: string): body is CitySharesEn
     isRecord(meta.cells[cellId]) &&
     isCount(meta.cells[cellId].n);
 
-  if (data.role !== role || !hasCell(data.total_cell_id) || !Array.isArray(data.rows)) {
+  if (
+    data.role !== role ||
+    !isNonEmptyString(data.level) ||
+    (level !== undefined && data.level !== level) ||
+    !hasCell(data.total_cell_id) ||
+    !Array.isArray(data.rows)
+  ) {
     return false;
   }
   const cities = new Set<string>();

@@ -294,7 +294,7 @@ def replace_stats(
                     "snapshot_id": day,
                     "role": c.role,
                     "branch": ALL,
-                    "seniority": ALL,
+                    "seniority": c.seniority,
                     "scope": c.scope,
                     "n": c.n,
                     "seniority_mix": c.seniority_mix,
@@ -306,7 +306,10 @@ def replace_stats(
     if shares:
         conn.execute(
             sa.insert(stat_city_shares),
-            [{"snapshot_id": day, "role": r.role, "city": r.city, "share": r.share} for r in shares],
+            [
+                {"snapshot_id": day, "role": r.role, "seniority": r.seniority, "city": r.city, "share": r.share}
+                for r in shares
+            ],
         )
 
 

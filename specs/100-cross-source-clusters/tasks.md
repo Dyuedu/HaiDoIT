@@ -44,3 +44,9 @@
 
 - [x] T013 Cập nhật câu chú thích "mỗi tin là một cụm" trong `haido_core/domain/population.py`
 - [x] T014 Chạy `uv run pytest tests/domain/test_dat28_cluster.py tests/domain/test_dat20_population.py tests/core/test_ad10_rules_config.py tests/domain/test_ad2_registry.py -q`
+
+## Phase 6: Cập nhật theo #163 (2026-11-11)
+
+- [x] T015 `config/rules.toml` đổi `config_version` và thêm `level_options`, `level_groups`; `haido_core/config.py` kiểm khóa mới (`sources.priority` giữ nguyên)
+- [x] T016 `haido_core/steps/aggregate.py` và `haido_core/db/snapshot_store.py` ghi ô và tỷ trọng theo cấp bậc lọc được; thêm test cụm đếm ở cấp của đại diện trong `tests/steps/test_fr33_aggregate_level_step.py`
+- [x] T017 Sửa các số đếm hàng và truy vấn trong `tests/steps/test_dat20_aggregate_step.py` cho khớp cột `seniority` mới (lọc `seniority = 'all'` khi so số cũ)

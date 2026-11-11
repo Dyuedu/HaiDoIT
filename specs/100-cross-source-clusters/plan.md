@@ -14,7 +14,7 @@ Thêm hàm thuần gộp tin theo công ty và chức danh đã chuẩn hóa, ch
 
 **Primary Dependencies**: thư viện chuẩn, SQLAlchemy ở bước đọc URL tin. Không thêm gói.
 
-**Storage**: schema `haido` hiện có. Không migration.
+**Storage**: schema `haido` hiện có. Không migration cho #100. (#163 thêm migration 0005 cho cột `seniority` của `stat_city_shares`; phép gộp cụm không đổi.)
 
 **Testing**: `uv run pytest tests/domain/test_dat28_cluster.py` rồi `uv run pytest tests/domain tests/core/test_ad10_rules_config.py -q`
 
@@ -56,8 +56,10 @@ haido_core/steps/aggregate.py
 haido_core/config.py
 haido_core/db/snapshot_store.py
 config/rules.toml
+haido_core/domain/aggregate.py        # #163: ô theo cấp bậc lọc được, vẫn đếm cụm
 tests/domain/test_dat28_cluster.py
 tests/steps/test_dat20_aggregate_step.py
+tests/steps/test_fr33_aggregate_level_step.py   # #163: cụm đếm ở cấp của đại diện
 ```
 
 **Structure Decision**: Hàm thuần nằm trong `haido_core/domain/`. Bước `aggregate` chỉ đọc dữ liệu, gọi hàm, rồi ghi số như hiện tại.

@@ -2,6 +2,8 @@
 
 Không thêm bảng. Cụm tính trong bộ nhớ ở bước `aggregate`, rồi ghi vào `cluster_id` mà phép dân số đã đếm.
 
+Cập nhật 2026-11-11 (#163): #100 không đổi bảng. Sau #163, `stat_cells.seniority` chứa thêm mã cấp lọc và `stat_city_shares` có cột `seniority` (migration 0005, xem `specs/163-loc-ban-do-theo-cap-bac/data-model.md`); mỗi cụm vẫn đếm một lần, ở cấp của tin đại diện.
+
 ## ClusterMember
 
 | Trường | Ý nghĩa |

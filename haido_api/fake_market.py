@@ -4,6 +4,9 @@ Fixture chỉ chứa số thô: `n` của từng ô, giá trị tỷ trọng/t�
 thị (`display`, `insufficient_by_measure`) do `suppression_for` tính từ `n` và
 `thresholds.min_sample` của fixture; dưới ngưỡng thì bản giả tự ẩn giá trị.
 
+`city-shares` có hai cấp bậc lọc cho mỗi vai trò: `all` và `entry` (#163); cấp khác là `unknown_cell`. Fixture đặt
+`city_shares[vai trò][cấp]`.
+
 Bản giả không chọn ô và không quay về (phép 2 của registry, #3/#17): fixture ánh xạ thẳng
 tham số sang ô đã dùng, và `fallback_label` lấy nguyên văn.
 """
@@ -49,15 +52,16 @@ class FakeMarket:
         self._thresholds = Thresholds.model_validate(snapshot["thresholds"])
         self._coverage_notes = [CoverageNote.model_validate(c) for c in snapshot["coverage_notes"]]
         self._cells: dict[str, dict[str, Any]] = raw["cells"]
-        self._city_shares: dict[str, dict[str, Any]] = raw["city_shares"]
+        # city_shares[vai trò][cấp bậc lọc]: bản giả chỉ có `all` và `entry` (#163); cấp khác là `unknown_cell`.
+        self._city_shares: dict[str, dict[str, dict[str, Any]]] = raw["city_shares"]
         self._skill_rates: dict[str, dict[str, dict[str, Any]]] = raw["skill_rates"]
         self._newcomer_roles: dict[str, Any] = raw["newcomer_roles"]
 
-    def city_shares(self, *, role: str) -> Envelope[CitySharesData]:
-        entry = self._city_shares.get(role)
+    def city_shares(self, *, role: str, level: str = "all") -> Envelope[CitySharesData]:
+        entry = self._city_shares.get(role, {}).get(level)
         if entry is None:
             raise UnknownCell(
-                "Không có ô thống kê nào cho vai trò đã chọn.",
+                "Không có ô thống kê nào cho vai trò và cấp bậc đã chọn.",
                 snapshot_date=self._snapshot_date,
             )
         rows = [
@@ -67,7 +71,7 @@ class FakeMarket:
             )
             for row in entry["rows"]
         ]
-        data = CitySharesData(role=role, total_cell_id=entry["total_cell_id"], rows=rows)
+        data = CitySharesData(role=role, level=level, total_cell_id=entry["total_cell_id"], rows=rows)
         cell_ids = [entry["total_cell_id"], *(row["cell_id"] for row in entry["rows"])]
         return Envelope[CitySharesData](data=data, meta=self._meta(cell_ids, {}))
 

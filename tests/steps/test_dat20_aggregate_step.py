@@ -28,14 +28,21 @@ def _run(env: Env, scraper_db, urls_by_source: dict[str, list[str]], day: str = 
 
 def _shares(env: Env, role: str, day: str = S) -> dict[str, float]:
     rows = env.query(
-        "SELECT city, share FROM haido.stat_city_shares WHERE snapshot_id = :d AND role = :r", d=day, r=role
+        "SELECT city, share FROM haido.stat_city_shares "
+        "WHERE snapshot_id = :d AND role = :r AND seniority = 'all'",  # #163: hàng theo cấp có ở test riêng
+        d=day,
+        r=role,
     )
     return dict(rows)
 
 
 def _n(env: Env, role: str, scope: str, day: str = S) -> int:
     [(n,)] = env.query(
-        "SELECT n FROM haido.stat_cells WHERE snapshot_id = :d AND role = :r AND scope = :s", d=day, r=role, s=scope
+        "SELECT n FROM haido.stat_cells "
+        "WHERE snapshot_id = :d AND role = :r AND scope = :s AND seniority = 'all'",
+        d=day,
+        r=role,
+        s=scope,
     )
     return n
 
@@ -55,15 +62,16 @@ def test_dat20_moi_vai_tro_va_all_co_nam_dong_thanh_pho_ke_ca_khi_khong_co_tin(e
     env.lifecycle()
     result = env.aggregate()
     roles = ["all", *env.rules.roles]
-    assert (result.cells, result.shares) == (len(roles) * 6, len(roles) * 5)
+    levels = 1 + len(env.rules.level_options)  # #163: cấp `all` cộng từng cấp lọc được
+    assert (result.cells, result.shares) == (len(roles) * levels * 6, len(roles) * levels * 5)
     for role in roles:
         shares = _shares(env, role)
         assert set(shares) == set(CITIES)
         assert sum(shares.values()) == pytest.approx(1.0)
         assert _n(env, role, "vn") == 0
         assert _n(env, role, "da_nang") == 0  # Đà Nẵng luôn có hàng, kể cả n = 0
-    assert env.count("stat_cells") == len(roles) * 6
-    assert env.count("stat_city_shares") == len(roles) * 5
+    assert env.count("stat_cells") == len(roles) * levels * 6
+    assert env.count("stat_city_shares") == len(roles) * levels * 5
 
 
 def test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro(env: Env, scraper_db) -> None:
@@ -172,7 +180,7 @@ def test_dat20_dau_vao_phan_loai_cap_bac_ghep_job_level_va_experience_level(env:
             "e": {"title": "Backend Dev"},
         },
     )
-    [(mix,)] = env.query("SELECT seniority_mix FROM haido.stat_cells WHERE role = 'all' AND scope = 'vn'")
+    [(mix,)] = env.query("SELECT seniority_mix FROM haido.stat_cells WHERE role = 'all' AND scope = 'vn' AND seniority = 'all'")
     assert mix == {"senior": 1, "fresher": 1, "junior": 1, "intern": 1, "unknown": 1}
 
 
@@ -188,7 +196,7 @@ def test_dat20_moi_o_luu_n_pha_cap_bac_va_config_version(env: Env, scraper_db) -
     )
     rows = env.query(
         "SELECT scope, n, seniority_mix, branch, seniority, config_version FROM haido.stat_cells "
-        "WHERE role = 'backend' ORDER BY scope"
+        "WHERE role = 'backend' AND seniority = 'all' ORDER BY scope"
     )
     by_scope = {r[0]: r for r in rows}
     assert by_scope["vn"][1:3] == (3, {"junior": 2, "senior": 1})
@@ -225,17 +233,17 @@ def test_dat20_determinism_hai_lan_aggregate_ra_cung_hang(env: Env, scraper_db) 
         },
     )
     cells = "SELECT * FROM haido.stat_cells ORDER BY snapshot_id, role, branch, seniority, scope"
-    shares = "SELECT * FROM haido.stat_city_shares ORDER BY snapshot_id, role, city"
+    shares = "SELECT * FROM haido.stat_city_shares ORDER BY snapshot_id, role, seniority, city"
     first = env.query(cells), env.query(shares)
     env.aggregate()
     assert (env.query(cells), env.query(shares)) == first
-    assert len(first[0]) == 66 and len(first[1]) == 55
+    assert len(first[0]) == 66 * 9 and len(first[1]) == 55 * 9  # 11 vai trò × 9 cấp lọc
 
 
 @pytest.mark.parametrize("status", ["published", "partial"])
 def test_dat20_snapshot_da_chot_thi_tu_choi_va_khong_ghi(env: Env, scraper_db, status: str) -> None:
     _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
-    snapshot = "SELECT * FROM haido.stat_cells ORDER BY role, scope"
+    snapshot = "SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope"
     before = env.query(snapshot)
     with env.write.begin() as conn:
         conn.exec_driver_sql(f"UPDATE haido.snapshots SET status = '{status}'")
@@ -267,14 +275,14 @@ def test_dat20_ngay_sai_thi_khong_ghi(env: Env) -> None:
 
 def test_dat20_nhan_chua_co_trong_bang_thi_buoc_loi_va_khong_ghi_gi(env: Env, scraper_db) -> None:
     _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
-    before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope")
+    before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope")
     _post(scraper_db, "b", title="QA Tester", location="Đà Nẵng")
     _run(env, scraper_db, {"itviec": ["a", "b"]})
     env.lifecycle()
     broken = {k: v for k, v in env.rules.city_codes.items() if k != "Đà Nẵng"}
     with pytest.raises(StepError, match="Đà Nẵng"):
         env.aggregate(rules=replace(env.rules, city_codes=broken))
-    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope") == before
+    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope") == before
 
 
 def test_dat20_nhan_vai_tro_la_cung_khong_duoc_doan(env: Env, scraper_db) -> None:
@@ -291,7 +299,7 @@ def test_dat20_loi_giua_chung_thi_giu_nguyen_hang_cu(env: Env, scraper_db, monke
     from haido_core.db import snapshot_store
 
     _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
-    before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope")
+    before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope")
     real = snapshot_store.replace_stats
 
     def after_write(*args, **kwargs):
@@ -301,7 +309,7 @@ def test_dat20_loi_giua_chung_thi_giu_nguyen_hang_cu(env: Env, scraper_db, monke
     monkeypatch.setattr(snapshot_store, "replace_stats", after_write)
     with pytest.raises(RuntimeError):
         env.aggregate(rules=replace(env.rules, config_version="moi"))
-    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope") == before
+    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope") == before
 
 
 def test_dat20_chua_chay_lifecycle_thi_tu_choi_va_khong_ghi_hang_nao(env: Env, scraper_db) -> None:
@@ -315,12 +323,12 @@ def test_dat20_chua_chay_lifecycle_thi_tu_choi_va_khong_ghi_hang_nao(env: Env, s
 
 def test_dat20_ingest_chay_lai_them_tin_ma_chua_chay_lai_lifecycle_thi_tu_choi(env: Env, scraper_db) -> None:
     _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
-    before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope")
+    before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope")
     _post(scraper_db, "b", title="Backend Dev", location="Hà Nội")
     _run(env, scraper_db, {"itviec": ["a", "b"]})
     with pytest.raises(StepError, match="lifecycle"):
         env.aggregate()
-    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope") == before
+    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope") == before
     env.lifecycle()
     env.aggregate()
     assert _n(env, "all", "vn") == 2
@@ -413,8 +421,8 @@ def test_dat259_nguon_ghi_cung_transaction_voi_so_lieu_loi_giua_chung_thi_giu_da
     env: Env, scraper_db, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _build(env, scraper_db, {"a": {"title": "Backend Dev", "location": "Hà Nội"}})
-    cells_before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope")
-    shares_before = env.query("SELECT * FROM haido.stat_city_shares ORDER BY role, city")
+    cells_before = env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope")
+    shares_before = env.query("SELECT * FROM haido.stat_city_shares ORDER BY role, seniority, city")
     _post(scraper_db, "z", "zalo", title="Backend Dev", location="Hà Nội")
     _run(env, scraper_db, {"zalo": ["z"]})
     env.lifecycle()
@@ -430,8 +438,8 @@ def test_dat259_nguon_ghi_cung_transaction_voi_so_lieu_loi_giua_chung_thi_giu_da
     with pytest.raises(RuntimeError):
         env.aggregate()
     assert _sources(env) == ["itviec"]
-    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, scope") == cells_before
-    assert env.query("SELECT * FROM haido.stat_city_shares ORDER BY role, city") == shares_before
+    assert env.query("SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope") == cells_before
+    assert env.query("SELECT * FROM haido.stat_city_shares ORDER BY role, seniority, city") == shares_before
 
 
 def test_dat259_ghi_de_nguon_cua_s2_khong_dong_den_nguon_cua_snapshot_s1_da_chot(env: Env, scraper_db) -> None:
@@ -475,7 +483,7 @@ def test_dat263_tin_linkedin_khong_vao_stat_cells_stat_city_shares_va_danh_sach_
     assert _shares(env, "backend")["da_nang"] == 1.0
     assert _sources(env) == ["itviec"]
     # không hàng stat_* nào đếm tin LinkedIn: tổng n các thành phố của mọi vai trò chỉ là tin của itviec
-    [(total,)] = env.query("SELECT sum(n) FROM haido.stat_cells WHERE scope <> 'vn' AND role = 'all'")
+    [(total,)] = env.query("SELECT sum(n) FROM haido.stat_cells WHERE scope <> 'vn' AND role = 'all' AND seniority = 'all'")
     assert total == 1
 
 

@@ -8,7 +8,7 @@
  */
 
 import type { CityShareRow, CitySharesEnvelope, CoverageNote } from "./city-shares";
-import { BAR_CITIES, cityLabel, LEGEND_CITIES, roleLabel } from "./labels";
+import { BAR_CITIES, cityLabel, LEGEND_CITIES, levelLabel, roleLabel } from "./labels";
 
 /** Một dòng có tỷ trọng: thanh ở lối 2D, hoặc dòng chú thích Khác / không xác định. */
 export interface ShareLine {
@@ -57,6 +57,9 @@ export interface SnapshotCaption {
 export interface CitySharesView {
   role: string;
   roleLabel: string;
+  /** Cấp bậc lọc của envelope (`data.level`) và nhãn tiếng Việt của nó. */
+  level: string;
+  levelLabel: string;
   bars: ShareLine[];
   legend: ShareLine[];
   table: { rows: TableRow[]; total: TableTotal; roundingNote: string };
@@ -146,6 +149,8 @@ export function buildCitySharesView(envelope: CitySharesEnvelope): CitySharesVie
   return {
     role: data.role,
     roleLabel: roleLabel(data.role),
+    level: data.level,
+    levelLabel: levelLabel(data.level),
     bars,
     legend,
     table: {
