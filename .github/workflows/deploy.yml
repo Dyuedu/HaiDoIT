@@ -19,6 +19,7 @@ on:
       - "haido_api/**"
       - "haido_pipeline/**"
       - "web/**"
+      - "config/**"
       - "deploy/**"
       - "pyproject.toml"
       - "uv.lock"
@@ -52,6 +53,10 @@ jobs:
             dockerfile: deploy/api.Dockerfile
           - app: web
             dockerfile: deploy/web.Dockerfile
+          # Kho chạy mỗi đêm qua daily.sh, không phải service. Build cùng commit để VPS
+          # không chạy code kho cũ hơn main (#273).
+          - app: warehouse
+            dockerfile: deploy/warehouse.Dockerfile
     steps:
       - uses: actions/checkout@v7
         with:
@@ -80,8 +85,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Mỗi image một scope, để ba job song song không ghi đè cache của nhau.
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
 
   deploy:
     name: Pull and run on VPS
@@ -111,6 +117,8 @@ jobs:
           VPS_PATH: ${{ secrets.VPS_PATH }}
         run: |
           scp deploy/compose.prod.yml "$USER@$HOST:$VPS_PATH/compose.prod.yml"
+          # Lịch đêm đọc hai file này từ VPS_PATH. -p giữ mode 755 của daily.sh cho cron.
+          scp -p deploy/compose.scraper.yml deploy/daily.sh "$USER@$HOST:$VPS_PATH/"
 
       - name: Deploy
         env:

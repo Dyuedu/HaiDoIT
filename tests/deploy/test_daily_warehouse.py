@@ -26,7 +26,7 @@ def test_daily_chay_kho_sau_ingest_scraper() -> None:
 
 def test_compose_co_warehouse_khong_mo_cong() -> None:
     text = COMPOSE.read_text(encoding="utf-8")
-    assert "haidoit-warehouse:local" in text
+    assert "ghcr.io/dyuedu/haidoit-warehouse:" in text
     assert "HAIDO_ALLOW_REMOTE_WRITE" in text
     assert "HAIDO_ALLOW_REMOTE_MIGRATION" in text
     warehouse = text.split("warehouse:", 1)[1].split("scraper-browser:", 1)[0]

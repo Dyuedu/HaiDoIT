@@ -44,3 +44,7 @@
 - [x] T016 Test `resolve_db_url` đọc `.env` có nháy kép, nháy đơn, CRLF, và suy từ `DATABASE_URL`; thiếu URL thì dừng
 - [x] T017 Cho test thứ tự lệnh trong `test_gh262_bat_deploy.py` và `test_proxy_npm.py` đọc script mới
 - [x] T018 Viết `deploy/vps-deploy.sh`, sửa bước Deploy của `.github/workflows/deploy.yml`
+
+## Phase 8: Image kho (đợt 2026-11-11, #273)
+
+- [x] T019 `deploy.yml` build image kho, chép hai file lịch đêm, chạy khi đổi `config/**`; `vps-deploy.sh` kéo image kho và ghi `.warehouse-tag` khi khỏe. Test ở `tests/deploy/test_gh273_image_kho.py`

@@ -5,6 +5,10 @@
 # bash trên VPS lỗi cú pháp (run 42851541091).
 set -euo pipefail
 
+WAREHOUSE_IMAGE=ghcr.io/dyuedu/haidoit-warehouse
+# daily.sh đọc tag image kho đã deploy từ file này, cùng thư mục VPS_PATH.
+WAREHOUSE_TAG_FILE=.warehouse-tag
+
 # Giá trị khóa $1 trong .env: bỏ CR cuối dòng và một cặp nháy bao ngoài.
 env_value() {
   local line value
@@ -51,6 +55,9 @@ main() {
 
   export IMAGE_TAG="sha-$SHA"
   docker compose -f compose.prod.yml pull
+  # Image kho không phải service của compose.prod.yml: kéo riêng khi còn đăng nhập GHCR,
+  # để cron đêm (không có token) chạy được bằng image có sẵn trên máy (#273).
+  docker pull "$WAREHOUSE_IMAGE:$IMAGE_TAG"
   docker logout ghcr.io
   docker compose -f compose.prod.yml run --rm --no-deps -T -e HAIDO_ALLOW_REMOTE_MIGRATION=1 api alembic upgrade head < /dev/null
   docker network inspect haido-edge >/dev/null 2>&1 || docker network create haido-edge
@@ -64,6 +71,11 @@ main() {
     if curl -fsS --max-time 10 http://127.0.0.1:8000/openapi.json >/dev/null \
       && curl -fsS --max-time 10 -o /dev/null http://127.0.0.1:3000; then
       echo "sống sau $i lần thử"
+      # Chỉ trỏ lịch đêm sang image kho mới khi bản deploy này đã khỏe. Ghi qua file tạm
+      # rồi mv, để daily.sh không bao giờ đọc phải file ghi dở.
+      printf '%s\n' "$IMAGE_TAG" > "$WAREHOUSE_TAG_FILE.tmp"
+      mv "$WAREHOUSE_TAG_FILE.tmp" "$WAREHOUSE_TAG_FILE"
+      echo "lịch đêm dùng $WAREHOUSE_IMAGE:$IMAGE_TAG"
       return 0
     fi
     sleep 6
