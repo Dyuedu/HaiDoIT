@@ -124,3 +124,11 @@ Lý do: `main` nhận #144 (hình response màn người mới), bắt `create_a
 - RED: `uv run pytest -q` → 2 failed, 18 errors, đều trong `tests/api/test_fr33_city_shares_level.py`: `ValueError: Thiếu nguồn cho phép: newcomer_roles.` vì test dựng app chỉ với `city_shares` và `skill_rates`.
 - Sửa: thêm `"newcomer_roles": FakeMarket()` vào các app dựng trong test; ghép `fake_market.json` theo nội dung (ô của hai bên không trùng).
 - GREEN: `tests/api/test_fr33_city_shares_level.py` → 26 passed; `uv run pytest -q` → 715 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npm run test` → 149 passed, `lint` sạch, `build` qua; `ruff` sạch; cổng 0 failed.
+
+## Đợt 9 — 2026-11-12, #280 thêm chiều số năm kinh nghiệm
+
+Lý do: #280 thêm mốc số năm vào ô và tỷ trọng (cột `years` trong khóa của `stat_cells`, `stat_city_shares`; migration 0006), tham số `years` của `GET /api/v1/city-shares`, và web gửi `years` cùng `level`. Hành vi của #163 ở `years = any` không đổi.
+
+- RED: sau khi có code của #280, `uv run pytest -q` → các test của #163 đỏ vì (1) helper đọc `stat_*` theo (vai trò, cấp, phạm vi) nay có 6 hàng (`too many values to unpack`), (2) số hàng chưa nhân 6 mã số năm, (3) head Alembic là 0006, (4) seed `INSERT` không nêu `years` (`NotNullViolation`), (5) test double `city_shares(role, level)` không nhận `years` (500), (6) bản giả có khóa `entry.y1`. Web: `fr33-level-filter.test.tsx` 4 failed, `fr33-map-screen.test.tsx` 2 failed (URL thiếu `&years=any`, thứ tự Tab có thêm nút số năm).
+- Sửa: chỉ test (đọc hàng `years = 'any'`, nhân số hàng, head 0006, seed nêu `years`/`years_unstated`, test double nhận `years`, so khóa cấp của bản giả, URL có `&years=any`, Tab có sáu nút số năm). Không sửa code của #163 ngoài chỗ #280 nối thêm `years`.
+- GREEN: `uv run pytest -q` → 770 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npx vitest run` → 160 passed; `lint`, `tsc`, `build` sạch; cổng 0 failed.

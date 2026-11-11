@@ -24,13 +24,14 @@ class UnknownCell(LookupError):
 class MarketReadModel(Protocol):
     """Nguồn đọc số liệu thị trường của snapshot mới nhất còn đọc được."""
 
-    def city_shares(self, *, role: str, level: str) -> Envelope[CitySharesData]:
-        """Tỷ trọng từng thành phố trong số tin của `role` ở cấp bậc lọc `level` trên toàn quốc.
+    def city_shares(self, *, role: str, level: str, years: str) -> Envelope[CitySharesData]:
+        """Tỷ trọng từng thành phố trong số tin của `role` ở cấp bậc lọc `level` và mốc số năm `years` trên toàn quốc.
 
-        `level` là `all`, một nhóm (`entry`) hoặc một cấp (#163); route đã kiểm nó thuộc cấu hình.
+        `level` là `all`, một nhóm (`entry`) hoặc một cấp (#163); `years` là `any` hoặc một mốc của `years_options`
+        (#280). Route đã kiểm cả hai thuộc cấu hình.
 
         Raises:
-            UnknownCell: không có ô cho `role` ở `level`.
+            UnknownCell: không có ô cho `role` ở `level` và `years`.
         """
         ...
 

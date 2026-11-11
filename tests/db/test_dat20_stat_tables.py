@@ -46,8 +46,9 @@ def _cell(engine: Engine, **over: object) -> None:
     with engine.begin() as conn:
         conn.execute(
             text(
-                "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, scope, n, seniority_mix, "
-                "config_version) VALUES (:s, :role, 'all', 'all', :scope, :n, CAST(:mix AS jsonb), :v)"
+                "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, years, scope, n, seniority_mix, "
+                "years_unstated, config_version) "
+                "VALUES (:s, :role, 'all', 'all', 'any', :scope, :n, CAST(:mix AS jsonb), 0, :v)"
             ),
             values,
         )
@@ -61,7 +62,7 @@ def test_dat20_migration_0003_noi_tiep_0002() -> None:
 
 def test_dat259_migration_0004_noi_tiep_0003_va_chi_con_mot_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0005_haido_city_share_level"]  # #163 thêm 0005 sau 0004
+    assert script.get_heads() == ["0006_haido_years_filter"]  # #163 thêm 0005 sau 0004, #280 thêm 0006
     revision = script.get_revision("0004_haido_stat_sources")
     assert revision is not None and revision.down_revision == "0003_haido_city_share"
 
@@ -98,18 +99,21 @@ def test_dat259_ha_cap_0004_chi_bo_stat_sources_va_nang_cap_lai_duoc(pg_engine: 
 
 def test_dat20_stat_cells_co_dung_cot_va_khoa(pg_engine: Engine) -> None:
     cols = _columns(pg_engine, "stat_cells")
-    assert set(cols) == {"snapshot_id", "role", "branch", "seniority", "scope", "n", "seniority_mix", "config_version"}
+    assert set(cols) == {
+        "snapshot_id", "role", "branch", "seniority", "years", "scope", "n", "seniority_mix", "years_unstated",
+        "config_version",
+    }  # fmt: skip  # #280 thêm `years`, `years_unstated`
     assert cols["seniority_mix"][0] == "jsonb"
     assert cols["n"][0] == "integer"
     assert all(nullable == "NO" for _, nullable in cols.values())
-    assert _primary_key(pg_engine, "stat_cells") == ["snapshot_id", "role", "branch", "seniority", "scope"]
+    assert _primary_key(pg_engine, "stat_cells") == ["snapshot_id", "role", "branch", "seniority", "years", "scope"]
 
 
 def test_dat20_stat_city_shares_co_dung_cot_va_khoa(pg_engine: Engine) -> None:
     cols = _columns(pg_engine, "stat_city_shares")
-    assert set(cols) == {"snapshot_id", "role", "seniority", "city", "share"}  # #163 thêm `seniority`
+    assert set(cols) == {"snapshot_id", "role", "seniority", "years", "city", "share"}  # #163 `seniority`, #280 `years`
     assert cols["share"][0] == "double precision"
-    assert _primary_key(pg_engine, "stat_city_shares") == ["snapshot_id", "role", "seniority", "city"]
+    assert _primary_key(pg_engine, "stat_city_shares") == ["snapshot_id", "role", "seniority", "years", "city"]
 
 
 def test_dat20_bang_trong_tables_py_khop_migration(pg_engine: Engine) -> None:
@@ -135,8 +139,8 @@ def test_dat20_rang_buoc_n_khong_am_va_ty_trong_trong_khoang_0_1(pg_engine: Engi
         with pytest.raises(exc.IntegrityError), pg_engine.begin() as conn:
             conn.execute(
                 text(
-                    "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, city, share) "
-                    "VALUES (:s, 'backend', 'all', 'ha_noi', :v)"
+                    "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, years, city, share) "
+                    "VALUES (:s, 'backend', 'all', 'any', 'ha_noi', :v)"
                 ),
                 {"s": S, "v": bad},
             )

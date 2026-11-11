@@ -8,7 +8,7 @@
  */
 
 import type { CityShareRow, CitySharesEnvelope, CoverageNote } from "./city-shares";
-import { BAR_CITIES, cityLabel, LEGEND_CITIES, levelLabel, roleLabel } from "./labels";
+import { BAR_CITIES, cityLabel, LEGEND_CITIES, levelLabel, roleLabel, yearsLabel } from "./labels";
 
 /** Một dòng có tỷ trọng: thanh ở lối 2D, hoặc dòng chú thích Khác / không xác định. */
 export interface ShareLine {
@@ -52,6 +52,8 @@ export interface SnapshotCaption {
   notes: CoverageNote[];
   /** Câu nguồn lỗi khi snapshot `partial` có nguồn lỗi; ngược lại `null`. */
   failedSources: string | null;
+  /** Bộ lọc đang dùng (#280): "vai trò · cấp bậc · số năm". */
+  filters: string;
 }
 
 export interface CitySharesView {
@@ -60,6 +62,11 @@ export interface CitySharesView {
   /** Cấp bậc lọc của envelope (`data.level`) và nhãn tiếng Việt của nó. */
   level: string;
   levelLabel: string;
+  /** Mốc số năm của envelope (`data.years`, #280) và nhãn tiếng Việt của nó. */
+  years: string;
+  yearsLabel: string;
+  /** Câu số tin bị bỏ vì không ghi số năm khi `years` khác `any`; ngược lại `null`. */
+  unstatedNote: string | null;
   bars: ShareLine[];
   legend: ShareLine[];
   table: { rows: TableRow[]; total: TableTotal; roundingNote: string };
@@ -146,11 +153,21 @@ export function buildCitySharesView(envelope: CitySharesEnvelope): CitySharesVie
   const legend = legendRows.map((row) => toShareLine(row, envelope));
   const tableRows = [...barRows, ...legendRows].map((row) => toTableRow(row, envelope));
 
+  const scope = `${roleLabel(data.role)} · ${levelLabel(data.level)}`;
+  const unstatedNote =
+    data.years_unstated_cell_id === null
+      ? null
+      : `${formatCount(meta.cells[data.years_unstated_cell_id].n)} tin của ${scope} ` +
+        "không ghi số năm kinh nghiệm nên không được tính.";
+
   return {
     role: data.role,
     roleLabel: roleLabel(data.role),
     level: data.level,
     levelLabel: levelLabel(data.level),
+    years: data.years,
+    yearsLabel: yearsLabel(data.years),
+    unstatedNote,
     bars,
     legend,
     table: {
@@ -166,6 +183,7 @@ export function buildCitySharesView(envelope: CitySharesEnvelope): CitySharesVie
         meta.snapshot_status === "partial" && meta.sources_failed.length > 0
           ? FAILED_SOURCES_PREFIX + meta.sources_failed.join(", ")
           : null,
+      filters: `${scope} · ${yearsLabel(data.years)}`,
     },
   };
 }

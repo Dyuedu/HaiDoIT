@@ -90,7 +90,7 @@ describe("fr33 #163 — bộ lọc cấp bậc mở ở mặc định của #134
     await openScreen();
 
     expect(DEFAULT_LEVEL).toBe("entry");
-    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry");
+    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry&years=any");
     expect(levelButton("Mới vào nghề").getAttribute("aria-pressed")).toBe("true");
     for (const name of LEVEL_NAMES.slice(1)) {
       expect(levelButton(name).getAttribute("aria-pressed")).toBe("false");
@@ -176,7 +176,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
 
     await user.click(levelButton("Senior"));
 
-    expect(String(fetchMock.mock.calls[1][0])).toBe("/api/v1/city-shares?role=all&level=senior");
+    expect(String(fetchMock.mock.calls[1][0])).toBe("/api/v1/city-shares?role=all&level=senior&years=any");
     expect(screen.getByRole("status").textContent).toBe(LOADING);
     expect(screen.queryByRole("button", { name: /^Hà Nội:/ })).toBeNull();
     expect(levelButton("Senior").getAttribute("aria-pressed")).toBe("true");
@@ -269,7 +269,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     await screen.findByRole("button", { name: /^Hà Nội:/ });
 
     const urls = fetchMock.mock.calls.map((call) => String(call[0]));
-    expect(urls.at(-1)).toBe("/api/v1/city-shares?role=ai_ml&level=senior");
+    expect(urls.at(-1)).toBe("/api/v1/city-shares?role=ai_ml&level=senior&years=any");
     expect(levelButton("Senior").getAttribute("aria-pressed")).toBe("true");
   });
 
@@ -326,7 +326,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     await user.click(screen.getByRole("button", { name: "Thử lại" }));
     await screen.findByRole("button", { name: /^Hà Nội:/ });
 
-    expect(String(fetchMock.mock.calls.at(-1)?.[0])).toBe("/api/v1/city-shares?role=all&level=senior");
+    expect(String(fetchMock.mock.calls.at(-1)?.[0])).toBe("/api/v1/city-shares?role=all&level=senior&years=any");
   });
 
   it("fr33: response có data.level khác cấp đã hỏi bị coi là không đọc được, không hiện số của cấp khác", async () => {

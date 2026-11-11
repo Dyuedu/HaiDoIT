@@ -41,8 +41,8 @@ def _snapshot(engine: Engine) -> None:
 
 
 def _share(engine: Engine, *, seniority: str | None = "all", city: str = "ha_noi", share: float = 0.5) -> None:
-    columns = "snapshot_id, role, city, share" + (", seniority" if seniority is not None else "")
-    values = ":s, 'backend', :c, :v" + (", :l" if seniority is not None else "")
+    columns = "snapshot_id, role, years, city, share" + (", seniority" if seniority is not None else "")
+    values = ":s, 'backend', 'any', :c, :v" + (", :l" if seniority is not None else "")
     with engine.begin() as conn:
         conn.execute(
             text(f"INSERT INTO haido.stat_city_shares ({columns}) VALUES ({values})"),
@@ -52,16 +52,16 @@ def _share(engine: Engine, *, seniority: str | None = "all", city: str = "ha_noi
 
 def test_fr33_migration_0005_noi_tiep_0004_va_la_head_duy_nhat() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0005_haido_city_share_level"]
+    assert script.get_heads() == ["0006_haido_years_filter"]  # #280 nối 0006 sau 0005
     revision = script.get_revision("0005_haido_city_share_level")
     assert revision is not None and revision.down_revision == "0004_haido_stat_sources"
 
 
 def test_fr33_stat_city_shares_co_cot_seniority_trong_khoa_chinh(pg_engine: Engine) -> None:
     cols = _columns(pg_engine)
-    assert set(cols) == {"snapshot_id", "role", "seniority", "city", "share"}
+    assert set(cols) == {"snapshot_id", "role", "seniority", "years", "city", "share"}  # #280 thêm `years`
     assert cols["seniority"] == ("text", "NO")
-    assert _primary_key(pg_engine) == ["snapshot_id", "role", "seniority", "city"]
+    assert _primary_key(pg_engine) == ["snapshot_id", "role", "seniority", "years", "city"]
     assert set(tables.stat_city_shares.c.keys()) == set(cols)
 
 
@@ -83,8 +83,8 @@ def _cell(engine: Engine, seniority: str) -> None:
     with engine.begin() as conn:
         conn.execute(
             text(
-                "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, scope, n, seniority_mix,"
-                " config_version) VALUES (:s, 'backend', 'all', :l, 'vn', 1, '{}'::jsonb, 'v')"
+                "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, years, scope, n, seniority_mix,"
+                " years_unstated, config_version) VALUES (:s, 'backend', 'all', :l, 'any', 'vn', 1, '{}'::jsonb, 0, 'v')"
             ),
             {"s": S, "l": seniority},
         )

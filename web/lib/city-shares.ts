@@ -1,5 +1,5 @@
 /**
- * Đọc `GET /api/v1/city-shares?role=&level=` qua proxy `/api/*` của web.
+ * Đọc `GET /api/v1/city-shares?role=&level=&years=` qua proxy `/api/*` của web.
  *
  * Kiểu của envelope `{data, meta}` theo `docs/api/openapi.json` (`Envelope[CitySharesData]`,
  * `Stat`, `Meta`, `CellMeta`, `ErrorEnvelope`). `fetchCityShares` không ném lỗi: nó trả dữ liệu,
@@ -70,6 +70,12 @@ export interface CitySharesData {
   role: string;
   /** Cấp bậc lọc đã dùng (#163): `all`, `entry`, hoặc một cấp. */
   level: string;
+  /** Mốc số năm đã dùng (#280): `any` hoặc `N` (tối đa N năm). */
+  years: string;
+  /**
+   * Ô của các tin không ghi số năm (#280), số tin là `meta.cells[...].n`. `null` khi `years = any`.
+   */
+  years_unstated_cell_id: string | null;
   total_cell_id: string;
   rows: CityShareRow[];
 }
@@ -111,18 +117,20 @@ const SHARE_DISPLAYS: readonly string[] = ["shown", "low_sample_shown"];
 const SNAPSHOT_STATUSES: readonly string[] = ["published", "partial"];
 
 /**
- * `level` là cấp bậc lọc (#163). Màn Bản đồ luôn gửi; bỏ trống thì không có tham số và API trả mọi cấp. Envelope có
- * `data.level` khác cấp đã hỏi là sai hợp đồng: không dùng, như khi `data.role` lệch.
+ * `level` là cấp bậc lọc (#163), `years` là mốc số năm (#280). Màn Bản đồ luôn gửi cả hai; bỏ trống thì không có tham
+ * số và API trả mọi cấp, mọi số năm. Envelope có `data.level` hay `data.years` khác điều đã hỏi là sai hợp đồng: không
+ * dùng, như khi `data.role` lệch.
  */
 export async function fetchCityShares(
   role: string,
-  options: { level?: string; signal?: AbortSignal } = {},
+  options: { level?: string; years?: string; signal?: AbortSignal } = {},
 ): Promise<CitySharesResult> {
   let response: Response;
   let body: unknown;
   const query =
     `role=${encodeURIComponent(role)}` +
-    (options.level === undefined ? "" : `&level=${encodeURIComponent(options.level)}`);
+    (options.level === undefined ? "" : `&level=${encodeURIComponent(options.level)}`) +
+    (options.years === undefined ? "" : `&years=${encodeURIComponent(options.years)}`);
   try {
     response = await fetch(`/api/v1/city-shares?${query}`, {
       headers: { accept: "application/json" },
@@ -146,7 +154,7 @@ export async function fetchCityShares(
     };
   }
 
-  return isCitySharesEnvelope(body, role, options.level)
+  return isCitySharesEnvelope(body, role, options.level, options.years)
     ? { kind: "ok", envelope: body }
     : { kind: "unreadable" };
 }
@@ -208,6 +216,7 @@ function isCitySharesEnvelope(
   body: unknown,
   role: string,
   level: string | undefined,
+  years: string | undefined,
 ): body is CitySharesEnvelope {
   if (!isRecord(body) || !isRecord(body.data) || !isMeta(body.meta)) return false;
   const { data, meta } = body;
@@ -221,6 +230,9 @@ function isCitySharesEnvelope(
     data.role !== role ||
     !isNonEmptyString(data.level) ||
     (level !== undefined && data.level !== level) ||
+    !isNonEmptyString(data.years) ||
+    (years !== undefined && data.years !== years) ||
+    (data.years === "any" ? data.years_unstated_cell_id !== null : !hasCell(data.years_unstated_cell_id)) ||
     !hasCell(data.total_cell_id) ||
     !Array.isArray(data.rows)
   ) {

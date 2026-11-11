@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { type CitySharesResult, fetchCityShares } from "@/lib/city-shares";
 import { buildCitySharesView } from "@/lib/city-shares-view";
-import { DEFAULT_LEVEL, DEFAULT_ROLE } from "@/lib/labels";
+import { DEFAULT_LEVEL, DEFAULT_ROLE, DEFAULT_YEARS } from "@/lib/labels";
 
 import { LevelChips } from "./level-chips";
 import { LoadError } from "./load-error";
@@ -13,15 +13,17 @@ import { ShareBars } from "./share-bars";
 import { ShareTable } from "./share-table";
 import { SnapshotCaption } from "./snapshot-caption";
 import { type ViewMode, ViewSwitch } from "./view-switch";
+import { YearsChips } from "./years-chips";
 
 const LOADING = "Đang tải số liệu…";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
 
-/** Một lượt gọi API. `id` tăng mỗi lần đổi vai trò, đổi cấp bậc hoặc thử lại. */
+/** Một lượt gọi API. `id` tăng mỗi lần đổi vai trò, cấp bậc, số năm hoặc thử lại. */
 interface Request {
   id: number;
   role: string;
   level: string;
+  years: string;
 }
 
 /** Kết quả của một lượt gọi, kèm `id` của lượt đã sinh ra nó. */
@@ -35,14 +37,20 @@ interface Loaded {
  * qua proxy `/api/*` sau khi trang mở, nên `next build` không gọi API và không đóng băng số.
  */
 export function MapScreen() {
-  const [request, setRequest] = useState<Request>({ id: 0, role: DEFAULT_ROLE, level: DEFAULT_LEVEL });
+  const [request, setRequest] = useState<Request>({
+    id: 0,
+    role: DEFAULT_ROLE,
+    level: DEFAULT_LEVEL,
+    years: DEFAULT_YEARS,
+  });
   const [mode, setMode] = useState<ViewMode>("2d");
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchCityShares(request.role, { level: request.level, signal: controller.signal }).then((result) => {
+    const options = { level: request.level, years: request.years, signal: controller.signal };
+    fetchCityShares(request.role, options).then((result) => {
       // Đã có lượt gọi mới: bỏ response về muộn.
       if (!controller.signal.aborted) setLoaded({ requestId: request.id, result });
     });
@@ -56,6 +64,8 @@ export function MapScreen() {
     setRequest((prev) => (prev.role === role ? prev : { ...prev, id: prev.id + 1, role }));
   const changeLevel = (level: string) =>
     setRequest((prev) => (prev.level === level ? prev : { ...prev, id: prev.id + 1, level }));
+  const changeYears = (years: string) =>
+    setRequest((prev) => (prev.years === years ? prev : { ...prev, id: prev.id + 1, years }));
   const retry = () => {
     setRequest((prev) => ({ ...prev, id: prev.id + 1 }));
     // Nút "Thử lại" sắp biến mất: đưa focus về vùng trạng thái thay vì để rơi về <body>.
@@ -79,6 +89,7 @@ export function MapScreen() {
     content = (
       <>
         {mode === "2d" ? <ShareBars view={view} /> : <ShareTable view={view} />}
+        {view.unstatedNote && <p className="m-0 text-caption text-text-secondary">{view.unstatedNote}</p>}
         <SnapshotCaption caption={view.caption} />
       </>
     );
@@ -91,6 +102,7 @@ export function MapScreen() {
         <ViewSwitch value={mode} onChange={setMode} />
       </div>
       <LevelChips value={request.level} onChange={changeLevel} />
+      <YearsChips value={request.years} onChange={changeYears} />
       <p className="m-0 text-caption text-text-muted sm:hidden">
         Mở trên máy tính để xem bản đồ đầy đủ.
       </p>

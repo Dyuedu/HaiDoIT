@@ -54,8 +54,9 @@ def _seed(engine: Engine, cells: dict[tuple[str, str], Counts], day: str = S, st
                 mix = {"junior": n} if n else {}
                 conn.execute(
                     text(
-                        "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, scope, n, seniority_mix,"
-                        " config_version) VALUES (:d, :r, 'all', :l, :sc, :n, CAST(:mix AS jsonb), 'v')"
+                        "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, years, scope, n, seniority_mix,"
+                        " years_unstated, config_version)"
+                        " VALUES (:d, :r, 'all', :l, 'any', :sc, :n, CAST(:mix AS jsonb), 0, 'v')"
                     ),
                     {"d": day, "r": role, "l": level, "sc": scope, "n": n, "mix": json.dumps(mix)},
                 )
@@ -63,8 +64,8 @@ def _seed(engine: Engine, cells: dict[tuple[str, str], Counts], day: str = S, st
                     share = n / total if total else (1.0 if scope == "unknown" else 0.0)
                     conn.execute(
                         text(
-                            "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, city, share) "
-                            "VALUES (:d, :r, :l, :sc, :v)"
+                            "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, years, city, share) "
+                            "VALUES (:d, :r, :l, 'any', :sc, :v)"
                         ),
                         {"d": day, "r": role, "l": level, "sc": scope, "v": share},
                     )
@@ -305,7 +306,7 @@ def test_fr33_route_chuyen_level_cho_nguon_va_mac_dinh_la_all() -> None:
     seen: list[tuple[str, str]] = []
 
     class _Records:
-        def city_shares(self, *, role: str, level: str) -> Any:
+        def city_shares(self, *, role: str, level: str, years: str) -> Any:  # #280: route luôn gửi years
             seen.append((role, level))
             raise UnknownCell("thử", snapshot_date=None)
 

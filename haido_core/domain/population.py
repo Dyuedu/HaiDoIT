@@ -34,6 +34,9 @@ class CountedPosting:
     role: str
     city: str
     seniority: str
+    years_min: float | None = None
+    """Số năm kinh nghiệm tối thiểu tin yêu cầu (#280); `None` là tin không ghi. Phép đếm không đọc trường này:
+    bước tổng hợp lọc tin theo mốc số năm trước khi dựng `ClusterPopulation`."""
 
 
 def window_start(day: date, window_days: int) -> date:

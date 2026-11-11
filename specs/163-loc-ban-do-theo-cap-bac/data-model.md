@@ -19,7 +19,7 @@
 | city | text | khóa |
 | share | float8 | 0–1 |
 
-Khóa chính: `(snapshot_id, role, seniority, city)` (trước đây không có `seniority`).
+Khóa chính: `(snapshot_id, role, seniority, city)` (trước đây không có `seniority`). Từ #280 (migration 0006): `(snapshot_id, role, seniority, years, city)`; số của #163 là hàng `years = any`. `stat_cells` cũng có `years` trong khóa và cột `years_unstated`, xem `specs/280-loc-so-nam-kinh-nghiem/data-model.md`.
 
 ## Bảng `haido.stat_cells` (không đổi schema)
 

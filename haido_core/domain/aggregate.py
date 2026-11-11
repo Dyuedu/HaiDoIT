@@ -10,10 +10,15 @@ của một vai trò luôn bằng 1; khi vai trò không có tin nào thì toàn
 Cấp bậc lọc được (#163, #134): ngoài cấp `all`, mỗi mã trong `level_options` có bộ ô và tỷ trọng riêng,
 cùng quy tắc. Mã đó là một cấp thô hoặc một nhóm (`level_groups`, ví dụ `entry`). Một cụm chỉ có một cấp thô và các
 nhóm rời nhau, nên n của nhóm là tổng n của các cấp thành viên; hàm không hỏi phép dân số thêm cho nhóm.
+
+Số năm kinh nghiệm (#280): ngoài mã `any` (mọi tin), mỗi mốc `N` trong `years_options` có bộ ô và tỷ trọng riêng của
+các tin có `years_min <= N`. Hàm lọc tin trước rồi giao tập con cho đúng phép đếm trên, nên cửa sổ, cụm và cấp lọc
+không có bản thứ hai. Tin không ghi số năm chỉ nằm trong `any`; mỗi ô mang `years_unstated`, số cụm không ghi số năm
+của (vai trò, cấp lọc, phạm vi) đó.
 """
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 
 from haido_core.domain.population import (
@@ -31,6 +36,9 @@ UNKNOWN_CITY = "unknown"
 ALL_LEVELS = "all"
 """Mã cấp lọc "mọi cấp bậc". Luôn có, đứng trước các mã của `level_options`."""
 
+ANY_YEARS = "any"
+"""Mã số năm "mọi số năm" (#280). Luôn có, đứng trước các mốc của `years_options`."""
+
 
 @dataclass(frozen=True, slots=True)
 class CellRow:
@@ -44,6 +52,10 @@ class CellRow:
     n: int
     seniority_mix: dict[str, int]
     seniority: str = ALL_LEVELS
+    years: str = ANY_YEARS
+    """Mã số năm của ô: `any` hoặc `str(N)` của một mốc (#280)."""
+    years_unstated: int = 0
+    """Số cụm của (vai trò, cấp lọc, phạm vi) không ghi số năm; cùng giá trị ở mọi mã số năm."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,6 +64,7 @@ class ShareRow:
     city: str
     share: float
     seniority: str = ALL_LEVELS
+    years: str = ANY_YEARS
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,15 +83,17 @@ def aggregate_city_shares(
     window_days: int,
     level_options: Sequence[str] = (),
     level_groups: Mapping[str, Sequence[str]] | None = None,
+    years_options: Sequence[int] = (),
 ) -> CityShareAggregate:
-    """Ô và tỷ trọng thành phố của S cho `all` cùng từng vai trò trong `roles`, theo `all` và từng cấp lọc.
+    """Ô và tỷ trọng thành phố của S cho `all` cùng từng vai trò trong `roles`, theo `all` và từng cấp lọc, theo `any`
+    và từng mốc số năm.
 
     `level_options` là các cấp lọc ngoài `all` (một cấp thô trong `levels` hoặc tên một nhóm trong `level_groups`);
-    để trống thì chỉ có cấp `all`.
+    để trống thì chỉ có cấp `all`. `years_options` là các mốc "tối đa N năm" (#280); để trống thì chỉ có `any`.
 
     Raises:
-        ValueError: nhóm có thành viên trùng, tin có thành phố hoặc cấp bậc ngoài danh sách, hoặc cấp lọc không biết, vì khi đó các số không
-            cộng lại bằng tổng; mã lạ là lỗi của bước gọi, không được đoán.
+        ValueError: nhóm có thành viên trùng, tin có thành phố hoặc cấp bậc ngoài danh sách, cấp lọc không biết, hoặc
+            mốc số năm âm hay trùng, vì khi đó các số không cộng lại bằng tổng; mã lạ là lỗi của bước gọi, không được đoán.
     """
     groups = {name: tuple(members) for name, members in (level_groups or {}).items()}
     for name, members in groups.items():
@@ -95,7 +110,46 @@ def aggregate_city_shares(
     if stray_members or stray_options or ALL_LEVELS in level_options:
         bad = [*stray_members, *stray_options, *([ALL_LEVELS] if ALL_LEVELS in level_options else [])]
         raise ValueError(f"Mã cấp bậc lọc ngoài danh sách: {', '.join(bad)}.")
+    if any(n < 0 for n in years_options) or len(set(years_options)) != len(years_options):
+        raise ValueError("Mốc số năm phải là số từ 0 và không trùng.")
 
+    def count(subset: Sequence[CountedPosting], years: str) -> CityShareAggregate:
+        return _count_subset(
+            snapshot_id,
+            subset,
+            roles=roles,
+            cities=cities,
+            levels=levels,
+            window_days=window_days,
+            level_options=level_options,
+            groups=groups,
+            years=years,
+        )
+
+    no_years = count([p for p in postings if p.years_min is None], ANY_YEARS)
+    unstated = {(c.role, c.seniority, c.scope): c.n for c in no_years.cells}
+    blocks = [count(postings, ANY_YEARS)]
+    for limit in years_options:
+        blocks.append(count([p for p in postings if p.years_min is not None and p.years_min <= limit], str(limit)))
+    cells = tuple(
+        replace(c, years_unstated=unstated[(c.role, c.seniority, c.scope)]) for block in blocks for c in block.cells
+    )
+    return CityShareAggregate(cells, tuple(row for block in blocks for row in block.shares))
+
+
+def _count_subset(
+    snapshot_id: date,
+    postings: Sequence[CountedPosting],
+    *,
+    roles: Sequence[str],
+    cities: Sequence[str],
+    levels: Sequence[str],
+    window_days: int,
+    level_options: Sequence[str],
+    groups: Mapping[str, tuple[str, ...]],
+    years: str,
+) -> CityShareAggregate:
+    """Ô và tỷ trọng của một tập tin (đã lọc theo số năm), gắn mã số năm `years`. Đầu vào đã được kiểm."""
     population = ClusterPopulation(postings)
     day = snapshot_id.isoformat()
     scopes = (*cities, NATIONWIDE)
@@ -121,14 +175,14 @@ def aggregate_city_shares(
             }
             for scope in scopes:
                 mix = {level: n_by_level[scope][level] for level in members if n_by_level[scope][level] > 0}
-                cells.append(CellRow(role, scope, n_by_scope[scope], mix, filter_level))
+                cells.append(CellRow(role, scope, n_by_scope[scope], mix, filter_level, years))
             total = n_by_scope[NATIONWIDE]
             for city in cities:
                 if total:
                     share = n_by_scope[city] / total
                 else:
                     share = 1.0 if city == UNKNOWN_CITY else 0.0
-                shares.append(ShareRow(role, city, share, filter_level))
+                shares.append(ShareRow(role, city, share, filter_level, years))
     return CityShareAggregate(tuple(cells), tuple(shares))
 
 

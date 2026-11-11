@@ -5,7 +5,8 @@ thị (`display`, `insufficient_by_measure`) do `suppression_for` tính từ `n`
 `thresholds.min_sample` của fixture; dưới ngưỡng thì bản giả tự ẩn giá trị.
 
 `city-shares` có hai cấp bậc lọc cho mỗi vai trò: `all` và `entry` (#163); cấp khác là `unknown_cell`. Fixture đặt
-`city_shares[vai trò][cấp]`.
+`city_shares[vai trò][cấp]`. Mốc số năm (#280) chỉ có `any` ở các khóa đó, cộng khóa `"<cấp>.y<N>"` (bản giả có
+`all` / `entry.y1`) mang thêm `years_unstated_cell_id`; mốc khác là `unknown_cell`.
 
 Bản giả không chọn ô và không quay về (phép 2 của registry, #3/#17): fixture ánh xạ thẳng
 tham số sang ô đã dùng, và `fallback_label` lấy nguyên văn.
@@ -57,11 +58,12 @@ class FakeMarket:
         self._skill_rates: dict[str, dict[str, dict[str, Any]]] = raw["skill_rates"]
         self._newcomer_roles: dict[str, Any] = raw["newcomer_roles"]
 
-    def city_shares(self, *, role: str, level: str = "all") -> Envelope[CitySharesData]:
-        entry = self._city_shares.get(role, {}).get(level)
+    def city_shares(self, *, role: str, level: str = "all", years: str = "any") -> Envelope[CitySharesData]:
+        key = level if years == "any" else f"{level}.y{years}"
+        entry = self._city_shares.get(role, {}).get(key)
         if entry is None:
             raise UnknownCell(
-                "Không có ô thống kê nào cho vai trò và cấp bậc đã chọn.",
+                "Không có ô thống kê nào cho vai trò, cấp bậc và số năm đã chọn.",
                 snapshot_date=self._snapshot_date,
             )
         rows = [
@@ -71,8 +73,17 @@ class FakeMarket:
             )
             for row in entry["rows"]
         ]
-        data = CitySharesData(role=role, level=level, total_cell_id=entry["total_cell_id"], rows=rows)
+        data = CitySharesData(
+            role=role,
+            level=level,
+            years=years,
+            years_unstated_cell_id=None if years == "any" else entry["years_unstated_cell_id"],
+            total_cell_id=entry["total_cell_id"],
+            rows=rows,
+        )
         cell_ids = [entry["total_cell_id"], *(row["cell_id"] for row in entry["rows"])]
+        if data.years_unstated_cell_id is not None:
+            cell_ids.append(data.years_unstated_cell_id)
         return Envelope[CitySharesData](data=data, meta=self._meta(cell_ids, {}))
 
     def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:

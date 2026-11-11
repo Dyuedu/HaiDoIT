@@ -7,6 +7,9 @@
  *
  * Cấp bậc lọc (#163, #134) theo cùng cách: `LEVEL_OPTIONS` là `level_options` của `config/rules.toml` cộng `all` ở
  * cuối; `tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` so với config.
+ *
+ * Mốc số năm kinh nghiệm (#280): `YEARS_OPTIONS` là `any` ở đầu cộng `years_options` của `config/rules.toml`;
+ * `tests/deploy/test_gh280_bo_loc_so_nam_khop_config.py` so với config.
  */
 
 export interface RoleOption {
@@ -56,6 +59,27 @@ export const LEVEL_OPTIONS: readonly LevelOption[] = [
 /** Cấp bậc khi mở trang: nhóm mới vào nghề (#134). Mọi màn nói "mới vào nghề" dùng cùng nhóm này. */
 export const DEFAULT_LEVEL = "entry";
 
+export interface YearsOption {
+  code: string;
+  label: string;
+}
+
+/**
+ * Nút số năm kinh nghiệm (#280): mọi số năm, rồi từng mốc "tối đa N năm". Mốc `N` chỉ đếm tin yêu cầu tối thiểu không
+ * quá N năm; tin không ghi số năm chỉ nằm trong "Mọi số năm".
+ */
+export const YEARS_OPTIONS: readonly YearsOption[] = [
+  { code: "any", label: "Mọi số năm" },
+  { code: "0", label: "Không cần kinh nghiệm" },
+  { code: "1", label: "Tối đa 1 năm" },
+  { code: "2", label: "Tối đa 2 năm" },
+  { code: "3", label: "Tối đa 3 năm" },
+  { code: "5", label: "Tối đa 5 năm" },
+];
+
+/** Số năm khi mở trang: không lọc. */
+export const DEFAULT_YEARS = "any";
+
 /** Ba thành phố thành thanh, theo thứ tự vẽ. Đà Nẵng luôn có mặt. */
 export const BAR_CITIES: readonly string[] = ["ha_noi", "ho_chi_minh", "da_nang"];
 
@@ -68,6 +92,10 @@ const ROLE_LABELS: Readonly<Record<string, string>> = Object.fromEntries(
 
 const LEVEL_LABELS: Readonly<Record<string, string>> = Object.fromEntries(
   LEVEL_OPTIONS.map((level) => [level.code, level.label]),
+);
+
+const YEARS_LABELS: Readonly<Record<string, string>> = Object.fromEntries(
+  YEARS_OPTIONS.map((years) => [years.code, years.label]),
 );
 
 const CITY_LABELS: Readonly<Record<string, string>> = {
@@ -86,6 +114,11 @@ export function roleLabel(code: string): string {
 /** Nhãn của cấp bậc; mã không có trong file này thì trả chính mã đó. */
 export function levelLabel(code: string): string {
   return Object.hasOwn(LEVEL_LABELS, code) ? LEVEL_LABELS[code] : code;
+}
+
+/** Nhãn của mốc số năm; mã không có trong file này thì trả chính mã đó. */
+export function yearsLabel(code: string): string {
+  return Object.hasOwn(YEARS_LABELS, code) ? YEARS_LABELS[code] : code;
 }
 
 /** Nhãn của thành phố; mã không có trong file này thì trả chính mã đó. */

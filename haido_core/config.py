@@ -6,6 +6,7 @@ Thiếu khóa hoặc sai kiểu thì báo lỗi tiếng Việt, không tự đi�
 import re
 import tomllib
 from dataclasses import dataclass
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,9 @@ ALL_ROLES = "all"
 
 ALL_LEVELS = "all"
 """Mã dành riêng cho "mọi cấp bậc"; không được là tên nhóm, mã cấp hay phần tử của `level_options`."""
+
+ANY_YEARS = "any"
+"""Mã số năm "mọi số năm" (#280): không lọc theo số năm, gồm cả tin không ghi số năm."""
 
 
 class ConfigError(ValueError):
@@ -57,6 +61,8 @@ class RulesConfig:
     trong `level_groups` hoặc một mã của `level_codes`."""
     level_groups: dict[str, tuple[str, ...]]
     """Nhóm cấp bậc: tên nhóm sang các mã cấp thành viên (`entry` = intern, fresher, junior; #134)."""
+    years_options: tuple[int, ...]
+    """Mốc "tối đa N năm kinh nghiệm" của bản đồ (#280), tăng dần, không gồm `any`. Mã của mốc là `str(N)`."""
 
 
 CV_SIGNATURES: dict[str, bytes] = {
@@ -78,6 +84,21 @@ _MIME = re.compile(r"[a-z0-9][a-z0-9.+-]*/[a-z0-9][a-z0-9.+-]*")
 
 CITY_CODES = frozenset({"ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"})
 UNKNOWN = "unknown"
+
+
+def _years_options(raw: dict[str, Any]) -> tuple[int, ...]:
+    """`years_options` (#280): số nguyên từ 0, tăng dần, không trùng, không rỗng."""
+    options = raw.get("years_options")
+    if options is None:
+        raise ConfigError("Cấu hình thiếu khóa years_options.")
+    if (
+        not isinstance(options, list)
+        or not options
+        or not all(isinstance(n, int) and not isinstance(n, bool) and n >= 0 for n in options)
+        or any(a >= b for a, b in pairwise(options))
+    ):
+        raise ConfigError("years_options phải là danh sách số nguyên từ 0, tăng dần, không trùng và không rỗng.")
+    return tuple(options)
 
 
 def _is_number(value: object) -> bool:
@@ -287,6 +308,7 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
     if set(role_codes.values()) != set(roles):
         raise ConfigError("roles phải đúng bằng tập mã trong labels.role.")
     level_options, level_groups = _level_filter(raw, level_codes)
+    years_options = _years_options(raw)
 
     return RulesConfig(
         config_version=version,
@@ -306,4 +328,5 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         level_codes=level_codes,
         level_options=level_options,
         level_groups=level_groups,
+        years_options=years_options,
     )

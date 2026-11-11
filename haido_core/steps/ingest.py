@@ -47,9 +47,12 @@ class PlannedFact:
     location_text: str | None
     experience_level: str | None
     job_level: str | None
+    years_min: float | None = None
 
     def version(self) -> FactVersion:
-        return FactVersion(self.title, self.company, self.location_text, self.experience_level, self.job_level)
+        return FactVersion(
+            self.title, self.company, self.location_text, self.experience_level, self.job_level, self.years_min
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,7 +102,9 @@ def plan_ingest(day: date, data: SourceSnapshot, auto_sources: Sequence[str]) ->
     )
     source_of = {o.job_url: o.source for o in data.observations}
     facts = tuple(
-        PlannedFact(source_of[f.job_url], f.job_url, f.title, f.company, f.location, f.experience_level, f.job_level)
+        PlannedFact(
+            source_of[f.job_url], f.job_url, f.title, f.company, f.location, f.experience_level, f.job_level, f.years_min
+        )
         for f in sorted(data.facts, key=lambda f: (source_of.get(f.job_url, ""), f.job_url))
         if f.job_url in source_of
     )
