@@ -10,6 +10,9 @@ Tin của nguồn trong `sources.excluded` (linkedin, #263) bị bỏ ngay từ 
 không làm nguồn nào được liệt kê. `stat_job_lifecycle` vẫn có dòng của các tin này (không phải số công khai,
 API không đọc).
 
+Mỗi vai trò có thêm ô và tỷ trọng thành phố cho từng cấp bậc lọc được của bản đồ (#163): `all`, nhóm `entry` và từng
+cấp, theo `level_options` và `level_groups` trong `config/rules.toml`. Cột `seniority` của hai bảng là mã cấp lọc.
+
 `stat_sources` là các nguồn có ít nhất một tin được đếm trong cửa sổ của S (#259, DEC-12), không phải
 các nguồn có lượt chạy ở S. API đọc danh sách này theo khóa.
 
@@ -133,6 +136,8 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
                 cities=tuple(rules.city_codes.values()),
                 levels=tuple(rules.level_codes.values()),
                 window_days=rules.window_days,
+                level_options=rules.level_options,
+                level_groups=rules.level_groups,
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc

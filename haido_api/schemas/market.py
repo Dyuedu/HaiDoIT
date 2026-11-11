@@ -42,8 +42,11 @@ class CitySharesData(BaseModel):
     role: str
     """Vai trò đã chọn; `all` là mọi vai trò."""
 
+    level: str
+    """Cấp bậc lọc đã dùng (#163): `all` là mọi cấp bậc, `entry` là nhóm mới vào nghề, hoặc một cấp như `senior`."""
+
     total_cell_id: CellId
-    """Ô toàn quốc của vai trò, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."""
+    """Ô toàn quốc của vai trò ở cấp đã chọn, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."""
 
     rows: Annotated[list[CityShareRow], Field(min_length=1)]
     """Mỗi thành phố một dòng, cộng dòng `other` và `unknown`. Tổng `share.value` bằng 1."""

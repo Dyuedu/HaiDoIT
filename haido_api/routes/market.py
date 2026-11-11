@@ -11,7 +11,7 @@ Thêm bản thật là thêm một mục vào `IMPLEMENTATIONS`; route và schem
 
 import os
 from collections.abc import Callable, Mapping
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, Query, Request
 
@@ -20,7 +20,12 @@ from haido_api.market_source import MarketReadModel
 from haido_api.schemas.error import ErrorEnvelope
 from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
 from haido_api.stat_market import StatMarket
+from haido_core.config import ALL_LEVELS, load_rules
 from haido_core.domain.envelope import Envelope
+
+LEVEL_CODES: tuple[str, ...] = (ALL_LEVELS, *load_rules().level_options)
+"""Cấp bậc lọc được: `all` cộng `level_options` của `config/rules.toml` (#163, #134). Đọc một lần lúc import."""
+LevelCode = Literal[LEVEL_CODES]
 
 SOURCE_ENV: dict[str, str] = {
     "city_shares": "HAIDO_MARKET_SOURCE_CITY_SHARES",
@@ -81,12 +86,21 @@ router = APIRouter(
 def get_city_shares(
     role: Annotated[str, _code("Mã vai trò, snake_case; `all` là mọi vai trò.")],
     source: Annotated[MarketReadModel, Depends(_source_for("city_shares"))],
+    level: Annotated[
+        LevelCode,
+        Query(
+            description=(
+                "Cấp bậc lọc: `all` (mặc định, mọi cấp), `entry` (Intern, Fresher, Junior gộp một), "
+                "từng cấp, hoặc `unknown` (chưa ghi cấp bậc). Danh sách lấy từ `config/rules.toml`."
+            )
+        ),
+    ] = ALL_LEVELS,
 ) -> Envelope[CitySharesData]:
-    """Tỷ trọng từng thành phố trong số tin của vai trò trên toàn quốc (FR-33).
+    """Tỷ trọng từng thành phố trong số tin của vai trò ở cấp bậc đã chọn, trên toàn quốc (FR-33).
 
-    Thành phố dưới ngưỡng mẫu vẫn có giá trị, kèm `display = low_sample_shown`.
+    Thành phố dưới ngưỡng mẫu của cấp đã chọn vẫn có giá trị, kèm `display = low_sample_shown`.
     """
-    return source.city_shares(role=role)
+    return source.city_shares(role=role, level=level)
 
 
 @router.get(

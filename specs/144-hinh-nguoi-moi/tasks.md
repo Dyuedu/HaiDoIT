@@ -27,3 +27,8 @@
 ## Phase 3: Sau merge
 
 - [ ] T013 Comment hợp đồng lên #144 cho người làm #145, #146, #147
+
+## Phase 4: Sau #163 (2026-11-11)
+
+- [x] T-163a Ghép `haido_api/fixtures/fake_market.json` với thay đổi `city_shares` theo cấp bậc của #163, giữ nguyên ô và `newcomer_roles` của #144.
+- [x] T-163b Chạy lại test của #144 sau khi ghép (xem `tdd.md`, Đợt 2).

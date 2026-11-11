@@ -10,7 +10,7 @@ export function ShareBars({ view }: { view: CitySharesView }) {
   return (
     <figure className="m-0 rounded-xl border border-border bg-panel p-panel">
       <figcaption className="font-mono text-kicker uppercase text-text-muted">
-        Tỷ trọng tin theo thành phố · {view.roleLabel}
+        Tỷ trọng tin theo thành phố · {view.roleLabel} · {view.levelLabel}
       </figcaption>
       <ul className="mt-4 flex list-none flex-col gap-1 p-0">
         {view.bars.map((line) => (

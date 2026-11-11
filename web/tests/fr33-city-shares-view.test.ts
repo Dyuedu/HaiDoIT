@@ -287,3 +287,23 @@ describe("fr33 — nhãn từ labels.ts", () => {
     expect(view.table.rows.map((row) => row.label)).toContain("hai_phong");
   });
 });
+
+describe("fr33 #163 — nhãn cấp bậc trên view", () => {
+  it("fr33: view mang cấp bậc và nhãn tiếng Việt của envelope", () => {
+    const entryView = buildCitySharesView(fakeEnvelope("ai_ml", "entry"));
+    expect([entryView.level, entryView.levelLabel]).toEqual(["entry", "Mới vào nghề"]);
+
+    const allView = buildCitySharesView(fakeEnvelope("ai_ml"));
+    expect([allView.level, allView.levelLabel]).toEqual(["all", "Mọi cấp bậc"]);
+  });
+
+  it("fr33: n của từng thành phố là n của ô ở cấp đã chọn, thanh nhỏ ở entry khác ở mọi cấp", () => {
+    const entryView = buildCitySharesView(fakeEnvelope("ai_ml", "entry"));
+    const allView = buildCitySharesView(fakeEnvelope("ai_ml"));
+
+    expect(entryView.bars.map((bar) => bar.nText)).toEqual(["241", "188", "11"]);
+    expect(allView.bars.map((bar) => bar.nText)).toEqual(["412", "333", "21"]);
+    expect(entryView.table.total.nText).toBe("501");
+    expect(entryView.bars[2].lowSampleNote).toBe("Cỡ mẫu nhỏ (n = 11 < 30): số liệu chỉ để tham khảo");
+  });
+});

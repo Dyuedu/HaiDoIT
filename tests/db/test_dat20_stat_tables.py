@@ -61,7 +61,7 @@ def test_dat20_migration_0003_noi_tiep_0002() -> None:
 
 def test_dat259_migration_0004_noi_tiep_0003_va_chi_con_mot_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0004_haido_stat_sources"]
+    assert script.get_heads() == ["0005_haido_city_share_level"]  # #163 thêm 0005 sau 0004
     revision = script.get_revision("0004_haido_stat_sources")
     assert revision is not None and revision.down_revision == "0003_haido_city_share"
 
@@ -107,9 +107,9 @@ def test_dat20_stat_cells_co_dung_cot_va_khoa(pg_engine: Engine) -> None:
 
 def test_dat20_stat_city_shares_co_dung_cot_va_khoa(pg_engine: Engine) -> None:
     cols = _columns(pg_engine, "stat_city_shares")
-    assert set(cols) == {"snapshot_id", "role", "city", "share"}
+    assert set(cols) == {"snapshot_id", "role", "seniority", "city", "share"}  # #163 thêm `seniority`
     assert cols["share"][0] == "double precision"
-    assert _primary_key(pg_engine, "stat_city_shares") == ["snapshot_id", "role", "city"]
+    assert _primary_key(pg_engine, "stat_city_shares") == ["snapshot_id", "role", "seniority", "city"]
 
 
 def test_dat20_bang_trong_tables_py_khop_migration(pg_engine: Engine) -> None:
@@ -134,7 +134,11 @@ def test_dat20_rang_buoc_n_khong_am_va_ty_trong_trong_khoang_0_1(pg_engine: Engi
     for bad in (-0.1, 1.1):
         with pytest.raises(exc.IntegrityError), pg_engine.begin() as conn:
             conn.execute(
-                text("INSERT INTO haido.stat_city_shares VALUES (:s, 'backend', 'ha_noi', :v)"), {"s": S, "v": bad}
+                text(
+                    "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, city, share) "
+                    "VALUES (:s, 'backend', 'all', 'ha_noi', :v)"
+                ),
+                {"s": S, "v": bad},
             )
 
 

@@ -12,7 +12,7 @@
           "market"
         ],
         "summary": "Tỷ trọng thành phố của một vai trò",
-        "description": "Tỷ trọng từng thành phố trong số tin của vai trò trên toàn quốc (FR-33).\n\nThành phố dưới ngưỡng mẫu vẫn có giá trị, kèm `display = low_sample_shown`.",
+        "description": "Tỷ trọng từng thành phố trong số tin của vai trò ở cấp bậc đã chọn, trên toàn quốc (FR-33).\n\nThành phố dưới ngưỡng mẫu của cấp đã chọn vẫn có giá trị, kèm `display = low_sample_shown`.",
         "operationId": "get_city_shares_api_v1_city_shares_get",
         "parameters": [
           {
@@ -28,6 +28,29 @@
               "title": "Role"
             },
             "description": "Mã vai trò, snake_case; `all` là mọi vai trò."
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "all",
+                "entry",
+                "intern",
+                "fresher",
+                "junior",
+                "mid",
+                "senior",
+                "lead",
+                "unknown"
+              ],
+              "type": "string",
+              "description": "Cấp bậc lọc: `all` (mặc định, mọi cấp), `entry` (Intern, Fresher, Junior gộp một), từng cấp, hoặc `unknown` (chưa ghi cấp bậc). Danh sách lấy từ `config/rules.toml`.",
+              "default": "all",
+              "title": "Level"
+            },
+            "description": "Cấp bậc lọc: `all` (mặc định, mọi cấp), `entry` (Intern, Fresher, Junior gộp một), từng cấp, hoặc `unknown` (chưa ghi cấp bậc). Danh sách lấy từ `config/rules.toml`."
           }
         ],
         "responses": {
@@ -330,11 +353,16 @@
             "title": "Role",
             "description": "Vai trò đã chọn; `all` là mọi vai trò."
           },
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "description": "Cấp bậc lọc đã dùng (#163): `all` là mọi cấp bậc, `entry` là nhóm mới vào nghề, hoặc một cấp như `senior`."
+          },
           "total_cell_id": {
             "type": "string",
             "minLength": 1,
             "title": "Total Cell Id",
-            "description": "Ô toàn quốc của vai trò, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."
+            "description": "Ô toàn quốc của vai trò ở cấp đã chọn, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."
           },
           "rows": {
             "items": {
@@ -350,6 +378,7 @@
         "type": "object",
         "required": [
           "role",
+          "level",
           "total_cell_id",
           "rows"
         ],

@@ -28,3 +28,19 @@ Code tối thiểu trong `cluster.py`, `matching.py`, `config.py`, `aggregate.py
 ## REFACTOR
 
 Giữ hàm thuần. Không thêm gói. Chạy lại đúng file test sau mỗi lần sửa.
+
+## Đợt 2 — 2026-11-11, sửa theo #163 (ô theo cấp bậc lọc được)
+
+Lý do: `aggregate` ghi thêm ô và tỷ trọng theo cấp bậc, nên các số đếm hàng và truy vấn trong `tests/steps/test_dat20_aggregate_step.py` đổi. Hành vi gộp cụm của #100 không đổi.
+
+Lệnh: `uv run pytest tests/steps/test_fr33_aggregate_level_step.py tests/steps/test_dat20_aggregate_step.py -q` (cần `HAIDO_TEST_DATABASE_URL`).
+
+Hành vi thêm: 9. Hai nguồn cùng khóa, đại diện là Junior (ITviec) còn thành viên kia là Senior (TopCV), cụm đếm ở `entry` và `junior`, không đếm ở `senior`.
+
+### RED
+
+Sau khi thêm migration 0005 mà `aggregate` chưa ghi cột `seniority`: `tests/steps/test_fr33_aggregate_level_step.py` 12 failed (`NotNullViolation: null value in column "seniority" of relation "stat_city_shares"`), gồm test cụm ở mục 9. Ở lần chạy `tests/steps` đầu sau khi có code, `tests/steps/test_dat20_aggregate_step.py` 19 failed (cùng `tests/steps/test_dat20_api_end_to_end.py` và `tests/test_dat20_cli.py`, tổng 21) vì mỗi (vai trò, phạm vi) giờ có 9 hàng `stat_cells` và truy vấn cũ không lọc `seniority`.
+
+### GREEN
+
+`tests/steps/test_fr33_aggregate_level_step.py` 12 passed. Sau khi sửa truy vấn và số đếm (66 → 594 ô, 55 → 495 tỷ trọng), `tests/steps` + `tests/test_dat20_cli.py` + `tests/test_ad4_cli.py` xanh. Các đợt trước giữ nguyên.

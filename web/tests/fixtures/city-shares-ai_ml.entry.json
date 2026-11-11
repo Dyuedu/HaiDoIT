@@ -1,0 +1,205 @@
+{
+  "data": {
+    "role": "ai_ml",
+    "level": "entry",
+    "total_cell_id": "vn.ai_ml.entry",
+    "rows": [
+      {
+        "city": "ha_noi",
+        "share": {
+          "value": 0.4810379241516966,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "ha_noi.ai_ml.entry"
+        }
+      },
+      {
+        "city": "ho_chi_minh",
+        "share": {
+          "value": 0.37524950099800397,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "ho_chi_minh.ai_ml.entry"
+        }
+      },
+      {
+        "city": "da_nang",
+        "share": {
+          "value": 0.021956087824351298,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "da_nang.ai_ml.entry"
+        }
+      },
+      {
+        "city": "other",
+        "share": {
+          "value": 0.04790419161676647,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "other.ai_ml.entry"
+        }
+      },
+      {
+        "city": "unknown",
+        "share": {
+          "value": 0.07385229540918163,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "unknown.ai_ml.entry"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.ai_ml.entry": {
+        "n": 501,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 73,
+          "fresher": 123,
+          "junior": 305
+        },
+        "n_by_measure": {
+          "skill_count": 501,
+          "experience_years": 360,
+          "salary": 120
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "ha_noi.ai_ml.entry": {
+        "n": 241,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 38,
+          "fresher": 61,
+          "junior": 142
+        },
+        "n_by_measure": {
+          "skill_count": 241,
+          "experience_years": 174,
+          "salary": 58
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "ho_chi_minh.ai_ml.entry": {
+        "n": 188,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 29,
+          "fresher": 47,
+          "junior": 112
+        },
+        "n_by_measure": {
+          "skill_count": 188,
+          "experience_years": 135,
+          "salary": 45
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "da_nang.ai_ml.entry": {
+        "n": 11,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 2,
+          "junior": 9
+        },
+        "n_by_measure": {
+          "skill_count": 11,
+          "experience_years": 8,
+          "salary": 3
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "other.ai_ml.entry": {
+        "n": 24,
+        "fallback_label": null,
+        "seniority_mix": {
+          "fresher": 6,
+          "junior": 18
+        },
+        "n_by_measure": {
+          "skill_count": 24,
+          "experience_years": 17,
+          "salary": 6
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "unknown.ai_ml.entry": {
+        "n": 37,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "fresher": 9,
+          "junior": 24
+        },
+        "n_by_measure": {
+          "skill_count": 37,
+          "experience_years": 27,
+          "salary": 9
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": true,
+          "salary": true
+        }
+      }
+    }
+  }
+}

@@ -347,3 +347,56 @@ describe("ad17 — envelope hỏng thì không đọc được", () => {
     expect(await fetchCityShares("ai_ml")).toEqual({ kind: "unreadable" });
   });
 });
+
+describe("fr33 #163 — cấp bậc trong lượt đọc city-shares", () => {
+  it("fr33: có level thì thêm &level= vào URL, mã được mã hóa", async () => {
+    const fetchMock = stubFetch(200, fakeEnvelope("ai_ml", "entry"));
+
+    expect(await fetchCityShares("ai_ml", { level: "entry" })).toEqual({
+      kind: "ok",
+      envelope: fakeEnvelope("ai_ml", "entry"),
+    });
+    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=ai_ml&level=entry");
+
+    await fetchCityShares("ai_ml", { level: "a&b" });
+    expect(String(fetchMock.mock.calls[1][0])).toBe("/api/v1/city-shares?role=ai_ml&level=a%26b");
+  });
+
+  it("fr33: không có level thì URL như cũ và nhận envelope của mọi cấp", async () => {
+    const fetchMock = stubFetch(200, fakeEnvelope("all"));
+
+    expect(await fetchCityShares("all")).toMatchObject({ kind: "ok" });
+    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all");
+  });
+
+  it("fr33: data.level khác cấp đã hỏi thì không đọc được", async () => {
+    stubFetch(200, fakeEnvelope("ai_ml", "all"));
+
+    expect(await fetchCityShares("ai_ml", { level: "entry" })).toEqual({ kind: "unreadable" });
+  });
+
+  it.each([
+    ["thiếu data.level", (data: Record<string, unknown>) => delete data.level],
+    ["data.level rỗng", (data: Record<string, unknown>) => (data.level = "")],
+    ["data.level không phải chuỗi", (data: Record<string, unknown>) => (data.level = 3)],
+  ])("fr33: %s thì không đọc được", async (_name, damage) => {
+    const envelope = fakeEnvelope("ai_ml", "entry");
+    damage(envelope.data as unknown as Record<string, unknown>);
+    stubFetch(200, envelope);
+
+    expect(await fetchCityShares("ai_ml", { level: "entry" })).toEqual({ kind: "unreadable" });
+    expect(await fetchCityShares("ai_ml")).toEqual({ kind: "unreadable" });
+  });
+
+  it("fr33: 404 unknown_cell của một cấp không cho thử lại và mang ngày snapshot", async () => {
+    stubFetch(404, errorBody("unknown_cell", "Không có tin nào ở cấp này.", "2026-11-03"));
+
+    expect(await fetchCityShares("all", { level: "lead" })).toEqual({
+      kind: "error",
+      code: "unknown_cell",
+      message: "Không có tin nào ở cấp này.",
+      snapshotDate: "2026-11-03",
+      retryable: false,
+    });
+  });
+});

@@ -20,13 +20,15 @@ CITY = (
 )
 ROLE = '[labels.role]\n"Backend" = "backend"\n"Other" = "other"\n'
 LEVEL = '[labels.level]\n"Junior" = "junior"\n"không xác định" = "unknown"\n'
+LEVEL_OPTIONS = 'level_options = ["entry", "junior", "unknown"]\n'
+LEVEL_GROUPS = '[level_groups]\nentry = ["junior"]\n'
 
 CV = f'cv_max_bytes = 5242880\ncv_types = ["{PDF}", "{DOCX}"]\n'
 
 BASE = (
     'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_core = 0.3\ntheta_common = 0.1\n'
-    f'roles = ["backend", "other"]\n{CV}\n'
-    f"{SOURCES}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
+    f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{CV}\n'
+    f"{SOURCES}\n{LEVEL_GROUPS}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
 )
 
 
@@ -302,3 +304,122 @@ def test_ad10_gioi_han_cv_sai_thi_bao_loi_tieng_viet(tmp_path: Path, swap: dict[
 def test_ad10_cv_max_bytes_dung_50_mib_van_duoc(tmp_path: Path) -> None:
     rules = load_rules(_base(tmp_path, cv_max_bytes=str(50 * 1024 * 1024)))
     assert rules.cv_max_bytes == 50 * 1024 * 1024
+
+
+# ---------------------------------------------------------------- #163, #134: cấp bậc lọc được của bản đồ
+
+
+def test_fr33_cap_bac_loc_duoc_nam_trong_config_theo_dung_danh_sach_cua_134() -> None:
+    rules = load_rules()
+    assert rules.level_options == ("entry", "intern", "fresher", "junior", "mid", "senior", "lead", "unknown")
+    assert rules.level_groups == {"entry": ("intern", "fresher", "junior")}
+    assert "unknown" not in rules.level_groups["entry"]
+    assert set(rules.level_options) - set(rules.level_groups) == set(rules.level_codes.values())
+
+
+def test_fr33_config_version_da_tang_khi_them_cap_bac_loc_duoc() -> None:
+    old = {"2026-11-06.1", "2026-11-09.1", "2026-11-10.1", "2026-11-10.2", "2026-11-10.3"}
+    assert load_rules().config_version not in old
+
+
+def test_fr33_cap_bac_khong_doi_nguong_mau_theta_va_ghi_chu_pham_vi() -> None:
+    rules = load_rules()
+    assert (rules.min_sample, rules.theta_core, rules.theta_common) == (30, 0.3, 0.1)
+    assert [n.code for n in rules.coverage_notes] == [
+        "n_sources",
+        "posting_not_demand",
+        "big_city_bias",
+        "salary_disclosed_only",
+    ]
+
+
+def test_fr33_cap_bac_loc_duoc_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
+    rules = load_rules(_base(tmp_path))
+    assert rules.level_options == ("entry", "junior", "unknown")
+    assert rules.level_groups == {"entry": ("junior",)}
+
+
+@pytest.mark.parametrize("khoa", ["level_options", "level_groups"])
+def test_fr33_thieu_khoa_cap_bac_thi_bao_loi_tieng_viet(tmp_path: Path, khoa: str) -> None:
+    body = BASE.replace(LEVEL_OPTIONS, "") if khoa == "level_options" else BASE.replace(LEVEL_GROUPS, "")
+    with pytest.raises(ConfigError, match="thiếu") as exc:
+        load_rules(_write(tmp_path, body))
+    assert khoa in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    ("options", "groups"),
+    [
+        ('["entry", "junior", "unknown", "all"]', 'entry = ["junior"]'),
+        ('["entry", "junior", "unknown", "entry"]', 'entry = ["junior"]'),
+        ('["entry", "junior"]', 'entry = ["junior"]'),
+        ('["junior", "unknown"]', 'entry = ["junior"]'),
+        ('["entry", "junior", "unknown", "principal"]', 'entry = ["junior"]'),
+        ('["entry", "junior", "unknown"]', 'entry = ["principal"]'),
+        ('["entry", "junior", "unknown"]', 'entry = ["junior", "unknown"]'),
+        ('["entry", "junior", "unknown"]', "entry = []"),
+        ('["entry", "junior", "unknown"]', 'junior = ["unknown"]'),
+        ('["entry", "junior", "unknown"]', 'all = ["junior"]'),
+        ('["entry", "junior", "unknown"]', 'entry = ["junior", "junior"]'),
+        ("[]", 'entry = ["junior"]'),
+        ('"entry"', 'entry = ["junior"]'),
+        ('["entry", 3, "junior", "unknown"]', 'entry = ["junior"]'),
+    ],
+    ids=[
+        "options_co_all",
+        "options_trung",
+        "options_thieu_unknown",
+        "options_thieu_nhom",
+        "options_ma_la",
+        "nhom_thanh_vien_la",
+        "nhom_chua_unknown",
+        "nhom_rong",
+        "ten_nhom_trung_ma_cap",
+        "ten_nhom_la_all",
+        "thanh_vien_trung",
+        "options_rong",
+        "options_sai_kieu",
+        "options_phan_tu_sai_kieu",
+    ],
+)
+def test_fr33_cap_bac_loc_duoc_sai_thi_bao_loi_tieng_viet(tmp_path: Path, options: str, groups: str) -> None:
+    body = BASE.replace(LEVEL_OPTIONS, f"level_options = {options}\n").replace(
+        LEVEL_GROUPS, f"[level_groups]\n{groups}\n"
+    )
+    with pytest.raises(ConfigError, match="level_"):
+        load_rules(_write(tmp_path, body))
+
+
+def test_fr33_level_groups_khong_phai_bang_thi_bao_loi_tieng_viet_khong_crash(tmp_path: Path) -> None:
+    body = 'level_groups = 3\n' + BASE.replace(LEVEL_GROUPS, "")
+    with pytest.raises(ConfigError, match="level_groups phải là bảng"):
+        load_rules(_write(tmp_path, body))
+
+
+def test_fr33_ten_nhom_sai_dang_thi_bao_loi_tieng_viet(tmp_path: Path) -> None:
+    body = BASE.replace(LEVEL_OPTIONS, 'level_options = ["En-try", "junior", "unknown"]\n').replace(
+        LEVEL_GROUPS, '[level_groups]\n"En-try" = ["junior"]\n'
+    )
+    with pytest.raises(ConfigError, match="level_groups.*tên nhóm"):
+        load_rules(_write(tmp_path, body))
+
+
+def test_fr33_ma_trong_level_options_sai_dang_thi_bao_loi_tieng_viet(tmp_path: Path) -> None:
+    body = (
+        BASE.replace(LEVEL, '[labels.level]\n"Junior" = "Jun-ior"\n"không xác định" = "unknown"\n')
+        .replace(LEVEL_OPTIONS, 'level_options = ["entry", "Jun-ior", "unknown"]\n')
+        .replace(LEVEL_GROUPS, '[level_groups]\nentry = ["Jun-ior"]\n')
+    )
+    with pytest.raises(ConfigError, match="level_options.*a-z0-9_"):
+        load_rules(_write(tmp_path, body))
+
+
+def test_fr33_hai_nhom_khong_chung_thanh_vien(tmp_path: Path) -> None:
+    level = '[labels.level]\n"Intern" = "intern"\n"Junior" = "junior"\n"không xác định" = "unknown"\n'
+    body = (
+        BASE.replace(LEVEL, level)
+        .replace(LEVEL_OPTIONS, 'level_options = ["entry", "early", "intern", "junior", "unknown"]\n')
+        .replace(LEVEL_GROUPS, '[level_groups]\nentry = ["intern", "junior"]\nearly = ["junior"]\n')
+    )
+    with pytest.raises(ConfigError, match="level_groups"):
+        load_rules(_write(tmp_path, body))

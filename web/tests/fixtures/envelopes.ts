@@ -7,19 +7,28 @@ import type {
 } from "@/lib/city-shares";
 
 import allJson from "./city-shares-all.json";
+import allEntryJson from "./city-shares-all.entry.json";
 import backendJson from "./city-shares-backend.json";
+import backendEntryJson from "./city-shares-backend.entry.json";
 import aiMlJson from "./city-shares-ai_ml.json";
+import aiMlEntryJson from "./city-shares-ai_ml.entry.json";
 
-// Ba file JSON là response thật của API giả (#2), sinh từ `haido_api` qua TestClient:
-// `GET /api/v1/city-shares?role=all|ai_ml|backend`. `tests/api/test_ad17_web_fixtures.py`
-// so chúng với API mỗi lần chạy pytest, nên API đổi mà quên sinh lại thì CI đỏ.
-const FAKE = { all: allJson, ai_ml: aiMlJson, backend: backendJson } as const;
+// Sáu file JSON là response thật của API giả (#2), sinh từ `haido_api` qua TestClient:
+// `GET /api/v1/city-shares?role=all|ai_ml|backend&level=all|entry` (#163). Tên `city-shares-<role>.json` là mọi cấp,
+// `city-shares-<role>.entry.json` là nhóm mới vào nghề. `tests/api/test_ad17_web_fixtures.py` so chúng với API mỗi lần
+// chạy pytest, nên API đổi mà quên sinh lại thì CI đỏ.
+const FAKE = {
+  all: { all: allJson, entry: allEntryJson },
+  ai_ml: { all: aiMlJson, entry: aiMlEntryJson },
+  backend: { all: backendJson, entry: backendEntryJson },
+} as const;
 
 export type FakeRole = keyof typeof FAKE;
+export type FakeLevel = "all" | "entry";
 
-/** Envelope y như API giả trả cho vai trò đó. Mỗi lần gọi là một bản sao mới. */
-export function fakeEnvelope(role: FakeRole): CitySharesEnvelope {
-  return structuredClone(FAKE[role]) as unknown as CitySharesEnvelope;
+/** Envelope y như API giả trả cho vai trò và cấp đó. Mỗi lần gọi là một bản sao mới. */
+export function fakeEnvelope(role: FakeRole, level: FakeLevel = "all"): CitySharesEnvelope {
+  return structuredClone(FAKE[role][level]) as unknown as CitySharesEnvelope;
 }
 
 export interface RowSpec {
@@ -31,6 +40,8 @@ export interface RowSpec {
 
 export interface EnvelopeSpec {
   role: string;
+  /** Cấp bậc lọc; mặc định `all`. Khác `all` thì mã ô có đuôi `.<level>` như API. */
+  level?: string;
   totalN: number;
   rows: RowSpec[];
   snapshotDate?: string;
@@ -70,10 +81,12 @@ function statCell(n: number): CellMeta {
 
 /** Dựng một envelope hợp đồng từ mô tả gọn. `display` lấy nguyên từ mô tả, không suy từ `n`. */
 export function buildEnvelope(spec: EnvelopeSpec): CitySharesEnvelope {
-  const totalCellId = `vn.${spec.role}`;
+  const level = spec.level ?? "all";
+  const suffix = level === "all" ? "" : `.${level}`;
+  const totalCellId = `vn.${spec.role}${suffix}`;
   const cells: Record<string, CellMeta> = { [totalCellId]: statCell(spec.totalN) };
   const rows = spec.rows.map((row) => {
-    const cellId = `${row.city}.${spec.role}`;
+    const cellId = `${row.city}.${spec.role}${suffix}`;
     cells[cellId] = statCell(row.n);
     return {
       city: row.city,
@@ -86,7 +99,7 @@ export function buildEnvelope(spec: EnvelopeSpec): CitySharesEnvelope {
     };
   });
   return {
-    data: { role: spec.role, total_cell_id: totalCellId, rows },
+    data: { role: spec.role, level, total_cell_id: totalCellId, rows },
     meta: {
       snapshot_date: spec.snapshotDate ?? "2026-11-07",
       snapshot_status: spec.snapshotStatus ?? "published",

@@ -66,3 +66,5 @@ web/tests/ad23-haido-keys.test.ts
 ## Complexity Tracking
 
 `tests/api/test_ad17_routes.py` là test của #2 (chưa có `specs/`). Nó thêm `NUMBERLESS_ROUTES` để route không có số không bị bắt dùng Envelope, nhưng vẫn bị kiểm là không có số.
+
+Cập nhật 2026-11-11 (#163): `docs/api/openapi.json` được sinh lại vì `GET /api/v1/city-shares` có thêm tham số `level` và `data.level`; `tests/api/test_ad17_routes.py` sửa stub nguồn và danh sách yêu cầu của fixture theo cấp bậc. Route `/api/v1/skills` và mọi AC của #205 không đổi.

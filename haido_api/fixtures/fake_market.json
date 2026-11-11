@@ -340,6 +340,209 @@
         "salary": 4
       }
     },
+    "ha_noi.all.entry": {
+      "n": 848,
+      "seniority_mix": {
+        "intern": 119,
+        "fresher": 208,
+        "junior": 521
+      },
+      "n_by_measure": {
+        "skill_count": 848,
+        "experience_years": 611,
+        "salary": 204
+      }
+    },
+    "ho_chi_minh.all.entry": {
+      "n": 974,
+      "seniority_mix": {
+        "intern": 136,
+        "fresher": 239,
+        "junior": 599
+      },
+      "n_by_measure": {
+        "skill_count": 974,
+        "experience_years": 701,
+        "salary": 234
+      }
+    },
+    "da_nang.all.entry": {
+      "n": 35,
+      "seniority_mix": {
+        "intern": 5,
+        "fresher": 8,
+        "junior": 22
+      },
+      "n_by_measure": {
+        "skill_count": 35,
+        "experience_years": 25,
+        "salary": 8
+      }
+    },
+    "other.all.entry": {
+      "n": 63,
+      "seniority_mix": {
+        "intern": 9,
+        "fresher": 15,
+        "junior": 39
+      },
+      "n_by_measure": {
+        "skill_count": 63,
+        "experience_years": 45,
+        "salary": 15
+      }
+    },
+    "unknown.all.entry": {
+      "n": 116,
+      "seniority_mix": {
+        "intern": 16,
+        "fresher": 28,
+        "junior": 72
+      },
+      "n_by_measure": {
+        "skill_count": 116,
+        "experience_years": 84,
+        "salary": 28
+      }
+    },
+    "vn.all.entry": {
+      "n": 2036,
+      "seniority_mix": {
+        "intern": 285,
+        "fresher": 498,
+        "junior": 1253
+      },
+      "n_by_measure": {
+        "skill_count": 2036,
+        "experience_years": 1466,
+        "salary": 489
+      }
+    },
+    "ha_noi.ai_ml.entry": {
+      "n": 241,
+      "seniority_mix": {
+        "intern": 38,
+        "fresher": 61,
+        "junior": 142
+      },
+      "n_by_measure": {
+        "skill_count": 241,
+        "experience_years": 174,
+        "salary": 58
+      }
+    },
+    "ho_chi_minh.ai_ml.entry": {
+      "n": 188,
+      "seniority_mix": {
+        "intern": 29,
+        "fresher": 47,
+        "junior": 112
+      },
+      "n_by_measure": {
+        "skill_count": 188,
+        "experience_years": 135,
+        "salary": 45
+      }
+    },
+    "da_nang.ai_ml.entry": {
+      "n": 11,
+      "seniority_mix": {
+        "intern": 2,
+        "junior": 9
+      },
+      "n_by_measure": {
+        "skill_count": 11,
+        "experience_years": 8,
+        "salary": 3
+      }
+    },
+    "other.ai_ml.entry": {
+      "n": 24,
+      "seniority_mix": {
+        "fresher": 6,
+        "junior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 24,
+        "experience_years": 17,
+        "salary": 6
+      }
+    },
+    "unknown.ai_ml.entry": {
+      "n": 37,
+      "seniority_mix": {
+        "intern": 4,
+        "fresher": 9,
+        "junior": 24
+      },
+      "n_by_measure": {
+        "skill_count": 37,
+        "experience_years": 27,
+        "salary": 9
+      }
+    },
+    "ha_noi.backend.entry": {
+      "n": 20,
+      "seniority_mix": {
+        "intern": 5,
+        "fresher": 3,
+        "junior": 12
+      },
+      "n_by_measure": {
+        "skill_count": 20,
+        "experience_years": 14,
+        "salary": 5
+      }
+    },
+    "ho_chi_minh.backend.entry": {
+      "n": 24,
+      "seniority_mix": {
+        "intern": 6,
+        "fresher": 3,
+        "junior": 15
+      },
+      "n_by_measure": {
+        "skill_count": 24,
+        "experience_years": 17,
+        "salary": 6
+      }
+    },
+    "da_nang.backend.entry": {
+      "n": 3,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 2
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
+    "other.backend.entry": {
+      "n": 2,
+      "seniority_mix": {
+        "fresher": 1,
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "unknown.backend.entry": {
+      "n": 3,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 2
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
     "vn.frontend": {
       "n": 240,
       "seniority_mix": {
@@ -545,94 +748,190 @@
   },
   "city_shares": {
     "ai_ml": {
-      "total_cell_id": "vn.ai_ml",
-      "rows": [
-        {
-          "city": "ha_noi",
-          "cell_id": "ha_noi.ai_ml",
-          "share": 0.4697833523375142
-        },
-        {
-          "city": "ho_chi_minh",
-          "cell_id": "ho_chi_minh.ai_ml",
-          "share": 0.37970353477765106
-        },
-        {
-          "city": "da_nang",
-          "cell_id": "da_nang.ai_ml",
-          "share": 0.02394526795895097
-        },
-        {
-          "city": "other",
-          "cell_id": "other.ai_ml",
-          "share": 0.052451539338654506
-        },
-        {
-          "city": "unknown",
-          "cell_id": "unknown.ai_ml",
-          "share": 0.07411630558722919
-        }
-      ]
+      "all": {
+        "total_cell_id": "vn.ai_ml",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.ai_ml",
+            "share": 0.4697833523375142
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.ai_ml",
+            "share": 0.37970353477765106
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.ai_ml",
+            "share": 0.02394526795895097
+          },
+          {
+            "city": "other",
+            "cell_id": "other.ai_ml",
+            "share": 0.052451539338654506
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.ai_ml",
+            "share": 0.07411630558722919
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.ai_ml.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.ai_ml.entry",
+            "share": 0.4810379241516966
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.ai_ml.entry",
+            "share": 0.37524950099800397
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.ai_ml.entry",
+            "share": 0.021956087824351298
+          },
+          {
+            "city": "other",
+            "cell_id": "other.ai_ml.entry",
+            "share": 0.04790419161676647
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.ai_ml.entry",
+            "share": 0.07385229540918163
+          }
+        ]
+      }
     },
     "backend": {
-      "total_cell_id": "vn.backend",
-      "rows": [
-        {
-          "city": "ha_noi",
-          "cell_id": "ha_noi.backend",
-          "share": 0.3885350318471338
-        },
-        {
-          "city": "ho_chi_minh",
-          "cell_id": "ho_chi_minh.backend",
-          "share": 0.4713375796178344
-        },
-        {
-          "city": "da_nang",
-          "cell_id": "da_nang.backend",
-          "share": 0.05732484076433121
-        },
-        {
-          "city": "other",
-          "cell_id": "other.backend",
-          "share": 0.03184713375796178
-        },
-        {
-          "city": "unknown",
-          "cell_id": "unknown.backend",
-          "share": 0.050955414012738856
-        }
-      ]
+      "all": {
+        "total_cell_id": "vn.backend",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.backend",
+            "share": 0.3885350318471338
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.backend",
+            "share": 0.4713375796178344
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.backend",
+            "share": 0.05732484076433121
+          },
+          {
+            "city": "other",
+            "cell_id": "other.backend",
+            "share": 0.03184713375796178
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.backend",
+            "share": 0.050955414012738856
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.backend.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.backend.entry",
+            "share": 0.38461538461538464
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.backend.entry",
+            "share": 0.46153846153846156
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.backend.entry",
+            "share": 0.057692307692307696
+          },
+          {
+            "city": "other",
+            "cell_id": "other.backend.entry",
+            "share": 0.038461538461538464
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.backend.entry",
+            "share": 0.057692307692307696
+          }
+        ]
+      }
     },
     "all": {
-      "total_cell_id": "vn.all",
-      "rows": [
-        {
-          "city": "ha_noi",
-          "cell_id": "ha_noi.all",
-          "share": 0.4155047406581149
-        },
-        {
-          "city": "ho_chi_minh",
-          "cell_id": "ho_chi_minh.all",
-          "share": 0.4774121583937535
-        },
-        {
-          "city": "da_nang",
-          "cell_id": "da_nang.all",
-          "share": 0.01784718349135527
-        },
-        {
-          "city": "other",
-          "cell_id": "other.all",
-          "share": 0.03151143335192415
-        },
-        {
-          "city": "unknown",
-          "cell_id": "unknown.all",
-          "share": 0.0577244841048522
-        }
-      ]
+      "all": {
+        "total_cell_id": "vn.all",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.all",
+            "share": 0.4155047406581149
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.all",
+            "share": 0.4774121583937535
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.all",
+            "share": 0.01784718349135527
+          },
+          {
+            "city": "other",
+            "cell_id": "other.all",
+            "share": 0.03151143335192415
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.all",
+            "share": 0.0577244841048522
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.all.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.all.entry",
+            "share": 0.4165029469548134
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.all.entry",
+            "share": 0.47838899803536344
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.all.entry",
+            "share": 0.01719056974459725
+          },
+          {
+            "city": "other",
+            "cell_id": "other.all.entry",
+            "share": 0.03094302554027505
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.all.entry",
+            "share": 0.05697445972495088
+          }
+        ]
+      }
     }
   },
   "skill_rates": {
