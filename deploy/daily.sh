@@ -19,7 +19,18 @@ find "$LOG_DIR" -name 'daily-*.log' -mtime +30 -delete
 
 run() { docker compose -f compose.scraper.yml run --rm -e HAIDO_SNAPSHOT="$SNAPSHOT" scraper "$@"; }
 run_browser() { docker compose -f compose.scraper.yml run --rm -e HAIDO_SNAPSHOT="$SNAPSHOT" scraper-browser "$@"; }
-run_warehouse() { docker compose -f compose.scraper.yml run --rm warehouse "$SNAPSHOT"; }
+# Image kho do workflow deploy build va keo ve; vps-deploy.sh ghi tag cua ban da deploy
+# vao .warehouse-tag (#273). Thieu file thi chi buoc kho hong, nhip mot van chay.
+run_warehouse() {
+  local tag
+  tag="$(tr -d '[:space:]' < .warehouse-tag 2>/dev/null || true)"
+  if [ -z "$tag" ]; then
+    echo "chua co .warehouse-tag: chua deploy image kho nao"
+    return 1
+  fi
+  echo "image kho: $tag"
+  HAIDO_WAREHOUSE_TAG="$tag" docker compose -f compose.scraper.yml run --rm warehouse "$SNAPSHOT"
+}
 
 BEAT_ONE=0
 {

@@ -24,13 +24,14 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
-  # Sau ingest của scraper: chép ngày đó vào schema haido rồi tính vòng đời.
-  # Build context là gốc repo. Không mở cổng.
+  # Sau ingest của scraper: chép ngày đó vào schema haido rồi tính vòng đời. Không mở cổng.
+  # Image do workflow deploy build từ deploy/warehouse.Dockerfile, cùng commit với API và web,
+  # và vps-deploy.sh kéo về trước. daily.sh đặt HAIDO_WAREHOUSE_TAG từ .warehouse-tag (#273).
+  # pull_policy never: cron không có token GHCR, và không bao giờ build kho trên VPS.
+  # Thiếu tag thì mặc định `none`, chỉ lệnh chạy kho hỏng, scraper vẫn chạy.
   warehouse:
-    build:
-      context: ..
-      dockerfile: deploy/warehouse.Dockerfile
-    image: haidoit-warehouse:local
+    image: ghcr.io/dyuedu/haidoit-warehouse:${HAIDO_WAREHOUSE_TAG:-none}
+    pull_policy: never
     env_file: [.env]
     environment:
       TZ: Asia/Ho_Chi_Minh

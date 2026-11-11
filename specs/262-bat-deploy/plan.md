@@ -58,7 +58,7 @@ tests/deploy/test_proxy_npm.py
 tests/deploy/test_gh262_vps_script.py
 ```
 
-**Structure Decision**: Sửa workflow và một test đọc file. Không thêm service vào `compose.prod.yml`. Đợt 2: proxy đứng file `compose.proxy.yml` với project riêng `haido-proxy`, chạy tay một lần trên VPS, workflow không đụng. Web vào thêm mạng ngoài `haido-edge`. Đợt 3: script chạy trên VPS ra file `deploy/vps-deploy.sh`, workflow chỉ ghép biến và `cat` file đó vào `ssh`.
+**Structure Decision**: Sửa workflow và một test đọc file. Không thêm service vào `compose.prod.yml`. Đợt 2: proxy đứng file `compose.proxy.yml` với project riêng `haido-proxy`, chạy tay một lần trên VPS, workflow không đụng. Web vào thêm mạng ngoài `haido-edge`. Đợt 3: script chạy trên VPS ra file `deploy/vps-deploy.sh`, workflow chỉ ghép biến và `cat` file đó vào `ssh`. Đợt 4 (#273): matrix build thêm `warehouse`; `vps-deploy.sh` kéo image kho và ghi `.warehouse-tag`.
 
 ## Complexity Tracking
 

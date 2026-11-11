@@ -55,3 +55,11 @@ RED: 12 failed, 18 passed. Script chưa có nên mọi test đọc nó đều đ
 GREEN: 30 passed.
 
 Chạy thử bước Deploy trên máy với `ssh`, `docker`, `curl` giả ghi lại lệnh: thứ tự login → pull → logout → alembic → tạo mạng → up → ps → prune → hai cổng. Token có dấu cách và `$` tới `docker login` qua stdin nguyên vẹn. Cho `compose run` trả 3 thì script dừng với mã 3 và không có `up`.
+
+## Đợt 4 — 2026-11-11: image kho trong deploy (#273)
+
+Lý do: bản đồ production trống vì image kho build tay trên VPS từ code cũ, không ghi `stat_sources`. #273 cho workflow build image kho cùng commit. Thay đổi chạm `deploy.yml` và `vps-deploy.sh` của issue này.
+
+Test mới ở `tests/deploy/test_gh273_image_kho.py`; nhật ký RED/GREEN đầy đủ ở `specs/273-image-kho-trong-deploy/tdd.md`. Các test cũ của #262 (`test_gh262_bat_deploy.py`, `test_gh262_vps_script.py`, `test_proxy_npm.py`) không phải sửa và vẫn xanh: thứ tự Alembic → tạo mạng → `up` → kiểm hai cổng giữ nguyên, lệnh `docker pull` image kho chen trước `docker logout`.
+
+GREEN: `uv run pytest tests/deploy -q` → 38 passed.

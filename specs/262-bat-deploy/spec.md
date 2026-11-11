@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Đường deploy đã ở `main` (#268, #269), `DEPLOY_ENABLED` đã bật. Đợt 3 (2026-11-10) chuyển script chạy trên VPS ra `deploy/vps-deploy.sh` sau khi run 42851541091 lỗi cú pháp bash.
+**Status**: Đường deploy đã ở `main` (#268, #269), `DEPLOY_ENABLED` đã bật. Đợt 3 (2026-11-10) chuyển script chạy trên VPS ra `deploy/vps-deploy.sh` sau khi run 42851541091 lỗi cú pháp bash. Đợt 4 (2026-11-11, #273): workflow build thêm image kho, script deploy kéo nó và ghi `.warehouse-tag`.
 
 **Input**: GitHub issue [#262](https://github.com/Dyuedu/HaiDoIT/issues/262) — Merges to `main` reach the VPS: the deploy workflow is switched on, the production compose file is on the VPS, and migrations run as a deploy step.
 
@@ -107,6 +107,7 @@ Sửa `pyproject.toml`, `uv.lock`, `alembic.ini` hoặc `.dockerignore` cũng k�
 - **FR-006**: Sau `up`, kiểm `http://127.0.0.1:8000/openapi.json` và `http://127.0.0.1:3000` trên VPS. Hết số lần thử thì job đỏ.
 - **FR-007**: Không in URL cơ sở dữ liệu hay token ra log.
 - **FR-009**: Script chạy trên VPS là file `deploy/vps-deploy.sh`, qua được `bash -n`, và workflow gửi nó qua stdin của `ssh ... bash -se`. Token kéo image đi qua stdin, không nằm trên dòng lệnh.
+- **FR-010**: Từ #273, workflow còn build image kho, chép `compose.scraper.yml` và `daily.sh` (`scp -p`), và chạy cả khi đổi `config/**`. `vps-deploy.sh` kéo image kho cùng tag trước `docker logout` và chỉ ghi `.warehouse-tag` sau khi cổng sức khỏe qua. Chi tiết ở `specs/273-image-kho-trong-deploy/`.
 - **FR-008**: `web` ở trong mạng ngoài `haido-edge`, `api` thì không. Script deploy tạo `haido-edge` khi chưa có, trước `up`. Proxy nằm ở project `haido-proxy`, cổng 81 chỉ trên localhost.
 
 ### Key Entities
