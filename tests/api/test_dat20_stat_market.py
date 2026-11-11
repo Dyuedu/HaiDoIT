@@ -78,7 +78,8 @@ def _seed(
                 n = total if scope == "vn" else counts.get(scope, 0)
                 conn.execute(
                     text(
-                        "INSERT INTO haido.stat_cells VALUES (:d, :r, 'all', 'all', :sc, :n, CAST(:mix AS jsonb), 'v')"
+                        "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, years, scope, n, seniority_mix, years_unstated, config_version) "
+                        "VALUES (:d, :r, 'all', 'all', 'any', :sc, :n, CAST(:mix AS jsonb), 0, 'v')"
                     ),
                     {"d": day, "r": role, "sc": scope, "n": n, "mix": f'{{"junior": {n}}}' if n else "{}"},
                 )
@@ -86,8 +87,8 @@ def _seed(
                     share = n / total if total else (1.0 if scope == "unknown" else 0.0)
                     conn.execute(
                         text(
-                            "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, city, share) "
-                            "VALUES (:d, :r, 'all', :sc, :v)"
+                            "INSERT INTO haido.stat_city_shares (snapshot_id, role, seniority, years, city, share) "
+                            "VALUES (:d, :r, 'all', 'any', :sc, :v)"
                         ),
                         {"d": day, "r": role, "sc": scope, "v": share},
                     )
@@ -337,8 +338,9 @@ def test_dat20_chi_dung_hang_stat_cells_all_all_khi_cung_pham_vi_co_hang_khac(
         for scope in (*CITIES, "vn"):
             conn.execute(
                 text(
-                    "INSERT INTO haido.stat_cells VALUES (:d, 'backend', 'be', 'junior', :sc, 999, "
-                    "CAST('{\"junior\": 999}' AS jsonb), 'v')"
+                    "INSERT INTO haido.stat_cells (snapshot_id, role, branch, seniority, years, scope, n, seniority_mix, years_unstated, config_version) "
+                    "VALUES (:d, 'backend', 'be', 'junior', 'any', :sc, 999, "
+                    "CAST('{\"junior\": 999}' AS jsonb), 0, 'v')"
                 ),
                 {"d": S, "sc": scope},
             )

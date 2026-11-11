@@ -13,6 +13,10 @@ API không đọc).
 Mỗi vai trò có thêm ô và tỷ trọng thành phố cho từng cấp bậc lọc được của bản đồ (#163): `all`, nhóm `entry` và từng
 cấp, theo `level_options` và `level_groups` trong `config/rules.toml`. Cột `seniority` của hai bảng là mã cấp lọc.
 
+Ngoài ra mỗi (vai trò, cấp lọc) có bộ ô và tỷ trọng cho từng mốc số năm kinh nghiệm (#280): `any` và từng mốc của
+`years_options`; số năm của cụm lấy từ tin đại diện như nhãn. Cột `years` của hai bảng là mã số năm, và
+`stat_cells.years_unstated` là số cụm không ghi số năm.
+
 `stat_sources` là các nguồn có ít nhất một tin được đếm trong cửa sổ của S (#259, DEC-12), không phải
 các nguồn có lượt chạy ở S. API đọc danh sách này theo khóa.
 
@@ -105,16 +109,18 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
         by_id = {member.posting_id: member for member in members}
         clusters = collapse_clusters(members, source_rank=rules.source_priority)
         rep_inputs = []
+        rep_years: list[float | None] = []
         for cluster in clusters:
             rep = by_id[cluster.representative_id]
             fact = facts.get(int(rep.posting_id), empty)
             level_text = " ".join(part for part in (fact.job_level, fact.experience_level) if part)
             rep_inputs.append(PostingFacts(fact.title or "", rep.source, None, level_text or None, fact.location_text))
+            rep_years.append(fact.years_min)
         results = classifier.classify(rep_inputs)
         assert isinstance(results, tuple)
         counted = []
         source_rows: list[tuple[str, date]] = []
-        for cluster, result in zip(clusters, results, strict=True):
+        for cluster, result, years_min in zip(clusters, results, rep_years, strict=True):
             if not counts_in_aggregate(result):
                 continue
             counted.append(
@@ -124,6 +130,7 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
                     role=_code(rules.role_codes, "vai trò", "role", result.role),
                     city=_code(rules.city_codes, "thành phố", "city", result.city),
                     seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
+                    years_min=years_min,
                 )
             )
             for member_id in cluster.member_ids:
@@ -138,6 +145,7 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
                 window_days=rules.window_days,
                 level_options=rules.level_options,
                 level_groups=rules.level_groups,
+                years_options=rules.years_options,
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc

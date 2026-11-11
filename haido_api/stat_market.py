@@ -15,6 +15,10 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   `all` và `<scope>.<role>.<level>` ở cấp khác. Mẫu nhỏ theo n của ô ở cấp đã chọn.
 - Vai trò không có tin nào ở snapshot đã chọn ở cấp đã chọn (n toàn quốc bằng 0) thì `UnknownCell` kèm ngày snapshot;
   không có snapshot nào đọc được cho cấp đó thì `UnknownCell` không có ngày.
+- Mốc số năm (#280): `years` chọn hàng `years = years` của hai bảng, cùng cách với cấp. Mã ô thêm đuôi `.y<N>` khi
+  `years` khác `any`. Ở một mốc, `data.years_unstated_cell_id` trỏ tới ô `vn.<role>[.<level>].ynone` có `n` là
+  `years_unstated` của ô toàn quốc (do `aggregate` ghi, không đếm ở đây).
+  Snapshot công bố trước migration 0006 chỉ có hàng `any`, nên mốc khác lùi về snapshot có hàng của mốc đó.
 """
 
 import threading
@@ -49,6 +53,7 @@ from haido_core.domain.envelope import (
 READABLE = ("published", "partial")
 NATIONWIDE = "vn"
 ALL = "all"
+ANY = "any"
 
 
 class StatMarket:
@@ -68,16 +73,16 @@ class StatMarket:
                 self._engine = self._factory()
             return self._engine
 
-    def city_shares(self, *, role: str, level: str = ALL) -> Envelope[CitySharesData]:
+    def city_shares(self, *, role: str, level: str = ALL, years: str = ANY) -> Envelope[CitySharesData]:
         with self._db().connect() as conn:
-            latest = _latest_readable(conn, level)
+            latest = _latest_readable(conn, level, years)
             if latest is None:
                 raise UnknownCell(
-                    "Chưa có snapshot nào đã công bố được tính cho cấp bậc này.", snapshot_date=None
+                    "Chưa có snapshot nào đã công bố được tính cho cấp bậc và bộ lọc số năm này.", snapshot_date=None
                 )
             day: date = latest.snapshot_id
-            share_by_city = _shares(conn, day, role, level)
-            cell_rows = _cells(conn, day, role, level)
+            share_by_city = _shares(conn, day, role, level, years)
+            cell_rows = _cells(conn, day, role, level, years)
             sources = _sources(conn, day)
         total = cell_rows.get(NATIONWIDE)
         if not share_by_city or total is None or total[0] == 0:
@@ -86,7 +91,8 @@ class StatMarket:
         order = {city: i for i, city in enumerate(self._rules.city_codes.values())}
         cities = sorted(share_by_city, key=lambda c: (order.get(c, len(order)), c))
         min_sample = self._rules.min_sample
-        suffix = "" if level == ALL else f".{level}"  # mã ô của mọi cấp giữ nguyên `<scope>.<role>`
+        # mã ô của mọi cấp và mọi số năm giữ nguyên `<scope>.<role>`
+        suffix = ("" if level == ALL else f".{level}") + ("" if years == ANY else f".y{years}")
         rows = []
         for city in cities:
             cell_id = f"{city}.{role}{suffix}"
@@ -104,8 +110,15 @@ class StatMarket:
                 n_by_measure={},
                 insufficient_by_measure={},
             )
-            for scope, (n, mix) in ((NATIONWIDE, total), *((c, cell_rows[c]) for c in cities))
+            for scope, (n, mix, _) in ((NATIONWIDE, total), *((c, cell_rows[c]) for c in cities))
         }
+        unstated_cell_id = None
+        if years != ANY:
+            level_part = "" if level == ALL else f".{level}"
+            unstated_cell_id = f"{NATIONWIDE}.{role}{level_part}.ynone"
+            cells[unstated_cell_id] = CellMeta(
+                n=total[2], fallback_label=None, seniority_mix={}, n_by_measure={}, insufficient_by_measure={}
+            )
         meta = Meta(
             snapshot_date=day,
             snapshot_status=SnapshotStatus(latest.status),
@@ -120,7 +133,14 @@ class StatMarket:
             ],
             cells=cells,
         )
-        data = CitySharesData(role=role, level=level, total_cell_id=total_cell_id, rows=rows)
+        data = CitySharesData(
+            role=role,
+            level=level,
+            years=years,
+            years_unstated_cell_id=unstated_cell_id,
+            total_cell_id=total_cell_id,
+            rows=rows,
+        )
         return Envelope[CitySharesData](data=data, meta=meta)
 
     def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:
@@ -130,9 +150,11 @@ class StatMarket:
         raise UnknownCell("Số tin cho người mới chưa có số liệu thật.", snapshot_date=None)
 
 
-def _latest_readable(conn: Connection, level: str) -> Any:
+def _latest_readable(conn: Connection, level: str, years: str = ANY) -> Any:
     has_shares = sa.exists().where(
-        stat_city_shares.c.snapshot_id == snapshots.c.snapshot_id, stat_city_shares.c.seniority == level
+        stat_city_shares.c.snapshot_id == snapshots.c.snapshot_id,
+        stat_city_shares.c.seniority == level,
+        stat_city_shares.c.years == years,
     )
     has_sources = sa.exists().where(stat_sources.c.snapshot_id == snapshots.c.snapshot_id)
     stmt = (
@@ -144,18 +166,22 @@ def _latest_readable(conn: Connection, level: str) -> Any:
     return conn.execute(stmt).one_or_none()
 
 
-def _shares(conn: Connection, day: date, role: str, level: str) -> dict[str, float]:
+def _shares(conn: Connection, day: date, role: str, level: str, years: str) -> dict[str, float]:
     t = stat_city_shares
-    stmt = sa.select(t.c.city, t.c.share).where(t.c.snapshot_id == day, t.c.role == role, t.c.seniority == level)
+    stmt = sa.select(t.c.city, t.c.share).where(
+        t.c.snapshot_id == day, t.c.role == role, t.c.seniority == level, t.c.years == years
+    )
     return {r.city: r.share for r in conn.execute(stmt)}
 
 
-def _cells(conn: Connection, day: date, role: str, level: str) -> dict[str, tuple[int, dict[str, int]]]:
+def _cells(
+    conn: Connection, day: date, role: str, level: str, years: str
+) -> dict[str, tuple[int, dict[str, int], int]]:
     t = stat_cells
-    stmt = sa.select(t.c.scope, t.c.n, t.c.seniority_mix).where(
-        t.c.snapshot_id == day, t.c.role == role, t.c.branch == ALL, t.c.seniority == level
+    stmt = sa.select(t.c.scope, t.c.n, t.c.seniority_mix, t.c.years_unstated).where(
+        t.c.snapshot_id == day, t.c.role == role, t.c.branch == ALL, t.c.seniority == level, t.c.years == years
     )
-    return {r.scope: (r.n, dict(r.seniority_mix)) for r in conn.execute(stmt)}
+    return {r.scope: (r.n, dict(r.seniority_mix), r.years_unstated) for r in conn.execute(stmt)}
 
 
 def _sources(conn: Connection, day: date) -> list[str]:

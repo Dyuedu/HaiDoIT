@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented. Cập nhật 2026-11-12 theo #280: web gửi thêm `years` (mặc định `any`), hai bảng stat có thêm `years` trong khóa; số của mọi cấp ở `years = any` không đổi. Không AC nào của #163 đổi.
 
 **Input**: GitHub issue [#163](https://github.com/Dyuedu/HaiDoIT/issues/163) — The map has a level filter. It opens on the default level recorded on #134, and changing the level updates the table and the chart together. Phục vụ story [#112](https://github.com/Dyuedu/HaiDoIT/issues/112). Quyết định ràng buộc: [#134](https://github.com/Dyuedu/HaiDoIT/issues/134) (cấp mặc định và cách chia cấp), [#260](https://github.com/Dyuedu/HaiDoIT/issues/260) (không đổi ngưỡng, θ, lưu ý độ phủ).
 
@@ -20,7 +20,7 @@ Người mới vào nghề mở bản đồ và thấy bộ chọn cấp bậc �
 
 **Acceptance Scenarios**:
 
-1. **Given** trang vừa mở, **When** lượt gọi đầu đi ra, **Then** URL là `/api/v1/city-shares?role=all&level=entry` và nút "Mới vào nghề" được chọn.
+1. **Given** trang vừa mở, **When** lượt gọi đầu đi ra, **Then** URL là `/api/v1/city-shares?role=all&level=entry&years=any` (từ #280 web gửi kèm mốc số năm) và nút "Mới vào nghề" được chọn.
 2. **Given** bộ chọn cấp bậc, **When** đọc danh sách nút, **Then** thứ tự là entry, intern, fresher, junior, mid, senior, lead, unknown, all, nhãn tiếng Việt, mỗi nút là `<button aria-pressed>` cao tối thiểu 44px.
 3. **Given** `config/rules.toml` có nhóm `entry = [intern, fresher, junior]`, **When** `aggregate` chạy, **Then** ô `entry` có n bằng tổng n của ba cấp và `unknown` không nằm trong nhóm.
 4. **Given** API gọi không có `level`, **When** route xử lý, **Then** trả số của mọi cấp như trước (tương thích ngược); web luôn gửi `level` rõ ràng.
@@ -77,7 +77,7 @@ Người dùng bấm một cấp khác. Màn hiện "Đang tải số liệu…"
 
 - **FR-001**: `config/rules.toml` có `level_options` (thứ tự hiển thị, không gồm `all`) và bảng `level_groups` (`entry = [intern, fresher, junior]`). `haido_core/config.py` kiểm và báo lỗi tiếng Việt khi sai; `config_version` tăng. `min_sample`, `theta_*`, `coverage_notes` không đổi (#260).
 - **FR-002**: `aggregate` ghi, cho mỗi vai trò (cùng `all`) và mỗi cấp trong `all` + `level_options`, năm dòng tỷ trọng thành phố và sáu ô (năm thành phố cộng `vn`). Ô nhóm có n bằng tổng n các cấp của nhóm. Cùng một transaction, cửa sổ 60 ngày, cụm, nguồn bị loại và `stat_sources` giữ nguyên.
-- **FR-003**: `stat_city_shares` có thêm cột `seniority` trong khóa chính; hàng cũ nhận `all`. Migration mới nối vào head hiện tại.
+- **FR-003**: `stat_city_shares` có thêm cột `seniority` trong khóa chính; hàng cũ nhận `all`. Migration mới nối vào head hiện tại. (#280, migration 0006: hai bảng stat có thêm `years` trong khóa; hàng của #163 là `years = any`.)
 - **FR-004**: `GET /api/v1/city-shares` nhận `level` tùy chọn, giá trị trong `all` + `level_options`; không gửi thì `all`; giá trị lạ là 422 `invalid_query`. `data.level` trả cấp đã dùng.
 - **FR-005**: Mã ô của cấp khác `all` là `<scope>.<role>.<level>`; của `all` giữ `<scope>.<role>`. `display` do `suppression_for` quyết theo n của ô.
 - **FR-006**: Nguồn giả phục vụ `entry` và `all` cho `all`, `ai_ml`, `backend`; cấp khác trả `unknown_cell`.

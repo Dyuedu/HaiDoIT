@@ -61,7 +61,7 @@ describe("fr33 — mở trang", () => {
     const haNoi = await screen.findByRole("button", { name: /^Hà Nội:/ });
 
     // #163: màn luôn gửi cấp bậc, mặc định là nhóm mới vào nghề (entry) của #134.
-    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry");
+    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry&years=any");
     expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("true");
     expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("false");
     expect(modeButton("Biểu đồ 2D").getAttribute("aria-pressed")).toBe("true");
@@ -505,12 +505,12 @@ describe("fr33 — lỗi", () => {
 });
 
 describe("fr33 — bàn phím", () => {
-  it("fr33: Tab đi qua chip vai trò, cụm lối xem, nút cấp bậc, rồi từng dòng thành phố", async () => {
+  it("fr33: Tab đi qua chip vai trò, cụm lối xem, nút cấp bậc, nút số năm (#280), rồi từng dòng thành phố", async () => {
     routeCityShares({ all: [ok("all")] });
     const { user } = await openScreen();
     const stops: string[] = [];
 
-    for (let i = 0; i < 28; i += 1) {
+    for (let i = 0; i < 34; i += 1) {
       await user.tab();
       const active = document.activeElement as HTMLElement;
       stops.push(active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? "");
@@ -540,6 +540,12 @@ describe("fr33 — bàn phím", () => {
       "Lead",
       "Chưa ghi cấp bậc",
       "Mọi cấp bậc",
+      "Mọi số năm",
+      "Không cần kinh nghiệm",
+      "Tối đa 1 năm",
+      "Tối đa 2 năm",
+      "Tối đa 3 năm",
+      "Tối đa 5 năm",
       "Hà Nội",
       "TP.HCM",
       "Đà Nẵng",

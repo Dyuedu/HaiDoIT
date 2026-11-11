@@ -45,14 +45,25 @@ class CitySharesData(BaseModel):
     level: str
     """Cấp bậc lọc đã dùng (#163): `all` là mọi cấp bậc, `entry` là nhóm mới vào nghề, hoặc một cấp như `senior`."""
 
+    years: str = "any"
+    """Mốc số năm kinh nghiệm đã dùng (#280): `any` là mọi số năm (gồm tin không ghi), `N` là tin yêu cầu tối thiểu
+    không quá N năm."""
+
+    years_unstated_cell_id: CellId | None = None
+    """Ô toàn quốc của các tin (cụm) của vai trò ở cấp đã chọn không ghi số năm, nên không được tính ở mốc `N`
+    (#280). Số tin là `meta.cells[years_unstated_cell_id].n`. `null` khi `years = any`."""
+
     total_cell_id: CellId
-    """Ô toàn quốc của vai trò ở cấp đã chọn, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."""
+    """Ô toàn quốc của vai trò ở cấp và mốc số năm đã chọn, mẫu số của mọi tỷ trọng. Cỡ mẫu ở
+    `meta.cells[total_cell_id]`."""
 
     rows: Annotated[list[CityShareRow], Field(min_length=1)]
     """Mỗi thành phố một dòng, cộng dòng `other` và `unknown`. Tổng `share.value` bằng 1."""
 
     @model_validator(mode="after")
     def _tong_bang_mot(self) -> Self:
+        if (self.years == "any") != (self.years_unstated_cell_id is None):
+            raise ValueError("years_unstated_cell_id phải là null khi years = any và có giá trị khi years là một mốc.")
         trung = sorted(city for city, k in Counter(r.city for r in self.rows).items() if k > 1)
         if trung:
             raise ValueError(f"Mã thành phố bị trùng: {', '.join(trung)}.")

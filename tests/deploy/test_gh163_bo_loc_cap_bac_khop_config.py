@@ -57,6 +57,8 @@ def test_gh163_api_nhan_dung_cac_cap_cua_nut() -> None:
 def test_gh163_ban_gia_chi_co_cap_all_va_entry_la_ma_trong_config() -> None:
     fixture = json.loads((ROOT / "haido_api" / "fixtures" / "fake_market.json").read_text(encoding="utf-8"))
     allowed = {ALL_LEVELS, *load_rules().level_options}
-    for role, levels in fixture["city_shares"].items():
-        assert set(levels) == {"all", "entry"}, role
+    for role, keys in fixture["city_shares"].items():
+        levels = {key for key in keys if ".y" not in key}  # #280: khóa `<cấp>.y<N>` là mốc số năm của cấp đó
+        assert levels == {"all", "entry"}, role
+        assert {key.split(".y")[0] for key in keys} <= levels
         assert set(levels) <= allowed

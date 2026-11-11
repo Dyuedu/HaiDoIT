@@ -1,6 +1,6 @@
 # Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn, bảng nhãn.
 # Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle và stat_cells lưu phiên bản đã dùng.
-config_version = "2026-11-11.1"
+config_version = "2026-11-12.1"
 
 # Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
 # Phép dân số đếm đúng window_days ngày kết thúc ở S, gồm cả S: S - (window_days - 1) <= last_seen <= S.
@@ -34,6 +34,10 @@ roles = [
 # Cấp bậc lọc được trên bản đồ (#163, DEC-8 #134), theo thứ tự hiển thị. `all` (mọi cấp) luôn có thêm và không nằm ở đây.
 # Mỗi mã là một nhóm trong [level_groups] hoặc một mã của [labels.level]; `unknown` ("Level not stated") đứng riêng.
 level_options = ["entry", "intern", "fresher", "junior", "mid", "senior", "lead", "unknown"]
+
+# Mốc "tối đa N năm kinh nghiệm" lọc được trên bản đồ (#280), tăng dần. `any` (mọi số năm) luôn có thêm và không nằm ở đây.
+# Mốc N đếm tin có số năm tối thiểu yêu cầu <= N; tin không ghi số năm chỉ nằm trong `any`.
+years_options = [0, 1, 2, 3, 5]
 
 # Nhóm cấp bậc: nhóm mới vào nghề của #134 là Intern, Fresher, Junior gộp một. `unknown` không thuộc nhóm nào.
 [level_groups]

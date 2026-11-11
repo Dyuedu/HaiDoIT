@@ -44,3 +44,10 @@ Sau khi thêm migration 0005 mà `aggregate` chưa ghi cột `seniority`: `tests
 ### GREEN
 
 `tests/steps/test_fr33_aggregate_level_step.py` 12 passed. Sau khi sửa truy vấn và số đếm (66 → 594 ô, 55 → 495 tỷ trọng), `tests/steps` + `tests/test_dat20_cli.py` + `tests/test_ad4_cli.py` xanh. Các đợt trước giữ nguyên.
+
+## Đợt 2026-11-12 — #280 thêm chiều số năm kinh nghiệm
+
+Lý do: #280 sửa `haido_core/domain/aggregate.py`, `population.py`, `steps/aggregate.py`, `db/snapshot_store.py`, `config.py`: hàm tổng hợp lọc tập cụm theo mốc số năm rồi chạy lại cùng phép đếm; số năm của cụm lấy từ tin đại diện.
+
+- RED: không có test nào của #100 đổi kỳ vọng. `test_dat28_hai_nguon_cung_cong_ty_va_chuc_danh_dem_mot_va_lay_thanh_pho_dai_dien` đỏ một lượt vì helper `_n` gặp 6 hàng `stat_cells` (một hàng mỗi mã số năm), sửa bằng `years = 'any'` (xem tdd của #280).
+- GREEN: `tests/domain/test_dat28_cluster.py`, `tests/steps/test_dat20_aggregate_step.py`, `tests/steps/test_fr33_aggregate_level_step.py` xanh; `uv run pytest -q` → 770 passed.

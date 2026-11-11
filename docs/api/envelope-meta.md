@@ -65,7 +65,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng hiện là chuỗi tạm (`ai_ml`, `entry`, `ha_noi`, `core`…);
 #16 chốt mã thật. Chuỗi hiển thị tiếng Việt sẽ đến từ bảng tra, không suy từ mã.
 
-## `GET /api/v1/city-shares?role=<mã>&level=<mã>`
+## `GET /api/v1/city-shares?role=<mã>&level=<mã>&years=<mã>`
 
 Tỷ trọng từng thành phố trong số tin của vai trò, ở cấp bậc đã chọn, trên toàn quốc (FR-33). `role=all` là mọi vai
 trò. `level` là tham số tùy chọn (#163):
@@ -80,6 +80,16 @@ trò. `level` là tham số tùy chọn (#163):
 Danh sách lấy từ `level_options` trong `config/rules.toml`. Giá trị ngoài danh sách là 422 `invalid_query`. Giao diện
 luôn gửi `level` rõ ràng (mặc định `entry`). Nguồn giả chỉ có `all` và `entry`; cấp khác trả 404 `unknown_cell`.
 Vai trò không có tin nào ở cấp đã chọn cũng là 404 `unknown_cell`, kèm ngày snapshot.
+
+`years` là tham số tùy chọn (#280), mốc số năm kinh nghiệm tối thiểu mà tin yêu cầu:
+
+| `years` | Nghĩa |
+|---|---|
+| `any` (mặc định khi bỏ trống) | Mọi tin, kể cả tin không ghi số năm; số và mã ô như trước khi có tham số này |
+| `0`, `1`, `2`, `3`, `5` | Chỉ tin yêu cầu tối thiểu không quá N năm (`0` = không cần kinh nghiệm). Tin không ghi số năm bị bỏ |
+
+Danh sách lấy từ `years_options` trong `config/rules.toml`; giá trị ngoài danh sách là 422 `invalid_query`. Giao diện
+luôn gửi `years` (mặc định `any`). Nguồn giả chỉ có `any` cho mọi (vai trò, cấp), cộng `years=1` cho `role=all&level=entry`.
 
 ```json
 {
@@ -108,10 +118,15 @@ Vai trò không có tin nào ở cấp đã chọn cũng là 404 `unknown_cell`,
   và tổng bằng 1.
 - `total_cell_id` là ô toàn quốc của vai trò ở cấp đã chọn, mẫu số của mọi tỷ trọng.
 - `data.level` là cấp đã dùng (`all` khi không gửi `level`); giao diện đối chiếu nó với cấp đã yêu cầu.
+- `data.years` là mốc số năm đã dùng (`any` khi không gửi `years`); giao diện cũng đối chiếu nó.
+- `data.years_unstated_cell_id` (#280): `null` khi `years = any`; ở một mốc, là ô `vn.<vai trò>[.<cấp>].ynone` của
+  `meta.cells`, có `n` là số tin của vai trò ở cấp đó không ghi số năm nên không được tính. Số này nằm ở `meta.cells`
+  chứ không đứng trần trong `data` (luật 1 ở trên).
 - Mã ô: `<phạm vi>.<vai trò>` ở `level=all` (ví dụ `ha_noi.ai_ml`), `<phạm vi>.<vai trò>.<cấp>` ở cấp khác (ví dụ
-  `ha_noi.ai_ml.entry`, `vn.ai_ml.entry`). Cỡ mẫu và `seniority_mix` của ô theo cấp chỉ tính các cấp thuộc nó.
+  `ha_noi.ai_ml.entry`, `vn.ai_ml.entry`). Cỡ mẫu và `seniority_mix` của ô theo cấp chỉ tính các cấp thuộc nó. Ở mốc
+  số năm `N`, mã ô có thêm đuôi `.y<N>` (ví dụ `vn.ai_ml.entry.y1`, `ha_noi.ai_ml.y2`).
 - Thành phố dưới ngưỡng vẫn có `value`, kèm `low_sample_shown`: vẽ cột mờ, không ẩn cột. Ngưỡng xét theo `n` của ô
-  thành phố ở cấp đã chọn, không theo `n` của mọi cấp.
+  thành phố ở cấp và mốc số năm đã chọn, không theo `n` của mọi cấp.
 
 ## `GET /api/v1/skill-rates?role=<mã>&level=<mã>`
 

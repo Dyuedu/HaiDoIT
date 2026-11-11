@@ -1,4 +1,4 @@
-"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot`, `0003_haido_city_share`, `0004_haido_stat_sources` và `0005_haido_city_share_level`.
+"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot`, `0003_haido_city_share`, `0004_haido_stat_sources`, `0005_haido_city_share_level` và `0006_haido_years_filter`.
 
 Chỉ `haido_core/steps/` ghi các bảng này. `haido_api` không đọc `job_*` (AD-5, AD-7).
 """
@@ -50,6 +50,7 @@ job_posting_facts = sa.Table(
     sa.Column("location_text", sa.Text()),
     sa.Column("experience_level", sa.Text()),
     sa.Column("job_level", sa.Text()),
+    sa.Column("years_min", sa.Float(precision=53)),
 )
 
 job_observations = sa.Table(
@@ -81,9 +82,11 @@ stat_cells = sa.Table(
     sa.Column("role", sa.Text(), primary_key=True),
     sa.Column("branch", sa.Text(), primary_key=True),
     sa.Column("seniority", sa.Text(), primary_key=True),
+    sa.Column("years", sa.Text(), primary_key=True),
     sa.Column("scope", sa.Text(), primary_key=True),
     sa.Column("n", sa.Integer(), nullable=False),
     sa.Column("seniority_mix", JSONB(), nullable=False),
+    sa.Column("years_unstated", sa.Integer(), nullable=False),
     sa.Column("config_version", sa.Text(), nullable=False),
 )
 
@@ -93,6 +96,7 @@ stat_city_shares = sa.Table(
     sa.Column("snapshot_id", sa.Date(), sa.ForeignKey("haido.snapshots.snapshot_id"), primary_key=True),
     sa.Column("role", sa.Text(), primary_key=True),
     sa.Column("seniority", sa.Text(), primary_key=True),
+    sa.Column("years", sa.Text(), primary_key=True),
     sa.Column("city", sa.Text(), primary_key=True),
     sa.Column("share", sa.Float(precision=53), nullable=False),
 )

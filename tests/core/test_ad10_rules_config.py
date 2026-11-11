@@ -22,12 +22,13 @@ ROLE = '[labels.role]\n"Backend" = "backend"\n"Other" = "other"\n'
 LEVEL = '[labels.level]\n"Junior" = "junior"\n"không xác định" = "unknown"\n'
 LEVEL_OPTIONS = 'level_options = ["entry", "junior", "unknown"]\n'
 LEVEL_GROUPS = '[level_groups]\nentry = ["junior"]\n'
+YEARS_OPTIONS = "years_options = [0, 1, 3]\n"
 
 CV = f'cv_max_bytes = 5242880\ncv_types = ["{PDF}", "{DOCX}"]\n'
 
 BASE = (
     'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_core = 0.3\ntheta_common = 0.1\n'
-    f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{CV}\n'
+    f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{YEARS_OPTIONS}{CV}\n'
     f"{SOURCES}\n{LEVEL_GROUPS}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
 )
 
@@ -422,4 +423,32 @@ def test_fr33_hai_nhom_khong_chung_thanh_vien(tmp_path: Path) -> None:
         .replace(LEVEL_GROUPS, '[level_groups]\nentry = ["intern", "junior"]\nearly = ["junior"]\n')
     )
     with pytest.raises(ConfigError, match="level_groups"):
+        load_rules(_write(tmp_path, body))
+
+
+# ----------------------------------------------------------------------------- #280: số năm kinh nghiệm
+
+
+def test_fr33_moc_so_nam_nam_trong_config_theo_dung_issue_280() -> None:
+    assert load_rules().years_options == (0, 1, 2, 3, 5)
+
+
+def test_fr33_config_version_da_tang_khi_them_moc_so_nam() -> None:
+    old = {"2026-11-06.1", "2026-11-09.1", "2026-11-10.1", "2026-11-10.2", "2026-11-10.3", "2026-11-11.1"}
+    assert load_rules().config_version not in old
+
+
+def test_fr33_moc_so_nam_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
+    assert load_rules(_write(tmp_path, BASE)).years_options == (0, 1, 3)
+
+
+def test_fr33_thieu_years_options_thi_bao_loi_tieng_viet(tmp_path: Path) -> None:
+    with pytest.raises(ConfigError, match="years_options"):
+        load_rules(_write(tmp_path, BASE.replace(YEARS_OPTIONS, "")))
+
+
+@pytest.mark.parametrize("value", ["[]", "[-1, 2]", "[1, 1]", "[2, 1]", "[1.5]", '["1"]', "[true]", "3"])
+def test_fr33_years_options_sai_thi_bao_loi_tieng_viet(tmp_path: Path, value: str) -> None:
+    body = BASE.replace(YEARS_OPTIONS, f"years_options = {value}\n")
+    with pytest.raises(ConfigError, match="years_options"):
         load_rules(_write(tmp_path, body))

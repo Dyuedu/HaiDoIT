@@ -12,7 +12,7 @@
           "market"
         ],
         "summary": "Tỷ trọng thành phố của một vai trò",
-        "description": "Tỷ trọng từng thành phố trong số tin của vai trò ở cấp bậc đã chọn, trên toàn quốc (FR-33).\n\nThành phố dưới ngưỡng mẫu của cấp đã chọn vẫn có giá trị, kèm `display = low_sample_shown`.",
+        "description": "Tỷ trọng từng thành phố trong số tin của vai trò ở cấp bậc và mốc số năm đã chọn, trên toàn quốc (FR-33).\n\nThành phố dưới ngưỡng mẫu của bộ lọc đã chọn vẫn có giá trị, kèm `display = low_sample_shown`. Ở một mốc số năm,\n`data.years_unstated` là số tin của vai trò ở cấp đó không ghi số năm (#280).",
         "operationId": "get_city_shares_api_v1_city_shares_get",
         "parameters": [
           {
@@ -51,6 +51,26 @@
               "title": "Level"
             },
             "description": "Cấp bậc lọc: `all` (mặc định, mọi cấp), `entry` (Intern, Fresher, Junior gộp một), từng cấp, hoặc `unknown` (chưa ghi cấp bậc). Danh sách lấy từ `config/rules.toml`."
+          },
+          {
+            "name": "years",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "any",
+                "0",
+                "1",
+                "2",
+                "3",
+                "5"
+              ],
+              "type": "string",
+              "description": "Mốc số năm kinh nghiệm: `any` (mặc định, mọi tin, gồm cả tin không ghi số năm) hoặc `N`: chỉ tin yêu cầu tối thiểu không quá N năm. Danh sách lấy từ `config/rules.toml`.",
+              "default": "any",
+              "title": "Years"
+            },
+            "description": "Mốc số năm kinh nghiệm: `any` (mặc định, mọi tin, gồm cả tin không ghi số năm) hoặc `N`: chỉ tin yêu cầu tối thiểu không quá N năm. Danh sách lấy từ `config/rules.toml`."
           }
         ],
         "responses": {
@@ -358,11 +378,30 @@
             "title": "Level",
             "description": "Cấp bậc lọc đã dùng (#163): `all` là mọi cấp bậc, `entry` là nhóm mới vào nghề, hoặc một cấp như `senior`."
           },
+          "years": {
+            "type": "string",
+            "title": "Years",
+            "description": "Mốc số năm kinh nghiệm đã dùng (#280): `any` là mọi số năm (gồm tin không ghi), `N` là tin yêu cầu tối thiểu\nkhông quá N năm.",
+            "default": "any"
+          },
+          "years_unstated_cell_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Years Unstated Cell Id",
+            "description": "Ô toàn quốc của các tin (cụm) của vai trò ở cấp đã chọn không ghi số năm, nên không được tính ở mốc `N`\n(#280). Số tin là `meta.cells[years_unstated_cell_id].n`. `null` khi `years = any`."
+          },
           "total_cell_id": {
             "type": "string",
             "minLength": 1,
             "title": "Total Cell Id",
-            "description": "Ô toàn quốc của vai trò ở cấp đã chọn, mẫu số của mọi tỷ trọng. Cỡ mẫu ở `meta.cells[total_cell_id]`."
+            "description": "Ô toàn quốc của vai trò ở cấp và mốc số năm đã chọn, mẫu số của mọi tỷ trọng. Cỡ mẫu ở\n`meta.cells[total_cell_id]`."
           },
           "rows": {
             "items": {

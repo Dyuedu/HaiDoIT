@@ -744,6 +744,89 @@
         "experience_years": 0,
         "salary": 0
       }
+    },
+    "ha_noi.all.entry.y1": {
+      "n": 270,
+      "seniority_mix": {
+        "intern": 40,
+        "fresher": 70,
+        "junior": 160
+      },
+      "n_by_measure": {
+        "skill_count": 270,
+        "experience_years": 270,
+        "salary": 67
+      }
+    },
+    "ho_chi_minh.all.entry.y1": {
+      "n": 310,
+      "seniority_mix": {
+        "intern": 45,
+        "fresher": 80,
+        "junior": 185
+      },
+      "n_by_measure": {
+        "skill_count": 310,
+        "experience_years": 310,
+        "salary": 77
+      }
+    },
+    "da_nang.all.entry.y1": {
+      "n": 12,
+      "seniority_mix": {
+        "intern": 1,
+        "fresher": 3,
+        "junior": 8
+      },
+      "n_by_measure": {
+        "skill_count": 12,
+        "experience_years": 12,
+        "salary": 3
+      }
+    },
+    "other.all.entry.y1": {
+      "n": 18,
+      "seniority_mix": {
+        "intern": 2,
+        "fresher": 5,
+        "junior": 11
+      },
+      "n_by_measure": {
+        "skill_count": 18,
+        "experience_years": 18,
+        "salary": 4
+      }
+    },
+    "unknown.all.entry.y1": {
+      "n": 30,
+      "seniority_mix": {
+        "intern": 4,
+        "fresher": 8,
+        "junior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 30,
+        "experience_years": 30,
+        "salary": 7
+      }
+    },
+    "vn.all.entry.y1": {
+      "n": 640,
+      "seniority_mix": {
+        "intern": 92,
+        "fresher": 166,
+        "junior": 382
+      },
+      "n_by_measure": {
+        "skill_count": 640,
+        "experience_years": 640,
+        "salary": 160
+      }
+    },
+    "vn.all.entry.ynone": {
+      "n": 570,
+      "seniority_mix": {},
+      "n_by_measure": {}
     }
   },
   "city_shares": {
@@ -929,6 +1012,37 @@
             "city": "unknown",
             "cell_id": "unknown.all.entry",
             "share": 0.05697445972495088
+          }
+        ]
+      },
+      "entry.y1": {
+        "total_cell_id": "vn.all.entry.y1",
+        "years_unstated_cell_id": "vn.all.entry.ynone",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.all.entry.y1",
+            "share": 0.421875
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.all.entry.y1",
+            "share": 0.484375
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.all.entry.y1",
+            "share": 0.01875
+          },
+          {
+            "city": "other",
+            "cell_id": "other.all.entry.y1",
+            "share": 0.028125
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.all.entry.y1",
+            "share": 0.046875
           }
         ]
       }

@@ -2,6 +2,8 @@
   "data": {
     "role": "ai_ml",
     "level": "all",
+    "years": "any",
+    "years_unstated_cell_id": null,
     "total_cell_id": "vn.ai_ml",
     "rows": [
       {

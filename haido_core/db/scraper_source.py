@@ -35,6 +35,8 @@ class SourceFactsRow:
     location: str | None
     experience_level: str | None
     job_level: str | None
+    years_min: float | None = None
+    """Số năm kinh nghiệm tối thiểu (`jobs.years_experience_min`, #280); `None` là tin không ghi."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,7 +72,8 @@ class ScraperPostgresReader:
             ).all()
             facts = conn.execute(
                 text(
-                    "SELECT j.job_url, j.title, j.company, j.location, j.experience_level, j.job_level "
+                    "SELECT j.job_url, j.title, j.company, j.location, j.experience_level, j.job_level, "
+                    "j.years_experience_min "
                     f"FROM {schema}.jobs j JOIN {schema}.job_observations o ON o.job_url = j.job_url "
                     "WHERE o.snapshot_date = :d ORDER BY j.job_url"
                 ),
@@ -79,5 +82,5 @@ class ScraperPostgresReader:
         return SourceSnapshot(
             runs=tuple(SourceRunRow(r[0], bool(r[1]), int(r[2]), r[3]) for r in runs),
             observations=tuple(SourceObservationRow(r[0], r[1]) for r in observed),
-            facts=tuple(SourceFactsRow(*r) for r in facts),
+            facts=tuple(SourceFactsRow(*r[:6], None if r[6] is None else float(r[6])) for r in facts),
         )

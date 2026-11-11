@@ -58,3 +58,10 @@ Lý do: #163 sửa `fake_market.json`, route, schema và tài liệu API dùng c
   - `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` → 59 passed.
   - `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed.
   - `uv run pytest -q` (có Postgres) → 715 passed.
+
+## Đợt 2026-11-12 — #280 thêm tham số `years` cho city-shares
+
+Lý do: #280 sửa `haido_api/schemas/market.py` (`CitySharesData.years`, `years_unstated_cell_id`), `market_source.py`, `routes/market.py`, `stat_market.py`, `fake_market.py`, `fake_market.json` (thêm khóa `all/entry.y1` và ô `vn.all.entry.ynone`), `web/lib/city-shares.ts`, và sinh lại `docs/api/openapi.json`. Phần `newcomer-roles` không đổi.
+
+- RED: không có test nào của #144 đỏ. Hành vi của #144 không đổi.
+- GREEN: `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` xanh; `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh; `uv run pytest -q` → 770 passed.

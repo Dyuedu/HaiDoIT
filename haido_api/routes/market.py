@@ -20,12 +20,16 @@ from haido_api.market_source import MarketReadModel
 from haido_api.schemas.error import ErrorEnvelope
 from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
 from haido_api.stat_market import StatMarket
-from haido_core.config import ALL_LEVELS, load_rules
+from haido_core.config import ALL_LEVELS, ANY_YEARS, load_rules
 from haido_core.domain.envelope import Envelope
 
 LEVEL_CODES: tuple[str, ...] = (ALL_LEVELS, *load_rules().level_options)
 """Cấp bậc lọc được: `all` cộng `level_options` của `config/rules.toml` (#163, #134). Đọc một lần lúc import."""
 LevelCode = Literal[LEVEL_CODES]
+
+YEARS_CODES: tuple[str, ...] = (ANY_YEARS, *(str(n) for n in load_rules().years_options))
+"""Mốc số năm lọc được: `any` cộng `years_options` của `config/rules.toml` (#280). Đọc một lần lúc import."""
+YearsCode = Literal[YEARS_CODES]
 
 SOURCE_ENV: dict[str, str] = {
     "city_shares": "HAIDO_MARKET_SOURCE_CITY_SHARES",
@@ -95,12 +99,22 @@ def get_city_shares(
             )
         ),
     ] = ALL_LEVELS,
+    years: Annotated[
+        YearsCode,
+        Query(
+            description=(
+                "Mốc số năm kinh nghiệm: `any` (mặc định, mọi tin, gồm cả tin không ghi số năm) hoặc `N`: chỉ tin yêu "
+                "cầu tối thiểu không quá N năm. Danh sách lấy từ `config/rules.toml`."
+            )
+        ),
+    ] = ANY_YEARS,
 ) -> Envelope[CitySharesData]:
-    """Tỷ trọng từng thành phố trong số tin của vai trò ở cấp bậc đã chọn, trên toàn quốc (FR-33).
+    """Tỷ trọng từng thành phố trong số tin của vai trò ở cấp bậc và mốc số năm đã chọn, trên toàn quốc (FR-33).
 
-    Thành phố dưới ngưỡng mẫu của cấp đã chọn vẫn có giá trị, kèm `display = low_sample_shown`.
+    Thành phố dưới ngưỡng mẫu của bộ lọc đã chọn vẫn có giá trị, kèm `display = low_sample_shown`. Ở một mốc số năm,
+    `data.years_unstated` là số tin của vai trò ở cấp đó không ghi số năm (#280).
     """
-    return source.city_shares(role=role, level=level)
+    return source.city_shares(role=role, level=level, years=years)
 
 
 @router.get(
