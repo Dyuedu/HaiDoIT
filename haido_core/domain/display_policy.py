@@ -22,6 +22,9 @@ class MeasureKind(StrEnum):
     PERCENTILE = "percentile"
     """Phân vị: lương, số kỹ năng yêu cầu, số năm kinh nghiệm (FR-30)."""
 
+    LEVEL_SHARE = "level_share"
+    """Tỷ lệ tin của một nhóm cấp bậc trong số tin của vai trò, ví dụ tỷ lệ tin entry-level (#144)."""
+
 
 class DisplayState(StrEnum):
     """Trạng thái hiển thị của một con số, do `suppression_for` quyết."""
@@ -41,7 +44,7 @@ def suppression_for(measure_kind: MeasureKind, n: int, *, min_sample: int) -> Di
 
     `n` là cỡ mẫu của chính thước đo đó (`n_with_value`), không phải `n` của ô khi hai
     số khác nhau (AD-17). `n >= min_sample` thì hiện. Dưới ngưỡng, chỉ tỷ trọng cấu phần
-    được `low_sample_shown`; tỷ lệ kỹ năng và phân vị luôn `null_data`. `n = 0` xử lý như
+    được `low_sample_shown`; mọi loại khác luôn `null_data`. `n = 0` xử lý như
     mọi `n` dưới ngưỡng.
 
     Raises:

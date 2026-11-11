@@ -10,6 +10,7 @@ DUOI_NGUONG = {
     MeasureKind.COMPOSITION_SHARE: DisplayState.LOW_SAMPLE_SHOWN,
     MeasureKind.SKILL_RATE: DisplayState.NULL_DATA,
     MeasureKind.PERCENTILE: DisplayState.NULL_DATA,
+    MeasureKind.LEVEL_SHARE: DisplayState.NULL_DATA,
 }
 
 

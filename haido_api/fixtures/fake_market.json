@@ -1,5 +1,5 @@
 {
-  "_note": "Dữ liệu giả của C-1 (#2), đọc bởi haido_api/fake_market.py. Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng là chuỗi tạm; #16 chốt mã thật. display và insufficient_by_measure không nằm ở đây: bản giả tính chúng bằng suppression_for từ n và thresholds.min_sample. Giá trị rate/share là số thô; bản giả tự ẩn khi dưới ngưỡng.",
+  "_note": "Dữ liệu giả của C-1 (#2), đọc bởi haido_api/fake_market.py. Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng là chuỗi tạm; #16 chốt mã thật. display và insufficient_by_measure không nằm ở đây: bản giả tính chúng bằng suppression_for từ n và thresholds.min_sample. Giá trị rate/share là số thô; bản giả tự ẩn khi dưới ngưỡng. newcomer_roles (#144): số tin entry-level là n của ô vn.<role>.entry (Intern+Fresher+Junior của ô vn.<role>); share là số thô entry/n, null khi n dưới ngưỡng; bản giả tự sắp thứ tự hiển thị.",
   "snapshot": {
     "snapshot_date": "2026-11-03",
     "snapshot_status": "published",
@@ -339,6 +339,208 @@
         "experience_years": 15,
         "salary": 4
       }
+    },
+    "vn.frontend": {
+      "n": 240,
+      "seniority_mix": {
+        "intern": 20,
+        "fresher": 34,
+        "junior": 86,
+        "mid": 70,
+        "senior": 30
+      },
+      "n_by_measure": {
+        "skill_count": 240,
+        "experience_years": 168,
+        "salary": 48
+      }
+    },
+    "vn.frontend.entry": {
+      "n": 140,
+      "seniority_mix": {
+        "intern": 20,
+        "fresher": 34,
+        "junior": 86
+      },
+      "n_by_measure": {
+        "skill_count": 140,
+        "experience_years": 98,
+        "salary": 28
+      }
+    },
+    "vn.qa": {
+      "n": 130,
+      "seniority_mix": {
+        "intern": 12,
+        "fresher": 25,
+        "junior": 45,
+        "mid": 35,
+        "senior": 13
+      },
+      "n_by_measure": {
+        "skill_count": 130,
+        "experience_years": 91,
+        "salary": 26
+      }
+    },
+    "vn.qa.entry": {
+      "n": 82,
+      "seniority_mix": {
+        "intern": 12,
+        "fresher": 25,
+        "junior": 45
+      },
+      "n_by_measure": {
+        "skill_count": 82,
+        "experience_years": 57,
+        "salary": 16
+      }
+    },
+    "vn.data_analyst": {
+      "n": 96,
+      "seniority_mix": {
+        "intern": 10,
+        "fresher": 14,
+        "junior": 30,
+        "mid": 30,
+        "senior": 12
+      },
+      "n_by_measure": {
+        "skill_count": 96,
+        "experience_years": 67,
+        "salary": 19
+      }
+    },
+    "vn.data_analyst.entry": {
+      "n": 54,
+      "seniority_mix": {
+        "intern": 10,
+        "fresher": 14,
+        "junior": 30
+      },
+      "n_by_measure": {
+        "skill_count": 54,
+        "experience_years": 38,
+        "salary": 11
+      }
+    },
+    "vn.mobile": {
+      "n": 75,
+      "seniority_mix": {
+        "intern": 4,
+        "fresher": 6,
+        "junior": 20,
+        "mid": 30,
+        "senior": 15
+      },
+      "n_by_measure": {
+        "skill_count": 75,
+        "experience_years": 52,
+        "salary": 15
+      }
+    },
+    "vn.mobile.entry": {
+      "n": 30,
+      "seniority_mix": {
+        "intern": 4,
+        "fresher": 6,
+        "junior": 20
+      },
+      "n_by_measure": {
+        "skill_count": 30,
+        "experience_years": 21,
+        "salary": 6
+      }
+    },
+    "vn.devops": {
+      "n": 48,
+      "seniority_mix": {
+        "mid": 30,
+        "senior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 48,
+        "experience_years": 34,
+        "salary": 10
+      }
+    },
+    "vn.devops.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "vn.embedded": {
+      "n": 12,
+      "seniority_mix": {
+        "intern": 2,
+        "fresher": 1,
+        "junior": 3,
+        "mid": 4,
+        "senior": 2
+      },
+      "n_by_measure": {
+        "skill_count": 12,
+        "experience_years": 8,
+        "salary": 2
+      }
+    },
+    "vn.embedded.entry": {
+      "n": 6,
+      "seniority_mix": {
+        "intern": 2,
+        "fresher": 1,
+        "junior": 3
+      },
+      "n_by_measure": {
+        "skill_count": 6,
+        "experience_years": 4,
+        "salary": 1
+      }
+    },
+    "vn.data_engineer": {
+      "n": 22,
+      "seniority_mix": {
+        "junior": 4,
+        "senior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 22,
+        "experience_years": 15,
+        "salary": 4
+      }
+    },
+    "vn.data_engineer.entry": {
+      "n": 4,
+      "seniority_mix": {
+        "junior": 4
+      },
+      "n_by_measure": {
+        "skill_count": 4,
+        "experience_years": 3,
+        "salary": 1
+      }
+    },
+    "vn.other": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "vn.other.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
     }
   },
   "city_shares": {
@@ -626,5 +828,74 @@
         ]
       }
     }
+  },
+  "newcomer_roles": {
+    "levels": [
+      "intern",
+      "fresher",
+      "junior"
+    ],
+    "rows": [
+      {
+        "role": "embedded",
+        "total_cell_id": "vn.embedded",
+        "entry_cell_id": "vn.embedded.entry",
+        "share": null
+      },
+      {
+        "role": "ai_ml",
+        "total_cell_id": "vn.ai_ml",
+        "entry_cell_id": "vn.ai_ml.entry",
+        "share": 0.5712656784492588
+      },
+      {
+        "role": "data_engineer",
+        "total_cell_id": "vn.data_engineer",
+        "entry_cell_id": "vn.data_engineer.entry",
+        "share": null
+      },
+      {
+        "role": "data_analyst",
+        "total_cell_id": "vn.data_analyst",
+        "entry_cell_id": "vn.data_analyst.entry",
+        "share": 0.5625
+      },
+      {
+        "role": "qa",
+        "total_cell_id": "vn.qa",
+        "entry_cell_id": "vn.qa.entry",
+        "share": 0.6307692307692307
+      },
+      {
+        "role": "devops",
+        "total_cell_id": "vn.devops",
+        "entry_cell_id": "vn.devops.entry",
+        "share": 0.0
+      },
+      {
+        "role": "mobile",
+        "total_cell_id": "vn.mobile",
+        "entry_cell_id": "vn.mobile.entry",
+        "share": 0.4
+      },
+      {
+        "role": "frontend",
+        "total_cell_id": "vn.frontend",
+        "entry_cell_id": "vn.frontend.entry",
+        "share": 0.5833333333333334
+      },
+      {
+        "role": "backend",
+        "total_cell_id": "vn.backend",
+        "entry_cell_id": "vn.backend.entry",
+        "share": 0.33121019108280253
+      },
+      {
+        "role": "other",
+        "total_cell_id": "vn.other",
+        "entry_cell_id": "vn.other.entry",
+        "share": null
+      }
+    ]
   }
 }

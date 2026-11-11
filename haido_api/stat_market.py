@@ -23,7 +23,12 @@ import sqlalchemy as sa
 from sqlalchemy import Connection, Engine
 
 from haido_api.market_source import UnknownCell
-from haido_api.schemas.market import CityShareRow, CitySharesData, SkillRatesData
+from haido_api.schemas.market import (
+    CityShareRow,
+    CitySharesData,
+    NewcomerRolesData,
+    SkillRatesData,
+)
 from haido_core.config import RulesConfig, load_rules
 from haido_core.db.engine import make_read_engine
 from haido_core.db.tables import snapshots, stat_cells, stat_city_shares, stat_sources
@@ -44,7 +49,7 @@ ALL = "all"
 
 
 class StatMarket:
-    """Bản thật của `MarketReadModel` cho `city_shares`. `skill_rates` chưa có số thật (#101)."""
+    """Bản thật của `MarketReadModel` cho `city_shares`. `skill_rates` (#101) và `newcomer_roles` (#145, #146) chưa có số thật."""
 
     def __init__(
         self, *, engine_factory: Callable[[], Engine] | None = None, rules: RulesConfig | None = None
@@ -114,6 +119,9 @@ class StatMarket:
 
     def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:
         raise UnknownCell("Tỷ lệ kỹ năng chưa có số liệu thật.", snapshot_date=None)
+
+    def newcomer_roles(self) -> Envelope[NewcomerRolesData]:
+        raise UnknownCell("Số tin cho người mới chưa có số liệu thật.", snapshot_date=None)
 
 
 def _latest_readable(conn: Connection) -> Any:
