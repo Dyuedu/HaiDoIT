@@ -24,7 +24,8 @@ Full list in [`DOD.md`](../_bmad-output/planning-artifacts/DOD.md). Tick the lin
 - [ ] No CV or JD content in tables, logs, events or temp files
 - [ ] Main ACs have tests, and test names carry the FR or AD code
 - [ ] CI gates for the related ADs are still green
-- [ ] Screens work fully on mobile, with `aria-*` and visible focus
+- [ ] Screens work fully on a 360px-wide phone, with no horizontal page scroll
+- [ ] Screens work by keyboard and screen reader: 44px tap targets, visible focus ring, `aria-label` on icon buttons, a table for every chart
 - [ ] New CLI commands are documented in `README` or `docs/`
 - [ ] `specs/<issue>-<slug>/` is updated for this issue and for every issue whose code this PR touches
 
