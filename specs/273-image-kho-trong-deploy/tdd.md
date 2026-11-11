@@ -34,3 +34,12 @@ Test đọc workflow, file compose, `daily.sh` và mode trong git. Riêng `vps-d
 - `uv run pytest tests/deploy -q` → lần đầu 37 passed, 1 failed: `test_daily_warehouse.py::test_compose_co_warehouse_khong_mo_cong` (#90) còn đòi `haidoit-warehouse:local`. Đổi sang image GHCR → 38 passed.
 - `bash -n deploy/daily.sh deploy/vps-deploy.sh` sạch.
 - `docker compose -f compose.scraper.yml config` (với `.env` giả): thiếu tag ra `ghcr.io/dyuedu/haidoit-warehouse:none`, có `HAIDO_WAREHOUSE_TAG=sha-abc` ra đúng tag; image của scraper không đổi.
+
+## Kiểm sau merge (2026-11-12)
+
+Lượt cron 02:00 trên VPS, snapshot `2026-11-12`, là lượt đêm đầu tiên chạy kho bằng image GHCR.
+
+- Log `daily-2026-11-12.log`: dòng `image kho: sha-cd57eb8f132d8e46b17393201a0eace587f05947`. Tag không còn là `sha-28a7cd6` của lần deploy PR #274 vì #275 và #276 đã deploy lại, mỗi lần tự build và chuyển tag. Bước kho chạy 02:44:58–02:45:20: ingest 2716 tin, vòng đời 6466 tin, tổng hợp 594 ô và 495 tỷ trọng thành phố, chốt `published`. Không có `KHO HONG`.
+- `haido.stat_sources` có 8 hàng cho `2026-11-12` (careerlink, itnavi, itviec, momo, topcv, topdev, vietnamworks, zalo). Truy vấn trong transaction READ ONLY.
+- `GET /api/v1/city-shares?role=ai_ml|backend|frontend` → 200, `snapshot_date: 2026-11-12`, `sources_failed: []`.
+- Sau khi kiểm, đã xoá image `haidoit-warehouse:local` và hai image GHCR cũ (`sha-28a7cd6`, `sha-ca51d8e`) trên VPS; giữ image đang ghi trong `.warehouse-tag`.
