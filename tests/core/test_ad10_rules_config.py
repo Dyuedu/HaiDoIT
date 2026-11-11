@@ -8,6 +8,8 @@ import pytest
 
 from haido_core.config import ConfigError, load_rules
 
+PDF = "application/pdf"
+DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 AUTO = ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec")
 
 NOTE = '[[coverage_notes]]\ncode = "n_sources"\ntext = "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên {n} nguồn."\n'
@@ -19,9 +21,11 @@ CITY = (
 ROLE = '[labels.role]\n"Backend" = "backend"\n"Other" = "other"\n'
 LEVEL = '[labels.level]\n"Junior" = "junior"\n"không xác định" = "unknown"\n'
 
+CV = f'cv_max_bytes = 5242880\ncv_types = ["{PDF}", "{DOCX}"]\n'
+
 BASE = (
     'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_core = 0.3\ntheta_common = 0.1\n'
-    'roles = ["backend", "other"]\n\n'
+    f'roles = ["backend", "other"]\n{CV}\n'
     f"{SOURCES}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
 )
 
@@ -236,3 +240,65 @@ def test_ad10_thu_hang_nguon_cho_dai_dien_cum() -> None:
     assert rules.source_priority[0] == "itviec"
     assert "topcv" in rules.source_priority
     assert set(rules.auto_sources) <= set(rules.source_priority)
+
+
+def test_ad10_config_version_da_tang_khi_them_gioi_han_cv() -> None:
+    assert load_rules().config_version not in {"2026-11-06.1", "2026-11-09.1", "2026-11-10.1", "2026-11-10.2"}
+
+
+def test_ad10_gioi_han_cv_mac_dinh_la_5_mib_pdf_va_docx() -> None:
+    rules = load_rules()
+    assert rules.cv_max_bytes == 5 * 1024 * 1024
+    assert rules.cv_types == (PDF, DOCX)
+
+
+def test_ad10_gioi_han_cv_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
+    rules = load_rules(_base(tmp_path, cv_max_bytes="1024", cv_types='["application/pdf"]'))
+    assert (rules.cv_max_bytes, rules.cv_types) == (1024, (PDF,))
+
+
+def test_ad10_cv_khong_doi_nguong_mau_theta_va_ghi_chu_pham_vi() -> None:
+    rules = load_rules()
+    assert (rules.min_sample, rules.theta_core, rules.theta_common) == (30, 0.3, 0.1)
+    assert [n.code for n in rules.coverage_notes] == [
+        "n_sources",
+        "posting_not_demand",
+        "big_city_bias",
+        "salary_disclosed_only",
+    ]
+
+
+@pytest.mark.parametrize("khoa", ["cv_max_bytes", "cv_types"])
+def test_ad10_thieu_khoa_cv_thi_bao_loi_tieng_viet(tmp_path: Path, khoa: str) -> None:
+    with pytest.raises(ConfigError, match="thiếu") as exc:
+        load_rules(_base(tmp_path, drop=khoa))
+    assert khoa in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    ("swap", "khoa"),
+    [
+        ({"cv_max_bytes": "0"}, "cv_max_bytes"),
+        ({"cv_max_bytes": "-5"}, "cv_max_bytes"),
+        ({"cv_max_bytes": "5.5"}, "cv_max_bytes"),
+        ({"cv_max_bytes": '"5MB"'}, "cv_max_bytes"),
+        ({"cv_max_bytes": "true"}, "cv_max_bytes"),
+        ({"cv_types": "[]"}, "cv_types"),
+        ({"cv_types": '"application/pdf"'}, "cv_types"),
+        ({"cv_types": '["application/pdf", "application/pdf"]'}, "cv_types"),
+        ({"cv_types": '["pdf"]'}, "cv_types"),
+        ({"cv_types": '["application/pdf", 3]'}, "cv_types"),
+        ({"cv_types": '["Application/PDF"]'}, "cv_types"),
+        ({"cv_types": '["image/png"]'}, "cv_types"),
+        ({"cv_types": '["application/pdf", "application/zip"]'}, "cv_types"),
+        ({"cv_max_bytes": "52428801"}, "cv_max_bytes"),
+    ],
+)
+def test_ad10_gioi_han_cv_sai_thi_bao_loi_tieng_viet(tmp_path: Path, swap: dict[str, str], khoa: str) -> None:
+    with pytest.raises(ConfigError, match=khoa):
+        load_rules(_base(tmp_path, **swap))
+
+
+def test_ad10_cv_max_bytes_dung_50_mib_van_duoc(tmp_path: Path) -> None:
+    rules = load_rules(_base(tmp_path, cv_max_bytes=str(50 * 1024 * 1024)))
+    assert rules.cv_max_bytes == 50 * 1024 * 1024
