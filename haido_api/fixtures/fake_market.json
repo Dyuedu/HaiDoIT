@@ -951,22 +951,22 @@
             "group": "core"
           },
           {
-            "skill": "machine-learning",
+            "skill": "machine_learning",
             "rate": 0.40119760479041916,
             "group": "core"
           },
           {
-            "skill": "pandas",
+            "skill": "data_analysis",
             "rate": 0.35129740518962077,
             "group": "core"
           },
           {
-            "skill": "power-bi",
+            "skill": "power_bi",
             "rate": 0.19560878243512975,
             "group": "common"
           },
           {
-            "skill": "spark",
+            "skill": "deep_learning",
             "rate": 0.1217564870259481,
             "group": "common"
           },
@@ -999,7 +999,7 @@
             "group": "core"
           },
           {
-            "skill": "spring-boot",
+            "skill": "spring_boot",
             "rate": 0.5192307692307693,
             "group": "core"
           },
@@ -1009,8 +1009,13 @@
             "group": "core"
           },
           {
-            "skill": "rest-api",
+            "skill": "rest_api",
             "rate": 0.36538461538461536,
+            "group": "core"
+          },
+          {
+            "skill": "postgresql",
+            "rate": 0.3076923076923077,
             "group": "core"
           },
           {
@@ -1024,13 +1029,119 @@
             "group": "common"
           },
           {
+            "skill": "mysql",
+            "rate": 0.21153846153846154,
+            "group": "common"
+          },
+          {
             "skill": "microservices",
             "rate": 0.15384615384615385,
             "group": "common"
           },
           {
+            "skill": "ci_cd",
+            "rate": 0.1346153846153846,
+            "group": "common"
+          },
+          {
+            "skill": "redis",
+            "rate": 0.1346153846153846,
+            "group": "common"
+          },
+          {
+            "skill": "unit_testing",
+            "rate": 0.1346153846153846,
+            "group": "common"
+          },
+          {
             "skill": "kafka",
             "rate": 0.07692307692307693,
+            "group": "company_specific"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.07692307692307693,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "intern": {
+        "cell_id": "vn.backend",
+        "fallback_label": "Backend · Intern chỉ có 13 tin, chưa đủ để tính riêng, nên số dưới đây lấy từ Backend ở mọi cấp bậc (157 tin); 105 trên 157 tin (67%) là Mid trở lên.",
+        "rows": [
+          {
+            "skill": "sql",
+            "rate": 0.6369426751592356,
+            "group": "core"
+          },
+          {
+            "skill": "java",
+            "rate": 0.6242038216560509,
+            "group": "core"
+          },
+          {
+            "skill": "spring_boot",
+            "rate": 0.5095541401273885,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.47770700636942676,
+            "group": "core"
+          },
+          {
+            "skill": "rest_api",
+            "rate": 0.445859872611465,
+            "group": "core"
+          },
+          {
+            "skill": "postgresql",
+            "rate": 0.3503184713375796,
+            "group": "core"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.3184713375796178,
+            "group": "core"
+          },
+          {
+            "skill": "microservices",
+            "rate": 0.28662420382165604,
+            "group": "common"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.25477707006369427,
+            "group": "common"
+          },
+          {
+            "skill": "mysql",
+            "rate": 0.24203821656050956,
+            "group": "common"
+          },
+          {
+            "skill": "ci_cd",
+            "rate": 0.1910828025477707,
+            "group": "common"
+          },
+          {
+            "skill": "redis",
+            "rate": 0.17834394904458598,
+            "group": "common"
+          },
+          {
+            "skill": "unit_testing",
+            "rate": 0.12738853503184713,
+            "group": "common"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.12101910828025478,
+            "group": "common"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.09554140127388536,
             "group": "company_specific"
           }
         ]
@@ -1052,7 +1163,7 @@
             "group": "core"
           },
           {
-            "skill": "spring-boot",
+            "skill": "spring_boot",
             "rate": 0.5192307692307693,
             "group": "core"
           },
@@ -1062,8 +1173,13 @@
             "group": "core"
           },
           {
-            "skill": "rest-api",
+            "skill": "rest_api",
             "rate": 0.36538461538461536,
+            "group": "core"
+          },
+          {
+            "skill": "postgresql",
+            "rate": 0.3076923076923077,
             "group": "core"
           },
           {
@@ -1077,12 +1193,37 @@
             "group": "common"
           },
           {
+            "skill": "mysql",
+            "rate": 0.21153846153846154,
+            "group": "common"
+          },
+          {
             "skill": "microservices",
             "rate": 0.15384615384615385,
             "group": "common"
           },
           {
+            "skill": "ci_cd",
+            "rate": 0.1346153846153846,
+            "group": "common"
+          },
+          {
+            "skill": "redis",
+            "rate": 0.1346153846153846,
+            "group": "common"
+          },
+          {
+            "skill": "unit_testing",
+            "rate": 0.1346153846153846,
+            "group": "common"
+          },
+          {
             "skill": "kafka",
+            "rate": 0.07692307692307693,
+            "group": "company_specific"
+          },
+          {
+            "skill": "linux",
             "rate": 0.07692307692307693,
             "group": "company_specific"
           }
@@ -1095,13 +1236,18 @@
         "fallback_label": null,
         "rows": [
           {
-            "skill": "airflow",
-            "rate": 0.5,
+            "skill": "aws",
+            "rate": 0.4444444444444444,
             "group": "core"
           },
           {
-            "skill": "aws",
-            "rate": 0.4444444444444444,
+            "skill": "databricks",
+            "rate": 0.8333333333333334,
+            "group": "core"
+          },
+          {
+            "skill": "etl",
+            "rate": 0.5,
             "group": "core"
           },
           {
@@ -1115,14 +1261,70 @@
             "group": "core"
           },
           {
-            "skill": "spark",
-            "rate": 0.8333333333333334,
-            "group": "core"
-          },
-          {
             "skill": "sql",
             "rate": 0.7777777777777778,
             "group": "core"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.data_engineer",
+        "fallback_label": "Data Engineer · Entry chỉ có 4 tin và Data Engineer ở mọi cấp bậc chỉ có 22 tin; cả hai chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "aws",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "ci_cd",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "data_modeling",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "data_warehouse",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "docker",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "etl",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "git",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "linux",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "postgresql",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "python",
+            "rate": null,
+            "group": null
+          },
+          {
+            "skill": "sql",
+            "rate": null,
+            "group": null
           }
         ]
       }

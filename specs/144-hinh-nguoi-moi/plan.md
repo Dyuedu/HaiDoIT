@@ -84,3 +84,13 @@ tests/steps/test_dat20_api_end_to_end.py
 - `haido_api/routes/market.py`, `schemas/market.py`, `market_source.py`, `fake_market.py`, `stat_market.py`: `city-shares` nhận tham số tùy chọn `level`, response có `data.level`.
 - `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm `level` của `city-shares`.
 - `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `web/lib/city-shares.ts`: cập nhật cho `level`.
+
+## Thay đổi sau merge (2026-11-12, #212)
+
+#212 (hình response lộ trình học) sửa các file dùng chung với issue này, qua hai đợt (đợt 2 là sửa theo review). Hành vi của issue này không đổi.
+
+- `haido_api/market_source.py`, `fake_market.py`, `stat_market.py`, `routes/market.py`: thêm phép `learning_path` và biến chọn nguồn `HAIDO_MARKET_SOURCE_LEARNING_PATH`; `create_app` đòi nguồn cho phép này (do `SOURCE_ENV` ở `routes/market.py`). `main.py` không đổi.
+- `haido_core/domain/envelope.py`: thêm dấu `Ordinal` cho số thứ tự và số đếm của lộ trình (đợt 2 siết: chỉ miễn khi kiểu đúng là `Ordinal` hoặc `Ordinal | None` và giá trị là `int` không âm). `Stat`, `CellMeta`, `Meta` và `MeasureKind.LEVEL_SHARE` của #144 không đổi.
+- `haido_api/fixtures/fake_market.json`: mã trong `skill_rates` đổi sang snake_case, thêm và đổi hàng `skill_rates` (đợt 2: `data_engineer/entry` về `vn.data_engineer`, thêm `backend/intern`). Không đụng `cells` hay `newcomer_roles`.
+- `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm route `learning-path` và ngoại lệ `Ordinal`.
+- `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `test_fr33_city_shares_level.py`, `tests/steps/test_dat20_api_end_to_end.py`: thêm nguồn `learning_path` vào các lời gọi `create_app`, thêm route vào `SAMPLE_QUERY` và danh sách yêu cầu của test `display`.

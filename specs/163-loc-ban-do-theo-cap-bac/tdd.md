@@ -124,3 +124,13 @@ Lý do: `main` nhận #144 (hình response màn người mới), bắt `create_a
 - RED: `uv run pytest -q` → 2 failed, 18 errors, đều trong `tests/api/test_fr33_city_shares_level.py`: `ValueError: Thiếu nguồn cho phép: newcomer_roles.` vì test dựng app chỉ với `city_shares` và `skill_rates`.
 - Sửa: thêm `"newcomer_roles": FakeMarket()` vào các app dựng trong test; ghép `fake_market.json` theo nội dung (ô của hai bên không trùng).
 - GREEN: `tests/api/test_fr33_city_shares_level.py` → 26 passed; `uv run pytest -q` → 715 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npm run test` → 149 passed, `lint` sạch, `build` qua; `ruff` sạch; cổng 0 failed.
+
+## Đợt 9 — 2026-11-12, sau khi thêm lộ trình học (#212)
+
+Lý do: #212 thêm phép `learning_path` vào `create_app`, đổi mã kỹ năng của `skill_rates` giả sang snake_case và (đợt 2 của #212) sửa nội dung `skill_rates`, `envelope.py`, schema OpenAPI.
+
+- Không viết test mới của issue này và không có đợt RED: hành vi của issue không đổi. Bản ghi trước ghi một RED giả định ("sẽ báo...") không kèm số đếm; thay bằng ghi chú này.
+- Đã chạy lại các test có sẵn của issue này trên mã sau đợt 2 của #212 (kết quả thật, 2026-11-12):
+  - `uv run pytest -q tests/api/test_fr33_city_shares_level.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py tests/api/test_dat20_stat_market.py tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 116 passed.
+  - `npx vitest run tests/fr33-level-filter.test.tsx tests/fr33-map-screen.test.tsx tests/ad17-city-shares-client.test.ts` → 104 passed.
+- GREEN: `uv run pytest -q` (có Postgres) → 862 passed, không skip; hai lượt `-m determinism` (`PYTHONHASHSEED=0` và `1`) → 7 passed mỗi lượt; web `npm run test` → 164 passed.

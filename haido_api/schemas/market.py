@@ -71,7 +71,7 @@ class SkillRateRow(BaseModel):
     model_config = _CONFIG
 
     skill: str
-    """Mã kỹ năng, kebab-case, ví dụ `spring-boot`."""
+    """Mã kỹ năng, snake_case (#205), ví dụ `spring_boot`."""
 
     rate: Stat
     """Tỷ lệ xuất hiện, `kind = skill_rate`. Dưới ngưỡng mẫu là `null_data`, không có giá trị."""

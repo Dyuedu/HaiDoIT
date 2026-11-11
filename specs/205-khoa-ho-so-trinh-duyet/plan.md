@@ -68,3 +68,12 @@ web/tests/ad23-haido-keys.test.ts
 `tests/api/test_ad17_routes.py` là test của #2 (chưa có `specs/`). Nó thêm `NUMBERLESS_ROUTES` để route không có số không bị bắt dùng Envelope, nhưng vẫn bị kiểm là không có số.
 
 Cập nhật 2026-11-11 (#163): `docs/api/openapi.json` được sinh lại vì `GET /api/v1/city-shares` có thêm tham số `level` và `data.level`; `tests/api/test_ad17_routes.py` sửa stub nguồn và danh sách yêu cầu của fixture theo cấp bậc. Route `/api/v1/skills` và mọi AC của #205 không đổi.
+
+## Thay đổi sau merge (2026-11-12, #212)
+
+#212 (hình response lộ trình học) sửa các file dùng chung với issue này, qua hai đợt (đợt 2 là sửa theo review). Hành vi của issue này không đổi.
+
+- `haido_api/market_source.py`, `fake_market.py`, `stat_market.py`, `routes/market.py`: thêm phép `learning_path` và biến chọn nguồn `HAIDO_MARKET_SOURCE_LEARNING_PATH`; `create_app` đòi nguồn cho phép này (do `SOURCE_ENV` ở `routes/market.py`). `main.py` không đổi.
+- `haido_api/fixtures/fake_market.json`: mã trong `skill_rates` đổi sang snake_case, thêm và đổi hàng `skill_rates` (đợt 2: `data_engineer/entry` về `vn.data_engineer`, thêm `backend/intern`). Không đụng `cells` hay `newcomer_roles`.
+- `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm route `learning-path` và ngoại lệ `Ordinal`.
+- `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `test_fr33_city_shares_level.py`, `tests/steps/test_dat20_api_end_to_end.py`: thêm nguồn `learning_path` vào các lời gọi `create_app`, thêm route vào `SAMPLE_QUERY` và danh sách yêu cầu của test `display`.

@@ -38,6 +38,7 @@ SAMPLE_QUERY: dict[str, dict[str, str]] = {
     "/api/v1/city-shares": {"role": "ai_ml"},
     "/api/v1/skill-rates": {"role": "ai_ml", "level": "entry"},
     "/api/v1/newcomer-roles": {},
+    "/api/v1/learning-path": {"role": "backend", "level": "entry"},
 }
 
 # Route không trả con số nào nên không dùng Envelope (AD-17 chỉ áp cho response chứa số).
@@ -131,6 +132,11 @@ def _all_fixture_requests() -> list[tuple[str, dict[str, str]]]:
         for level in levels
     ]
     reqs.append(("/api/v1/newcomer-roles", {}))
+    reqs += [  # #212: ready qua ô chọn thẳng, quay về vai trò × mọi cấp, null_data; not_ready không có Stat
+        ("/api/v1/learning-path", {"role": "backend", "level": "entry"}),
+        ("/api/v1/learning-path", {"role": "backend", "level": "intern"}),
+        ("/api/v1/learning-path", {"role": "data_engineer", "level": "entry"}),
+    ]
     return reqs
 
 
@@ -261,7 +267,7 @@ def test_ad17_chon_nguon_rieng_cho_tung_phep() -> None:
         def skill_rates(self, *, role: str, level: str) -> Any:
             raise AssertionError("skill_rates không được đi qua nguồn này")
 
-    test_client = TestClient(create_app({"city_shares": _CityOnly(), "skill_rates": fake, "newcomer_roles": fake}))
+    test_client = TestClient(create_app({"city_shares": _CityOnly(), "skill_rates": fake, "newcomer_roles": fake, "learning_path": fake}))
     error = _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 404, "unknown_cell")
     assert error["snapshot_date"] == "2026-11-04"
     assert test_client.get("/api/v1/skill-rates?role=ai_ml&level=entry").status_code == 200
@@ -292,7 +298,7 @@ def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
 
     broken = _Broken()
     test_client = TestClient(
-        create_app({"city_shares": broken, "skill_rates": broken, "newcomer_roles": broken}), raise_server_exceptions=False
+        create_app({"city_shares": broken, "skill_rates": broken, "newcomer_roles": broken, "learning_path": broken}), raise_server_exceptions=False
     )
     _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 500, "invalid_response")
     _assert_error(
@@ -309,7 +315,7 @@ def test_ad17_nguon_dung_model_sai_thanh_invalid_response() -> None:
             raise AssertionError("không gọi tới")
 
     source = _BuildsBadStat()
-    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source}))
+    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source, "learning_path": source}))
     _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 500, "invalid_response")
 
 
@@ -326,7 +332,7 @@ def test_ad17_instance_sua_bang_model_copy_van_bi_kiem_lai() -> None:
             return env.model_copy(update={"data": env.data.model_copy(update={"rows": rows})})
 
     source = _CopiesWithGroup()
-    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source}))
+    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source, "learning_path": source}))
     resp = test_client.get("/api/v1/skill-rates?role=data_engineer&level=senior")
     _assert_error(resp, 500, "invalid_response")
 

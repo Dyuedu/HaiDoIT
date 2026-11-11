@@ -5,9 +5,11 @@ cài bản thật cho `city_shares`, #27 cài bản thật cho `skill_rates`; m�
 riêng qua biến môi trường (xem `routes/market.py`), nên route và schema không đổi.
 """
 
+from collections.abc import Collection
 from datetime import date
 from typing import Protocol
 
+from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
 from haido_core.domain.envelope import Envelope
 
@@ -49,5 +51,17 @@ class MarketReadModel(Protocol):
 
         Raises:
             UnknownCell: chưa có snapshot nào đọc được.
+        """
+        ...
+
+    def learning_path(self, *, role: str, level: str, have: Collection[str]) -> Envelope[LearningPathData]:
+        """Lộ trình học đã xếp của `role` ở `level`, kèm tỷ lệ của từng kỹ năng (#212).
+
+        `have` là các mã kỹ năng người dùng đã có (đúng định dạng, không trùng, tối đa 200); nguồn tự đánh cờ và
+        đếm (AD-22) bằng `haido_api.learning_path.apply_have`. Vai trò chưa có lộ trình đã rà soát trả
+        `status = not_ready`, không phải lỗi.
+
+        Raises:
+            UnknownCell: vai trò không có, hoặc không có ô cho `level`.
         """
         ...

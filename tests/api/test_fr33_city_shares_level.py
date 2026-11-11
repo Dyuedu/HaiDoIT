@@ -39,7 +39,7 @@ def statements(pg_engine: Engine) -> Iterator[list[str]]:
 @pytest.fixture
 def client(pg_engine: Engine) -> TestClient:
     stat = StatMarket(engine_factory=lambda: pg_engine, rules=RULES)
-    return TestClient(create_app({"city_shares": stat, "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()}), raise_server_exceptions=False)
+    return TestClient(create_app({"city_shares": stat, "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()}), raise_server_exceptions=False)
 
 
 def _seed(engine: Engine, cells: dict[tuple[str, str], Counts], day: str = S, status: str = "published") -> None:
@@ -231,7 +231,7 @@ def test_fr33_display_do_suppression_for_voi_min_sample_cua_config(pg_engine: En
     _seed(pg_engine, SEEDED)
     strict = replace(RULES, min_sample=41)
     stat = StatMarket(engine_factory=lambda: pg_engine, rules=strict)
-    body = TestClient(create_app({"city_shares": stat, "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})).get(
+    body = TestClient(create_app({"city_shares": stat, "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()})).get(
         "/api/v1/city-shares", params={"role": "backend", "level": "entry"}
     ).json()
     meta = body["meta"]
@@ -313,7 +313,7 @@ def test_fr33_route_chuyen_level_cho_nguon_va_mac_dinh_la_all() -> None:
             raise AssertionError("không gọi tới")
 
     source = _Records()
-    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": FakeMarket()}))
+    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()}))
     test_client.get("/api/v1/city-shares", params={"role": "ai_ml"})
     test_client.get("/api/v1/city-shares", params={"role": "ai_ml", "level": "entry"})
     assert seen == [("ai_ml", "all"), ("ai_ml", "entry")]

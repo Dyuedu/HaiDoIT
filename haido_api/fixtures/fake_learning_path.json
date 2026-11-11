@@ -1,0 +1,301 @@
+{
+  "_note": "Dữ liệu giả của lộ trình học (#212), đọc bởi haido_api/fake_market.py. Mỗi kỹ năng có `requires` (mã kỹ năng cần học trước, cùng vai trò); chặng = 1 + chặng cao nhất của `requires`; prerequisite_for là các nút trực tiếp cần nó; foundation_for của nút `foundation: true` là các nút core hoặc common có nó là tổ tiên bắc cầu, và rỗng khi nhóm bị ẩn (FR-20). Tỷ lệ và nhóm lấy từ skill_rates của fake_market.json cho cùng (vai trò, cấp), nên bằng /skill-rates. Mã kỹ năng chỉ lấy từ haido_core/vocab/skills_seed.json. Lời dẫn không có chữ số ngoài tên công nghệ (FR-23). Vai trò của config/rules.toml không có ở đây là not_ready. Lời dẫn nói kỹ năng dùng để làm gì, không nói bao nhiêu tin đòi nó.",
+  "roles": {
+    "backend": {
+      "skills": [
+        {
+          "skill": "java",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ để viết dịch vụ phía máy chủ; nắm cú pháp, hướng đối tượng và bộ sưu tập trước khi học framework.",
+          "resource": {
+            "title": "Học Java (dev.java)",
+            "url": "https://dev.java/learn/"
+          }
+        },
+        {
+          "skill": "sql",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Truy vấn dữ liệu là việc hằng ngày của backend; bắt đầu từ SELECT, JOIN và nhóm dữ liệu.",
+          "resource": {
+            "title": "Hướng dẫn SQL của PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
+          }
+        },
+        {
+          "skill": "git",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Làm việc nhóm cần quản lý phiên bản; biết nhánh, commit và gộp mã là đủ để bắt đầu.",
+          "resource": {
+            "title": "Sách Pro Git",
+            "url": "https://git-scm.com/book/en/v2"
+          }
+        },
+        {
+          "skill": "nodejs",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Chạy JavaScript phía máy chủ; học nếu hướng tới các công ty dùng stack này.",
+          "resource": {
+            "title": "Làm quen với Node.js",
+            "url": "https://nodejs.org/learn/getting-started/introduction-to-nodejs"
+          }
+        },
+        {
+          "skill": "linux",
+          "requires": [],
+          "foundation": true,
+          "blurb": "Dòng lệnh và quyền tệp trên Linux là nền để học container và triển khai.",
+          "resource": {
+            "title": "Dòng lệnh Linux cho người mới (Ubuntu)",
+            "url": "https://ubuntu.com/tutorials/command-line-for-beginners"
+          }
+        },
+        {
+          "skill": "spring_boot",
+          "requires": [
+            "java"
+          ],
+          "foundation": false,
+          "blurb": "Framework để dựng dịch vụ Java; cần Java vững để đọc được cấu hình và chú thích.",
+          "resource": {
+            "title": "Bắt đầu với Spring Boot",
+            "url": "https://spring.io/guides/gs/spring-boot/"
+          }
+        },
+        {
+          "skill": "rest_api",
+          "requires": [
+            "java"
+          ],
+          "foundation": false,
+          "blurb": "Cách các dịch vụ và giao diện nói chuyện với nhau; nắm phương thức HTTP, mã trạng thái và định dạng JSON.",
+          "resource": {
+            "title": "Tổng quan HTTP (MDN)",
+            "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+          }
+        },
+        {
+          "skill": "postgresql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở; học sau khi đã quen SQL cơ bản.",
+          "resource": {
+            "title": "Hướng dẫn PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial.html"
+          }
+        },
+        {
+          "skill": "docker",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Đóng gói ứng dụng để chạy giống nhau ở mọi máy; cần quen dòng lệnh Linux.",
+          "resource": {
+            "title": "Docker: Get started",
+            "url": "https://docs.docker.com/get-started/"
+          }
+        },
+        {
+          "skill": "mysql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ khác cùng họ SQL; kiến thức SQL chuyển sang được, khác ở công cụ và cấu hình.",
+          "resource": {
+            "title": "Hướng dẫn MySQL",
+            "url": "https://dev.mysql.com/doc/refman/8.4/en/tutorial.html"
+          }
+        },
+        {
+          "skill": "unit_testing",
+          "requires": [
+            "java"
+          ],
+          "foundation": false,
+          "blurb": "Viết kiểm thử cho từng đơn vị mã để sửa lỗi sớm; bắt đầu với JUnit.",
+          "resource": {
+            "title": "Hướng dẫn JUnit",
+            "url": "https://docs.junit.org/current/user-guide/"
+          }
+        },
+        {
+          "skill": "microservices",
+          "requires": [
+            "spring_boot",
+            "rest_api",
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Chia hệ thống thành các dịch vụ nhỏ; cần REST, framework và container trước.",
+          "resource": {
+            "title": "Các mẫu microservices",
+            "url": "https://microservices.io/patterns/microservices.html"
+          }
+        },
+        {
+          "skill": "ci_cd",
+          "requires": [
+            "git",
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Tự động kiểm thử và triển khai mỗi lần đẩy mã; cần Git và container.",
+          "resource": {
+            "title": "Tài liệu GitHub Actions",
+            "url": "https://docs.github.com/en/actions"
+          }
+        },
+        {
+          "skill": "redis",
+          "requires": [
+            "postgresql"
+          ],
+          "foundation": false,
+          "blurb": "Kho dữ liệu trong bộ nhớ dùng làm bộ đệm; học sau khi hiểu cơ sở dữ liệu chính.",
+          "resource": {
+            "title": "Bắt đầu với Redis",
+            "url": "https://redis.io/docs/latest/develop/get-started/"
+          }
+        }
+      ]
+    },
+    "data_engineer": {
+      "skills": [
+        {
+          "skill": "sql",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Công cụ chính để lấy và biến đổi dữ liệu; nắm JOIN, nhóm dữ liệu và hàm cửa sổ.",
+          "resource": {
+            "title": "Hướng dẫn SQL của PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
+          }
+        },
+        {
+          "skill": "python",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ để viết các bước xử lý dữ liệu; bắt đầu từ kiểu dữ liệu, hàm và tệp.",
+          "resource": {
+            "title": "Hướng dẫn Python",
+            "url": "https://docs.python.org/3/tutorial/"
+          }
+        },
+        {
+          "skill": "git",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Quản lý phiên bản cho mã xử lý dữ liệu và làm việc nhóm.",
+          "resource": {
+            "title": "Sách Pro Git",
+            "url": "https://git-scm.com/book/en/v2"
+          }
+        },
+        {
+          "skill": "linux",
+          "requires": [],
+          "foundation": true,
+          "blurb": "Máy chủ dữ liệu và công cụ dòng lệnh chạy trên Linux; là nền để học container và đám mây.",
+          "resource": {
+            "title": "Dòng lệnh Linux cho người mới (Ubuntu)",
+            "url": "https://ubuntu.com/tutorials/command-line-for-beginners"
+          }
+        },
+        {
+          "skill": "postgresql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở để lưu và truy vấn dữ liệu có cấu trúc.",
+          "resource": {
+            "title": "Hướng dẫn PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial.html"
+          }
+        },
+        {
+          "skill": "aws",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Nền tảng đám mây để lưu và xử lý dữ liệu; làm quen dịch vụ lưu trữ trước.",
+          "resource": {
+            "title": "Bắt đầu với Amazon S3",
+            "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html"
+          }
+        },
+        {
+          "skill": "etl",
+          "requires": [
+            "python",
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Quy trình lấy, biến đổi và nạp dữ liệu; cần Python và SQL.",
+          "resource": {
+            "title": "Xây dựng pipeline dữ liệu với Apache Airflow",
+            "url": "https://airflow.apache.org/docs/apache-airflow/stable/tutorial/pipeline.html"
+          }
+        },
+        {
+          "skill": "docker",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Đóng gói các bước xử lý để chạy giống nhau ở mọi môi trường.",
+          "resource": {
+            "title": "Docker: Get started",
+            "url": "https://docs.docker.com/get-started/"
+          }
+        },
+        {
+          "skill": "data_modeling",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Thiết kế bảng và quan hệ để truy vấn nhanh và dễ hiểu.",
+          "resource": {
+            "title": "Định nghĩa dữ liệu trong PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/ddl.html"
+          }
+        },
+        {
+          "skill": "data_warehouse",
+          "requires": [
+            "etl",
+            "data_modeling"
+          ],
+          "foundation": false,
+          "blurb": "Kho dữ liệu tập trung phục vụ phân tích; cần quy trình ETL và mô hình dữ liệu.",
+          "resource": {
+            "title": "Kho dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Data_warehouse"
+          }
+        },
+        {
+          "skill": "ci_cd",
+          "requires": [
+            "git",
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Tự động kiểm thử và triển khai các bước xử lý dữ liệu.",
+          "resource": {
+            "title": "Tài liệu GitHub Actions",
+            "url": "https://docs.github.com/en/actions"
+          }
+        }
+      ]
+    }
+  }
+}

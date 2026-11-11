@@ -1,0 +1,321 @@
+{
+  "data": {
+    "role": "data_engineer",
+    "level": "entry",
+    "status": "ready",
+    "cell_id": "vn.data_engineer",
+    "entry_cell_id": "vn.data_engineer.entry",
+    "stages": [
+      {
+        "stage": 1,
+        "skills": [
+          {
+            "skill": "git",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "ci_cd"
+            ],
+            "have": true,
+            "blurb": "Quản lý phiên bản cho mã xử lý dữ liệu và làm việc nhóm.",
+            "resource": {
+              "title": "Sách Pro Git",
+              "url": "https://git-scm.com/book/en/v2"
+            }
+          },
+          {
+            "skill": "linux",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "aws",
+              "docker"
+            ],
+            "have": false,
+            "blurb": "Máy chủ dữ liệu và công cụ dòng lệnh chạy trên Linux; là nền để học container và đám mây.",
+            "resource": {
+              "title": "Dòng lệnh Linux cho người mới (Ubuntu)",
+              "url": "https://ubuntu.com/tutorials/command-line-for-beginners"
+            }
+          },
+          {
+            "skill": "python",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "etl"
+            ],
+            "have": false,
+            "blurb": "Ngôn ngữ để viết các bước xử lý dữ liệu; bắt đầu từ kiểu dữ liệu, hàm và tệp.",
+            "resource": {
+              "title": "Hướng dẫn Python",
+              "url": "https://docs.python.org/3/tutorial/"
+            }
+          },
+          {
+            "skill": "sql",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "data_modeling",
+              "etl",
+              "postgresql"
+            ],
+            "have": true,
+            "blurb": "Công cụ chính để lấy và biến đổi dữ liệu; nắm JOIN, nhóm dữ liệu và hàm cửa sổ.",
+            "resource": {
+              "title": "Hướng dẫn SQL của PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "skills": [
+          {
+            "skill": "aws",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Nền tảng đám mây để lưu và xử lý dữ liệu; làm quen dịch vụ lưu trữ trước.",
+            "resource": {
+              "title": "Bắt đầu với Amazon S3",
+              "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html"
+            }
+          },
+          {
+            "skill": "data_modeling",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "data_warehouse"
+            ],
+            "have": false,
+            "blurb": "Thiết kế bảng và quan hệ để truy vấn nhanh và dễ hiểu.",
+            "resource": {
+              "title": "Định nghĩa dữ liệu trong PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/ddl.html"
+            }
+          },
+          {
+            "skill": "docker",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "ci_cd"
+            ],
+            "have": false,
+            "blurb": "Đóng gói các bước xử lý để chạy giống nhau ở mọi môi trường.",
+            "resource": {
+              "title": "Docker: Get started",
+              "url": "https://docs.docker.com/get-started/"
+            }
+          },
+          {
+            "skill": "etl",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "data_warehouse"
+            ],
+            "have": false,
+            "blurb": "Quy trình lấy, biến đổi và nạp dữ liệu; cần Python và SQL.",
+            "resource": {
+              "title": "Xây dựng pipeline dữ liệu với Apache Airflow",
+              "url": "https://airflow.apache.org/docs/apache-airflow/stable/tutorial/pipeline.html"
+            }
+          },
+          {
+            "skill": "postgresql",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở để lưu và truy vấn dữ liệu có cấu trúc.",
+            "resource": {
+              "title": "Hướng dẫn PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/tutorial.html"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "skills": [
+          {
+            "skill": "ci_cd",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Tự động kiểm thử và triển khai các bước xử lý dữ liệu.",
+            "resource": {
+              "title": "Tài liệu GitHub Actions",
+              "url": "https://docs.github.com/en/actions"
+            }
+          },
+          {
+            "skill": "data_warehouse",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Kho dữ liệu tập trung phục vụ phân tích; cần quy trình ETL và mô hình dữ liệu.",
+            "resource": {
+              "title": "Kho dữ liệu (Wikipedia)",
+              "url": "https://en.wikipedia.org/wiki/Data_warehouse"
+            }
+          }
+        ]
+      }
+    ],
+    "current_stage": 1,
+    "have_on_path": 2,
+    "path_size": 11,
+    "have_ignored": [
+      "java"
+    ]
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.data_engineer": {
+        "n": 22,
+        "fallback_label": "Data Engineer · Entry chỉ có 4 tin và Data Engineer ở mọi cấp bậc chỉ có 22 tin; cả hai chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "seniority_mix": {
+          "junior": 4,
+          "senior": 18
+        },
+        "n_by_measure": {
+          "skill_count": 22,
+          "experience_years": 15,
+          "salary": 4
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.data_engineer.entry": {
+        "n": 4,
+        "fallback_label": null,
+        "seniority_mix": {
+          "junior": 4
+        },
+        "n_by_measure": {
+          "skill_count": 4,
+          "experience_years": 3,
+          "salary": 1
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      }
+    }
+  }
+}

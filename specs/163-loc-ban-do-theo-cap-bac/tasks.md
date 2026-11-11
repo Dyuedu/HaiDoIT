@@ -56,3 +56,12 @@
 - [x] T019 Cập nhật `specs/100-cross-source-clusters/` và `specs/205-khoa-ho-so-trinh-duyet/` (cùng commit)
 - [x] T021 Sửa sau review (đợt 7 của `tdd.md`): `stat_market.py` chọn snapshot theo cấp (F1), `config.py` kiểm dạng tên nhóm và mã (F2), `aggregate.py` từ chối thành viên trùng (F3), migration 0005 hạ cấp bỏ cả `stat_cells` theo cấp (F4), test web caption và `aria-describedby` (F5), test dòng chú thích khớp config (F6)
 - [x] T020 Chạy toàn bộ: `uv run pytest -q`, hai lần `-m determinism` (`PYTHONHASHSEED=0` và `1`), `uv run ruff check .`, `python tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11`, `uv run alembic heads`, `npm run lint`, `npm run test`, `npm run build` trong `web/`
+
+## Thay đổi sau merge (2026-11-12, #212)
+
+#212 (hình response lộ trình học) sửa các file dùng chung với issue này, qua hai đợt (đợt 2 là sửa theo review). Hành vi của issue này không đổi.
+
+- `haido_api/market_source.py`, `fake_market.py`, `stat_market.py`, `routes/market.py`: thêm phép `learning_path` và biến chọn nguồn `HAIDO_MARKET_SOURCE_LEARNING_PATH`; `create_app` đòi nguồn cho phép này (do `SOURCE_ENV` ở `routes/market.py`). `main.py` không đổi.
+- `haido_api/fixtures/fake_market.json`: mã trong `skill_rates` đổi sang snake_case, thêm và đổi hàng `skill_rates` (đợt 2: `data_engineer/entry` về `vn.data_engineer`, thêm `backend/intern`). Không đụng `cells` hay `newcomer_roles`.
+- `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm route `learning-path` và ngoại lệ `Ordinal`.
+- `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `test_fr33_city_shares_level.py`, `tests/steps/test_dat20_api_end_to_end.py`: thêm nguồn `learning_path` vào các lời gọi `create_app`, thêm route vào `SAMPLE_QUERY` và danh sách yêu cầu của test `display`.

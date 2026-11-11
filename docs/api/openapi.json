@@ -231,6 +231,115 @@
         }
       }
     },
+    "/api/v1/learning-path": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Lộ trình học của một vai trò",
+        "description": "Lộ trình học đã xếp theo chặng, mỗi kỹ năng có tỷ lệ xuất hiện (FR-22).\n\nChặng là thuộc tính của kỹ năng: `have` không đổi thứ tự, chỉ đổi cờ `have` và `have_on_path`, `current_stage`,\n`have_ignored`. Vai trò chưa có lộ trình đã rà soát trả 200 với `status = not_ready`. Số tin entry-level của vai\ntrò là `meta.cells[data.entry_cell_id].n`, có cả khi `data.cell_id` đã quay về ô rộng hơn.",
+        "operationId": "get_learning_path_api_v1_learning_path_get",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Mã vai trò, snake_case.",
+              "title": "Role"
+            },
+            "description": "Mã vai trò, snake_case."
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "all",
+                "entry",
+                "intern",
+                "fresher",
+                "junior",
+                "mid",
+                "senior",
+                "lead",
+                "unknown"
+              ],
+              "type": "string",
+              "description": "Cấp bậc lọc, như `city-shares`. Mặc định `entry` (Intern, Fresher, Junior gộp một).",
+              "default": "entry",
+              "title": "Level"
+            },
+            "description": "Cấp bậc lọc, như `city-shares`. Mặc định `entry` (Intern, Fresher, Junior gộp một)."
+          },
+          {
+            "name": "have",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Mã kỹ năng người dùng đã có, ngăn bằng dấu phẩy, tối đa 200 mã, mỗi mã snake_case tối đa 40 ký tự (AD-22). Mã trùng chỉ tính một lần (trần 200 đếm trên số mã gửi lên, trước khi loại trùng); mã không có trên lộ trình vào `data.have_ignored`. Chỉ đọc một tham số `have`: lặp lại `have` thì lấy cái cuối. Hồ sơ 200 mã dài có thể làm URL khoảng 8 KB.",
+              "title": "Have"
+            },
+            "description": "Mã kỹ năng người dùng đã có, ngăn bằng dấu phẩy, tối đa 200 mã, mỗi mã snake_case tối đa 40 ký tự (AD-22). Mã trùng chỉ tính một lần (trần 200 đếm trên số mã gửi lên, trước khi loại trùng); mã không có trên lộ trình vào `data.have_ignored`. Chỉ đọc một tham số `have`: lặp lại `have` thì lấy cái cuối. Hồ sơ 200 mã dài có thể làm URL khoảng 8 KB."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_LearningPathData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/skills": {
       "get": {
         "tags": [
@@ -438,6 +547,25 @@
         ],
         "title": "Envelope[CitySharesData]"
       },
+      "Envelope_LearningPathData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LearningPathData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[LearningPathData]"
+      },
       "Envelope_NewcomerRolesData_": {
         "properties": {
           "data": {
@@ -526,6 +654,101 @@
         ],
         "title": "ErrorEnvelope",
         "description": "Thân của mọi response lỗi. Không bao giờ đi cùng `data`."
+      },
+      "LearningPathData": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Vai trò đã chọn."
+          },
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "description": "Cấp bậc đã chọn."
+          },
+          "status": {
+            "$ref": "#/components/schemas/PathStatus",
+            "description": "`ready` hoặc `not_ready`. `not_ready` là kết quả bình thường (200), không phải lỗi."
+          },
+          "cell_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cell Id",
+            "description": "Ô cho các tỷ lệ; khác `entry_cell_id` khi quay về ô rộng hơn (`meta.cells[cell_id].fallback_label`).\n`null` khi `not_ready`."
+          },
+          "entry_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Entry Cell Id",
+            "description": "Ô entry-level của vai trò; `meta.cells[entry_cell_id].n` là số tin entry-level (#221), có cả khi quay về."
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/PathStage"
+            },
+            "type": "array",
+            "title": "Stages",
+            "description": "Các chặng đã xếp. Rỗng khi `not_ready`."
+          },
+          "current_stage": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Stage",
+            "description": "Chặng đầu tiên còn kỹ năng `have = false`; `null` khi đã có hết hoặc `not_ready`."
+          },
+          "have_on_path": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Have On Path",
+            "description": "Số kỹ năng trên lộ trình mà người dùng đã có (\"N\" của \"N of M skills on this path\")."
+          },
+          "path_size": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Path Size",
+            "description": "Số kỹ năng trên lộ trình (\"M\")."
+          },
+          "have_ignored": {
+            "items": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "type": "array",
+            "title": "Have Ignored",
+            "description": "Mã hợp lệ trong `?have=` không có trên lộ trình này, xếp A–Z."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "level",
+          "status",
+          "cell_id",
+          "entry_cell_id",
+          "stages",
+          "current_stage",
+          "have_on_path",
+          "path_size",
+          "have_ignored"
+        ],
+        "title": "LearningPathData",
+        "description": "`data` của `GET /api/v1/learning-path`."
       },
       "MeasureKind": {
         "type": "string",
@@ -667,12 +890,143 @@
         "title": "NewcomerRolesData",
         "description": "`data` của `GET /api/v1/newcomer-roles`."
       },
+      "PathResource": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Title",
+            "description": "Tên tài liệu."
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Link `https://`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "url"
+        ],
+        "title": "PathResource",
+        "description": "Một tài liệu miễn phí cho kỹ năng."
+      },
+      "PathSkill": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Skill",
+            "description": "Mã kỹ năng, snake_case (#205), có trong bộ từ vựng."
+          },
+          "rate": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ xuất hiện, `kind = skill_rate`, `cell_id = data.cell_id`. Khớp `skill-rates` cùng ô."
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group",
+            "description": "`core`, `common`, `company_specific`; `null` khi `rate` là `null_data` (như `SkillRateRow`)."
+          },
+          "foundation_for": {
+            "items": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "type": "array",
+            "title": "Foundation For",
+            "description": "Không rỗng khi đây là kỹ năng nền tảng (FR-20): mã các kỹ năng `core` hoặc `common` trên lộ trình mà nó là tổ\ntiên, bắc cầu qua `prerequisite_for` (cháu cũng tính), xếp A–Z. Mỗi mã đều đi tới được từ kỹ năng này qua\n`prerequisite_for`. Rỗng khi `group` bị ẩn (`null`): chưa biết nhóm của ai nên không ghi nền tảng.\nWeb ghi \"Kỹ năng nền tảng (cần cho X)\"."
+          },
+          "prerequisite_for": {
+            "items": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "type": "array",
+            "title": "Prerequisite For",
+            "description": "Mã các kỹ năng trên lộ trình cần kỹ năng này trực tiếp (chỉ cạnh trực tiếp, không bắc cầu); luôn ở chặng sau."
+          },
+          "have": {
+            "type": "boolean",
+            "title": "Have",
+            "description": "Đã có trong `?have=`."
+          },
+          "blurb": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Blurb",
+            "description": "Lời dẫn viết sẵn: không chữ số ngoài tên công nghệ, không `%` (FR-23)."
+          },
+          "resource": {
+            "$ref": "#/components/schemas/PathResource",
+            "description": "Một tài liệu miễn phí."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skill",
+          "rate",
+          "group",
+          "foundation_for",
+          "prerequisite_for",
+          "have",
+          "blurb",
+          "resource"
+        ],
+        "title": "PathSkill",
+        "description": "Một kỹ năng trên lộ trình."
+      },
+      "PathStage": {
+        "properties": {
+          "stage": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Stage",
+            "description": "Số chặng, từ 1, liền nhau."
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/PathSkill"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Skills",
+            "description": "Theo khóa FR-22: nhóm (cốt lõi trước), tỷ lệ giảm dần, mã A–Z."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "stage",
+          "skills"
+        ],
+        "title": "PathStage",
+        "description": "Một chặng: các kỹ năng đã xếp thứ tự."
+      },
+      "PathStatus": {
+        "type": "string",
+        "enum": [
+          "ready",
+          "not_ready"
+        ],
+        "title": "PathStatus"
+      },
       "SkillRateRow": {
         "properties": {
           "skill": {
             "type": "string",
             "title": "Skill",
-            "description": "Mã kỹ năng, kebab-case, ví dụ `spring-boot`."
+            "description": "Mã kỹ năng, snake_case (#205), ví dụ `spring_boot`."
           },
           "rate": {
             "$ref": "#/components/schemas/Stat",

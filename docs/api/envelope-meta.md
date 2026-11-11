@@ -14,7 +14,13 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 ## Ba quy tắc
 
 1. **Mọi con số trong `data` là một `Stat`.** Không có số nào đứng riêng ngoài `Stat`. `Stat` mang
-   luôn trạng thái hiển thị, nên giao diện chỉ cần một component cho mọi con số.
+   luôn trạng thái hiển thị, nên giao diện chỉ cần một component cho mọi con số. Ngoại lệ duy nhất là dấu `Ordinal`
+   (AD-22, #212): vị trí và số đếm trên chính các mã kỹ năng của người dùng ("N of M skills on this path", số chặng),
+   không bao giờ là số tin, tỷ lệ, tỷ trọng hay n. Envelope chỉ miễn một trường khi kiểu của nó đúng là `Ordinal` hoặc
+   `Ordinal | None` và giá trị là số nguyên không âm (không phải `bool`); kiểu ghép như `tuple[Ordinal, float]` hay
+   `list[Stat] | Ordinal` vẫn bị kiểm. Tập trường dùng `Ordinal` bị khóa bằng test
+   (`tests/api/test_ad17_ordinal_allowlist.py`): hiện chỉ `PathStage.stage`, `LearningPathData.current_stage`,
+   `have_on_path` và `path_size`.
 2. **Máy chủ quyết số liệu nào được hiện** (`suppression_for`), giao diện chỉ đọc `display`. Không so `n` với 30 ở
    giao diện, không tự tính tỷ trọng hay tỷ lệ. Envelope tự kiểm: `display` của tỷ trọng và tỷ lệ
    kỹ năng, cùng `insufficient_by_measure`, phải đúng bằng kết quả `suppression_for`.
@@ -181,6 +187,60 @@ trong số tin của vai trò, và n. Không có tham số.
 - Kiểu TypeScript và hàm tra số: `web/lib/newcomer-roles.ts`. Fixture cho test web:
   `web/tests/fixtures/newcomer-roles.json`.
 
+## `GET /api/v1/learning-path?role=<mã>&level=<cấp>&have=<mã,mã,...>`
+
+Lộ trình học đã xếp theo chặng (#121, #122). `level` như `city-shares`, mặc định `entry`. `have` tùy chọn: mã kỹ năng
+người dùng đã có, ngăn bằng dấu phẩy, tối đa 200 mã (AD-22), mỗi mã snake_case tối đa 40 ký tự; mã trùng chỉ tính một
+lần; mã sai định dạng, phần tử rỗng hoặc quá 200 mã là 422 `invalid_query`; `have=` rỗng như không gửi. Trần 200 đếm
+trên số mã gửi lên, trước khi loại trùng (150 mã khác nhau cộng 51 mã lặp là 201 mã, 422). Chỉ đọc một tham số `have`
+(lặp lại `have` thì lấy cái cuối). Hồ sơ 200 mã dài có thể làm URL khoảng 8 KB.
+
+```json
+{
+  "data": {
+    "role": "backend", "level": "entry", "status": "ready",
+    "cell_id": "vn.backend.entry", "entry_cell_id": "vn.backend.entry",
+    "stages": [
+      { "stage": 1, "skills": [
+        { "skill": "java",
+          "rate": { "value": 0.6538461538461539, "kind": "skill_rate", "display": "shown", "cell_id": "vn.backend.entry" },
+          "group": "core", "foundation_for": [], "prerequisite_for": ["rest_api", "spring_boot", "unit_testing"],
+          "have": false, "blurb": "…", "resource": { "title": "Học Java (dev.java)", "url": "https://dev.java/learn/" } } ] }
+    ],
+    "current_stage": 1, "have_on_path": 0, "path_size": 14, "have_ignored": []
+  },
+  "meta": { "…": "…", "cells": { "vn.backend.entry": { "n": 52, "…": "…" } } }
+}
+```
+
+- Lộ trình đã xếp sẵn (AD-7). **Chặng là thuộc tính của từng kỹ năng**: `have` không đổi chặng hay thứ tự, chỉ đổi cờ
+  `have`, `have_on_path`, `current_stage`, `have_ignored`. Web không sắp xếp, không đếm (AD-22).
+- Thứ tự trong một chặng (FR-22): nhóm (`core` trước `common`, rồi `company_specific`, rồi bị ẩn), tỷ lệ giảm dần, mã A–Z.
+  Không kỹ năng nào ở chặng trước hoặc cùng chặng với kỹ năng nó cần (`prerequisite_for` luôn ở chặng sau).
+- Lộ trình **giữ kỹ năng đã có** (`have = true`) và tính vào `path_size` (khác chữ "không nằm trong lộ trình" của
+  FR-20/FR-22): để hiện "N of M" (#121 AC3, #220, FR-24); web tô kỹ năng đã có chứ không ẩn.
+- `rate`: `skill_rate`, `cell_id = data.cell_id`, bằng đúng số của `skill-rates` cùng vai trò, cấp, ô. Khi `cell_id` quay
+  về ô rộng hơn, `meta.cells[cell_id].fallback_label` giải thích (FR-19). Quay về chỉ đi trong vai trò (vai trò × cấp,
+  rồi vai trò × mọi cấp); `cell_id` không bao giờ là ô của vai trò khác. Không ô nào đạt 30 tin thì mọi `rate` là
+  `null_data`, `group = null`, lộ trình vẫn `ready` (đã rà soát), và `cell_id` là ô cuối đã thử trong vai trò.
+  Ở bước cuối (vai trò × mọi cấp) khi người chọn cấp entry, nhãn ghi tỷ lệ tin Mid trở lên (FR-19).
+- `entry_cell_id`: ô entry-level của vai trò; `meta.cells[entry_cell_id].n` là số tin entry-level (#221), có cả khi `cell_id` quay về.
+- `foundation_for` không rỗng là kỹ năng nền tảng (FR-20): ghi "Kỹ năng nền tảng (cần cho X)". Gồm các kỹ năng `core`
+  hoặc `common` trên lộ trình có kỹ năng này là tổ tiên, **bắc cầu** (cháu cũng tính), xếp A–Z; `prerequisite_for` thì
+  chỉ cạnh trực tiếp. Chỉ kỹ năng nền tảng mới được `company_specific`. Khi nhóm bị ẩn (`null_data`), `foundation_for`
+  rỗng vì chưa biết nhóm của ai.
+- `blurb`: lời dẫn viết sẵn, không có chữ số ngoài tên công nghệ, không `%` (FR-23), không nói bao nhiêu tin đòi kỹ
+  năng. Quy tắc kiểm nằm ở `haido_core/vocab/prepared_text.py` (cổng #138 dùng lại). `resource`: một link `https://` miễn phí.
+- `have_on_path`/`path_size` là "N of M skills on this path". `current_stage` là chặng đầu còn kỹ năng `have = false`,
+  `null` nếu đã có hết hoặc `not_ready`. `have_ignored`: mã hợp lệ không có trên lộ trình, A–Z.
+- `status = not_ready` (200, không phải lỗi): không có chặng, `cell_id = null`, `current_stage = null`, hai số đếm bằng 0;
+  `meta.cells` vẫn có `entry_cell_id`. Giao diện gợi ý hồ sơ kỹ năng (`skill-rates`).
+- `stage`, `current_stage`, `have_on_path`, `path_size` là số thứ tự và số đếm trên chính mã kỹ năng của người dùng,
+  đánh dấu `Ordinal` trong `haido_core/domain/envelope.py` (xem quy tắc 1): không phải số liệu thị trường nên không
+  bọc `Stat`. Số tin, tỷ lệ, tỷ trọng và n vẫn là `Stat` hoặc ở `meta.cells`.
+- Kiểu TypeScript: `web/lib/learning-path.ts`. Fixture: `web/tests/fixtures/learning-path-*.json`.
+- Mọi mã kỹ năng giả (cả ở `skill-rates`) là snake_case và có trong `haido_core/vocab/skills_seed.json`.
+
 ## Hình lỗi
 
 Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ có `data` trong response lỗi.
@@ -221,9 +281,16 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `skill-rates?role=ai_ml&level=entry` | Ô đủ mẫu, có cả ba nhóm kỹ năng |
 | `skill-rates?role=java_backend&level=entry` | Quay về ô Backend · Entry (n = 52), có `fallback_label` |
 | `skill-rates?role=backend&level=entry` | Cùng ô trên, chọn thẳng nên `fallback_label = null` |
+| `skill-rates?role=backend&level=intern` | Quay về `vn.backend` (n = 157), có `fallback_label` ghi tỷ lệ Mid trở lên |
+| `skill-rates?role=data_engineer&level=entry` | `vn.data_engineer` (n = 22, dưới 30): mọi `rate` là `null_data`, `group = null`, có `fallback_label` |
 | `skill-rates?role=data_engineer&level=senior` | n = 18: mọi `rate` là `null_data`, `group = null` |
 | `city-shares?role=khong_ton_tai` | 404 `unknown_cell` |
 | `skill-rates?role=data_engineer` | 422 `invalid_query` |
+| `learning-path?role=backend&level=entry` | Sẵn sàng: 3 chặng, 14 kỹ năng, có kỹ năng nền tảng (`linux`), ô n = 52 |
+| `learning-path?role=backend&level=intern` | Sẵn sàng qua `vn.backend` (vai trò × mọi cấp, n = 157; ô Intern n = 13), mọi `rate` có số; `fallback_label` ghi 105 trên 157 tin (67%) là Mid trở lên |
+| `learning-path?role=data_engineer&level=entry` | Sẵn sàng nhưng mọi `rate` là `null_data`, `group = null`: ô entry n = 4 và `vn.data_engineer` n = 22 đều dưới 30; `cell_id = vn.data_engineer`, `fallback_label` giải thích |
+| `learning-path?role=qa` | 200 `not_ready` (mọi vai trò khác của config); `ai_ml&level=entry` cũng `not_ready` nhưng có `skill-rates` để mở hồ sơ |
+| `learning-path?role=backend&level=senior` | 404 `unknown_cell` (bản giả chỉ có ô `entry` và `intern` của backend, như `skill-rates`); `data_engineer&level=senior` cũng 404 vì ô đó không phủ hết kỹ năng của lộ trình |
 | `newcomer-roles` | 10 vai trò: 6 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_engineer` dưới 30; `other` không có tin |
 
 ## Chạy và chọn nguồn
@@ -240,6 +307,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 | `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | #27 |
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | #145, #146; `stat` hiện trả 404 `unknown_cell` |
+| `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell` |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.
 Thêm bản thật: cài `MarketReadModel` (`haido_api/market_source.py`), thêm một mục vào `IMPLEMENTATIONS`,

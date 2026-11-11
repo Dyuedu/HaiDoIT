@@ -35,7 +35,7 @@ def statements(pg_engine: Engine) -> Iterator[list[str]]:
 
 @pytest.fixture
 def client(pg_engine: Engine) -> TestClient:
-    app = create_app({"city_shares": StatMarket(engine_factory=lambda: pg_engine, rules=RULES), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
+    app = create_app({"city_shares": StatMarket(engine_factory=lambda: pg_engine, rules=RULES), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()})
     return TestClient(app, raise_server_exceptions=False)
 
 
@@ -138,7 +138,7 @@ def test_dat20_display_chi_den_tu_suppression_for_voi_min_sample_cua_config(pg_e
     from dataclasses import replace
 
     strict = replace(RULES, min_sample=41)
-    app = create_app({"city_shares": StatMarket(engine_factory=lambda: pg_engine, rules=strict), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
+    app = create_app({"city_shares": StatMarket(engine_factory=lambda: pg_engine, rules=strict), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()})
     body = TestClient(app).get("/api/v1/city-shares", params={"role": "backend"}).json()
     assert body["meta"]["thresholds"]["min_sample"] == 41
     assert {r["city"]: r["share"]["display"] for r in body["data"]["rows"]}["ha_noi"] == DisplayState.LOW_SAMPLE_SHOWN
@@ -275,7 +275,7 @@ def test_dat20_engine_chi_dung_o_yeu_cau_dau_tien_va_dung_lai(pg_engine: Engine)
         built.append(1)
         return pg_engine
 
-    app = create_app({"city_shares": StatMarket(engine_factory=factory, rules=RULES), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
+    app = create_app({"city_shares": StatMarket(engine_factory=factory, rules=RULES), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()})
     client = TestClient(app)
     assert built == []
     assert client.get("/api/v1/city-shares", params={"role": "backend"}).status_code == 200
@@ -285,7 +285,7 @@ def test_dat20_engine_chi_dung_o_yeu_cau_dau_tien_va_dung_lai(pg_engine: Engine)
 
 def test_dat20_thieu_url_luc_co_yeu_cau_thi_500_internal_error_khong_lo_chi_tiet(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("HAIDO_DATABASE_URL", raising=False)
-    app = create_app({"city_shares": StatMarket(rules=RULES), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
+    app = create_app({"city_shares": StatMarket(rules=RULES), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()})
     resp = TestClient(app, raise_server_exceptions=False).get("/api/v1/city-shares", params={"role": "backend"})
     assert resp.status_code == 500
     assert resp.json()["error"]["code"] == "internal_error"
@@ -300,7 +300,7 @@ def test_dat20_stat_la_mot_nguon_chon_duoc_qua_bien_moi_truong_cho_city_shares()
 
 def test_dat20_skill_rates_chua_co_so_that_nen_la_unknown_cell_khong_co_ngay(pg_engine: Engine) -> None:
     _seed(pg_engine)
-    app = create_app({"city_shares": FakeMarket(), "skill_rates": StatMarket(engine_factory=lambda: pg_engine, rules=RULES), "newcomer_roles": FakeMarket()})
+    app = create_app({"city_shares": FakeMarket(), "skill_rates": StatMarket(engine_factory=lambda: pg_engine, rules=RULES), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()})
     resp = TestClient(app).get("/api/v1/skill-rates", params={"role": "backend", "level": "junior"})
     assert resp.status_code == 404
     assert resp.json()["error"]["code"] == "unknown_cell"
