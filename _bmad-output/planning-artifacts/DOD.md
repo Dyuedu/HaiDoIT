@@ -9,9 +9,13 @@ DoD là checklist **chung cho mọi backlog item**, khác với AC vốn riêng 
 
 Nhóm thống nhất bộ này một lần. Đổi DoD là đổi cho tất cả item, kể cả item đã làm xong trước đó — nên đổi thì phải cả ba đồng ý và ghi ngày.
 
+| Ngày | Thay đổi | Đồng ý |
+|---|---|---|
+| _chờ_ | Thêm dòng 15 (điện thoại) và 16 (bàn phím, trình đọc màn hình) — #137 | _chờ cả ba đồng ý trên #137_ |
+
 Mỗi sprint có thêm **cổng ra sprint** riêng, ghi trong file sprint tương ứng. Cổng đó không thay DoD, nó cộng thêm.
 
-## DoD chung — 14 dòng
+## DoD chung — 16 dòng
 
 ### Nghiệp vụ
 
@@ -38,6 +42,13 @@ Mỗi sprint có thêm **cổng ra sprint** riêng, ghi trong file sprint tươn
 12. **Cổng CI của AD liên quan còn xanh.** Cổng mới mà item này sinh ra đã được thêm vào job chặn merge.
 13. **Một người khác rà soát.** Không tự rà soát rồi merge. Người rà soát đọc được AC mà không cần hỏi lại tác giả.
 14. **Trạng thái đã cập nhật** trong `_bmad-output/implementation-artifacts/sprint-status.yaml`, và lệnh CLI mới (nếu có) đã ghi vào `README` hoặc `docs/`.
+
+### Giao diện
+
+Hai dòng này áp cho mọi item có màn hình hoặc sửa màn hình. Item không chạm `web/` thì ghi "không áp dụng".
+
+15. **Chạy đủ trên điện thoại rộng 360px.** Không cuộn ngang trang, chữ và số không bị cắt, và mọi việc làm được trên máy tính đều làm được trên điện thoại, theo bố cục của NFR-12: Soi tin đầy đủ, Cố vấn dạng thẻ, Bản đồ dạng danh sách thành phố kèm thanh tỷ trọng, Insights một thẻ một hàng. Kiểm ở khung 360×640 trong DevTools, hoặc bằng test đặt viewport đó.
+16. **Dùng được bằng bàn phím và trình đọc màn hình.** Mọi thao tác làm được bằng Tab, Enter, Space theo thứ tự đọc. Vùng bấm tối thiểu 44×44px. Phần tử đang focus có vòng `:focus-visible` dày 2px, màu `#C5F36A`, lệch 2px; không xóa nó bằng `outline: none`. Nút chỉ có biểu tượng có `aria-label`. Mọi biểu đồ, kể cả bản đồ 3D, có dạng bảng chứa cùng số liệu (FR-36).
 
 ## Definition of Ready — khi nào một item được chọn vào sprint
 
