@@ -44,9 +44,10 @@ def test_dat20_cli_ingest_lifecycle_aggregate_publish_ma_thoat_0_va_in_tom_tat(
 
     assert cli.main(["aggregate", "--snapshot", S]) == 0
     out = capsys.readouterr().out
-    assert S in out and "5832 ô" in out and "4860 tỷ trọng" in out  # 18 vai trò từ #284
-    assert _scalar(cli_env, "SELECT count(*) FROM haido.stat_cells") == 18 * 6 * 9 * 6  # #163, #280, #284: 18 vai trò × 6 ô × 9 cấp × 6 mã số năm
-    assert _scalar(cli_env, "SELECT count(*) FROM haido.stat_city_shares") == 18 * 5 * 9 * 6  # 18 vai trò (#284) × 5 thành phố × 9 cấp × 6 mã số năm
+    assert S in out and "6804 ô" in out and "5832 tỷ trọng" in out  # 18 vai trò (#284) × 9 × 6 × (6 nơi luôn có + vn) (#285)
+    # #285: 18 vai trò × 9 cấp × 6 mã số năm × (6 nơi luôn có + vn); tin của test chỉ ở các nơi luôn có.
+    assert _scalar(cli_env, "SELECT count(*) FROM haido.stat_cells") == 18 * 7 * 9 * 6
+    assert _scalar(cli_env, "SELECT count(*) FROM haido.stat_city_shares") == 18 * 6 * 9 * 6
 
     assert cli.main(["publish", "--snapshot", S]) == 0
     out = capsys.readouterr().out

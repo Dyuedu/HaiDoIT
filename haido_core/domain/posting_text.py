@@ -57,6 +57,21 @@ def requirement_text(text: str | None, cfg: ClassifyConfig) -> str:
     return body[: cfg.max_text_chars]
 
 
+def address_text(text: str | None, cfg: ClassifyConfig) -> str:
+    """Dòng địa chỉ của JD, đã bỏ dấu (#285): từ chỗ khớp một khóa địa chỉ, `window_chars` ký tự, cộng `next_lines` dòng
+    kế (mỗi dòng cũng cắt `window_chars`). Chữ ngoài các dòng đó không được trả về."""
+    rules = cfg.address
+    lines = fold((text or "")[: cfg.max_text_chars]).split("\n")
+    out: list[str] = []
+    for i, line in enumerate(lines):
+        match = rules.keys.search(line)
+        if match is None:
+            continue
+        out.append(line[match.start() : match.start() + rules.window_chars])
+        out.extend(nxt[: rules.window_chars] for nxt in lines[i + 1 : i + 1 + rules.next_lines])
+    return "\n".join(out)
+
+
 @cache
 def _scanner(terms: tuple[str, ...]) -> re.Pattern[str]:
     alternation = "|".join(re.escape(t) for t in sorted(terms, key=lambda t: (-len(t), t)))

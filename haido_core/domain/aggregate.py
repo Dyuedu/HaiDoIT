@@ -84,9 +84,13 @@ def aggregate_city_shares(
     level_options: Sequence[str] = (),
     level_groups: Mapping[str, Sequence[str]] | None = None,
     years_options: Sequence[int] = (),
+    always_cities: Sequence[str] | None = None,
 ) -> CityShareAggregate:
     """Ô và tỷ trọng thành phố của S cho `all` cùng từng vai trò trong `roles`, theo `all` và từng cấp lọc, theo `any`
     và từng mốc số năm.
+
+    `always_cities` (#285): nơi luôn có hàng; nơi khác chỉ có ô và tỷ trọng khi có ít nhất một tin trong (vai trò, cấp,
+    số năm). Để trống (`None`) thì mọi nơi đều có hàng như trước. Tỷ trọng vẫn cộng bằng 1 vì hàng bị bỏ đều bằng 0.
 
     `level_options` là các cấp lọc ngoài `all` (một cấp thô trong `levels` hoặc tên một nhóm trong `level_groups`);
     để trống thì chỉ có cấp `all`. `years_options` là các mốc "tối đa N năm" (#280); để trống thì chỉ có `any`.
@@ -124,6 +128,7 @@ def aggregate_city_shares(
             level_options=level_options,
             groups=groups,
             years=years,
+            always=None if always_cities is None else frozenset(always_cities),
         )
 
     no_years = count([p for p in postings if p.years_min is None], ANY_YEARS)
@@ -132,7 +137,10 @@ def aggregate_city_shares(
     for limit in years_options:
         blocks.append(count([p for p in postings if p.years_min is not None and p.years_min <= limit], str(limit)))
     cells = tuple(
-        replace(c, years_unstated=unstated[(c.role, c.seniority, c.scope)]) for block in blocks for c in block.cells
+        # #285: ô "không ghi số năm" chỉ có ở nơi có tin như vậy; nơi khác là 0.
+        replace(c, years_unstated=unstated.get((c.role, c.seniority, c.scope), 0))
+        for block in blocks
+        for c in block.cells
     )
     return CityShareAggregate(cells, tuple(row for block in blocks for row in block.shares))
 
@@ -148,6 +156,7 @@ def _count_subset(
     level_options: Sequence[str],
     groups: Mapping[str, tuple[str, ...]],
     years: str,
+    always: frozenset[str] | None = None,
 ) -> CityShareAggregate:
     """Ô và tỷ trọng của một tập tin (đã lọc theo số năm), gắn mã số năm `years`. Đầu vào đã được kiểm."""
     population = ClusterPopulation(postings)
@@ -173,11 +182,12 @@ def _count_subset(
                 scope: n_all[scope] if filter_level == ALL_LEVELS else sum(n_by_level[scope][m] for m in members)
                 for scope in scopes
             }
-            for scope in scopes:
+            kept = [c for c in cities if always is None or c in always or n_by_scope[c] > 0]
+            for scope in (*kept, NATIONWIDE):
                 mix = {level: n_by_level[scope][level] for level in members if n_by_level[scope][level] > 0}
                 cells.append(CellRow(role, scope, n_by_scope[scope], mix, filter_level, years))
             total = n_by_scope[NATIONWIDE]
-            for city in cities:
+            for city in kept:
                 if total:
                     share = n_by_scope[city] / total
                 else:

@@ -19,6 +19,9 @@ from haido_core.domain.registry import Classification, OneOrMany, PostingFacts, 
 NON_IT = "không thuộc IT"
 UNKNOWN = "không xác định"
 OTHER_CITY = "Khác"
+"""Nhãn "Khác" của luật cũ; từ #285 không còn được gán (mọi nơi biết được có tỉnh riêng)."""
+REMOTE_CITY = "Remote"
+ABROAD_CITY = "Nước ngoài"
 OTHER_ROLE = "Other"
 FULLSTACK = "Fullstack"
 FRONTEND = "Frontend"
@@ -99,6 +102,15 @@ _NEVER = re.compile(r"(?!x)x")
 
 
 @dataclass(frozen=True, slots=True)
+class AddressRules:
+    """Dòng địa chỉ của JD (#285): dòng có `keys`, đọc `window_chars` ký tự từ chỗ khớp, cộng `next_lines` dòng kế."""
+
+    keys: re.Pattern[str]
+    window_chars: int = 160
+    next_lines: int = 1
+
+
+@dataclass(frozen=True, slots=True)
 class ClassifyConfig:
     """Bảng luật có phiên bản. Đổi luật là đổi file cấu hình, không đổi hàm."""
 
@@ -109,8 +121,12 @@ class ClassifyConfig:
     it_only_sources: tuple[str, ...]
     seniority_rules: tuple[PhraseRule, ...]
     city_rules: tuple[PhraseRule, ...]
-    other_city_phrases: tuple[str, ...]
+    other_city_phrases: tuple[str, ...] = ()
     multi_city: str = "first_phrase"
+    abroad_phrases: tuple[str, ...] = ()
+    abroad_location_phrases: tuple[str, ...] = ()
+    remote_phrases: tuple[str, ...] = ()
+    address: AddressRules = AddressRules(_NEVER)
     art_phrases: tuple[str, ...] = ()
     art_exceptions: tuple[str, ...] = ()
     qa_hardware_phrases: tuple[str, ...] = ()
@@ -331,14 +347,26 @@ class RuleClassifier:
         skills = dict(posting.skills)
         role = self._role(posting, skills)
         branch = self._branch(role, fold(posting.title)) if role not in (NON_IT, OTHER_ROLE) else None
-        return Classification(role=role, branch=branch, seniority=self._level(posting), city=self._city(posting.location_text or ""))
+        return Classification(role=role, branch=branch, seniority=self._level(posting), city=self._city(posting))
 
-    def _city(self, location: str) -> str:
-        text = fold(location)
-        named = _first_rule(text, self.config.city_rules)
+    def _city(self, posting: PostingFacts) -> str:
+        """Tỉnh ở location → nước ngoài ở location → tỉnh ở dòng địa chỉ → nước ngoài ở dòng địa chỉ → remote (#285)."""
+        cfg = self.config
+        location = fold(posting.location_text)
+        address = posting.address_text or ""
+        named = _first_rule(location, cfg.city_rules)
         if named is not None:
             return named[0]
-        if _first_at(text, self.config.other_city_phrases) is not None:
+        if _first_at(location, (*cfg.abroad_phrases, *cfg.abroad_location_phrases)) is not None:
+            return ABROAD_CITY
+        named = _first_rule(address, cfg.city_rules)
+        if named is not None:
+            return named[0]
+        if _first_at(address, cfg.abroad_phrases) is not None:
+            return ABROAD_CITY
+        if _first_at(location, cfg.remote_phrases) is not None or _first_at(address, cfg.remote_phrases) is not None:
+            return REMOTE_CITY
+        if _first_at(location, cfg.other_city_phrases) is not None:
             return OTHER_CITY
         return UNKNOWN
 

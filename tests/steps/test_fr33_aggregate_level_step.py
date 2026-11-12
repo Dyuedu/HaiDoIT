@@ -10,7 +10,7 @@ from haido_core.db import snapshot_store
 from tests.steps.conftest import Env, S
 
 SD = date.fromisoformat(S)
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "remote", "abroad", "unknown"]  # #285: always_cities
 
 
 def _day(back: int) -> str:
@@ -83,8 +83,8 @@ def test_fr33_moi_vai_tro_va_cap_loc_duoc_co_du_hang_ke_ca_khi_khong_co_tin(env:
     levels = ["all", *env.rules.level_options]
     years = 1 + len(env.rules.years_options)  # #280: mỗi cấp có `any` và từng mốc số năm
     assert (result.cells, result.shares) == (
+        len(roles) * len(levels) * years * 7,  # #285: 6 nơi luôn có + vn
         len(roles) * len(levels) * years * 6,
-        len(roles) * len(levels) * years * 5,
     )
     assert env.count("stat_cells") == result.cells
     assert env.count("stat_city_shares") == result.shares
@@ -111,10 +111,10 @@ def test_fr33_o_cap_don_va_ty_trong_cua_cap_do_chi_dem_tin_cua_cap_do(env: Env, 
     assert _n(env, "backend", "junior", "da_nang") == 1
     assert _mix(env, "backend", "junior", "vn") == {"junior": 2}
     assert _shares(env, "backend", "junior") == {
-        "ha_noi": 0.0, "ho_chi_minh": 0.5, "da_nang": 0.5, "other": 0.0, "unknown": 0.0,
+        "ha_noi": 0.0, "ho_chi_minh": 0.5, "da_nang": 0.5, "remote": 0.0, "abroad": 0.0, "unknown": 0.0,
     }  # fmt: skip
     assert _shares(env, "backend", "entry") == {
-        "ha_noi": 0.5, "ho_chi_minh": 0.25, "da_nang": 0.25, "other": 0.0, "unknown": 0.0,
+        "ha_noi": 0.5, "ho_chi_minh": 0.25, "da_nang": 0.25, "remote": 0.0, "abroad": 0.0, "unknown": 0.0,
     }  # fmt: skip
     assert _shares(env, "all", "senior")["ho_chi_minh"] == 1.0
     assert _shares(env, "backend", "all")["ha_noi"] == pytest.approx(4 / 8)
@@ -224,4 +224,6 @@ def test_fr33_determinism_hai_lan_aggregate_ra_cung_hang_theo_cap(env: Env, scra
     roles = len(env.rules.roles) + 1
     levels = len(env.rules.level_options) + 1
     levels *= len(env.rules.years_options) + 1  # #280: mỗi cấp có `any` và từng mốc số năm
-    assert len(first[0]) == roles * levels * 6 and len(first[1]) == roles * levels * 5
+    # #285: mỗi bộ lọc ít nhất 6 nơi luôn có + vn; Cần Thơ có hàng khi bộ lọc có tin ở đó.
+    assert len(first[0]) >= roles * levels * 7 and len(first[1]) >= roles * levels * 6
+    assert any("can_tho" in row for row in first[1])

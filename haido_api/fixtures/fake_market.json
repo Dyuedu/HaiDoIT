@@ -171,49 +171,6 @@
         "salary": 81
       }
     },
-    "other.all": {
-      "n": 113,
-      "seniority_mix": {
-        "intern": 9,
-        "fresher": 15,
-        "junior": 39,
-        "mid": 32,
-        "senior": 18
-      },
-      "n_by_measure": {
-        "skill_count": 113,
-        "experience_years": 81,
-        "salary": 27
-      }
-    },
-    "other.backend": {
-      "n": 5,
-      "seniority_mix": {
-        "fresher": 1,
-        "junior": 1,
-        "mid": 2,
-        "senior": 1
-      },
-      "n_by_measure": {
-        "skill_count": 5,
-        "experience_years": 3,
-        "salary": 1
-      }
-    },
-    "other.ai_ml": {
-      "n": 46,
-      "seniority_mix": {
-        "fresher": 6,
-        "junior": 18,
-        "mid": 15,
-        "senior": 7
-      },
-      "n_by_measure": {
-        "skill_count": 46,
-        "experience_years": 31,
-        "salary": 12
-      }
-    },
     "unknown.all": {
       "n": 207,
       "seniority_mix": {
@@ -379,19 +336,6 @@
         "salary": 8
       }
     },
-    "other.all.entry": {
-      "n": 63,
-      "seniority_mix": {
-        "intern": 9,
-        "fresher": 15,
-        "junior": 39
-      },
-      "n_by_measure": {
-        "skill_count": 63,
-        "experience_years": 45,
-        "salary": 15
-      }
-    },
     "unknown.all.entry": {
       "n": 116,
       "seniority_mix": {
@@ -456,18 +400,6 @@
         "salary": 3
       }
     },
-    "other.ai_ml.entry": {
-      "n": 24,
-      "seniority_mix": {
-        "fresher": 6,
-        "junior": 18
-      },
-      "n_by_measure": {
-        "skill_count": 24,
-        "experience_years": 17,
-        "salary": 6
-      }
-    },
     "unknown.ai_ml.entry": {
       "n": 37,
       "seniority_mix": {
@@ -517,18 +449,6 @@
         "skill_count": 3,
         "experience_years": 2,
         "salary": 1
-      }
-    },
-    "other.backend.entry": {
-      "n": 2,
-      "seniority_mix": {
-        "fresher": 1,
-        "junior": 1
-      },
-      "n_by_measure": {
-        "skill_count": 2,
-        "experience_years": 1,
-        "salary": 0
       }
     },
     "unknown.backend.entry": {
@@ -784,19 +704,6 @@
         "salary": 3
       }
     },
-    "other.all.entry.y1": {
-      "n": 18,
-      "seniority_mix": {
-        "intern": 2,
-        "fresher": 5,
-        "junior": 11
-      },
-      "n_by_measure": {
-        "skill_count": 18,
-        "experience_years": 18,
-        "salary": 4
-      }
-    },
     "unknown.all.entry.y1": {
       "n": 30,
       "seniority_mix": {
@@ -883,15 +790,6 @@
         "salary": 0
       }
     },
-    "other.data_scientist": {
-      "n": 0,
-      "seniority_mix": {},
-      "n_by_measure": {
-        "skill_count": 0,
-        "experience_years": 0,
-        "salary": 0
-      }
-    },
     "unknown.data_scientist": {
       "n": 1,
       "seniority_mix": {
@@ -939,15 +837,6 @@
       }
     },
     "da_nang.data_scientist.entry": {
-      "n": 0,
-      "seniority_mix": {},
-      "n_by_measure": {
-        "skill_count": 0,
-        "experience_years": 0,
-        "salary": 0
-      }
-    },
-    "other.data_scientist.entry": {
       "n": 0,
       "seniority_mix": {},
       "n_by_measure": {
@@ -1029,18 +918,6 @@
         "salary": 0
       }
     },
-    "other.security": {
-      "n": 3,
-      "seniority_mix": {
-        "mid": 2,
-        "fresher": 1
-      },
-      "n_by_measure": {
-        "skill_count": 3,
-        "experience_years": 2,
-        "salary": 1
-      }
-    },
     "unknown.security": {
       "n": 7,
       "seniority_mix": {
@@ -1100,17 +977,6 @@
       "n_by_measure": {
         "skill_count": 0,
         "experience_years": 0,
-        "salary": 0
-      }
-    },
-    "other.security.entry": {
-      "n": 1,
-      "seniority_mix": {
-        "fresher": 1
-      },
-      "n_by_measure": {
-        "skill_count": 1,
-        "experience_years": 1,
         "salary": 0
       }
     },
@@ -1192,21 +1058,6 @@
         "salary": 3
       }
     },
-    "other.it_infra": {
-      "n": 20,
-      "seniority_mix": {
-        "mid": 4,
-        "junior": 6,
-        "senior": 2,
-        "fresher": 3,
-        "unknown": 5
-      },
-      "n_by_measure": {
-        "skill_count": 20,
-        "experience_years": 14,
-        "salary": 4
-      }
-    },
     "unknown.it_infra": {
       "n": 84,
       "seniority_mix": {
@@ -1272,18 +1123,6 @@
       "n_by_measure": {
         "skill_count": 7,
         "experience_years": 5,
-        "salary": 2
-      }
-    },
-    "other.it_infra.entry": {
-      "n": 9,
-      "seniority_mix": {
-        "junior": 6,
-        "fresher": 3
-      },
-      "n_by_measure": {
-        "skill_count": 9,
-        "experience_years": 6,
         "salary": 2
       }
     },
@@ -1363,18 +1202,6 @@
         "salary": 0
       }
     },
-    "other.fullstack": {
-      "n": 2,
-      "seniority_mix": {
-        "senior": 1,
-        "unknown": 1
-      },
-      "n_by_measure": {
-        "skill_count": 2,
-        "experience_years": 1,
-        "salary": 0
-      }
-    },
     "unknown.fullstack": {
       "n": 8,
       "seniority_mix": {
@@ -1430,15 +1257,6 @@
       }
     },
     "da_nang.fullstack.entry": {
-      "n": 0,
-      "seniority_mix": {},
-      "n_by_measure": {
-        "skill_count": 0,
-        "experience_years": 0,
-        "salary": 0
-      }
-    },
-    "other.fullstack.entry": {
       "n": 0,
       "seniority_mix": {},
       "n_by_measure": {
@@ -1525,20 +1343,6 @@
         "salary": 4
       }
     },
-    "other.ba_po_pm": {
-      "n": 4,
-      "seniority_mix": {
-        "lead": 1,
-        "junior": 1,
-        "senior": 1,
-        "unknown": 1
-      },
-      "n_by_measure": {
-        "skill_count": 4,
-        "experience_years": 3,
-        "salary": 1
-      }
-    },
     "unknown.ba_po_pm": {
       "n": 47,
       "seniority_mix": {
@@ -1604,17 +1408,6 @@
         "skill_count": 3,
         "experience_years": 2,
         "salary": 1
-      }
-    },
-    "other.ba_po_pm.entry": {
-      "n": 1,
-      "seniority_mix": {
-        "junior": 1
-      },
-      "n_by_measure": {
-        "skill_count": 1,
-        "experience_years": 1,
-        "salary": 0
       }
     },
     "unknown.ba_po_pm.entry": {
@@ -1689,15 +1482,6 @@
         "salary": 0
       }
     },
-    "other.ui_ux": {
-      "n": 0,
-      "seniority_mix": {},
-      "n_by_measure": {
-        "skill_count": 0,
-        "experience_years": 0,
-        "salary": 0
-      }
-    },
     "unknown.ui_ux": {
       "n": 1,
       "seniority_mix": {
@@ -1748,15 +1532,6 @@
       }
     },
     "da_nang.ui_ux.entry": {
-      "n": 0,
-      "seniority_mix": {},
-      "n_by_measure": {
-        "skill_count": 0,
-        "experience_years": 0,
-        "salary": 0
-      }
-    },
-    "other.ui_ux.entry": {
       "n": 0,
       "seniority_mix": {},
       "n_by_measure": {
@@ -1838,15 +1613,6 @@
         "salary": 1
       }
     },
-    "other.game": {
-      "n": 0,
-      "seniority_mix": {},
-      "n_by_measure": {
-        "skill_count": 0,
-        "experience_years": 0,
-        "salary": 0
-      }
-    },
     "unknown.game": {
       "n": 2,
       "seniority_mix": {
@@ -1908,7 +1674,7 @@
         "salary": 0
       }
     },
-    "other.game.entry": {
+    "unknown.game.entry": {
       "n": 0,
       "seniority_mix": {},
       "n_by_measure": {
@@ -1917,7 +1683,619 @@
         "salary": 0
       }
     },
-    "unknown.game.entry": {
+    "hai_phong.all": {
+      "n": 113,
+      "seniority_mix": {
+        "intern": 9,
+        "fresher": 15,
+        "junior": 39,
+        "mid": 32,
+        "senior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 113,
+        "experience_years": 81,
+        "salary": 27
+      }
+    },
+    "hai_phong.backend": {
+      "n": 5,
+      "seniority_mix": {
+        "fresher": 1,
+        "junior": 1,
+        "mid": 2,
+        "senior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 5,
+        "experience_years": 3,
+        "salary": 1
+      }
+    },
+    "hai_phong.ai_ml": {
+      "n": 46,
+      "seniority_mix": {
+        "fresher": 6,
+        "junior": 18,
+        "mid": 15,
+        "senior": 7
+      },
+      "n_by_measure": {
+        "skill_count": 46,
+        "experience_years": 31,
+        "salary": 12
+      }
+    },
+    "hai_phong.all.entry": {
+      "n": 63,
+      "seniority_mix": {
+        "intern": 9,
+        "fresher": 15,
+        "junior": 39
+      },
+      "n_by_measure": {
+        "skill_count": 63,
+        "experience_years": 45,
+        "salary": 15
+      }
+    },
+    "hai_phong.ai_ml.entry": {
+      "n": 24,
+      "seniority_mix": {
+        "fresher": 6,
+        "junior": 18
+      },
+      "n_by_measure": {
+        "skill_count": 24,
+        "experience_years": 17,
+        "salary": 6
+      }
+    },
+    "hai_phong.backend.entry": {
+      "n": 2,
+      "seniority_mix": {
+        "fresher": 1,
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "hai_phong.all.entry.y1": {
+      "n": 18,
+      "seniority_mix": {
+        "intern": 2,
+        "fresher": 5,
+        "junior": 11
+      },
+      "n_by_measure": {
+        "skill_count": 18,
+        "experience_years": 18,
+        "salary": 4
+      }
+    },
+    "hai_phong.data_scientist": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "hai_phong.data_scientist.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "hai_phong.security": {
+      "n": 3,
+      "seniority_mix": {
+        "mid": 2,
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
+    "hai_phong.security.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "hai_phong.it_infra": {
+      "n": 20,
+      "seniority_mix": {
+        "mid": 4,
+        "junior": 6,
+        "senior": 2,
+        "fresher": 3,
+        "unknown": 5
+      },
+      "n_by_measure": {
+        "skill_count": 20,
+        "experience_years": 14,
+        "salary": 4
+      }
+    },
+    "hai_phong.it_infra.entry": {
+      "n": 9,
+      "seniority_mix": {
+        "junior": 6,
+        "fresher": 3
+      },
+      "n_by_measure": {
+        "skill_count": 9,
+        "experience_years": 6,
+        "salary": 2
+      }
+    },
+    "hai_phong.fullstack": {
+      "n": 2,
+      "seniority_mix": {
+        "senior": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "hai_phong.fullstack.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "hai_phong.ba_po_pm": {
+      "n": 4,
+      "seniority_mix": {
+        "lead": 1,
+        "junior": 1,
+        "senior": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 4,
+        "experience_years": 3,
+        "salary": 1
+      }
+    },
+    "hai_phong.ba_po_pm.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "hai_phong.ui_ux": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "hai_phong.ui_ux.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "hai_phong.game": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "hai_phong.game.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.ai_ml": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.ai_ml": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.ai_ml.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.ai_ml.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.backend": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.backend": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.backend.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.backend.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.all": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.all": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.all.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.all.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.all.entry.y1": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.all.entry.y1": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.data_scientist": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.data_scientist": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.data_scientist.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.data_scientist.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.security": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.security": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.security.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.security.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.it_infra": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.it_infra": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.it_infra.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.it_infra.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.fullstack": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.fullstack": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.fullstack.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.fullstack.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.ba_po_pm": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.ba_po_pm": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.ba_po_pm.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.ba_po_pm.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.ui_ux": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.ui_ux": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.ui_ux.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.ui_ux.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.game": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.game": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "remote.game.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "abroad.game.entry": {
       "n": 0,
       "seniority_mix": {},
       "n_by_measure": {
@@ -1948,9 +2326,19 @@
             "share": 0.02394526795895097
           },
           {
-            "city": "other",
-            "cell_id": "other.ai_ml",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.ai_ml",
             "share": 0.052451539338654506
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.ai_ml",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.ai_ml",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -1978,9 +2366,19 @@
             "share": 0.021956087824351298
           },
           {
-            "city": "other",
-            "cell_id": "other.ai_ml.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.ai_ml.entry",
             "share": 0.04790419161676647
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.ai_ml.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.ai_ml.entry",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2010,9 +2408,19 @@
             "share": 0.05732484076433121
           },
           {
-            "city": "other",
-            "cell_id": "other.backend",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.backend",
             "share": 0.03184713375796178
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.backend",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.backend",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2040,9 +2448,19 @@
             "share": 0.057692307692307696
           },
           {
-            "city": "other",
-            "cell_id": "other.backend.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.backend.entry",
             "share": 0.038461538461538464
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.backend.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.backend.entry",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2072,9 +2490,19 @@
             "share": 0.01784718349135527
           },
           {
-            "city": "other",
-            "cell_id": "other.all",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.all",
             "share": 0.03151143335192415
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.all",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.all",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2102,9 +2530,19 @@
             "share": 0.01719056974459725
           },
           {
-            "city": "other",
-            "cell_id": "other.all.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.all.entry",
             "share": 0.03094302554027505
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.all.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.all.entry",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2133,9 +2571,19 @@
             "share": 0.01875
           },
           {
-            "city": "other",
-            "cell_id": "other.all.entry.y1",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.all.entry.y1",
             "share": 0.028125
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.all.entry.y1",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.all.entry.y1",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2165,8 +2613,18 @@
             "share": 0.0
           },
           {
-            "city": "other",
-            "cell_id": "other.data_scientist",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.data_scientist",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.data_scientist",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.data_scientist",
             "share": 0.0
           },
           {
@@ -2195,8 +2653,18 @@
             "share": 0.0
           },
           {
-            "city": "other",
-            "cell_id": "other.data_scientist.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.data_scientist.entry",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.data_scientist.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.data_scientist.entry",
             "share": 0.0
           },
           {
@@ -2227,9 +2695,19 @@
             "share": 0.005376344086021506
           },
           {
-            "city": "other",
-            "cell_id": "other.security",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.security",
             "share": 0.016129032258064516
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.security",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.security",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2257,9 +2735,19 @@
             "share": 0.0
           },
           {
-            "city": "other",
-            "cell_id": "other.security.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.security.entry",
             "share": 0.027777777777777776
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.security.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.security.entry",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2289,9 +2777,19 @@
             "share": 0.026804123711340205
           },
           {
-            "city": "other",
-            "cell_id": "other.it_infra",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.it_infra",
             "share": 0.041237113402061855
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.it_infra",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.it_infra",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2319,9 +2817,19 @@
             "share": 0.05303030303030303
           },
           {
-            "city": "other",
-            "cell_id": "other.it_infra.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.it_infra.entry",
             "share": 0.06818181818181818
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.it_infra.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.it_infra.entry",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2351,9 +2859,19 @@
             "share": 0.0111731843575419
           },
           {
-            "city": "other",
-            "cell_id": "other.fullstack",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.fullstack",
             "share": 0.0111731843575419
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.fullstack",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.fullstack",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2381,8 +2899,18 @@
             "share": 0.0
           },
           {
-            "city": "other",
-            "cell_id": "other.fullstack.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.fullstack.entry",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.fullstack.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.fullstack.entry",
             "share": 0.0
           },
           {
@@ -2413,9 +2941,19 @@
             "share": 0.021491782553729456
           },
           {
-            "city": "other",
-            "cell_id": "other.ba_po_pm",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.ba_po_pm",
             "share": 0.0050568900126422255
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.ba_po_pm",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.ba_po_pm",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2443,9 +2981,19 @@
             "share": 0.0234375
           },
           {
-            "city": "other",
-            "cell_id": "other.ba_po_pm.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.ba_po_pm.entry",
             "share": 0.0078125
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.ba_po_pm.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.ba_po_pm.entry",
+            "share": 0.0
           },
           {
             "city": "unknown",
@@ -2475,8 +3023,18 @@
             "share": 0.025974025974025976
           },
           {
-            "city": "other",
-            "cell_id": "other.ui_ux",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.ui_ux",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.ui_ux",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.ui_ux",
             "share": 0.0
           },
           {
@@ -2505,8 +3063,18 @@
             "share": 0.0
           },
           {
-            "city": "other",
-            "cell_id": "other.ui_ux.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.ui_ux.entry",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.ui_ux.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.ui_ux.entry",
             "share": 0.0
           },
           {
@@ -2537,8 +3105,18 @@
             "share": 0.030303030303030304
           },
           {
-            "city": "other",
-            "cell_id": "other.game",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.game",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.game",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.game",
             "share": 0.0
           },
           {
@@ -2567,8 +3145,18 @@
             "share": 0.023255813953488372
           },
           {
-            "city": "other",
-            "cell_id": "other.game.entry",
+            "city": "hai_phong",
+            "cell_id": "hai_phong.game.entry",
+            "share": 0.0
+          },
+          {
+            "city": "remote",
+            "cell_id": "remote.game.entry",
+            "share": 0.0
+          },
+          {
+            "city": "abroad",
+            "cell_id": "abroad.game.entry",
             "share": 0.0
           },
           {

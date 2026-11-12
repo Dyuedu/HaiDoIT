@@ -34,12 +34,30 @@
         }
       },
       {
-        "city": "other",
+        "city": "hai_phong",
         "share": {
           "value": 0.03094302554027505,
           "kind": "composition_share",
           "display": "shown",
-          "cell_id": "other.all.entry"
+          "cell_id": "hai_phong.all.entry"
+        }
+      },
+      {
+        "city": "remote",
+        "share": {
+          "value": 0.0,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "remote.all.entry"
+        }
+      },
+      {
+        "city": "abroad",
+        "share": {
+          "value": 0.0,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "abroad.all.entry"
         }
       },
       {
@@ -166,7 +184,7 @@
           "salary": true
         }
       },
-      "other.all.entry": {
+      "hai_phong.all.entry": {
         "n": 63,
         "fallback_label": null,
         "seniority_mix": {
@@ -182,6 +200,36 @@
         "insufficient_by_measure": {
           "skill_count": false,
           "experience_years": false,
+          "salary": true
+        }
+      },
+      "remote.all.entry": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {
+          "skill_count": 0,
+          "experience_years": 0,
+          "salary": 0
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "abroad.all.entry": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {
+          "skill_count": 0,
+          "experience_years": 0,
+          "salary": 0
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
           "salary": true
         }
       },

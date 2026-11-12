@@ -16,7 +16,7 @@ from haido_core.domain.display_policy import DisplayState
 from haido_core.domain.envelope import Envelope
 from tests.steps.conftest import S
 
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "hai_phong", "unknown"]  # #285: "other" thay bằng một tỉnh
 RULES = load_rules()
 
 
@@ -130,8 +130,8 @@ def test_dat20_da_nang_luon_co_dong_mau_nho_van_co_so_va_danh_dau_mo(pg_engine: 
     assert rows["da_nang"]["value"] == pytest.approx(0.06)
     assert rows["da_nang"]["display"] == DisplayState.LOW_SAMPLE_SHOWN
     assert rows["ha_noi"]["display"] == DisplayState.SHOWN  # n = 40 >= 30
-    assert rows["other"]["display"] == DisplayState.LOW_SAMPLE_SHOWN  # n = 0 vẫn có hàng, vẫn có số
-    assert rows["other"]["value"] == 0.0
+    assert rows["hai_phong"]["display"] == DisplayState.LOW_SAMPLE_SHOWN  # n = 0 vẫn có hàng, vẫn có số
+    assert rows["hai_phong"]["value"] == 0.0
 
 
 def test_dat20_display_chi_den_tu_suppression_for_voi_min_sample_cua_config(pg_engine: Engine) -> None:
@@ -327,7 +327,7 @@ def test_dat20_ty_trong_va_nguon_chi_lay_cua_snapshot_dang_doc_khong_tron_ngay_c
     notes = {n["code"]: n["text"] for n in meta["coverage_notes"]}
     assert notes["n_sources"] == "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 2 nguồn."
     shares = {r["city"]: r["share"]["value"] for r in body["data"]["rows"]}
-    assert shares == pytest.approx({"ha_noi": 0.75, "ho_chi_minh": 0.0, "da_nang": 0.25, "other": 0.0, "unknown": 0.0})
+    assert shares == pytest.approx({"ha_noi": 0.75, "ho_chi_minh": 0.0, "da_nang": 0.25, "hai_phong": 0.0, "unknown": 0.0})
 
 
 def test_dat20_chi_dung_hang_stat_cells_all_all_khi_cung_pham_vi_co_hang_khac(

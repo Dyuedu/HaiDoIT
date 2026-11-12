@@ -142,6 +142,8 @@ class PostingFacts:
     """Mã kỹ năng → số lượt nhắc, đã ánh xạ bằng phép 1."""
     years_min: float | None = None
     """Số năm tối thiểu đã giải (nguồn → bước trích → luật)."""
+    address_text: str | None = None
+    """Dòng địa chỉ của JD, đã bỏ dấu (#285). Chỉ trong bộ nhớ."""
 
 
 @dataclass(frozen=True, slots=True)

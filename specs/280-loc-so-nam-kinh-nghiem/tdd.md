@@ -99,3 +99,10 @@ Lý do: số ô và tỷ trọng mỗi snapshot theo số vai trò: 18 × 6 × 9
 
 - RED: `tests/test_dat20_cli.py` và `test_dat20_determinism_hai_lan_aggregate_ra_cung_hang` đỏ vì số hàng.
 - GREEN: đổi số hàng mong đợi; `uv run pytest -q` → 908 passed.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (ô theo mốc số năm chỉ có ở nơi có tin; `years_unstated` của nơi không có ô 'không ghi số năm' là 0). Không AC nào của issue này đổi.
+
+- RED: test đếm hàng theo mốc số năm, test head 0006 đỏ; lỗi `KeyError` khi tỉnh chỉ có tin ghi số năm (đã có test riêng ở #285).
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

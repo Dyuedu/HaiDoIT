@@ -72,3 +72,10 @@ Lý do: #284 thêm dòng `newcomer_roles.rows` cho bảy mã mới (theo đúng 
 
 - RED: không chạy riêng. Fixture web được sinh lại ngay sau khi đổi bản giả; không test nào của #144 đổi kỳ vọng.
 - GREEN: sinh lại fixture; `tests/api/test_fr37_newcomer_roles.py`, `tests/api/test_ad17_web_fixtures.py`, `web/tests/fr37-newcomer-roles-fixture.test.ts` xanh.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm `remote`, `abroad`; sinh lại sáu fixture city-shares và `newcomer-roles.json` của web). Không AC nào của issue này đổi.
+
+- RED: không test nào của #144 đổi kỳ vọng; fixture sinh lại ngay sau khi đổi bản giả.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

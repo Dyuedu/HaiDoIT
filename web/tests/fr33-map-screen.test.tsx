@@ -75,19 +75,19 @@ describe("fr33 — mở trang", () => {
     expect(haNoi.textContent).toContain("1.490 tin");
   });
 
-  it("fr33: chỉ ba thanh nằm trong figure; Khác và không xác định là dòng chú thích", async () => {
+  it("fr33: chỉ ba thanh nằm trong figure; Remote, Nước ngoài, không xác định là dòng chú thích; tỉnh khác chỉ ở bảng", async () => {
     routeCityShares({ all: [ok("all")] });
     await openScreen();
     const figure = screen.getByRole("figure");
 
     expect(figure.querySelectorAll('[data-part="track"]')).toHaveLength(3);
-    const other = cityButton("Khác");
-    const unknown = cityButton("Không xác định thành phố");
-    expect(other.querySelector('[data-part="track"]')).toBeNull();
+    const remote = cityButton("Làm từ xa \\(Remote\\)");
+    const unknown = cityButton("Không xác định nơi làm việc");
+    expect(remote.querySelector('[data-part="track"]')).toBeNull();
     expect(unknown.querySelector('[data-part="track"]')).toBeNull();
-    expect(other.textContent).toContain("3,2%");
-    expect(other.textContent).toContain("113 tin");
+    expect(remote.textContent).toContain("n = 0");
     expect(unknown.textContent).toContain("207 tin");
+    expect(screen.queryByRole("button", { name: /^Hải Phòng:/ })).toBeNull();
   });
 
   it("fr33: màn không thêm thẻ <a> hay <nav>", async () => {
@@ -202,19 +202,19 @@ describe("fr33 — mẫu nhỏ", () => {
     expect(daNang.textContent).not.toContain("2,4%");
   });
 
-  it("fr33: Khác n = 5 và không xác định n = 8 có nhãn mẫu nhỏ ở chú thích (backend)", async () => {
+  it("fr33: Remote n = 0 và không xác định n = 8 có nhãn mẫu nhỏ ở chú thích (backend)", async () => {
     routeCityShares({ all: [ok("all")], backend: [ok("backend")] });
     const { user } = await openScreen();
     await pickRole(user, "Backend");
-    const other = await screen.findByRole("button", { name: /^Khác:/ });
-    const unknown = cityButton("Không xác định thành phố");
+    const remote = await screen.findByRole("button", { name: /^Làm từ xa \(Remote\):/ });
+    const unknown = cityButton("Không xác định nơi làm việc");
 
-    expect(other.textContent).toContain("Cỡ mẫu nhỏ (n = 5 < 30): số liệu chỉ để tham khảo");
-    expect(other.textContent).not.toContain("3,2%");
+    expect(remote.textContent).toContain("Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo");
     expect(unknown.textContent).toContain("Cỡ mẫu nhỏ (n = 8 < 30): số liệu chỉ để tham khảo");
+    expect(unknown.textContent).not.toContain("%");
 
-    await user.hover(other);
-    expect(other.textContent).toContain("3,2%");
+    await user.hover(unknown);
+    expect(unknown.textContent).toContain("%");
   });
 
   it("fr33: tỷ trọng 0 vẫn có rãnh, button focus được, nhãn n = 0", async () => {
@@ -236,7 +236,7 @@ describe("fr33 — mẫu nhỏ", () => {
     await pickRole(user, "Backend");
     await screen.findByRole("button", { name: /^Hà Nội:.*Cỡ mẫu nhỏ/ });
 
-    for (const label of ["Hà Nội", "TP.HCM", "Đà Nẵng", "Khác", "Không xác định thành phố"]) {
+    for (const label of ["Hà Nội", "TP.HCM", "Đà Nẵng", "Không xác định nơi làm việc"]) {
       const button = cityButton(label);
       expect(button.textContent).toContain("Cỡ mẫu nhỏ");
       expect(button.textContent).not.toContain("%");
@@ -266,15 +266,15 @@ describe("fr33 — lối Bảng", () => {
     expect(within(haNoi).getAllByRole("cell")[0].textContent).toBe("47,0%");
   });
 
-  it("fr33: bảng có dòng Khác và không xác định (backend)", async () => {
+  it("fr33: bảng có dòng Hải Phòng và không xác định (backend)", async () => {
     routeCityShares({ all: [ok("all")], backend: [ok("backend")] });
     const { user } = await openScreen();
     await user.click(modeButton("Bảng"));
     await pickRole(user, "Backend");
     const table = await screen.findByRole("table");
 
-    const other = within(table).getByRole("row", { name: /^Khác/ });
-    const unknown = within(table).getByRole("row", { name: /Không xác định thành phố/ });
+    const other = within(table).getByRole("row", { name: /^Hải Phòng/ });
+    const unknown = within(table).getByRole("row", { name: /Không xác định nơi làm việc/ });
     expect(within(other).getAllByRole("cell").map((cell) => cell.textContent).slice(0, 2)).toEqual([
       "chưa đủ dữ liệu",
       "5",
@@ -510,7 +510,7 @@ describe("fr33 — bàn phím", () => {
     const { user } = await openScreen();
     const stops: string[] = [];
 
-    for (let i = 0; i < 41; i += 1) {
+    for (let i = 0; i < 42; i += 1) {
       await user.tab();
       const active = document.activeElement as HTMLElement;
       stops.push(active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? "");
@@ -556,8 +556,9 @@ describe("fr33 — bàn phím", () => {
       "Hà Nội",
       "TP.HCM",
       "Đà Nẵng",
-      "Khác",
-      "Không xác định thành phố",
+      "Làm từ xa (Remote)",
+      "Nước ngoài",
+      "Không xác định nơi làm việc",
     ]);
   });
 

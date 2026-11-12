@@ -9,7 +9,8 @@ from haido_core.steps.common import SnapshotClosedError, StepError
 from tests.steps.conftest import Env, S
 
 SD = date.fromisoformat(S)
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+# #285: nơi luôn có hàng (always_cities); tỉnh khác chỉ có hàng khi có tin.
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "remote", "abroad", "unknown"]
 
 
 def _day(back: int) -> str:
@@ -64,15 +65,16 @@ def test_dat20_moi_vai_tro_va_all_co_nam_dong_thanh_pho_ke_ca_khi_khong_co_tin(e
     roles = ["all", *env.rules.roles]
     levels = 1 + len(env.rules.level_options)  # #163: cấp `all` cộng từng cấp lọc được
     levels *= 1 + len(env.rules.years_options)  # #280: `any` cộng từng mốc số năm
-    assert (result.cells, result.shares) == (len(roles) * levels * 6, len(roles) * levels * 5)
+    always = len(env.rules.always_cities)
+    assert (result.cells, result.shares) == (len(roles) * levels * (always + 1), len(roles) * levels * always)
     for role in roles:
         shares = _shares(env, role)
         assert set(shares) == set(CITIES)
         assert sum(shares.values()) == pytest.approx(1.0)
         assert _n(env, role, "vn") == 0
         assert _n(env, role, "da_nang") == 0  # Đà Nẵng luôn có hàng, kể cả n = 0
-    assert env.count("stat_cells") == len(roles) * levels * 6
-    assert env.count("stat_city_shares") == len(roles) * levels * 5
+    assert env.count("stat_cells") == len(roles) * levels * (always + 1)
+    assert env.count("stat_city_shares") == len(roles) * levels * always
 
 
 def test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro(env: Env, scraper_db) -> None:
@@ -89,10 +91,12 @@ def test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro(env: Env, scraper_d
         },
     )
     assert _n(env, "backend", "vn") == 4
-    assert _shares(env, "backend") == {"ha_noi": 0.5, "ho_chi_minh": 0.0, "da_nang": 0.25, "other": 0.0, "unknown": 0.25}
-    assert _shares(env, "qa") == {"ha_noi": 0.0, "ho_chi_minh": 1.0, "da_nang": 0.0, "other": 0.0, "unknown": 0.0}
+    zero = {"remote": 0.0, "abroad": 0.0}
+    assert _shares(env, "backend") == {"ha_noi": 0.5, "ho_chi_minh": 0.0, "da_nang": 0.25, **zero, "unknown": 0.25}
+    assert _shares(env, "qa") == {"ha_noi": 0.0, "ho_chi_minh": 1.0, "da_nang": 0.0, **zero, "unknown": 0.0}
     assert _n(env, "all", "vn") == 6
-    assert _shares(env, "all")["other"] == pytest.approx(1 / 6)
+    assert _shares(env, "all")["hai_phong"] == pytest.approx(1 / 6)  # #285: Hải Phòng có hàng riêng
+    assert "hai_phong" not in _shares(env, "backend")  # không có tin backend ở Hải Phòng thì không có hàng
     # mẫu nhỏ vẫn có số: Đà Nẵng n = 1 < 30
     assert _n(env, "backend", "da_nang") == 1
     for role in ("all", *env.rules.roles):
@@ -205,7 +209,7 @@ def test_dat20_moi_o_luu_n_pha_cap_bac_va_config_version(env: Env, scraper_db) -
     assert by_scope["vn"][1:3] == (3, {"junior": 2, "senior": 1})
     assert by_scope["ha_noi"][1:3] == (2, {"junior": 2})
     assert by_scope["da_nang"][1:3] == (1, {"senior": 1})
-    assert by_scope["other"][1:3] == (0, {})
+    assert by_scope["remote"][1:3] == (0, {})  # #285: nơi luôn có hàng, kể cả n = 0
     assert {(r[3], r[4], r[5]) for r in rows} == {("all", "all", env.rules.config_version)}
 
 
@@ -240,8 +244,10 @@ def test_dat20_determinism_hai_lan_aggregate_ra_cung_hang(env: Env, scraper_db) 
     first = env.query(cells), env.query(shares)
     env.aggregate()
     assert (env.query(cells), env.query(shares)) == first
-    # 18 vai trò (#284) × 6 phạm vi (5 thành phố + vn) × 9 cấp lọc × 6 mã số năm (#280); tỷ trọng: 18 × 5 thành phố.
-    assert len(first[0]) == 18 * 6 * 9 * 6 and len(first[1]) == 18 * 5 * 9 * 6
+    # 18 vai trò (#284) × 9 cấp lọc × 6 mã số năm (#280); mỗi bộ lọc ít nhất 6 nơi luôn có + vn (#285), cộng Cần Thơ
+    # khi bộ lọc có tin ở đó.
+    assert len(first[0]) >= 18 * 7 * 9 * 6 and len(first[1]) >= 18 * 6 * 9 * 6
+    assert any("can_tho" in row for row in first[1])
 
 
 @pytest.mark.parametrize("status", ["published", "partial"])

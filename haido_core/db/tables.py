@@ -57,6 +57,7 @@ job_posting_facts = sa.Table(
     sa.Column("seniority", sa.Text()),
     sa.Column("skills", JSONB()),
     sa.Column("classify_version", sa.Text()),
+    sa.Column("city", sa.Text()),  # #285: nơi làm việc của bộ phân loại
 )
 
 job_observations = sa.Table(

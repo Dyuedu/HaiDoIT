@@ -150,3 +150,10 @@ Lý do: #284 thêm bảy mã vai trò vào `config/rules.toml` và `web/lib/labe
 
 - RED: `test_gh163_ban_gia_chi_co_cap_all_va_entry_la_ma_trong_config` đỏ khi bản giả mới chỉ có `all` cho mã mới; thứ tự Tab trong `fr33-map-screen.test.tsx` có thêm bảy nút.
 - GREEN: thêm khối `entry`; `uv run pytest -q` → 908 passed; `npx vitest run` → 163 passed.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (mỗi (vai trò, cấp) có hàng của 6 nơi luôn có và tỉnh có tin, không còn `other`). Không AC nào của issue này đổi.
+
+- RED: các test đếm 5 hàng thành phố mỗi cấp, test head 0005, test seed API dùng `other` đỏ.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

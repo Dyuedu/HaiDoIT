@@ -139,3 +139,10 @@ Lý do: #284 làm rỗng `[report_as]` của `config/classify.toml` và thêm b�
 
 - RED: `test_gh283_moi_nhan_vai_tro_co_ma_trong_rules_sau_report_as` (đòi Data Scientist → `ai_ml` qua `report_as`) và `test_gh283_aggregate_dung_nhan_da_luu` (đòi Data Scientist trong ô `ai_ml`) đỏ.
 - GREEN: đổi kỳ vọng sang mã riêng (`data_scientist`, `fullstack`); `uv run pytest -q` → 908 passed.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (`classify.toml` thay ba thành phố bằng 34 tỉnh, thêm Remote, Nước ngoài, dòng địa chỉ; `classify_version` `classify-2026-11-13.3`; nơi lưu ở `job_posting_facts.city`). Không AC nào của issue này đổi.
+
+- RED: `test_gh283_migration_0007_noi_tiep_0006_va_la_head_duy_nhat` đỏ vì head là 0008.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

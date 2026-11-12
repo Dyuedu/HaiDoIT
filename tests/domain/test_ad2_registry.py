@@ -127,6 +127,7 @@ def test_ad2_khong_nhan_van_ban_day_du_va_khong_import_framework() -> None:
         "text",
         "skills",
         "years_min",
+        "address_text",  # #285: dòng địa chỉ của JD, chỉ trong bộ nhớ
     }
     registry_md = REGISTRY_MD.read_text(encoding="utf-8")
     assert "được nhận văn bản JD đầy đủ" in registry_md

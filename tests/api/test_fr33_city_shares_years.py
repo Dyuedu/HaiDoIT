@@ -20,7 +20,7 @@ from haido_core.config import load_rules
 from haido_core.domain.envelope import Envelope
 from tests.steps.conftest import S
 
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "hai_phong", "unknown"]  # #285: "other" thay bằng một tỉnh
 RULES = load_rules()
 YEARS = ["any", *(str(n) for n in RULES.years_options)]
 Counts = dict[str, int]
