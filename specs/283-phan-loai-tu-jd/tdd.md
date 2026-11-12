@@ -132,3 +132,10 @@ Thời gian và bộ nhớ: `ingest` 14,1 giây cho 2716 quan sát cộng phần
 ## REFACTOR
 
 `plan_ingest` và phần làm mới dùng chung `FactLabeler` (một chỗ tạo từ vựng, bộ ánh xạ, bộ phân loại). Bản sao luật v1 ở `tools/classify_eval/classify_v1.py` đổi tên method thành `label_v1` để registry vẫn đóng (cổng AD-2).
+
+## Đợt 2026-11-13 — #284 bảy nhãn mới có mã riêng
+
+Lý do: #284 làm rỗng `[report_as]` của `config/classify.toml` và thêm bảy mã vào `config/rules.toml`. Nhãn lưu ở `job_posting_facts` không đổi, `classify_version` không đổi.
+
+- RED: `test_gh283_moi_nhan_vai_tro_co_ma_trong_rules_sau_report_as` (đòi Data Scientist → `ai_ml` qua `report_as`) và `test_gh283_aggregate_dung_nhan_da_luu` (đòi Data Scientist trong ô `ai_ml`) đỏ.
+- GREEN: đổi kỳ vọng sang mã riêng (`data_scientist`, `fullstack`); `uv run pytest -q` → 908 passed.

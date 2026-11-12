@@ -1,5 +1,5 @@
 # Luật phân loại tin (phép 6, #283): vai trò, chức danh con, cấp, số năm, mục của JD, bằng chứng kỹ năng.
-# Đọc chức danh và văn bản JD trong bộ nhớ, không gọi mô hình. Đổi bất cứ giá trị nào ở đây thì đổi
+# Đọc chức danh và văn bản JD trong bộ nhớ, không gọi mô hình. Đổi bất cứ giá trị nào ở đây (trừ [report_as]) thì đổi
 # classify_version (ghi vào từng job_posting_facts) và config_version của config/rules.toml.
 # Cụm so khớp trên chữ đã bỏ dấu (đ → d), chữ thường, theo biên chữ/số; cụm có khoảng trắng đầu/cuối
 # được so nguyên văn (dùng cho chữ viết tắt ngắn).
@@ -39,15 +39,9 @@ non_technical_skills = ["agile", "ai_tools", "chinese", "communication", "englis
 multi_city = "first_phrase"
 other_city_phrases = ["hải phòng", "hai phong", "cần thơ", "can tho", "huế", "hue", "biên hòa", "bien hoa"]
 
-# Nhãn mới chưa có mã hiển thị (#284): lúc tổng hợp báo cáo như nhãn cũ. Kho vẫn lưu nhãn mịn.
+# Nhãn → nhãn khác lúc tổng hợp (chỉ đổi cách báo cáo, không đổi nhãn đã lưu nên không cần đổi
+# classify_version). Rỗng từ #284: mọi nhãn vai trò có mã riêng trong [labels.role] của rules.toml.
 [report_as]
-"Data Scientist" = "AI/ML Engineer"
-"Fullstack" = "Other"
-"BA/PO/PM" = "Other"
-"Security" = "Other"
-"Hạ tầng/IT support" = "Other"
-"UI/UX" = "Other"
-"Game" = "Other"
 
 # Ngưỡng bằng chứng kỹ năng.
 [evidence]

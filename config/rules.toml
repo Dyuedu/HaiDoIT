@@ -1,6 +1,6 @@
 # Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn, bảng nhãn.
 # Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle và stat_cells lưu phiên bản đã dùng.
-config_version = "2026-11-13.1"
+config_version = "2026-11-13.2"
 
 # Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
 # Phép dân số đếm đúng window_days ngày kết thúc ở S, gồm cả S: S - (window_days - 1) <= last_seen <= S.
@@ -21,13 +21,20 @@ cv_types = ["application/pdf", "application/vnd.openxmlformats-officedocument.wo
 roles = [
     "embedded",
     "ai_ml",
+    "data_scientist",
     "data_engineer",
     "data_analyst",
     "qa",
     "devops",
+    "security",
+    "it_infra",
     "mobile",
     "frontend",
     "backend",
+    "fullstack",
+    "ba_po_pm",
+    "ui_ux",
+    "game",
     "other",
 ]
 
@@ -93,6 +100,14 @@ text = "Con số lương chỉ phản ánh những tin có công bố lương."
 "Mobile" = "mobile"
 "Frontend" = "frontend"
 "Backend" = "backend"
+# #284: nhãn mới của bộ phân loại (#283) có mã riêng.
+"Data Scientist" = "data_scientist"
+"Security" = "security"
+"Hạ tầng/IT support" = "it_infra"
+"Fullstack" = "fullstack"
+"BA/PO/PM" = "ba_po_pm"
+"UI/UX" = "ui_ux"
+"Game" = "game"
 "Other" = "other"
 
 [labels.level]

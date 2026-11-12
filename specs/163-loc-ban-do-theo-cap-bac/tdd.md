@@ -143,3 +143,10 @@ VietnamWorks không cho cấp. Bước `aggregate` dùng nhãn đã lưu ở `jo
 - RED: `test_fr33_migration_0005_noi_tiep_0004_va_la_head_duy_nhat` đỏ vì head là 0007; các test khác của #163 không đổi.
 - GREEN: `tests/steps/test_fr33_aggregate_level_step.py`, `tests/db/test_fr33_stat_city_shares_level.py`,
   `tests/api/test_fr33_city_shares_level.py` xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 11 — 2026-11-13, #284 thêm bảy vai trò
+
+Lý do: #284 thêm bảy mã vai trò vào `config/rules.toml` và `web/lib/labels.ts`; bộ lọc cấp áp cho mọi vai trò như cũ. Bản giả có city-shares `all` và `entry` cho bảy mã mới (test `test_gh163_ban_gia_chi_co_cap_all_va_entry_la_ma_trong_config` đòi cả hai cấp). Không AC nào của #163 đổi.
+
+- RED: `test_gh163_ban_gia_chi_co_cap_all_va_entry_la_ma_trong_config` đỏ khi bản giả mới chỉ có `all` cho mã mới; thứ tự Tab trong `fr33-map-screen.test.tsx` có thêm bảy nút.
+- GREEN: thêm khối `entry`; `uv run pytest -q` → 908 passed; `npx vitest run` → 163 passed.

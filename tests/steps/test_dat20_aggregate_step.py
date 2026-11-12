@@ -240,7 +240,8 @@ def test_dat20_determinism_hai_lan_aggregate_ra_cung_hang(env: Env, scraper_db) 
     first = env.query(cells), env.query(shares)
     env.aggregate()
     assert (env.query(cells), env.query(shares)) == first
-    assert len(first[0]) == 66 * 9 * 6 and len(first[1]) == 55 * 9 * 6  # 11 vai trò × 9 cấp lọc × 6 mã số năm (#280)
+    # 18 vai trò (#284) × 6 phạm vi (5 thành phố + vn) × 9 cấp lọc × 6 mã số năm (#280); tỷ trọng: 18 × 5 thành phố.
+    assert len(first[0]) == 18 * 6 * 9 * 6 and len(first[1]) == 18 * 5 * 9 * 6
 
 
 @pytest.mark.parametrize("status", ["published", "partial"])

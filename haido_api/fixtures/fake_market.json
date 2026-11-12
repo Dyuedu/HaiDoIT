@@ -827,6 +827,1104 @@
       "n": 570,
       "seniority_mix": {},
       "n_by_measure": {}
+    },
+    "vn.data_scientist": {
+      "n": 28,
+      "seniority_mix": {
+        "mid": 6,
+        "lead": 4,
+        "intern": 4,
+        "junior": 1,
+        "senior": 11,
+        "unknown": 2
+      },
+      "n_by_measure": {
+        "skill_count": 28,
+        "experience_years": 20,
+        "salary": 6
+      }
+    },
+    "ha_noi.data_scientist": {
+      "n": 12,
+      "seniority_mix": {
+        "mid": 2,
+        "lead": 2,
+        "intern": 2,
+        "junior": 1,
+        "senior": 3,
+        "unknown": 2
+      },
+      "n_by_measure": {
+        "skill_count": 12,
+        "experience_years": 8,
+        "salary": 3
+      }
+    },
+    "ho_chi_minh.data_scientist": {
+      "n": 15,
+      "seniority_mix": {
+        "mid": 4,
+        "lead": 2,
+        "intern": 1,
+        "senior": 8
+      },
+      "n_by_measure": {
+        "skill_count": 15,
+        "experience_years": 10,
+        "salary": 3
+      }
+    },
+    "da_nang.data_scientist": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "other.data_scientist": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.data_scientist": {
+      "n": 1,
+      "seniority_mix": {
+        "intern": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "vn.data_scientist.entry": {
+      "n": 5,
+      "seniority_mix": {
+        "intern": 4,
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 5,
+        "experience_years": 4,
+        "salary": 1
+      }
+    },
+    "ha_noi.data_scientist.entry": {
+      "n": 3,
+      "seniority_mix": {
+        "intern": 2,
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
+    "ho_chi_minh.data_scientist.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "intern": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "da_nang.data_scientist.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "other.data_scientist.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.data_scientist.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "intern": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "vn.security": {
+      "n": 186,
+      "seniority_mix": {
+        "mid": 48,
+        "lead": 26,
+        "intern": 6,
+        "junior": 22,
+        "senior": 47,
+        "fresher": 8,
+        "unknown": 29
+      },
+      "n_by_measure": {
+        "skill_count": 186,
+        "experience_years": 130,
+        "salary": 41
+      }
+    },
+    "ha_noi.security": {
+      "n": 117,
+      "seniority_mix": {
+        "mid": 28,
+        "lead": 19,
+        "intern": 5,
+        "junior": 16,
+        "senior": 28,
+        "fresher": 4,
+        "unknown": 17
+      },
+      "n_by_measure": {
+        "skill_count": 117,
+        "experience_years": 82,
+        "salary": 26
+      }
+    },
+    "ho_chi_minh.security": {
+      "n": 58,
+      "seniority_mix": {
+        "mid": 18,
+        "lead": 7,
+        "intern": 1,
+        "junior": 5,
+        "senior": 16,
+        "fresher": 2,
+        "unknown": 9
+      },
+      "n_by_measure": {
+        "skill_count": 58,
+        "experience_years": 41,
+        "salary": 13
+      }
+    },
+    "da_nang.security": {
+      "n": 1,
+      "seniority_mix": {
+        "senior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "other.security": {
+      "n": 3,
+      "seniority_mix": {
+        "mid": 2,
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
+    "unknown.security": {
+      "n": 7,
+      "seniority_mix": {
+        "junior": 1,
+        "senior": 2,
+        "fresher": 1,
+        "unknown": 3
+      },
+      "n_by_measure": {
+        "skill_count": 7,
+        "experience_years": 5,
+        "salary": 2
+      }
+    },
+    "vn.security.entry": {
+      "n": 36,
+      "seniority_mix": {
+        "intern": 6,
+        "junior": 22,
+        "fresher": 8
+      },
+      "n_by_measure": {
+        "skill_count": 36,
+        "experience_years": 25,
+        "salary": 8
+      }
+    },
+    "ha_noi.security.entry": {
+      "n": 25,
+      "seniority_mix": {
+        "intern": 5,
+        "junior": 16,
+        "fresher": 4
+      },
+      "n_by_measure": {
+        "skill_count": 25,
+        "experience_years": 18,
+        "salary": 6
+      }
+    },
+    "ho_chi_minh.security.entry": {
+      "n": 8,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 5,
+        "fresher": 2
+      },
+      "n_by_measure": {
+        "skill_count": 8,
+        "experience_years": 6,
+        "salary": 2
+      }
+    },
+    "da_nang.security.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "other.security.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "unknown.security.entry": {
+      "n": 2,
+      "seniority_mix": {
+        "junior": 1,
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "vn.it_infra": {
+      "n": 485,
+      "seniority_mix": {
+        "mid": 155,
+        "lead": 56,
+        "intern": 14,
+        "junior": 85,
+        "senior": 61,
+        "fresher": 33,
+        "unknown": 81
+      },
+      "n_by_measure": {
+        "skill_count": 485,
+        "experience_years": 340,
+        "salary": 107
+      }
+    },
+    "ha_noi.it_infra": {
+      "n": 189,
+      "seniority_mix": {
+        "mid": 59,
+        "lead": 29,
+        "intern": 5,
+        "junior": 40,
+        "senior": 17,
+        "fresher": 10,
+        "unknown": 29
+      },
+      "n_by_measure": {
+        "skill_count": 189,
+        "experience_years": 132,
+        "salary": 42
+      }
+    },
+    "ho_chi_minh.it_infra": {
+      "n": 179,
+      "seniority_mix": {
+        "mid": 57,
+        "lead": 20,
+        "intern": 8,
+        "junior": 22,
+        "senior": 34,
+        "fresher": 9,
+        "unknown": 29
+      },
+      "n_by_measure": {
+        "skill_count": 179,
+        "experience_years": 125,
+        "salary": 39
+      }
+    },
+    "da_nang.it_infra": {
+      "n": 13,
+      "seniority_mix": {
+        "mid": 4,
+        "lead": 1,
+        "junior": 6,
+        "fresher": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 13,
+        "experience_years": 9,
+        "salary": 3
+      }
+    },
+    "other.it_infra": {
+      "n": 20,
+      "seniority_mix": {
+        "mid": 4,
+        "junior": 6,
+        "senior": 2,
+        "fresher": 3,
+        "unknown": 5
+      },
+      "n_by_measure": {
+        "skill_count": 20,
+        "experience_years": 14,
+        "salary": 4
+      }
+    },
+    "unknown.it_infra": {
+      "n": 84,
+      "seniority_mix": {
+        "mid": 31,
+        "lead": 6,
+        "intern": 1,
+        "junior": 11,
+        "senior": 8,
+        "fresher": 10,
+        "unknown": 17
+      },
+      "n_by_measure": {
+        "skill_count": 84,
+        "experience_years": 59,
+        "salary": 18
+      }
+    },
+    "vn.it_infra.entry": {
+      "n": 132,
+      "seniority_mix": {
+        "intern": 14,
+        "junior": 85,
+        "fresher": 33
+      },
+      "n_by_measure": {
+        "skill_count": 132,
+        "experience_years": 92,
+        "salary": 29
+      }
+    },
+    "ha_noi.it_infra.entry": {
+      "n": 55,
+      "seniority_mix": {
+        "intern": 5,
+        "junior": 40,
+        "fresher": 10
+      },
+      "n_by_measure": {
+        "skill_count": 55,
+        "experience_years": 38,
+        "salary": 12
+      }
+    },
+    "ho_chi_minh.it_infra.entry": {
+      "n": 39,
+      "seniority_mix": {
+        "intern": 8,
+        "junior": 22,
+        "fresher": 9
+      },
+      "n_by_measure": {
+        "skill_count": 39,
+        "experience_years": 27,
+        "salary": 9
+      }
+    },
+    "da_nang.it_infra.entry": {
+      "n": 7,
+      "seniority_mix": {
+        "junior": 6,
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 7,
+        "experience_years": 5,
+        "salary": 2
+      }
+    },
+    "other.it_infra.entry": {
+      "n": 9,
+      "seniority_mix": {
+        "junior": 6,
+        "fresher": 3
+      },
+      "n_by_measure": {
+        "skill_count": 9,
+        "experience_years": 6,
+        "salary": 2
+      }
+    },
+    "unknown.it_infra.entry": {
+      "n": 22,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 11,
+        "fresher": 10
+      },
+      "n_by_measure": {
+        "skill_count": 22,
+        "experience_years": 15,
+        "salary": 5
+      }
+    },
+    "vn.fullstack": {
+      "n": 179,
+      "seniority_mix": {
+        "mid": 71,
+        "lead": 8,
+        "intern": 6,
+        "junior": 24,
+        "senior": 51,
+        "fresher": 4,
+        "unknown": 15
+      },
+      "n_by_measure": {
+        "skill_count": 179,
+        "experience_years": 125,
+        "salary": 39
+      }
+    },
+    "ha_noi.fullstack": {
+      "n": 97,
+      "seniority_mix": {
+        "mid": 44,
+        "lead": 5,
+        "intern": 3,
+        "junior": 19,
+        "senior": 18,
+        "fresher": 2,
+        "unknown": 6
+      },
+      "n_by_measure": {
+        "skill_count": 97,
+        "experience_years": 68,
+        "salary": 21
+      }
+    },
+    "ho_chi_minh.fullstack": {
+      "n": 70,
+      "seniority_mix": {
+        "mid": 25,
+        "lead": 3,
+        "intern": 2,
+        "junior": 4,
+        "senior": 30,
+        "fresher": 2,
+        "unknown": 4
+      },
+      "n_by_measure": {
+        "skill_count": 70,
+        "experience_years": 49,
+        "salary": 15
+      }
+    },
+    "da_nang.fullstack": {
+      "n": 2,
+      "seniority_mix": {
+        "mid": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "other.fullstack": {
+      "n": 2,
+      "seniority_mix": {
+        "senior": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "unknown.fullstack": {
+      "n": 8,
+      "seniority_mix": {
+        "mid": 1,
+        "intern": 1,
+        "junior": 1,
+        "senior": 2,
+        "unknown": 3
+      },
+      "n_by_measure": {
+        "skill_count": 8,
+        "experience_years": 6,
+        "salary": 2
+      }
+    },
+    "vn.fullstack.entry": {
+      "n": 34,
+      "seniority_mix": {
+        "intern": 6,
+        "junior": 24,
+        "fresher": 4
+      },
+      "n_by_measure": {
+        "skill_count": 34,
+        "experience_years": 24,
+        "salary": 7
+      }
+    },
+    "ha_noi.fullstack.entry": {
+      "n": 24,
+      "seniority_mix": {
+        "intern": 3,
+        "junior": 19,
+        "fresher": 2
+      },
+      "n_by_measure": {
+        "skill_count": 24,
+        "experience_years": 17,
+        "salary": 5
+      }
+    },
+    "ho_chi_minh.fullstack.entry": {
+      "n": 8,
+      "seniority_mix": {
+        "intern": 2,
+        "junior": 4,
+        "fresher": 2
+      },
+      "n_by_measure": {
+        "skill_count": 8,
+        "experience_years": 6,
+        "salary": 2
+      }
+    },
+    "da_nang.fullstack.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "other.fullstack.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.fullstack.entry": {
+      "n": 2,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "vn.ba_po_pm": {
+      "n": 791,
+      "seniority_mix": {
+        "mid": 309,
+        "lead": 95,
+        "intern": 14,
+        "junior": 88,
+        "senior": 170,
+        "fresher": 26,
+        "unknown": 89
+      },
+      "n_by_measure": {
+        "skill_count": 791,
+        "experience_years": 554,
+        "salary": 174
+      }
+    },
+    "ha_noi.ba_po_pm": {
+      "n": 429,
+      "seniority_mix": {
+        "mid": 195,
+        "lead": 54,
+        "intern": 7,
+        "junior": 51,
+        "senior": 66,
+        "fresher": 15,
+        "unknown": 41
+      },
+      "n_by_measure": {
+        "skill_count": 429,
+        "experience_years": 300,
+        "salary": 94
+      }
+    },
+    "ho_chi_minh.ba_po_pm": {
+      "n": 294,
+      "seniority_mix": {
+        "mid": 95,
+        "lead": 32,
+        "intern": 6,
+        "junior": 25,
+        "senior": 95,
+        "fresher": 7,
+        "unknown": 34
+      },
+      "n_by_measure": {
+        "skill_count": 294,
+        "experience_years": 206,
+        "salary": 65
+      }
+    },
+    "da_nang.ba_po_pm": {
+      "n": 17,
+      "seniority_mix": {
+        "mid": 9,
+        "intern": 1,
+        "junior": 2,
+        "senior": 3,
+        "unknown": 2
+      },
+      "n_by_measure": {
+        "skill_count": 17,
+        "experience_years": 12,
+        "salary": 4
+      }
+    },
+    "other.ba_po_pm": {
+      "n": 4,
+      "seniority_mix": {
+        "lead": 1,
+        "junior": 1,
+        "senior": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 4,
+        "experience_years": 3,
+        "salary": 1
+      }
+    },
+    "unknown.ba_po_pm": {
+      "n": 47,
+      "seniority_mix": {
+        "mid": 10,
+        "lead": 8,
+        "junior": 9,
+        "senior": 5,
+        "fresher": 4,
+        "unknown": 11
+      },
+      "n_by_measure": {
+        "skill_count": 47,
+        "experience_years": 33,
+        "salary": 10
+      }
+    },
+    "vn.ba_po_pm.entry": {
+      "n": 128,
+      "seniority_mix": {
+        "intern": 14,
+        "junior": 88,
+        "fresher": 26
+      },
+      "n_by_measure": {
+        "skill_count": 128,
+        "experience_years": 90,
+        "salary": 28
+      }
+    },
+    "ha_noi.ba_po_pm.entry": {
+      "n": 73,
+      "seniority_mix": {
+        "intern": 7,
+        "junior": 51,
+        "fresher": 15
+      },
+      "n_by_measure": {
+        "skill_count": 73,
+        "experience_years": 51,
+        "salary": 16
+      }
+    },
+    "ho_chi_minh.ba_po_pm.entry": {
+      "n": 38,
+      "seniority_mix": {
+        "intern": 6,
+        "junior": 25,
+        "fresher": 7
+      },
+      "n_by_measure": {
+        "skill_count": 38,
+        "experience_years": 27,
+        "salary": 8
+      }
+    },
+    "da_nang.ba_po_pm.entry": {
+      "n": 3,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 2
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
+    "other.ba_po_pm.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "junior": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "unknown.ba_po_pm.entry": {
+      "n": 13,
+      "seniority_mix": {
+        "junior": 9,
+        "fresher": 4
+      },
+      "n_by_measure": {
+        "skill_count": 13,
+        "experience_years": 9,
+        "salary": 3
+      }
+    },
+    "vn.ui_ux": {
+      "n": 77,
+      "seniority_mix": {
+        "mid": 34,
+        "lead": 2,
+        "intern": 1,
+        "junior": 16,
+        "senior": 14,
+        "fresher": 4,
+        "unknown": 6
+      },
+      "n_by_measure": {
+        "skill_count": 77,
+        "experience_years": 54,
+        "salary": 17
+      }
+    },
+    "ha_noi.ui_ux": {
+      "n": 43,
+      "seniority_mix": {
+        "mid": 17,
+        "junior": 13,
+        "senior": 8,
+        "fresher": 3,
+        "unknown": 2
+      },
+      "n_by_measure": {
+        "skill_count": 43,
+        "experience_years": 30,
+        "salary": 9
+      }
+    },
+    "ho_chi_minh.ui_ux": {
+      "n": 31,
+      "seniority_mix": {
+        "mid": 15,
+        "lead": 2,
+        "intern": 1,
+        "junior": 3,
+        "senior": 6,
+        "fresher": 1,
+        "unknown": 3
+      },
+      "n_by_measure": {
+        "skill_count": 31,
+        "experience_years": 22,
+        "salary": 7
+      }
+    },
+    "da_nang.ui_ux": {
+      "n": 2,
+      "seniority_mix": {
+        "mid": 2
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "other.ui_ux": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.ui_ux": {
+      "n": 1,
+      "seniority_mix": {
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "vn.ui_ux.entry": {
+      "n": 21,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 16,
+        "fresher": 4
+      },
+      "n_by_measure": {
+        "skill_count": 21,
+        "experience_years": 15,
+        "salary": 5
+      }
+    },
+    "ha_noi.ui_ux.entry": {
+      "n": 16,
+      "seniority_mix": {
+        "junior": 13,
+        "fresher": 3
+      },
+      "n_by_measure": {
+        "skill_count": 16,
+        "experience_years": 11,
+        "salary": 4
+      }
+    },
+    "ho_chi_minh.ui_ux.entry": {
+      "n": 5,
+      "seniority_mix": {
+        "intern": 1,
+        "junior": 3,
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 5,
+        "experience_years": 4,
+        "salary": 1
+      }
+    },
+    "da_nang.ui_ux.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "other.ui_ux.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.ui_ux.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "vn.game": {
+      "n": 99,
+      "seniority_mix": {
+        "mid": 23,
+        "lead": 2,
+        "intern": 10,
+        "junior": 21,
+        "senior": 10,
+        "fresher": 12,
+        "unknown": 21
+      },
+      "n_by_measure": {
+        "skill_count": 99,
+        "experience_years": 69,
+        "salary": 22
+      }
+    },
+    "ha_noi.game": {
+      "n": 71,
+      "seniority_mix": {
+        "mid": 16,
+        "lead": 1,
+        "intern": 7,
+        "junior": 19,
+        "senior": 6,
+        "fresher": 10,
+        "unknown": 12
+      },
+      "n_by_measure": {
+        "skill_count": 71,
+        "experience_years": 50,
+        "salary": 16
+      }
+    },
+    "ho_chi_minh.game": {
+      "n": 23,
+      "seniority_mix": {
+        "mid": 7,
+        "lead": 1,
+        "intern": 3,
+        "junior": 2,
+        "senior": 3,
+        "fresher": 1,
+        "unknown": 6
+      },
+      "n_by_measure": {
+        "skill_count": 23,
+        "experience_years": 16,
+        "salary": 5
+      }
+    },
+    "da_nang.game": {
+      "n": 3,
+      "seniority_mix": {
+        "senior": 1,
+        "fresher": 1,
+        "unknown": 1
+      },
+      "n_by_measure": {
+        "skill_count": 3,
+        "experience_years": 2,
+        "salary": 1
+      }
+    },
+    "other.game": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.game": {
+      "n": 2,
+      "seniority_mix": {
+        "unknown": 2
+      },
+      "n_by_measure": {
+        "skill_count": 2,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "vn.game.entry": {
+      "n": 43,
+      "seniority_mix": {
+        "intern": 10,
+        "junior": 21,
+        "fresher": 12
+      },
+      "n_by_measure": {
+        "skill_count": 43,
+        "experience_years": 30,
+        "salary": 9
+      }
+    },
+    "ha_noi.game.entry": {
+      "n": 36,
+      "seniority_mix": {
+        "intern": 7,
+        "junior": 19,
+        "fresher": 10
+      },
+      "n_by_measure": {
+        "skill_count": 36,
+        "experience_years": 25,
+        "salary": 8
+      }
+    },
+    "ho_chi_minh.game.entry": {
+      "n": 6,
+      "seniority_mix": {
+        "intern": 3,
+        "junior": 2,
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 6,
+        "experience_years": 4,
+        "salary": 1
+      }
+    },
+    "da_nang.game.entry": {
+      "n": 1,
+      "seniority_mix": {
+        "fresher": 1
+      },
+      "n_by_measure": {
+        "skill_count": 1,
+        "experience_years": 1,
+        "salary": 0
+      }
+    },
+    "other.game.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
+    },
+    "unknown.game.entry": {
+      "n": 0,
+      "seniority_mix": {},
+      "n_by_measure": {
+        "skill_count": 0,
+        "experience_years": 0,
+        "salary": 0
+      }
     }
   },
   "city_shares": {
@@ -1046,6 +2144,440 @@
           }
         ]
       }
+    },
+    "data_scientist": {
+      "all": {
+        "total_cell_id": "vn.data_scientist",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.data_scientist",
+            "share": 0.42857142857142855
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.data_scientist",
+            "share": 0.5357142857142857
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.data_scientist",
+            "share": 0.0
+          },
+          {
+            "city": "other",
+            "cell_id": "other.data_scientist",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.data_scientist",
+            "share": 0.03571428571428571
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.data_scientist.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.data_scientist.entry",
+            "share": 0.6
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.data_scientist.entry",
+            "share": 0.2
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.data_scientist.entry",
+            "share": 0.0
+          },
+          {
+            "city": "other",
+            "cell_id": "other.data_scientist.entry",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.data_scientist.entry",
+            "share": 0.2
+          }
+        ]
+      }
+    },
+    "security": {
+      "all": {
+        "total_cell_id": "vn.security",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.security",
+            "share": 0.6290322580645161
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.security",
+            "share": 0.3118279569892473
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.security",
+            "share": 0.005376344086021506
+          },
+          {
+            "city": "other",
+            "cell_id": "other.security",
+            "share": 0.016129032258064516
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.security",
+            "share": 0.03763440860215054
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.security.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.security.entry",
+            "share": 0.6944444444444444
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.security.entry",
+            "share": 0.2222222222222222
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.security.entry",
+            "share": 0.0
+          },
+          {
+            "city": "other",
+            "cell_id": "other.security.entry",
+            "share": 0.027777777777777776
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.security.entry",
+            "share": 0.05555555555555555
+          }
+        ]
+      }
+    },
+    "it_infra": {
+      "all": {
+        "total_cell_id": "vn.it_infra",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.it_infra",
+            "share": 0.38969072164948454
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.it_infra",
+            "share": 0.36907216494845363
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.it_infra",
+            "share": 0.026804123711340205
+          },
+          {
+            "city": "other",
+            "cell_id": "other.it_infra",
+            "share": 0.041237113402061855
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.it_infra",
+            "share": 0.1731958762886598
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.it_infra.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.it_infra.entry",
+            "share": 0.4166666666666667
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.it_infra.entry",
+            "share": 0.29545454545454547
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.it_infra.entry",
+            "share": 0.05303030303030303
+          },
+          {
+            "city": "other",
+            "cell_id": "other.it_infra.entry",
+            "share": 0.06818181818181818
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.it_infra.entry",
+            "share": 0.16666666666666666
+          }
+        ]
+      }
+    },
+    "fullstack": {
+      "all": {
+        "total_cell_id": "vn.fullstack",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.fullstack",
+            "share": 0.5418994413407822
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.fullstack",
+            "share": 0.39106145251396646
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.fullstack",
+            "share": 0.0111731843575419
+          },
+          {
+            "city": "other",
+            "cell_id": "other.fullstack",
+            "share": 0.0111731843575419
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.fullstack",
+            "share": 0.0446927374301676
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.fullstack.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.fullstack.entry",
+            "share": 0.7058823529411765
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.fullstack.entry",
+            "share": 0.23529411764705882
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.fullstack.entry",
+            "share": 0.0
+          },
+          {
+            "city": "other",
+            "cell_id": "other.fullstack.entry",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.fullstack.entry",
+            "share": 0.058823529411764705
+          }
+        ]
+      }
+    },
+    "ba_po_pm": {
+      "all": {
+        "total_cell_id": "vn.ba_po_pm",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.ba_po_pm",
+            "share": 0.5423514538558787
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.ba_po_pm",
+            "share": 0.37168141592920356
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.ba_po_pm",
+            "share": 0.021491782553729456
+          },
+          {
+            "city": "other",
+            "cell_id": "other.ba_po_pm",
+            "share": 0.0050568900126422255
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.ba_po_pm",
+            "share": 0.05941845764854614
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.ba_po_pm.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.ba_po_pm.entry",
+            "share": 0.5703125
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.ba_po_pm.entry",
+            "share": 0.296875
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.ba_po_pm.entry",
+            "share": 0.0234375
+          },
+          {
+            "city": "other",
+            "cell_id": "other.ba_po_pm.entry",
+            "share": 0.0078125
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.ba_po_pm.entry",
+            "share": 0.1015625
+          }
+        ]
+      }
+    },
+    "ui_ux": {
+      "all": {
+        "total_cell_id": "vn.ui_ux",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.ui_ux",
+            "share": 0.5584415584415584
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.ui_ux",
+            "share": 0.4025974025974026
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.ui_ux",
+            "share": 0.025974025974025976
+          },
+          {
+            "city": "other",
+            "cell_id": "other.ui_ux",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.ui_ux",
+            "share": 0.012987012987012988
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.ui_ux.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.ui_ux.entry",
+            "share": 0.7619047619047619
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.ui_ux.entry",
+            "share": 0.23809523809523808
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.ui_ux.entry",
+            "share": 0.0
+          },
+          {
+            "city": "other",
+            "cell_id": "other.ui_ux.entry",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.ui_ux.entry",
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "game": {
+      "all": {
+        "total_cell_id": "vn.game",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.game",
+            "share": 0.7171717171717171
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.game",
+            "share": 0.23232323232323232
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.game",
+            "share": 0.030303030303030304
+          },
+          {
+            "city": "other",
+            "cell_id": "other.game",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.game",
+            "share": 0.020202020202020204
+          }
+        ]
+      },
+      "entry": {
+        "total_cell_id": "vn.game.entry",
+        "rows": [
+          {
+            "city": "ha_noi",
+            "cell_id": "ha_noi.game.entry",
+            "share": 0.8372093023255814
+          },
+          {
+            "city": "ho_chi_minh",
+            "cell_id": "ho_chi_minh.game.entry",
+            "share": 0.13953488372093023
+          },
+          {
+            "city": "da_nang",
+            "cell_id": "da_nang.game.entry",
+            "share": 0.023255813953488372
+          },
+          {
+            "city": "other",
+            "cell_id": "other.game.entry",
+            "share": 0.0
+          },
+          {
+            "city": "unknown",
+            "cell_id": "unknown.game.entry",
+            "share": 0.0
+          }
+        ]
+      }
     }
   },
   "skill_rates": {
@@ -1262,6 +2794,12 @@
         "share": 0.5712656784492588
       },
       {
+        "role": "data_scientist",
+        "total_cell_id": "vn.data_scientist",
+        "entry_cell_id": "vn.data_scientist.entry",
+        "share": 0.17857142857142858
+      },
+      {
         "role": "data_engineer",
         "total_cell_id": "vn.data_engineer",
         "entry_cell_id": "vn.data_engineer.entry",
@@ -1286,6 +2824,18 @@
         "share": 0.0
       },
       {
+        "role": "security",
+        "total_cell_id": "vn.security",
+        "entry_cell_id": "vn.security.entry",
+        "share": 0.1935483870967742
+      },
+      {
+        "role": "it_infra",
+        "total_cell_id": "vn.it_infra",
+        "entry_cell_id": "vn.it_infra.entry",
+        "share": 0.2721649484536082
+      },
+      {
         "role": "mobile",
         "total_cell_id": "vn.mobile",
         "entry_cell_id": "vn.mobile.entry",
@@ -1302,6 +2852,30 @@
         "total_cell_id": "vn.backend",
         "entry_cell_id": "vn.backend.entry",
         "share": 0.33121019108280253
+      },
+      {
+        "role": "fullstack",
+        "total_cell_id": "vn.fullstack",
+        "entry_cell_id": "vn.fullstack.entry",
+        "share": 0.18994413407821228
+      },
+      {
+        "role": "ba_po_pm",
+        "total_cell_id": "vn.ba_po_pm",
+        "entry_cell_id": "vn.ba_po_pm.entry",
+        "share": 0.16182048040455121
+      },
+      {
+        "role": "ui_ux",
+        "total_cell_id": "vn.ui_ux",
+        "entry_cell_id": "vn.ui_ux.entry",
+        "share": 0.2727272727272727
+      },
+      {
+        "role": "game",
+        "total_cell_id": "vn.game",
+        "entry_cell_id": "vn.game.entry",
+        "share": 0.43434343434343436
       },
       {
         "role": "other",

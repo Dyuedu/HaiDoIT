@@ -510,7 +510,7 @@ describe("fr33 — bàn phím", () => {
     const { user } = await openScreen();
     const stops: string[] = [];
 
-    for (let i = 0; i < 34; i += 1) {
+    for (let i = 0; i < 41; i += 1) {
       await user.tab();
       const active = document.activeElement as HTMLElement;
       stops.push(active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? "");
@@ -520,13 +520,20 @@ describe("fr33 — bàn phím", () => {
       "Tất cả",
       "Nhúng",
       "AI/ML",
+      "Khoa học dữ liệu",
       "Kỹ sư dữ liệu",
       "Phân tích dữ liệu",
       "Kiểm thử (QA)",
       "DevOps",
+      "Bảo mật",
+      "Hạ tầng & IT support",
       "Mobile",
       "Frontend",
       "Backend",
+      "Fullstack",
+      "BA / PO / PM",
+      "UI/UX",
+      "Phát triển game",
       "Vai trò khác",
       "3D",
       "Biểu đồ 2D",
