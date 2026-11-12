@@ -154,8 +154,9 @@ def test_ad10_khoa_moi_cua_tong_hop_thanh_pho() -> None:
     rules = load_rules()
     assert (rules.min_sample, rules.theta_core, rules.theta_common) == (30, 0.3, 0.1)
     assert rules.roles == (
-        "embedded", "ai_ml", "data_engineer", "data_analyst", "qa", "devops", "mobile", "frontend", "backend", "other",
-    )  # fmt: skip
+        "embedded", "ai_ml", "data_scientist", "data_engineer", "data_analyst", "qa", "devops", "security", "it_infra",
+        "mobile", "frontend", "backend", "fullstack", "ba_po_pm", "ui_ux", "game", "other",
+    )  # fmt: skip  # #284 thêm bảy vai trò
     assert rules.config_version != "2026-11-06.1"
 
 
@@ -178,6 +179,9 @@ def test_ad10_bang_nhan_sang_ma_snake_case_dung_theo_issue() -> None:
         "Embedded": "embedded", "AI/ML Engineer": "ai_ml", "Data Engineer": "data_engineer",
         "Data Analyst/BI": "data_analyst", "QA/Tester": "qa", "DevOps": "devops", "Mobile": "mobile",
         "Frontend": "frontend", "Backend": "backend", "Other": "other",
+        # #284: nhãn mới của bộ phân loại (#283)
+        "Data Scientist": "data_scientist", "Security": "security", "Hạ tầng/IT support": "it_infra",
+        "Fullstack": "fullstack", "BA/PO/PM": "ba_po_pm", "UI/UX": "ui_ux", "Game": "game",
     }  # fmt: skip
     assert rules.level_codes == {
         "Intern": "intern", "Fresher": "fresher", "Junior": "junior", "Mid": "mid", "Senior": "senior",

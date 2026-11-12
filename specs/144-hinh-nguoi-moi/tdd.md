@@ -65,3 +65,10 @@ Lý do: #280 sửa `haido_api/schemas/market.py` (`CitySharesData.years`, `years
 
 - RED: không có test nào của #144 đỏ. Hành vi của #144 không đổi.
 - GREEN: `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` xanh; `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh; `uv run pytest -q` → 770 passed.
+
+## Đợt 2026-11-13 — #284 thêm bảy vai trò vào bản giả
+
+Lý do: #284 thêm dòng `newcomer_roles.rows` cho bảy mã mới (theo đúng thứ tự `roles`) và ô `vn.<mã>`, `vn.<mã>.entry` vào `haido_api/fixtures/fake_market.json`; sinh lại `web/tests/fixtures/newcomer-roles.json`. Hình của response không đổi.
+
+- RED: không chạy riêng. Fixture web được sinh lại ngay sau khi đổi bản giả; không test nào của #144 đổi kỳ vọng.
+- GREEN: sinh lại fixture; `tests/api/test_fr37_newcomer_roles.py`, `tests/api/test_ad17_web_fixtures.py`, `web/tests/fr37-newcomer-roles-fixture.test.ts` xanh.

@@ -92,3 +92,10 @@ cầu kinh nghiệm" → 0. Tin trong cửa sổ có dữ kiện cũ được l�
 - RED: test của #280 không đổi kỳ vọng ngoài `test_fr33_migration_0006_noi_tiep_0005_va_la_head_duy_nhat` (head nay là 0007).
 - GREEN: `tests/steps/test_ad4_ingest.py`, `tests/steps/test_fr33_aggregate_years_step.py`, `tests/db/test_fr33_stat_years.py`
   xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 2026-11-13 — #284 thêm bảy vai trò
+
+Lý do: số ô và tỷ trọng mỗi snapshot theo số vai trò: 18 × 6 × 9 × 6 = 5832 ô, 18 × 5 × 9 × 6 = 4860 tỷ trọng (trước 3564 và 2970). Bộ lọc số năm không đổi.
+
+- RED: `tests/test_dat20_cli.py` và `test_dat20_determinism_hai_lan_aggregate_ra_cung_hang` đỏ vì số hàng.
+- GREEN: đổi số hàng mong đợi; `uv run pytest -q` → 908 passed.

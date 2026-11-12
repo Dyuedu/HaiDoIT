@@ -31,7 +31,7 @@ Không đổi cột. Số trong `stat_cells` và `stat_city_shares` đổi theo 
 | `generic_it_titles` | Chức danh lãnh đạo/kiến trúc IT (CTO, Solution Architect, Engineering Manager…): luôn là Other, không xét bằng chứng kỹ năng |
 | `it_only_sources` | Nguồn chỉ đăng tin IT: `itviec`, `itnavi`. `topdev` bị bỏ (đăng cả tin ngân hàng, xây dựng; 123/629 tin là IT) |
 | `non_it_categories` | Danh mục nguồn của việc không thuộc IT (giữ từ luật v1) |
-| `[report_as]` | Nhãn mới → nhãn cũ lúc tổng hợp, tới #284 |
+| `[report_as]` | Nhãn mới → nhãn cũ lúc tổng hợp, tới #284. Rỗng từ #284 (mỗi nhãn có mã riêng) |
 | `[[roles]]` | Mỗi vai trò: `label`, `phrases` (cụm trong chức danh), thứ tự là thứ tự ưu tiên khi hòa vị trí. Vai trò chung (`Other`) đứng cuối và chỉ dùng khi không vai trò cụ thể nào khớp |
 | `non_it_phrases`, `art_phrases` | Cụm chức danh của việc không thuộc IT; cụm nghệ sĩ/đồ họa |
 | `[[branches]]` | Chức danh con: `role`, `label`, `phrases` |

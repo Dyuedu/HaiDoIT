@@ -91,7 +91,7 @@ def test_gh283_aggregate_dung_nhan_da_luu(env: Env, scraper_db) -> None:
     env.lifecycle()
     env.aggregate()
     assert _n(env, "devops") == 1
-    assert _n(env, "ai_ml") == 1  # Data Scientist báo cáo như AI/ML tới #284
+    assert _n(env, "data_scientist") == 1  # #284: Data Scientist có mã riêng (trước đó báo cáo như AI/ML)
 
 
 def test_gh283_aggregate_phan_loai_tu_truong_dong_khi_nhan_khong_cua_luat_hien_tai(env: Env, scraper_db) -> None:

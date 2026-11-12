@@ -37,8 +37,9 @@ def test_gh283_moi_nhan_vai_tro_co_ma_trong_rules_sau_report_as() -> None:
     for r in cfg.role_rules:
         reported = cfg.report_as.get(r.label, r.label)
         assert reported in table, r.label
-    assert table[cfg.report_as["Data Scientist"]] == "ai_ml"
-    assert table[cfg.report_as["Fullstack"]] == "other"
+    # #284: mọi nhãn có mã riêng, report_as rỗng (xem tests/deploy/test_gh284_vai_tro_moi.py).
+    assert table["Data Scientist"] == "data_scientist"
+    assert table["Fullstack"] == "fullstack"
     assert set(cfg.report_as.values()) <= set(table)
 
 
