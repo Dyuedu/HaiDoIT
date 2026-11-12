@@ -79,3 +79,10 @@ Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm
 
 - RED: không test nào của #144 đổi kỳ vọng; fixture sinh lại ngay sau khi đổi bản giả.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Đợt 2026-11-12 — #147 thêm `fetchNewcomerRoles` vào `web/lib/newcomer-roles.ts`
+
+Lý do: #147 thêm hàm gọi API và kiểm envelope vào `web/lib/newcomer-roles.ts`; kiểu và `rowCounts` của #144 giữ nguyên. Hình response không đổi.
+
+- RED: không test nào của #144 đổi kỳ vọng.
+- GREEN: `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh trong lượt `npx vitest run` → 189 passed.
