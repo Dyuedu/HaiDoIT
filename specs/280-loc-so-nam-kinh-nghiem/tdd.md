@@ -106,3 +106,10 @@ Lý do: #285 đổi mã nơi (ô theo mốc số năm chỉ có ở nơi có tin
 
 - RED: test đếm hàng theo mốc số năm, test head 0006 đỏ; lỗi `KeyError` khi tỉnh chỉ có tin ghi số năm (đã có test riêng ở #285).
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Đợt 2026-11-12 — #145, #146 thêm phép đọc người mới vào `stat_market.py`
+
+Lý do: #145, #146 thêm `StatMarket.newcomer_roles`, `_national_cells`, `_cell_meta` và hằng `ENTRY` vào `haido_api/stat_market.py`. `city_shares` và các hàm `_latest_readable`, `_shares`, `_cells`, `_sources` không đổi; `newcomer_roles` dùng lại `_latest_readable(conn, "entry")`.
+
+- RED: không test nào của issue này đổi kỳ vọng.
+- GREEN: `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_fr33_city_shares_years.py` xanh trong lượt `uv run pytest -q` (Postgres) → 959 passed.
