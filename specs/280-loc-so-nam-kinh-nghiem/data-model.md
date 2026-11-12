@@ -12,7 +12,7 @@
 
 | Cột | Kiểu | Ghi chú |
 |---|---|---|
-| **years_min** | float8, null | **mới**. Chép từ `jobs.years_experience_min` của scraper. `null` = tin không ghi |
+| **years_min** | float8, null | **mới**. Chép từ `jobs.years_experience_min` của scraper. `null` = tin không ghi. **Từ #283**: số đã giải theo thứ tự số tháng có cấu trúc của nguồn (CareerLink) → `years_experience_min` → luật đọc mục yêu cầu của JD; "không yêu cầu kinh nghiệm" cho 0 khi bước trích để trống |
 
 `FactVersion` có thêm `years_min`; giá trị đổi so với phiên bản mới nhất thì ingest thêm phiên bản.
 

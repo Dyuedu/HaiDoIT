@@ -25,7 +25,7 @@ def test_fr13_dinh_dang_ma_ky_nang() -> None:
 
 def test_fr13_danh_sach_moi_du_va_ma_hop_le() -> None:
     skills = load_seed_skills()
-    assert 60 <= len(skills) <= 150
+    assert 60 <= len(skills) <= 400  # #283: từ vựng quét JD, khoảng 225 mã
     codes = [s.code for s in skills]
     assert len(codes) == len(set(codes))
     assert all(is_skill_code(c) for c in codes)

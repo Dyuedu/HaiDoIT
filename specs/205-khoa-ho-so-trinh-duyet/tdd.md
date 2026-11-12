@@ -63,3 +63,12 @@ Sau khi thêm `data.level` và tham số `level`: `tests/api/test_ad17_routes.py
 ### GREEN
 
 Sửa stub và dữ liệu thử, sinh lại ảnh chụp bằng `HAIDO_UPDATE_OPENAPI=1 uv run pytest tests/api -q`: `tests/api` xanh, mục `/api/v1/skills` trong `openapi.json` không đổi. Các đợt trước giữ nguyên.
+
+## Đợt 2026-11-13 — #283 mở rộng từ vựng kỹ năng
+
+Lý do: #283 dùng `skills_seed.json` làm từ vựng quét JD: giữ 100 mã cũ (hồ sơ đã lưu, link đã chia sẻ không hỏng), thêm 125
+mã và bí danh tiếng Việt, thêm khóa `composites`, `scan_skip`; `skills.py` có thêm `load_vocabulary()`.
+
+- RED: `test_fr13_danh_sach_moi_du_va_ma_hop_le` đỏ vì trần 150 mã (nay 225); sửa trần thành 400. Các test khác của #205
+  (định dạng mã, tên song ngữ, bí danh không trỏ hai mã, "học máy" → `machine_learning`, không có tên vai trò) xanh.
+- GREEN: `tests/core/test_fr13_skill_seed.py`, `tests/api/test_fr13_skills_route.py` xanh; `uv run pytest -q` → 887 passed.

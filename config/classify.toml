@@ -1,0 +1,534 @@
+# Luật phân loại tin (phép 6, #283): vai trò, chức danh con, cấp, số năm, mục của JD, bằng chứng kỹ năng.
+# Đọc chức danh và văn bản JD trong bộ nhớ, không gọi mô hình. Đổi bất cứ giá trị nào ở đây thì đổi
+# classify_version (ghi vào từng job_posting_facts) và config_version của config/rules.toml.
+# Cụm so khớp trên chữ đã bỏ dấu (đ → d), chữ thường, theo biên chữ/số; cụm có khoảng trắng đầu/cuối
+# được so nguyên văn (dùng cho chữ viết tắt ngắn).
+classify_version = "classify-2026-11-13.2"
+
+# Văn bản JD dài hơn thì chỉ đọc phần đầu.
+max_text_chars = 50000
+
+# Nguồn chỉ đăng tin IT: tin không có cụm vai trò và ít kỹ năng vẫn là Other, không phải không thuộc IT.
+# Chức danh lãnh đạo hoặc kiến trúc IT: luôn là tin IT (Other), không cần bằng chứng kỹ năng.
+generic_it_titles = ["cto", "giam doc cong nghe", "giam doc cntt", "solution architect", "solutions architect", "software architect", "technical architect", "engineering manager", "head of engineering"]
+
+it_only_sources = ["itviec", "itnavi"]
+
+# Danh mục của nguồn cho việc không thuộc IT: chỉ dùng khi chức danh không có cụm vai trò nào.
+non_it_categories = ["finance", "hr", "human resources", "legal", "accounting", "sales"]
+
+# Cụm chức danh của việc không thuộc IT. Thắng mọi vai trò trừ vai trò cụ thể khớp trước nó.
+non_it_phrases = ["kinh doanh", "sales", "sale ", "ban hang", "telesale", "marketing", "ke toan", "accountant", "nhan su", "tuyen dung", "recruiter", "hanh chinh", "cham soc khach hang", "cskh", "customer service", "customer success", "account manager", "account executive", "business development", "phat trien kinh doanh", "giao vien", "giang vien", "tro giang", "teacher", "phien dich", "bien dich", "thu ky", "tro ly", "assistant", "co khi", "ky su dien", "dien cong nghiep", "xay dung", "noi that", "thiet ke do hoa", "graphic design", "video", "content", "copywriter", "seo", "tu van vien", "tu van ban", "kho van", "logistics", "mua hang", "purchasing", "tai chinh", "finance", "kiem toan", "audit", "luat", "legal", "phap che", "bat dong san", "bao hiem", "ngan hang", "telesales", "thu ngan", "le tan", "dieu duong", "duoc si", "bac si", "san xuat", "qc san pham", "cong nhan", "lai xe", "tai xe", "nhiep anh", "editor", "livestream", "tiktok", "media", "brand", "event", "su kien", "affiliate", "graphic", "motion designer", "vo tuyen", "procurement", "mua sam", "dien lanh", "o to", "kien truc su", "hoa chat", "cnc", "co dien", "vien thong", "tu van phan mem", "tu van giai phap phan mem", "user acquisition", "khach hang doanh nghiep", "khach hang ca nhan", "quan he khach hang"]
+# Nghệ sĩ, đồ họa: không thuộc IT, trừ các cụm ở art_exceptions.
+art_phrases = ["artist", "hoa si", "animator", "hoat hinh", "concept art", "video editor"]
+art_exceptions = ["technical artist"]
+# QA của phòng thử nghiệm phần cứng: chức danh có cụm này, không có chữ phần mềm và không có kỹ năng
+# kiểm thử phần mềm thì không thuộc IT.
+qa_hardware_phrases = ["qc", "quality control", "test engineer", "thu nghiem"]
+qa_software_phrases = ["software", "phan mem", "api", "web", "app", "automation", "tester"]
+qa_software_skills = ["test_design", "automation_testing", "manual_testing", "selenium", "playwright", "cypress", "appium", "postman", "api_testing", "jmeter", "regression", "istqb"]
+qa_min_tech_skills = 3
+# Manager trong các cụm này là tên vai trò, không phải cấp (trừ khi chức danh còn có lead/trưởng/head/giám đốc).
+role_manager_phrases = ["product manager", "project manager", "account manager", "delivery manager", "program manager"]
+role_manager_keep = ["lead", "truong", "head", "director", "giam doc"]
+# Chữ cấp của nguồn không mang thông tin cấp.
+ignore_source_levels = ["experienced (non-manager)", "tat ca cap bac"]
+# Mã không tính là kỹ năng kỹ thuật khi đếm độ rộng và khi chấm điểm vai trò.
+non_technical_skills = ["agile", "ai_tools", "chinese", "communication", "english", "erp", "excel", "japanese", "jira", "korean", "leadership", "ms_office", "negotiation", "photoshop", "problem_solving", "project_management", "self_learning", "software_testing", "teamwork", "time_management"]
+# Thành phố (chưa đổi ở #283; #285 thay bằng 34 tỉnh).
+multi_city = "first_phrase"
+other_city_phrases = ["hải phòng", "hai phong", "cần thơ", "can tho", "huế", "hue", "biên hòa", "bien hoa"]
+
+# Nhãn mới chưa có mã hiển thị (#284): lúc tổng hợp báo cáo như nhãn cũ. Kho vẫn lưu nhãn mịn.
+[report_as]
+"Data Scientist" = "AI/ML Engineer"
+"Fullstack" = "Other"
+"BA/PO/PM" = "Other"
+"Security" = "Other"
+"Hạ tầng/IT support" = "Other"
+"UI/UX" = "Other"
+"Game" = "Other"
+
+# Ngưỡng bằng chứng kỹ năng.
+[evidence]
+# Chức danh không có cụm vai trò nào: cần ít nhất ngần này mã kỹ thuật khác nhau để là tin IT.
+min_tech_skills_without_title = 4
+# Chức danh chung (Other): ít hơn ngần này mã kỹ thuật thì không thuộc IT.
+min_tech_skills_generic_title = 2
+# Đủ ngần này mã kỹ thuật thì cụm Other/BA vẫn thắng cụm không thuộc IT trong chức danh.
+min_tech_skills_override_non_it = 5
+# Vai trò theo bằng chứng: điểm tối thiểu và tỷ lệ hơn vai trò thứ hai.
+min_score = 4.0
+win_ratio = 1.3
+# Fullstack: cả Frontend và Backend đạt điểm này và bên yếu ít nhất bằng tỷ lệ này của bên mạnh.
+fullstack_min_each = 6.0
+fullstack_balance = 0.5
+# Mỗi mã tính tối đa ngần này lượt khi chấm điểm.
+max_mentions_per_skill = 3
+
+# Vai trò theo thứ tự ưu tiên khi hai cụm khớp cùng vị trí. Cụm khớp sớm nhất trong chức danh thắng.
+# Other là cụm chung, đứng cuối, chỉ dùng khi không vai trò cụ thể nào khớp.
+[[roles]]
+label = "Data Scientist"
+phrases = ["data scientist", "khoa hoc du lieu", "nha khoa hoc du lieu", "data science"]
+
+[[roles]]
+label = "AI/ML Engineer"
+phrases = ["ai engineer", "ai developer", "ai/ml", "ml engineer", "machine learning", "deep learning", "llm", "genai", "generative ai", "computer vision", "nlp", "ky su ai", "tri tue nhan tao", "ai researcher", "ai research", "ai specialist", "chuyen vien ai", "chuyen gia ai", "ai software", "mlops", "ai agent", "ai solution", "ai architect", "ai lead", "prompt engineer", "ai product builder", "ai automation", "ai trainer", "applied scientist", "research scientist", "vision engineer", "ai fullstack", "lap trinh vien ai", "ai/llm", "ai scientist", "applied ai"]
+
+[[roles]]
+label = "Data Engineer"
+phrases = ["data engineer", "ky su du lieu", "etl", "data platform", "big data", "bigdata", "hadoop", "dataops", "data architect", "database administrator", "dba", "database engineer", "database developer", "quan tri co so du lieu", "analytics engineer", "data warehouse"]
+
+[[roles]]
+label = "Data Analyst/BI"
+phrases = ["data analyst", "bi developer", "bi analyst", "bi engineer", "business intelligence", "phan tich du lieu", "power bi", "reporting analyst", "data analytics", "bi specialist", "chuyen vien bi", "bi ", "(bi)"]
+
+[[roles]]
+label = "Embedded"
+phrases = ["embedded", "firmware", "nhung", "rtos", "vi dieu khien", "autosar", "fpga", "iot developer", "iot engineer", "ky su iot", "lap trinh iot"]
+
+[[roles]]
+label = "Security"
+phrases = ["security", "bao mat", "an ninh mang", "an toan thong tin", "an ninh thong tin", "cybersecurity", "infosec", "pentest", "penetration", "soc analyst", "cyber", "ciso", "red team", "blue team", "attt", "phong thu", "chong tan cong", "soc engineer", "pentester"]
+
+[[roles]]
+label = "QA/Tester"
+phrases = ["tester", "kiem thu", "test engineer", "sdet", "automation test", "quality assurance", "test lead", "test analyst", "auto test", "qa engineer", "qa/qc", "qc engineer", "qa ", "qa-", " qa", "software qa", "qc automation", "test automation", "automation qc", "manual test", "game tester", "test manager", "(qa)"]
+
+[[roles]]
+label = "DevOps"
+phrases = ["devops", "sre", "site reliability", "cloud engineer", "cloud architect", "platform engineer", "devsecops", "cloud ops", "cloudops", "dien toan dam may", "ky su cloud", "kubernetes", "infrastructure engineer", "release engineer", "build engineer", "cloud operations", "ky su ha tang cloud", "aws", "azure", "gcp", "cloud"]
+
+[[roles]]
+label = "Hạ tầng/IT support"
+phrases = ["it support", "helpdesk", "help desk", "system admin", "sysadmin", "system administrator", "quan tri he thong", "quan tri mang", "network engineer", "ky su mang", "network admin", "nhan vien it", "it staff", "ky thuat vien it", "it technician", "it infrastructure", "ha tang", "technical support", "ho tro ky thuat", "ky su he thong", "system engineer", "it executive", "chuyen vien it", "it officer", "it admin", "it manager", "truong phong it", "it specialist", "it engineer", "mang may tinh", "ky thuat vien may tinh", "it helpdesk", "desktop support", "service desk", "noc", "van hanh he thong", "system operation", "it operations", "ky su van hanh", "it hardware", "it phan cung", "chuyen vien cntt", "nhan vien cntt", "can bo cntt", "nhan vien ky thuat it", "it intern", "thuc tap sinh it", "it internal", "it noi bo", "network engineer", "network administrator", "quan tri vien may chu", "may chu", "systems administrator", "systems engineer"]
+
+[[roles]]
+label = "UI/UX"
+phrases = ["ui/ux", "ux/ui", "ui designer", "ux designer", "product designer", "ui ux", "ux ui", "thiet ke giao dien", "ux researcher", "ux writer", "ui-ux", "web designer", "thiet ke ui", "thiet ke ux", " ui "]
+
+[[roles]]
+label = "Game"
+phrases = ["game developer", "game designer", "unity", "unreal", "cocos", "lap trinh game", "game programmer", "technical artist", "game engineer", "game client", "game server", "game"]
+
+[[roles]]
+label = "Mobile"
+phrases = ["android", "ios", "flutter", "react native", "mobile", "ung dung di dong", "lap trinh di dong", "app developer", "lap trinh app"]
+
+[[roles]]
+label = "Fullstack"
+phrases = ["fullstack", "full-stack", "full stack"]
+
+[[roles]]
+label = "Frontend"
+phrases = ["frontend", "front-end", "front end", "reactjs", "react", "vue", "vuejs", "angular", "nextjs", "web ui"]
+
+[[roles]]
+label = "Backend"
+phrases = ["backend", "back-end", "back end", "java", "golang", ".net", "dotnet", "php", "nodejs", "node.js", "python", "ruby", "c#", "laravel", "spring", "odoo developer", "lap trinh vien odoo", "api developer", "server-side", "salesforce developer", "abap", "go developer", "rust", "scala", "c++"]
+
+[[roles]]
+label = "BA/PO/PM"
+phrases = ["business analyst", "phan tich nghiep vu", "product owner", "product manager", "project manager", "quan ly du an", "scrum master", "it project", "it ba", "erp consultant", "sap consultant", "odoo consultant", "functional consultant", "delivery manager", "pmo", "brse", "bridge se", "bridge engineer", "it comtor", "comtor", "requirement analyst", "head of product", "product specialist", "product lead", "product director", "head of delivery", "delivery lead", "chuyen doi so", "digital transformation", "quan ly trien khai san pham", "system analyst", "phan tich he thong", "product analyst", "product executive", "agile coach", "implementation consultant", "trien khai phan mem", "trien khai erp", "trien khai he thong", "chuyen vien trien khai", "ky su trien khai", "implementation", "pm ", " pm", "technical project", "sap ", "odoo", "erp", "presales engineer", "solution consultant", "tu van giai phap", "tu van trien khai", "lead - product"]
+
+[[roles]]
+label = "Other"
+phrases = ["software engineer", "software developer", "lap trinh vien", "ky su phan mem", "developer", "programmer", "solution architect", "solutions architect", "cto", "technical lead", "tech lead", "team lead", "lap trinh", "ky su cntt", "ky su cong nghe thong tin", "engineering manager", "head of engineering", "software architect", "it ", "cntt", "cong nghe thong tin", "phan mem", "r&d engineer", "dev ", " dev"]
+
+
+# Chức danh con trong vai trò (#286). Cụm khớp sớm nhất thắng; không khớp thì để trống, không đoán.
+[[branches]]
+role = "BA/PO/PM"
+label = "Product Owner"
+phrases = ["product owner", " po ", "(po)"]
+
+[[branches]]
+role = "BA/PO/PM"
+label = "Product Manager"
+phrases = ["product manager", "head of product", "product lead", "product director"]
+
+[[branches]]
+role = "BA/PO/PM"
+label = "Project Manager"
+phrases = ["project manager", "quan ly du an", "pmo", "project lead", "delivery manager", "head of delivery", "it project"]
+
+[[branches]]
+role = "BA/PO/PM"
+label = "Scrum Master"
+phrases = ["scrum master", "agile coach"]
+
+[[branches]]
+role = "BA/PO/PM"
+label = "BrSE / Comtor"
+phrases = ["brse", "bridge se", "bridge engineer", "comtor"]
+
+[[branches]]
+role = "BA/PO/PM"
+label = "ERP/SAP consultant"
+phrases = ["sap", "erp", "odoo", "consultant", "tu van trien khai", "trien khai"]
+
+[[branches]]
+role = "BA/PO/PM"
+label = "Business Analyst"
+phrases = ["business analyst", "phan tich nghiep vu", "system analyst", "phan tich he thong", "requirement analyst", "it ba", " ba ", "(ba)"]
+
+[[branches]]
+role = "Hạ tầng/IT support"
+label = "Network"
+phrases = ["network", "quan tri mang", "ky su mang", "mang may tinh"]
+
+[[branches]]
+role = "Hạ tầng/IT support"
+label = "System Admin"
+phrases = ["system admin", "system administrator", "sysadmin", "system engineer", "quan tri he thong", "ky su he thong", "van hanh he thong"]
+
+[[branches]]
+role = "Hạ tầng/IT support"
+label = "IT Manager"
+phrases = ["it manager", "truong phong it", "infrastructure manager"]
+
+[[branches]]
+role = "Hạ tầng/IT support"
+label = "Helpdesk/Support"
+phrases = ["helpdesk", "help desk", "it support", "technical support", "ho tro ky thuat", "desktop support", "service desk", "nhan vien it", "it staff", "ky thuat vien"]
+
+[[branches]]
+role = "QA/Tester"
+label = "Automation"
+phrases = ["automation", "auto test", "sdet", "tu dong"]
+
+[[branches]]
+role = "QA/Tester"
+label = "Manual"
+phrases = ["manual", "thu cong"]
+
+[[branches]]
+role = "Security"
+label = "Pentest"
+phrases = ["pentest", "pentester", "penetration", "red team"]
+
+[[branches]]
+role = "Security"
+label = "SOC"
+phrases = ["soc analyst", "soc engineer", "blue team", "giam sat an ninh"]
+
+[[branches]]
+role = "DevOps"
+label = "Cloud"
+phrases = ["cloud", "aws", "azure", "gcp"]
+
+[[branches]]
+role = "DevOps"
+label = "SRE"
+phrases = ["sre", "site reliability"]
+
+[[branches]]
+role = "AI/ML Engineer"
+label = "LLM / Agent"
+phrases = ["llm", "agent", "genai", "generative", "rag", "prompt"]
+
+[[branches]]
+role = "AI/ML Engineer"
+label = "Computer Vision"
+phrases = ["computer vision", "vision", "thi giac may tinh"]
+
+[[branches]]
+role = "Data Engineer"
+label = "DBA"
+phrases = ["database administrator", "dba", "quan tri co so du lieu", "database engineer"]
+
+[[branches]]
+role = "Game"
+label = "Game Designer"
+phrases = ["game designer", "game design", "level design"]
+
+[[branches]]
+role = "Mobile"
+label = "Android"
+phrases = ["android"]
+
+[[branches]]
+role = "Mobile"
+label = "iOS"
+phrases = ["ios"]
+
+[[branches]]
+role = "Mobile"
+label = "Flutter"
+phrases = ["flutter"]
+
+[[branches]]
+role = "Mobile"
+label = "React Native"
+phrases = ["react native"]
+
+# Cấp từ chức danh, rồi từ chữ cấp của nguồn. Cụm khớp sớm nhất thắng.
+[[levels]]
+label = "Intern"
+phrases = ["intern", "internship", "thuc tap", "tts", "intern/student", "sinh vien thuc tap"]
+
+[[levels]]
+label = "Fresher"
+phrases = ["fresher", "moi tot nghiep", "moi ra truong", "entry level", "entry-level", "fresh graduate", "graduate", "trainee"]
+
+[[levels]]
+label = "Junior"
+phrases = ["junior", "jr", "jr."]
+
+[[levels]]
+label = "Mid"
+phrases = ["middle", "mid-level", "mid level", "mid", "intermediate"]
+
+[[levels]]
+label = "Senior"
+phrases = ["senior", "sr", "sr.", "chuyen vien cap cao", "expert", "chuyen gia"]
+
+[[levels]]
+label = "Lead"
+phrases = ["lead", "tech lead", "team lead", "truong nhom", "principal", "staff engineer", "head of", "truong phong", "pho phong", "giam doc", "director", "director and above", "cto", "ciso", "truong bo phan", "manager"]
+
+
+# Bảng #134: chức danh và nguồn không ghi cấp thì cấp suy từ số năm tối thiểu. Không bao giờ ra Intern hay Lead.
+# Dòng cuối không có `below`.
+[[years_to_level]]
+below = 1.0
+label = "Fresher"
+
+[[years_to_level]]
+below = 2.0
+label = "Junior"
+
+[[years_to_level]]
+below = 5.0
+label = "Mid"
+
+[[years_to_level]]
+label = "Senior"
+
+# Số năm từ mục yêu cầu khi bước trích để trống.
+[years]
+# Một số năm chỉ được nhận khi trong khoảng ngần này ký tự quanh nó có ngữ cảnh kinh nghiệm.
+window_chars = 70
+max_years = 15
+context = "kinh nghiem|experience|\\bexp\\b|\\bkn\\b|nam lam|years? (?:as|in|of|working|hands-on)|nam (?:o|tai|trong) vi tri|toi thieu|it nhat|at least|minimum"
+reject = "thanh lap|hop dong|bao hanh|tuoi|thang 13|nghi phep|ngay/nam|lich su|hoat dong|founded|established"
+zero = "khong yeu cau kinh nghiem|khong can kinh nghiem|chua co kinh nghiem|chua can kinh nghiem|khong doi hoi kinh nghiem|chap nhan (?:ung vien |sinh vien )?chua co kinh nghiem|no experience required|no prior experience|no experience needed|kinh nghiem\\s*:?\\s*khong yeu cau|duoi 1 nam kinh nghiem|less than 1 year"
+
+# Mục của JD. Dòng ngắn khớp `skip` thì ngừng giữ tới dòng ngắn khớp `keep`.
+[sections]
+max_heading_chars = 70
+skip = "^[\\W\\d_]*(quyen loi|phuc loi|benefit|che do|thu nhap|muc luong|luong thuong|salary|moi truong lam viec|working environment|co hoi|career growth|dia diem|dia chi|thoi gian lam viec|ve chung toi|about us|about the company|gioi thieu cong ty|why you|why join|what we offer|we offer|perks|van hoa|culture|dan dau thi truong|cach thuc ung tuyen|ho so|how to apply)"
+keep = "^[\\W\\d_]*(mo ta cong viec|yeu cau|uu tien|kinh nghiem|ky nang|responsibilit|requirement|qualification|experience|nhiem vu|trach nhiem|diem cong|bat buoc|hoc van|kien thuc|chuyen mon|must|nice to have|what you|job description|your role|cong viec|preferred|skills)"
+# Che trước khi quét kỹ năng: "khoa học máy tính" bỏ dấu chứa "học máy".
+masks = [["hoc may tinh", "hoc_may_tinh"]]
+
+# Trọng số bằng chứng theo nhóm mã.
+[category_weights]
+lang = 1.0
+framework = 2.0
+db = 1.0
+tool = 2.0
+concept = 1.5
+platform = 1.5
+cloud = 1.5
+cert = 2.0
+method = 0.5
+domain = 1.0
+
+
+# Mã kỹ năng → vai trò gợi ý và trọng số (theo nhóm mã ở category_weights).
+[skill_hints]
+ab_testing = { role = "Data Scientist", weight = 1.5 }
+abap = { role = "Backend", weight = 1.0 }
+ai_agent = { role = "AI/ML Engineer", weight = 1.5 }
+airflow = { role = "Data Engineer", weight = 2.0 }
+android = { role = "Mobile", weight = 1.5 }
+angular = { role = "Frontend", weight = 2.0 }
+ansible = { role = "DevOps", weight = 2.0 }
+appium = { role = "QA/Tester", weight = 2.0 }
+argocd = { role = "DevOps", weight = 2.0 }
+automation_testing = { role = "QA/Tester", weight = 1.5 }
+autosar = { role = "Embedded", weight = 2.0 }
+aws = { role = "DevOps", weight = 1.5 }
+azure = { role = "DevOps", weight = 1.5 }
+ba_docs = { role = "BA/PO/PM", weight = 1.5 }
+backup = { role = "Hạ tầng/IT support", weight = 1.5 }
+bash = { role = "DevOps", weight = 1.0 }
+bigquery = { role = "Data Engineer", weight = 2.0 }
+blender_3d = { role = "Game", weight = 2.0 }
+bootstrap = { role = "Frontend", weight = 2.0 }
+bpmn_uml = { role = "BA/PO/PM", weight = 1.5 }
+c = { role = "Embedded", weight = 1.0 }
+caching = { role = "Backend", weight = 1.5 }
+cassandra = { role = "Data Engineer", weight = 1.0 }
+ci_cd = { role = "DevOps", weight = 1.5 }
+cisco = { role = "Hạ tầng/IT support", weight = 2.0 }
+clickhouse = { role = "Data Engineer", weight = 1.0 }
+cocos = { role = "Game", weight = 2.0 }
+computer_vision = { role = "AI/ML Engineer", weight = 1.5 }
+csharp = { role = "Backend", weight = 1.0 }
+css = { role = "Frontend", weight = 1.0 }
+cypress = { role = "QA/Tester", weight = 2.0 }
+dart = { role = "Mobile", weight = 1.0 }
+data_analysis = { role = "Data Analyst/BI", weight = 1.5 }
+data_governance = { role = "Data Engineer", weight = 1.5 }
+data_warehouse = { role = "Data Engineer", weight = 1.5 }
+databricks = { role = "Data Engineer", weight = 2.0 }
+dbt = { role = "Data Engineer", weight = 2.0 }
+deep_learning = { role = "AI/ML Engineer", weight = 1.5 }
+devsecops = { role = "DevOps", weight = 1.5 }
+django = { role = "Backend", weight = 2.0 }
+docker = { role = "DevOps", weight = 2.0 }
+dotnet = { role = "Backend", weight = 2.0 }
+edr = { role = "Security", weight = 2.0 }
+elk = { role = "DevOps", weight = 2.0 }
+embedded = { role = "Embedded", weight = 1.5 }
+entity_framework = { role = "Backend", weight = 2.0 }
+etl = { role = "Data Engineer", weight = 1.5 }
+express = { role = "Backend", weight = 2.0 }
+fastapi = { role = "Backend", weight = 2.0 }
+feature_engineering = { role = "Data Scientist", weight = 1.5 }
+figma = { role = "UI/UX", weight = 2.0 }
+fine_tuning = { role = "AI/ML Engineer", weight = 1.5 }
+firebase = { role = "Mobile", weight = 2.0 }
+firewall = { role = "Hạ tầng/IT support", weight = 2.0 }
+flask = { role = "Backend", weight = 2.0 }
+flink = { role = "Data Engineer", weight = 2.0 }
+flutter = { role = "Mobile", weight = 2.0 }
+fpga = { role = "Embedded", weight = 2.0 }
+game_design = { role = "Game", weight = 1.5 }
+gcp = { role = "DevOps", weight = 1.5 }
+github_actions = { role = "DevOps", weight = 2.0 }
+gitlab_ci = { role = "DevOps", weight = 2.0 }
+golang = { role = "Backend", weight = 1.0 }
+graphql = { role = "Backend", weight = 1.5 }
+grpc = { role = "Backend", weight = 1.5 }
+hadoop = { role = "Data Engineer", weight = 2.0 }
+helm = { role = "DevOps", weight = 2.0 }
+helpdesk = { role = "Hạ tầng/IT support", weight = 1.5 }
+hibernate = { role = "Backend", weight = 2.0 }
+html = { role = "Frontend", weight = 1.0 }
+huggingface = { role = "AI/ML Engineer", weight = 2.0 }
+iam = { role = "Security", weight = 1.5 }
+incident_response = { role = "Security", weight = 1.5 }
+cybersecurity = { role = "Security", weight = 1.5 }
+ios = { role = "Mobile", weight = 1.5 }
+iot = { role = "Embedded", weight = 1.5 }
+iso27001 = { role = "Security", weight = 2.0 }
+istqb = { role = "QA/Tester", weight = 2.0 }
+itil = { role = "Hạ tầng/IT support", weight = 2.0 }
+java = { role = "Backend", weight = 1.0 }
+jenkins = { role = "DevOps", weight = 2.0 }
+jest = { role = "Frontend", weight = 2.0 }
+jmeter = { role = "QA/Tester", weight = 2.0 }
+jquery = { role = "Frontend", weight = 2.0 }
+kotlin = { role = "Mobile", weight = 1.0 }
+kubernetes = { role = "DevOps", weight = 2.0 }
+langchain = { role = "AI/ML Engineer", weight = 2.0 }
+laravel = { role = "Backend", weight = 2.0 }
+llm = { role = "AI/ML Engineer", weight = 1.5 }
+looker = { role = "Data Analyst/BI", weight = 2.0 }
+lua = { role = "Game", weight = 1.0 }
+machine_learning = { role = "AI/ML Engineer", weight = 1.5 }
+manual_testing = { role = "QA/Tester", weight = 1.5 }
+matlab = { role = "Embedded", weight = 1.0 }
+mcu = { role = "Embedded", weight = 2.0 }
+message_queue = { role = "Backend", weight = 2.0 }
+microservices = { role = "Backend", weight = 1.5 }
+mlops = { role = "AI/ML Engineer", weight = 1.5 }
+mvvm = { role = "Mobile", weight = 1.5 }
+nestjs = { role = "Backend", weight = 2.0 }
+networking = { role = "Hạ tầng/IT support", weight = 1.5 }
+nextjs = { role = "Frontend", weight = 2.0 }
+nginx = { role = "DevOps", weight = 2.0 }
+nlp = { role = "AI/ML Engineer", weight = 1.5 }
+nodejs = { role = "Backend", weight = 2.0 }
+oauth = { role = "Backend", weight = 1.5 }
+objective_c = { role = "Mobile", weight = 1.0 }
+observability = { role = "DevOps", weight = 1.5 }
+odoo = { role = "Backend", weight = 2.0 }
+owasp = { role = "Security", weight = 1.5 }
+penetration_testing = { role = "Security", weight = 1.5 }
+php = { role = "Backend", weight = 1.0 }
+playwright = { role = "QA/Tester", weight = 2.0 }
+plc = { role = "Embedded", weight = 2.0 }
+postman = { role = "QA/Tester", weight = 2.0 }
+power_bi = { role = "Data Analyst/BI", weight = 2.0 }
+powershell = { role = "Hạ tầng/IT support", weight = 1.0 }
+product_management = { role = "BA/PO/PM", weight = 1.5 }
+prometheus = { role = "DevOps", weight = 2.0 }
+prompt_engineering = { role = "AI/ML Engineer", weight = 1.5 }
+protocols_hw = { role = "Embedded", weight = 1.5 }
+pytorch = { role = "AI/ML Engineer", weight = 2.0 }
+r = { role = "Data Analyst/BI", weight = 1.0 }
+rabbitmq = { role = "Backend", weight = 2.0 }
+rag = { role = "AI/ML Engineer", weight = 1.5 }
+react = { role = "Frontend", weight = 2.0 }
+react_native = { role = "Mobile", weight = 2.0 }
+redis = { role = "Backend", weight = 1.0 }
+redux = { role = "Frontend", weight = 2.0 }
+regression = { role = "QA/Tester", weight = 1.5 }
+business_analysis = { role = "BA/PO/PM", weight = 1.5 }
+responsive = { role = "Frontend", weight = 1.5 }
+rest_api = { role = "Backend", weight = 1.5 }
+rtos = { role = "Embedded", weight = 2.0 }
+ruby = { role = "Backend", weight = 1.0 }
+rust = { role = "Backend", weight = 1.0 }
+scala = { role = "Data Engineer", weight = 1.0 }
+scikit_learn = { role = "Data Scientist", weight = 2.0 }
+sec_certs = { role = "Security", weight = 2.0 }
+selenium = { role = "QA/Tester", weight = 2.0 }
+siem = { role = "Security", weight = 2.0 }
+snowflake = { role = "Data Engineer", weight = 2.0 }
+solidity = { role = "Backend", weight = 1.0 }
+spark = { role = "Data Engineer", weight = 2.0 }
+spring = { role = "Backend", weight = 2.0 }
+sre = { role = "DevOps", weight = 1.5 }
+statistics = { role = "Data Scientist", weight = 1.5 }
+swift = { role = "Mobile", weight = 1.0 }
+symfony = { role = "Backend", weight = 2.0 }
+system_design = { role = "Backend", weight = 1.5 }
+tableau = { role = "Data Analyst/BI", weight = 2.0 }
+tailwind = { role = "Frontend", weight = 2.0 }
+tensorflow = { role = "AI/ML Engineer", weight = 2.0 }
+terraform = { role = "DevOps", weight = 2.0 }
+test_design = { role = "QA/Tester", weight = 1.5 }
+uat = { role = "BA/PO/PM", weight = 1.5 }
+ui_design = { role = "UI/UX", weight = 1.5 }
+unity = { role = "Game", weight = 2.0 }
+unreal = { role = "Game", weight = 2.0 }
+ux_research = { role = "UI/UX", weight = 1.5 }
+vba = { role = "Data Analyst/BI", weight = 1.0 }
+vector_db = { role = "AI/ML Engineer", weight = 1.0 }
+virtualization = { role = "Hạ tầng/IT support", weight = 2.0 }
+vue = { role = "Frontend", weight = 2.0 }
+waf_ips = { role = "Security", weight = 2.0 }
+waterfall = { role = "BA/PO/PM", weight = 0.5 }
+webpack = { role = "Frontend", weight = 2.0 }
+websocket = { role = "Backend", weight = 1.5 }
+windows_server = { role = "Hạ tầng/IT support", weight = 1.5 }
+zabbix = { role = "Hạ tầng/IT support", weight = 2.0 }
+firmware = { role = "Embedded", weight = 1.5 }
+generative_ai = { role = "AI/ML Engineer", weight = 1.5 }
+api_testing = { role = "QA/Tester", weight = 2.0 }
+network_security = { role = "Security", weight = 1.5 }
+spring_boot = { role = "Backend", weight = 2.0 }
+ruby_on_rails = { role = "Backend", weight = 2.0 }
+business_intelligence = { role = "Data Analyst/BI", weight = 1.5 }
+vmware = { role = "Hạ tầng/IT support", weight = 2.0 }
+scrum = { role = "BA/PO/PM", weight = 0.5 }
+
+[[cities]]
+label = "Hà Nội"
+phrases = ["hà nội", "ha noi", "hanoi"]
+
+[[cities]]
+label = "TP.HCM"
+phrases = ["hồ chí minh", "ho chi minh", "tp.hcm", "tp hcm", "sài gòn", "saigon", "hcm"]
+
+[[cities]]
+label = "Đà Nẵng"
+phrases = ["đà nẵng", "da nang", "danang"]
+
+
