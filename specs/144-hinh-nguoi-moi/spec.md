@@ -50,7 +50,7 @@ Màn người mới đọc được dữ liệu giả đúng hình ngay hôm nay
 
 - Vai trò không có tin nào (n = 0): vẫn có dòng, `share` là `null_data`, ô entry-level có n = 0 và `seniority_mix` rỗng.
 - Vai trò đủ mẫu nhưng 0 tin entry-level: `share.value = 0`, `display = shown`; màn hình hiện 0 và giữ vai trò trong danh sách.
-- Nguồn `stat` chưa cài phép này: `StatMarket.newcomer_roles` trả 404 `unknown_cell` cho tới #145, #146. Prod để phép này ở `fake` (mặc định).
+- Nguồn `stat`: đến #145, #146 (2026-11-12) `StatMarket.newcomer_roles` trả 404 `unknown_cell`. Từ #145, #146 nó trả số thật cùng hình này, chỉ còn 404 khi chưa có snapshot đọc được; prod đặt nguồn `stat` (`specs/146-tra-so-nguoi-moi/`).
 
 ## Requirements *(mandatory)*
 

@@ -79,3 +79,10 @@ Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm
 
 - RED: không test nào của #144 đổi kỳ vọng; fixture sinh lại ngay sau khi đổi bản giả.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Đợt 2026-11-12 — #145, #146 cài bản thật của `newcomer-roles`
+
+Lý do: #145, #146 thay bản giữ chỗ `StatMarket.newcomer_roles` (luôn 404) bằng phép đọc `stat_cells`, và `deploy/compose.prod.yml` chọn nguồn `stat`. Hình response và bản giả không đổi; cạnh biên "nguồn `stat` trả 404" trong `spec.md` được sửa theo.
+
+- RED: không test nào của #144 đổi kỳ vọng. Test mới nằm ở `tests/api/test_fr37_newcomer_roles_stat.py` (RED ghi trong `specs/145-doc-so-tin-entry/tdd.md`, `specs/146-tra-so-nguoi-moi/tdd.md`).
+- GREEN: `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` xanh trong lượt `uv run pytest -q` → 959 passed.
