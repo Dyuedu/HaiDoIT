@@ -31,6 +31,9 @@ class FakeReader:
         self.calls += 1
         return self.data
 
+    def read_facts(self, urls: object) -> tuple[SourceFactsRow, ...]:
+        return tuple(f for f in self.data.facts if f.job_url in set(urls))  # type: ignore[call-overload]
+
 
 def _data(
     runs: tuple[SourceRunRow, ...] = (SourceRunRow("itviec", True, 2, None),),
@@ -258,11 +261,7 @@ def test_ad4_loi_giua_chung_thi_khong_con_hang_nao_cua_lan_chay(
 
 
 def test_ad4_doc_nguon_khong_cham_cot_van_ban_va_khong_ghi_vao_bang_scraper(env: Env, scraper_db) -> None:
-    import inspect
-
-    from haido_core.db import scraper_source
-
-    assert "description" not in inspect.getsource(scraper_source).lower()
+    # #283: nguồn đọc mô tả để phân loại trong bộ nhớ (REGISTRY.md phép 6); mô tả vẫn không xuống bảng nào.
     jd = "văn bản JD không được chép"
     scraper_db.day("itviec", S, ["i1"])
     scraper_db.job("i1", "itviec", title="Dev", description=jd)

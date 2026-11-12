@@ -197,7 +197,8 @@ def test_ad10_bang_nhan_khop_voi_luat_cua_bo_phan_loai() -> None:
 
     rules, cfg = load_rules(), default_classify_config()
     assert set(rules.city_codes) == {r.label for r in cfg.city_rules} | {OTHER_CITY, UNKNOWN}
-    assert set(rules.role_codes) == {r.label for r in cfg.role_rules} | {OTHER_ROLE}
+    # #283: nhãn mới của bộ phân loại báo cáo như nhãn cũ qua report_as cho tới #284.
+    assert set(rules.role_codes) == {cfg.report_as.get(r.label, r.label) for r in cfg.role_rules} | {OTHER_ROLE}
     assert NON_IT not in rules.role_codes
     assert set(rules.level_codes) == {r.label for r in cfg.seniority_rules} | {UNKNOWN}
 

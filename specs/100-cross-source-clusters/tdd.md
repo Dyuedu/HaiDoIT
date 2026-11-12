@@ -51,3 +51,13 @@ Lý do: #280 sửa `haido_core/domain/aggregate.py`, `population.py`, `steps/agg
 
 - RED: không có test nào của #100 đổi kỳ vọng. `test_dat28_hai_nguon_cung_cong_ty_va_chuc_danh_dem_mot_va_lay_thanh_pho_dai_dien` đỏ một lượt vì helper `_n` gặp 6 hàng `stat_cells` (một hàng mỗi mã số năm), sửa bằng `years = 'any'` (xem tdd của #280).
 - GREEN: `tests/domain/test_dat28_cluster.py`, `tests/steps/test_dat20_aggregate_step.py`, `tests/steps/test_fr33_aggregate_level_step.py` xanh; `uv run pytest -q` → 770 passed.
+
+## Đợt 2026-11-13 — #283 nhãn của tin đại diện lấy từ dữ kiện đã lưu
+
+Lý do: #283 sửa `haido_core/steps/aggregate.py`: nhãn vai trò và cấp của cụm lấy từ dữ kiện đã lưu của tin đại diện khi
+`classify_version` khớp, không thì phân loại từ trường đóng như trước. Quy tắc cụm và chọn tin đại diện không đổi. Không AC
+nào của #100 đổi.
+
+- RED: `test_dat20_nguon_chi_it_thi_tin_khong_ro_vai_tro_la_other_va_tin_ngoai_it_bi_loai` đỏ vì "Nhân viên kinh doanh" nay là
+  không thuộc IT; đổi ví dụ sang "Chuyên viên sản phẩm" (không mang cụm nào), giữ ý của test.
+- GREEN: `tests/domain/test_dat28_cluster.py`, `tests/steps/test_dat20_aggregate_step.py` xanh; `uv run pytest -q` → 887 passed.

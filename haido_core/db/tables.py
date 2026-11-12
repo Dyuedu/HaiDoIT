@@ -51,6 +51,12 @@ job_posting_facts = sa.Table(
     sa.Column("experience_level", sa.Text()),
     sa.Column("job_level", sa.Text()),
     sa.Column("years_min", sa.Float(precision=53)),
+    # #283: nhãn của bộ phân loại, gán ở bước ingest. Không có văn bản JD.
+    sa.Column("role", sa.Text()),
+    sa.Column("branch", sa.Text()),
+    sa.Column("seniority", sa.Text()),
+    sa.Column("skills", JSONB()),
+    sa.Column("classify_version", sa.Text()),
 )
 
 job_observations = sa.Table(

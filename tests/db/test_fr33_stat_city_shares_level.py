@@ -52,7 +52,7 @@ def _share(engine: Engine, *, seniority: str | None = "all", city: str = "ha_noi
 
 def test_fr33_migration_0005_noi_tiep_0004_va_la_head_duy_nhat() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0006_haido_years_filter"]  # #280 nối 0006 sau 0005
+    assert script.get_heads() == ["0007_haido_classify_at_ingest"]  # #280 nối 0006 sau 0005, #283 nối 0007
     revision = script.get_revision("0005_haido_city_share_level")
     assert revision is not None and revision.down_revision == "0004_haido_stat_sources"
 

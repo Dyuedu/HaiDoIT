@@ -330,3 +330,245 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         level_groups=level_groups,
         years_options=years_options,
     )
+
+
+# ---------------------------------------------------------------- #283: luật phân loại
+
+DEFAULT_CLASSIFY_PATH = Path(__file__).resolve().parents[1] / "config" / "classify.toml"
+
+
+def _read_toml(target: Path) -> dict[str, Any]:
+    try:
+        return tomllib.loads(target.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ConfigError(f"Không tìm thấy file cấu hình {target.name}.") from exc
+    except (OSError, UnicodeDecodeError) as exc:
+        raise ConfigError(f"Không đọc được file cấu hình {target.name} ({type(exc).__name__}).") from exc
+    except tomllib.TOMLDecodeError as exc:
+        raise ConfigError(f"File cấu hình {target.name} không đúng cú pháp TOML: {exc}") from exc
+
+
+def _need(raw: dict[str, Any], key: str) -> Any:
+    if key not in raw:
+        raise ConfigError(f"classify.toml thiếu khóa {key}.")
+    return raw[key]
+
+
+def _phrases(value: Any, where: str) -> tuple[str, ...]:
+    from haido_core.domain.posting_text import fold
+
+    if not isinstance(value, list) or not value or not all(isinstance(p, str) and p.strip() for p in value):
+        raise ConfigError(f"{where} phải là danh sách cụm chữ không rỗng.")
+    out: list[str] = []
+    for p in value:
+        lead = " " if p.startswith(" ") else ""
+        tail = " " if p.endswith(" ") else ""
+        out.append(lead + fold(p) + tail)
+    return tuple(out)
+
+
+def _str_list(raw: dict[str, Any], key: str) -> tuple[str, ...]:
+    value = _need(raw, key)
+    if not isinstance(value, list) or not all(isinstance(v, str) and v for v in value):
+        raise ConfigError(f"{key} phải là danh sách chuỗi không rỗng.")
+    return tuple(value)
+
+
+def _regex(value: Any, where: str) -> re.Pattern[str]:
+    if not isinstance(value, str) or not value:
+        raise ConfigError(f"{where} phải là biểu thức chính quy không rỗng.")
+    try:
+        return re.compile(value)
+    except re.error as exc:
+        raise ConfigError(f"{where} không phải biểu thức chính quy hợp lệ: {exc}") from exc
+
+
+def _table(raw: dict[str, Any], key: str) -> dict[str, Any]:
+    value = _need(raw, key)
+    if not isinstance(value, dict):
+        raise ConfigError(f"{key} phải là bảng.")
+    return value
+
+
+def _rules_list(raw: dict[str, Any], key: str) -> list[dict[str, Any]]:
+    value = _need(raw, key)
+    if not isinstance(value, list) or not value or not all(isinstance(v, dict) for v in value):
+        raise ConfigError(f"{key} phải là danh sách bảng [[{key}]].")
+    return value
+
+
+def _number(table: dict[str, Any], key: str, where: str) -> float:
+    value = table.get(key)
+    if not _is_number(value) or value < 0:
+        raise ConfigError(f"{where}.{key} phải là số không âm.")
+    return float(value)
+
+
+def _int(raw: dict[str, Any], key: str, minimum: int) -> int:
+    value = _need(raw, key)
+    if not isinstance(value, int) or isinstance(value, bool) or value < minimum:
+        raise ConfigError(f"{key} phải là số nguyên từ {minimum}.")
+    return value
+
+
+def _phrase_rules(raw: dict[str, Any], key: str) -> list[Any]:
+    from haido_core.domain.classify import PhraseRule
+
+    out = []
+    for item in _rules_list(raw, key):
+        label = item.get("label")
+        if not isinstance(label, str) or not label:
+            raise ConfigError(f"{key}: mỗi dòng phải có label.")
+        out.append(PhraseRule(label, _phrases(item.get("phrases"), f"{key}.{label}.phrases")))
+    return out
+
+
+def _years_steps(raw: dict[str, Any], level_labels: set[str]) -> tuple[Any, ...]:
+    from haido_core.domain.classify import YearsToLevel
+
+    steps = []
+    last = -1.0
+    rows = _rules_list(raw, "years_to_level")
+    for i, item in enumerate(rows):
+        label, below = item.get("label"), item.get("below")
+        if label not in level_labels or (below is None) != (i == len(rows) - 1):
+            raise ConfigError("years_to_level: mỗi dòng có label trong levels; chỉ dòng cuối không có below.")
+        if below is not None:
+            if not _is_number(below) or below <= last:
+                raise ConfigError("years_to_level: below phải tăng dần.")
+            last = float(below)
+        steps.append(YearsToLevel(None if below is None else float(below), label))
+    return tuple(steps)
+
+
+def _build_classify(raw: dict[str, Any]) -> Any:
+    from haido_core.domain.classify import (
+        OTHER_ROLE,
+        BranchRule,
+        ClassifyConfig,
+        EvidenceRules,
+        SectionRules,
+        SkillHint,
+        YearsRules,
+    )
+    from haido_core.domain.posting_text import fold
+    from haido_core.vocab.skills import load_vocabulary
+
+    version = _need(raw, "classify_version")
+    if not isinstance(version, str) or not version.startswith("classify-"):
+        raise ConfigError("classify_version phải là chuỗi bắt đầu bằng 'classify-'.")
+
+    roles = _phrase_rules(raw, "roles")
+    labels = [r.label for r in roles]
+    if len(set(labels)) != len(labels) or labels[-1] != OTHER_ROLE:
+        raise ConfigError(f"roles: nhãn không trùng và {OTHER_ROLE!r} đứng cuối, đúng một lần.")
+
+    branches = []
+    raw_branches = _need(raw, "branches")
+    if not isinstance(raw_branches, list) or not all(isinstance(b, dict) for b in raw_branches):
+        raise ConfigError("branches phải là danh sách bảng [[branches]].")
+    for item in raw_branches:
+        role, label = item.get("role"), item.get("label")
+        if role not in labels or not isinstance(label, str) or not label:
+            raise ConfigError(f"branches: vai trò {role!r} không có trong roles, hoặc thiếu label.")
+        branches.append(BranchRule(role, label, _phrases(item.get("phrases"), f"branches.{label}.phrases")))
+
+    levels = _phrase_rules(raw, "levels")
+    steps = _years_steps(raw, {r.label for r in levels})
+
+    known = set(load_vocabulary().lookup.values())
+    hints = {}
+    for code, item in _table(raw, "skill_hints").items():
+        if code not in known:
+            raise ConfigError(f"skill_hints: mã {code} không có trong từ vựng kỹ năng.")
+        if not isinstance(item, dict) or item.get("role") not in labels:
+            raise ConfigError(f"skill_hints.{code}: role phải là một nhãn trong roles.")
+        hints[code] = SkillHint(item["role"], _number(item, "weight", f"skill_hints.{code}"))
+    non_tech = frozenset(_str_list(raw, "non_technical_skills"))
+    qa_skills = frozenset(_str_list(raw, "qa_software_skills"))
+    unknown = sorted((non_tech | qa_skills) - known)
+    if unknown:
+        raise ConfigError(f"non_technical_skills/qa_software_skills: mã {', '.join(unknown)} không có trong từ vựng.")
+
+    ev = _table(raw, "evidence")
+    evidence = EvidenceRules(
+        min_tech_skills_without_title=int(_number(ev, "min_tech_skills_without_title", "evidence")),
+        min_tech_skills_generic_title=int(_number(ev, "min_tech_skills_generic_title", "evidence")),
+        min_tech_skills_override_non_it=int(_number(ev, "min_tech_skills_override_non_it", "evidence")),
+        min_score=_number(ev, "min_score", "evidence"),
+        win_ratio=_number(ev, "win_ratio", "evidence"),
+        fullstack_min_each=_number(ev, "fullstack_min_each", "evidence"),
+        fullstack_balance=_number(ev, "fullstack_balance", "evidence"),
+        max_mentions_per_skill=int(_number(ev, "max_mentions_per_skill", "evidence")),
+    )
+
+    report_as = _table(raw, "report_as")
+    for src, dst in report_as.items():
+        if src not in labels or dst not in labels:
+            raise ConfigError(f"report_as: {src!r} → {dst!r} phải là hai nhãn trong roles.")
+
+    sec = _table(raw, "sections")
+    masks = sec.get("masks", [])
+    if not isinstance(masks, list) or not all(
+        isinstance(m, list) and len(m) == 2 and all(isinstance(x, str) and x for x in m) for m in masks
+    ):
+        raise ConfigError("sections.masks phải là danh sách cặp [cụm, thay bằng].")
+    sections = SectionRules(
+        max_heading_chars=int(_number(sec, "max_heading_chars", "sections")),
+        skip=_regex(sec.get("skip"), "sections.skip"),
+        keep=_regex(sec.get("keep"), "sections.keep"),
+        masks=tuple((fold(a), b) for a, b in masks),
+    )
+    yr = _table(raw, "years")
+    years = YearsRules(
+        window_chars=int(_number(yr, "window_chars", "years")),
+        max_years=_number(yr, "max_years", "years"),
+        context=_regex(yr.get("context"), "years.context"),
+        reject=_regex(yr.get("reject"), "years.reject"),
+        zero=_regex(yr.get("zero"), "years.zero"),
+    )
+
+    return ClassifyConfig(
+        version=version,
+        role_rules=tuple(roles),
+        non_it_phrases=_phrases(_need(raw, "non_it_phrases"), "non_it_phrases"),
+        non_it_categories=_str_list(raw, "non_it_categories"),
+        it_only_sources=_str_list(raw, "it_only_sources"),
+        seniority_rules=tuple(levels),
+        city_rules=tuple(_phrase_rules(raw, "cities")),
+        other_city_phrases=_phrases(_need(raw, "other_city_phrases"), "other_city_phrases"),
+        multi_city=str(_need(raw, "multi_city")),
+        art_phrases=_phrases(_need(raw, "art_phrases"), "art_phrases"),
+        art_exceptions=_phrases(_need(raw, "art_exceptions"), "art_exceptions"),
+        qa_hardware_phrases=_phrases(_need(raw, "qa_hardware_phrases"), "qa_hardware_phrases"),
+        qa_software_phrases=_phrases(_need(raw, "qa_software_phrases"), "qa_software_phrases"),
+        qa_software_skills=qa_skills,
+        qa_min_tech_skills=_int(raw, "qa_min_tech_skills", 0),
+        generic_it_titles=_phrases(_need(raw, "generic_it_titles"), "generic_it_titles"),
+        branch_rules=tuple(branches),
+        role_manager_phrases=_phrases(_need(raw, "role_manager_phrases"), "role_manager_phrases"),
+        role_manager_keep=_phrases(_need(raw, "role_manager_keep"), "role_manager_keep"),
+        ignore_source_levels=tuple(fold(v) for v in _str_list(raw, "ignore_source_levels")),
+        years_to_level=steps,
+        skill_hints=hints,
+        non_technical_skills=non_tech,
+        evidence=evidence,
+        report_as=dict(report_as),
+        max_text_chars=_int(raw, "max_text_chars", 1000),
+        sections=sections,
+        years=years,
+    )
+
+
+_classify_cache: dict[Path, Any] = {}
+
+
+def load_classify_config(path: Path | str | None = None) -> Any:
+    """Luật phân loại đã kiểm (`haido_core.domain.classify.ClassifyConfig`). File mặc định đọc một lần mỗi tiến trình."""
+    target = Path(path) if path is not None else DEFAULT_CLASSIFY_PATH
+    if path is None and target in _classify_cache:
+        return _classify_cache[target]
+    cfg = _build_classify(_read_toml(target))
+    if path is None:
+        _classify_cache[target] = cfg
+    return cfg

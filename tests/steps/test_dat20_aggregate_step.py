@@ -105,7 +105,9 @@ def test_dat20_nguon_chi_it_thi_tin_khong_ro_vai_tro_la_other_va_tin_ngoai_it_bi
         scraper_db,
         {
             "it1": {"title": "Backend Developer", "location": "Hà Nội"},
-            "it2": {"title": "Nhân viên kinh doanh", "location": "Hà Nội"},  # itviec: nguồn chỉ-IT nên là Other
+            # itviec: nguồn chỉ-IT nên chức danh không rõ vai trò là Other. (#283: "Nhân viên kinh doanh" nay là
+            # không thuộc IT vì có cụm "kinh doanh", nên ví dụ đổi sang chức danh không mang cụm nào.)
+            "it2": {"title": "Chuyên viên sản phẩm", "location": "Hà Nội"},
             "kt": {"title": "Kế toán trưởng", "location": "Hà Nội"},  # luật loại tin không thuộc IT
         },
         source="itviec",

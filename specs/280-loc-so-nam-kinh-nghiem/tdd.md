@@ -80,3 +80,15 @@ Thứ tự sửa: config → bảng và migration 0006 → ingest → hàm tổn
 ## REFACTOR
 
 Tách thân đếm cũ thành `_count_subset` (không đổi logic), `aggregate_city_shares` chỉ còn kiểm đầu vào, lọc tập con theo mốc và gắn `years_unstated`. Không đổi `CellKey`, không đổi `REGISTRY.md`.
+
+## Đợt 2026-11-13 — #283 giải số năm ở bước ingest
+
+Lý do: #283 sửa `haido_core/db/scraper_source.py` (đọc thêm mô tả, `read_facts`), `haido_core/steps/ingest.py` (phân loại lúc
+ingest, làm mới nhãn của tin trong cửa sổ), `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py` (năm cột nhãn,
+migration 0007). `years_min` nay là số đã giải: số tháng của nguồn → giá trị bước trích → luật đọc mục yêu cầu; "không yêu
+cầu kinh nghiệm" → 0. Tin trong cửa sổ có dữ kiện cũ được làm mới tại S, nên tỷ lệ "không ghi số năm" giảm ngay ở lượt đêm
+đầu sau deploy thay vì giảm dần trong 60 ngày. AC của #280 không đổi.
+
+- RED: test của #280 không đổi kỳ vọng ngoài `test_fr33_migration_0006_noi_tiep_0005_va_la_head_duy_nhat` (head nay là 0007).
+- GREEN: `tests/steps/test_ad4_ingest.py`, `tests/steps/test_fr33_aggregate_years_step.py`, `tests/db/test_fr33_stat_years.py`
+  xanh; `uv run pytest -q` → 887 passed.

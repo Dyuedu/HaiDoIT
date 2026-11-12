@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented. Cập nhật 2026-11-13 theo #283: `skills_seed.json` có 225 mã (100 mã cũ giữ nguyên), `version` `seed-2026-11-13`, thêm `composites` và `scan_skip` cho bộ quét JD. Mọi scenario của #205 vẫn đúng.
 
 **Input**: GitHub issue [#205](https://github.com/Dyuedu/HaiDoIT/issues/205) — The browser profile keys and the skill-code format are agreed, with a seed skill list, because #111, #121, #122, #123, and #124 all read the profile. Phục vụ story #120.
 

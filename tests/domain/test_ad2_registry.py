@@ -117,13 +117,20 @@ def test_ad2_khong_nhan_van_ban_day_du_va_khong_import_framework() -> None:
     source = REGISTRY_PY.read_text(encoding="utf-8")
     for banned in ("sqlalchemy", "dagster", "fastapi", "jd_text", "cv_text"):
         assert banned not in source
+    # #283: phép 6 được nhận văn bản JD (chỉ trong bộ nhớ), mã kỹ năng và số năm; REGISTRY.md đổi cùng lúc.
     assert {item.name for item in dataclasses.fields(PostingFacts)} == {
         "title",
         "source",
         "source_category",
         "seniority_text",
         "location_text",
+        "text",
+        "skills",
+        "years_min",
     }
+    registry_md = REGISTRY_MD.read_text(encoding="utf-8")
+    assert "được nhận văn bản JD đầy đủ" in registry_md
+    assert "không gọi mô hình" in registry_md
     assert {item.name for item in dataclasses.fields(Mention)} == {"text", "start", "end"}
 
 

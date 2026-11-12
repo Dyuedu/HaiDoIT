@@ -129,13 +129,19 @@ class PercentileResult:
 
 @dataclass(frozen=True, slots=True)
 class PostingFacts:
-    """Đầu vào phân loại. Không chứa văn bản JD đầy đủ."""
+    """Đầu vào phân loại. Được phép mang văn bản JD đầy đủ (REGISTRY.md); văn bản đó không được ghi xuống bảng hay log."""
 
     title: str
     source: str
     source_category: str | None
     seniority_text: str | None
     location_text: str | None
+    text: str | None = None
+    """Mục yêu cầu và nhiệm vụ của JD, đã bỏ dấu (#283). Chỉ trong bộ nhớ."""
+    skills: tuple[tuple[str, int], ...] = ()
+    """Mã kỹ năng → số lượt nhắc, đã ánh xạ bằng phép 1."""
+    years_min: float | None = None
+    """Số năm tối thiểu đã giải (nguồn → bước trích → luật)."""
 
 
 @dataclass(frozen=True, slots=True)

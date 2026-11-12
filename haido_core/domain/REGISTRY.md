@@ -21,5 +21,5 @@ Quy tắc không nằm trong thân hàm, nhưng chữ ký không được phép 
 - dân số đếm cụm. `window_days` là tham số.
 - nhóm kỹ năng nhận `theta_core` và `theta_common` từng lần gọi.
 - phân vị nhận `seed` từ người gọi.
-- phân loại không nhận văn bản JD đầy đủ và không gọi mô hình. Nhánh có thể trống cho tới Story 1.9.
+- phân loại được nhận văn bản JD đầy đủ (chức danh và mô tả) nhưng không gọi mô hình: cùng đầu vào và cùng cấu hình thì cùng nhãn. Văn bản JD chỉ đi qua bộ nhớ, không ghi vào bảng, log hay file tạm (DoD dòng 9); kết quả chỉ là nhãn và mã. Nhánh có thể trống cho tới Story 1.9.
 - so khớp không xóa tin.

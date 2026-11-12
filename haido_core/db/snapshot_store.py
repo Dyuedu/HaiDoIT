@@ -7,7 +7,7 @@ lần chạy cùng thành công hoặc cùng không có. Quan sát và dữ ki�
 
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 
 import sqlalchemy as sa
 from sqlalchemy import Connection
@@ -38,7 +38,14 @@ class FactVersion:
     experience_level: str | None
     job_level: str | None
     years_min: float | None = None
-    """Số năm kinh nghiệm tối thiểu tin yêu cầu (#280); `None` là tin không ghi."""
+    """Số năm kinh nghiệm tối thiểu tin yêu cầu (#280; từ #283 là số đã giải); `None` là tin không ghi."""
+    role: str | None = None
+    """Nhãn vai trò của bộ phân loại (#283). `None` ở dữ kiện cũ."""
+    branch: str | None = None
+    seniority: str | None = None
+    skills: tuple[tuple[str, int], ...] | None = None
+    """Mã kỹ năng → số lượt nhắc, xếp theo mã. Chỉ mã, không có chuỗi nguyên văn."""
+    classify_version: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -126,15 +133,54 @@ def facts_at(conn: Connection, day: date) -> dict[int, FactVersion]:
     t = job_posting_facts
     stmt = (
         sa.select(
-            t.c.posting_id, t.c.title, t.c.company, t.c.location_text, t.c.experience_level, t.c.job_level, t.c.years_min
+            t.c.posting_id, t.c.title, t.c.company, t.c.location_text, t.c.experience_level, t.c.job_level,
+            t.c.years_min, t.c.role, t.c.branch, t.c.seniority, t.c.skills, t.c.classify_version,
         )
         .where(t.c.snapshot_id <= day)
         .ext(distinct_on(t.c.posting_id))
         .order_by(t.c.posting_id, t.c.snapshot_id.desc())
     )
     return {r.posting_id: FactVersion(r.title, r.company, r.location_text, r.experience_level, r.job_level,
-                                      r.years_min)
+                                      r.years_min, r.role, r.branch, r.seniority, _skills_tuple(r.skills),
+                                      r.classify_version)
             for r in conn.execute(stmt)}  # fmt: skip
+
+
+def _skills_tuple(raw: object) -> tuple[tuple[str, int], ...] | None:
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise TypeError(f"job_posting_facts.skills phải là object, nhận {type(raw).__name__}.")
+    return tuple(sorted((str(k), int(v)) for k, v in raw.items()))
+
+
+def stale_in_window(conn: Connection, day: date, window_days: int, classify_version: str) -> list[tuple[int, str, str]]:
+    """`(posting_id, source, source_url)` của tin có quan sát trong cửa sổ kết thúc ở S mà dữ kiện mới nhất tới S
+    không mang nhãn của `classify_version` (#283). Tin đã quan sát sau S không nằm ở đây."""
+    t = job_posting_facts
+    latest = (
+        sa.select(t.c.posting_id, t.c.classify_version)
+        .where(t.c.snapshot_id <= day)
+        .ext(distinct_on(t.c.posting_id))
+        .order_by(t.c.posting_id, t.c.snapshot_id.desc())
+        .subquery()
+    )
+    seen = (
+        sa.select(job_observations.c.posting_id)
+        .where(job_observations.c.snapshot_id <= day, job_observations.c.snapshot_id > day - timedelta(days=window_days))
+        .distinct()
+        .subquery()
+    )
+    later = sa.select(job_observations.c.posting_id).where(job_observations.c.snapshot_id > day)
+    stmt = (
+        sa.select(job_postings.c.id, job_postings.c.source, job_postings.c.source_url)
+        .join(seen, seen.c.posting_id == job_postings.c.id)
+        .join(latest, latest.c.posting_id == job_postings.c.id)
+        .where(sa.or_(latest.c.classify_version.is_(None), latest.c.classify_version != classify_version))
+        .where(job_postings.c.id.not_in(later))
+        .order_by(job_postings.c.id)
+    )
+    return [(r[0], r[1], r[2]) for r in conn.execute(stmt)]
 
 
 def observed_after(conn: Connection, day: date, posting_ids: Sequence[int]) -> set[int]:
@@ -165,6 +211,11 @@ def insert_facts(conn: Connection, day: date, rows: Sequence[tuple[int, FactVers
                 "experience_level": f.experience_level,
                 "job_level": f.job_level,
                 "years_min": f.years_min,
+                "role": f.role,
+                "branch": f.branch,
+                "seniority": f.seniority,
+                "skills": None if f.skills is None else dict(f.skills),
+                "classify_version": f.classify_version,
             }
             for posting_id, f in rows
         ],

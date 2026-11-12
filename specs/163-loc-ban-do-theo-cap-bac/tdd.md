@@ -132,3 +132,14 @@ Lý do: #280 thêm mốc số năm vào ô và tỷ trọng (cột `years` trong
 - RED: sau khi có code của #280, `uv run pytest -q` → các test của #163 đỏ vì (1) helper đọc `stat_*` theo (vai trò, cấp, phạm vi) nay có 6 hàng (`too many values to unpack`), (2) số hàng chưa nhân 6 mã số năm, (3) head Alembic là 0006, (4) seed `INSERT` không nêu `years` (`NotNullViolation`), (5) test double `city_shares(role, level)` không nhận `years` (500), (6) bản giả có khóa `entry.y1`. Web: `fr33-level-filter.test.tsx` 4 failed, `fr33-map-screen.test.tsx` 2 failed (URL thiếu `&years=any`, thứ tự Tab có thêm nút số năm).
 - Sửa: chỉ test (đọc hàng `years = 'any'`, nhân số hàng, head 0006, seed nêu `years`/`years_unstated`, test double nhận `years`, so khóa cấp của bản giả, URL có `&years=any`, Tab có sáu nút số năm). Không sửa code của #163 ngoài chỗ #280 nối thêm `years`.
 - GREEN: `uv run pytest -q` → 770 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npx vitest run` → 160 passed; `lint`, `tsc`, `build` sạch; cổng 0 failed.
+
+## Đợt 10 — 2026-11-13, #283 phân loại cấp ở bước ingest
+
+Lý do: #283 thay luật cấp trong `haido_core/domain/classify.py` (đọc từ `config/classify.toml`): chữ cấp của nguồn → chức
+danh → số năm theo bảng #134 → không xác định; "Product Manager" không phải cấp Lead; "Experienced (non-manager)" của
+VietnamWorks không cho cấp. Bước `aggregate` dùng nhãn đã lưu ở `job_posting_facts`. Mã cấp và nhóm `entry` không đổi; tỷ lệ
+"không xác định cấp" trên snapshot 12/11 của bản sao giảm từ 68,4% xuống 13,3%. Không AC nào của #163 đổi.
+
+- RED: `test_fr33_migration_0005_noi_tiep_0004_va_la_head_duy_nhat` đỏ vì head là 0007; các test khác của #163 không đổi.
+- GREEN: `tests/steps/test_fr33_aggregate_level_step.py`, `tests/db/test_fr33_stat_city_shares_level.py`,
+  `tests/api/test_fr33_city_shares_level.py` xanh; `uv run pytest -q` → 887 passed.
