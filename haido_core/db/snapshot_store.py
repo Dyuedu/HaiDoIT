@@ -46,6 +46,8 @@ class FactVersion:
     skills: tuple[tuple[str, int], ...] | None = None
     """Mã kỹ năng → số lượt nhắc, xếp theo mã. Chỉ mã, không có chuỗi nguyên văn."""
     classify_version: str | None = None
+    city: str | None = None
+    """Nhãn nơi làm việc của bộ phân loại (#285). `None` ở dữ kiện cũ."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -134,7 +136,7 @@ def facts_at(conn: Connection, day: date) -> dict[int, FactVersion]:
     stmt = (
         sa.select(
             t.c.posting_id, t.c.title, t.c.company, t.c.location_text, t.c.experience_level, t.c.job_level,
-            t.c.years_min, t.c.role, t.c.branch, t.c.seniority, t.c.skills, t.c.classify_version,
+            t.c.years_min, t.c.role, t.c.branch, t.c.seniority, t.c.skills, t.c.classify_version, t.c.city,
         )
         .where(t.c.snapshot_id <= day)
         .ext(distinct_on(t.c.posting_id))
@@ -142,7 +144,7 @@ def facts_at(conn: Connection, day: date) -> dict[int, FactVersion]:
     )
     return {r.posting_id: FactVersion(r.title, r.company, r.location_text, r.experience_level, r.job_level,
                                       r.years_min, r.role, r.branch, r.seniority, _skills_tuple(r.skills),
-                                      r.classify_version)
+                                      r.classify_version, r.city)
             for r in conn.execute(stmt)}  # fmt: skip
 
 
@@ -216,6 +218,7 @@ def insert_facts(conn: Connection, day: date, rows: Sequence[tuple[int, FactVers
                 "seniority": f.seniority,
                 "skills": None if f.skills is None else dict(f.skills),
                 "classify_version": f.classify_version,
+                "city": f.city,
             }
             for posting_id, f in rows
         ],

@@ -25,7 +25,7 @@ def test_dat20_so_tren_api_la_so_aggregate_da_ghi_tu_buoc_that(env: Env, scraper
     app = create_app({"city_shares": StatMarket(engine_factory=lambda: env.write, rules=env.rules), "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()})
     body = TestClient(app).get("/api/v1/city-shares", params={"role": "backend"}).json()
     rows = {r["city"]: r["share"]["value"] for r in body["data"]["rows"]}
-    assert rows == {"ha_noi": pytest.approx(2 / 3), "ho_chi_minh": 0.0, "da_nang": pytest.approx(1 / 3), "other": 0.0, "unknown": 0.0}
+    assert rows == {"ha_noi": pytest.approx(2 / 3), "ho_chi_minh": 0.0, "da_nang": pytest.approx(1 / 3), "remote": 0.0, "abroad": 0.0, "unknown": 0.0}
     assert body["meta"]["snapshot_date"] == S and body["meta"]["snapshot_status"] == "published"
     # Sáu nguồn tự động khác chạy ở S nhưng không có tin nào được đếm nên không được liệt kê (#259).
     assert body["meta"]["sources"] == ["itviec"]

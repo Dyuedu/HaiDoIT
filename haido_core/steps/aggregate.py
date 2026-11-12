@@ -76,7 +76,7 @@ def _stored_or_fresh(
     """Nhãn đã lưu ở ingest nếu cùng phiên bản luật; không thì nhãn vừa phân loại từ trường đóng. Thành phố luôn mới."""
     if fact.classify_version != cfg.version or fact.role is None or fact.seniority is None:
         return fresh
-    return Classification(role=fact.role, branch=fact.branch, seniority=fact.seniority, city=fresh.city)
+    return Classification(role=fact.role, branch=fact.branch, seniority=fact.seniority, city=fact.city or fresh.city)
 
 
 def aggregate_snapshot(
@@ -167,6 +167,7 @@ def aggregate_snapshot(
                 level_options=rules.level_options,
                 level_groups=rules.level_groups,
                 years_options=rules.years_options,
+                always_cities=rules.always_cities,
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc

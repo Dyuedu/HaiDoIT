@@ -142,16 +142,18 @@ export function buildCitySharesView(envelope: CitySharesEnvelope): CitySharesVie
     });
 
   const barRows = pick(BAR_CITIES);
-  // Mã lạ (không phải ba thành phố, Khác hay không xác định) không thành thanh: xếp sau hai dòng
-  // chú thích, nhãn là chính mã.
-  const extraRows = data.rows.filter(
-    (row) => !BAR_CITIES.includes(row.city) && !LEGEND_CITIES.includes(row.city),
-  );
-  const legendRows = [...pick(LEGEND_CITIES), ...extraRows];
+  const legendRows = pick(LEGEND_CITIES);
+  // Các tỉnh khác (#285) không thành thanh và không thành dòng chú thích: chỉ nằm trong bảng, giữa ba thành phố và ba
+  // dòng chú thích, theo `n` của ô giảm dần (không tính gì thêm; hòa thì theo nhãn).
+  const provinceRows = data.rows
+    .filter((row) => !BAR_CITIES.includes(row.city) && !LEGEND_CITIES.includes(row.city))
+    .map((row) => ({ row, n: meta.cells[row.share.cell_id].n, label: cityLabel(row.city) }))
+    .sort((a, b) => b.n - a.n || a.label.localeCompare(b.label, "vi"))
+    .map((item) => item.row);
 
   const bars = barRows.map((row) => toShareLine(row, envelope));
   const legend = legendRows.map((row) => toShareLine(row, envelope));
-  const tableRows = [...barRows, ...legendRows].map((row) => toTableRow(row, envelope));
+  const tableRows = [...barRows, ...provinceRows, ...legendRows].map((row) => toTableRow(row, envelope));
 
   const scope = `${roleLabel(data.role)} · ${levelLabel(data.level)}`;
   const unstatedNote =

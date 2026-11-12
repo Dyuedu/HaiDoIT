@@ -90,8 +90,11 @@ export const DEFAULT_YEARS = "any";
 /** Ba thành phố thành thanh, theo thứ tự vẽ. Đà Nẵng luôn có mặt. */
 export const BAR_CITIES: readonly string[] = ["ha_noi", "ho_chi_minh", "da_nang"];
 
-/** Hai phần không thành thanh, mỗi phần một dòng chú thích: thành phố khác, không xác định. */
-export const LEGEND_CITIES: readonly string[] = ["other", "unknown"];
+/**
+ * Ba phần không thành thanh, mỗi phần một dòng chú thích (#285): làm từ xa, nước ngoài, không xác định. Các tỉnh còn lại
+ * (34 tỉnh, thành sau 1/7/2025) không thành thanh; chúng nằm trong bảng, nơi nhiều tin đứng trước.
+ */
+export const LEGEND_CITIES: readonly string[] = ["remote", "abroad", "unknown"];
 
 const ROLE_LABELS: Readonly<Record<string, string>> = Object.fromEntries(
   ROLE_OPTIONS.map((role) => [role.code, role.label]),
@@ -105,12 +108,49 @@ const YEARS_LABELS: Readonly<Record<string, string>> = Object.fromEntries(
   YEARS_OPTIONS.map((years) => [years.code, years.label]),
 );
 
+/**
+ * Nhãn nơi làm việc. Nhãn của 34 tỉnh, thành trùng nhãn trong `[labels.city]` của `config/rules.toml`;
+ * `tests/deploy/test_gh285_noi_khop_config.py` so hai nơi. `other` ("Khác") chỉ còn cho snapshot tính trước #285.
+ */
 const CITY_LABELS: Readonly<Record<string, string>> = {
   ha_noi: "Hà Nội",
   ho_chi_minh: "TP.HCM",
   da_nang: "Đà Nẵng",
+  hai_phong: "Hải Phòng",
+  quang_ninh: "Quảng Ninh",
+  bac_ninh: "Bắc Ninh",
+  hung_yen: "Hưng Yên",
+  ninh_binh: "Ninh Bình",
+  phu_tho: "Phú Thọ",
+  thai_nguyen: "Thái Nguyên",
+  tuyen_quang: "Tuyên Quang",
+  lao_cai: "Lào Cai",
+  cao_bang: "Cao Bằng",
+  lang_son: "Lạng Sơn",
+  lai_chau: "Lai Châu",
+  dien_bien: "Điện Biên",
+  son_la: "Sơn La",
+  thanh_hoa: "Thanh Hóa",
+  nghe_an: "Nghệ An",
+  ha_tinh: "Hà Tĩnh",
+  quang_tri: "Quảng Trị",
+  hue: "Huế",
+  quang_ngai: "Quảng Ngãi",
+  gia_lai: "Gia Lai",
+  dak_lak: "Đắk Lắk",
+  khanh_hoa: "Khánh Hòa",
+  lam_dong: "Lâm Đồng",
+  dong_nai: "Đồng Nai",
+  tay_ninh: "Tây Ninh",
+  can_tho: "Cần Thơ",
+  vinh_long: "Vĩnh Long",
+  dong_thap: "Đồng Tháp",
+  an_giang: "An Giang",
+  ca_mau: "Cà Mau",
+  remote: "Làm từ xa (Remote)",
+  abroad: "Nước ngoài",
+  unknown: "Không xác định nơi làm việc",
   other: "Khác",
-  unknown: "Không xác định thành phố",
 };
 
 /** Nhãn của vai trò; mã không có trong file này thì trả chính mã đó. */

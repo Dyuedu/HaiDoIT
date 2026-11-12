@@ -168,7 +168,7 @@ def test_ad17_ty_trong_thanh_pho_du_mau_va_mau_nho(client: TestClient) -> None:
     assert cells[rows["da_nang"]["cell_id"]]["n"] == 21
     assert rows["da_nang"]["display"] == "low_sample_shown"
     assert rows["da_nang"]["value"] is not None
-    assert {"other", "unknown"} <= set(rows)
+    assert {"remote", "abroad", "unknown"} <= set(rows)  # #285
     assert math.isclose(math.fsum(s["value"] for s in rows.values()), 1.0, abs_tol=1e-9)
 
     total_n = cells[body["data"]["total_cell_id"]]["n"]

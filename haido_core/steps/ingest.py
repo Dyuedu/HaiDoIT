@@ -21,7 +21,12 @@ from haido_core.db.scraper_source import SourceFactsRow, SourceSnapshot
 from haido_core.db.snapshot_store import FactVersion, RunValues
 from haido_core.domain.classify import ClassifyConfig, RuleClassifier
 from haido_core.domain.mapping import VocabularyMapper
-from haido_core.domain.posting_text import requirement_text, resolve_years, skill_counts
+from haido_core.domain.posting_text import (
+    address_text,
+    requirement_text,
+    resolve_years,
+    skill_counts,
+)
 from haido_core.domain.registry import Classification, PostingFacts
 from haido_core.steps.common import SnapshotClosedError, StepError, parse_snapshot_id
 from haido_core.vocab.skills import load_vocabulary
@@ -63,11 +68,12 @@ class PlannedFact:
     seniority: str | None = None
     skills: tuple[tuple[str, int], ...] | None = None
     classify_version: str | None = None
+    city: str | None = None
 
     def version(self) -> FactVersion:
         return FactVersion(
             self.title, self.company, self.location_text, self.experience_level, self.job_level, self.years_min,
-            self.role, self.branch, self.seniority, self.skills, self.classify_version,
+            self.role, self.branch, self.seniority, self.skills, self.classify_version, self.city,
         )
 
 
@@ -86,12 +92,15 @@ class FactLabeler:
         years = resolve_years(row.experience_level, row.years_min, body, self.cfg)
         level_text = " ".join(part for part in (row.job_level, row.experience_level) if part) or None
         result = self.classifier.classify(
-            PostingFacts(row.title or "", source, None, level_text, row.location, text=body, skills=skills, years_min=years)
+            PostingFacts(
+                row.title or "", source, None, level_text, row.location, text=body, skills=skills, years_min=years,
+                address_text=address_text(row.text, self.cfg),
+            )
         )
         assert isinstance(result, Classification)
         return PlannedFact(
             source, row.job_url, row.title, row.company, row.location, row.experience_level, row.job_level, years,
-            result.role, result.branch, result.seniority, skills, self.cfg.version,
+            result.role, result.branch, result.seniority, skills, self.cfg.version, result.city,
         )
 
 

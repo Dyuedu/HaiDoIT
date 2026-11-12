@@ -33,15 +33,16 @@ describe("fr33 — ba thanh thành phố", () => {
     expect(view.bars.every((bar) => !bar.lowSample && bar.lowSampleNote === null)).toBe(true);
   });
 
-  it("fr33: Khác và không xác định không thành thanh mà là hai dòng chú thích riêng", () => {
+  it("fr33: Remote, Nước ngoài, không xác định không thành thanh mà là ba dòng chú thích; tỉnh khác chỉ ở bảng (#285)", () => {
     const view = buildCitySharesView(fakeEnvelope("ai_ml"));
 
-    expect(view.bars.map((bar) => bar.city)).not.toContain("other");
-    expect(view.bars.map((bar) => bar.city)).not.toContain("unknown");
+    expect(view.bars.map((bar) => bar.city)).toEqual(["ha_noi", "ho_chi_minh", "da_nang"]);
     expect(view.legend.map((line) => [line.city, line.label, line.percent, line.nText])).toEqual([
-      ["other", "Khác", "5,2%", "46"],
-      ["unknown", "Không xác định thành phố", "7,4%", "65"],
+      ["remote", "Làm từ xa (Remote)", "0,0%", "0"],
+      ["abroad", "Nước ngoài", "0,0%", "0"],
+      ["unknown", "Không xác định nơi làm việc", "7,4%", "65"],
     ]);
+    expect(view.legend.map((line) => line.city)).not.toContain("hai_phong");
   });
 
   it("fr33: Đà Nẵng mẫu nhỏ vẫn có thanh, kèm nhãn mẫu nhỏ đọc n và min_sample từ envelope", () => {
@@ -63,11 +64,12 @@ describe("fr33 — ba thanh thành phố", () => {
     expect(view.bars[2].accessibleName).toBe(`Đà Nẵng: 2,4%, 21 tin. ${LOW_SAMPLE_21}`);
   });
 
-  it("fr33: backend có Khác n = 5 và không xác định n = 8, mỗi dòng chú thích có nhãn mẫu nhỏ", () => {
+  it("fr33: backend: Remote, Nước ngoài n = 0 và không xác định n = 8, mỗi dòng chú thích có nhãn mẫu nhỏ", () => {
     const view = buildCitySharesView(fakeEnvelope("backend"));
 
     expect(view.legend.map((line) => [line.city, line.lowSample, line.lowSampleNote])).toEqual([
-      ["other", true, "Cỡ mẫu nhỏ (n = 5 < 30): số liệu chỉ để tham khảo"],
+      ["remote", true, "Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo"],
+      ["abroad", true, "Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo"],
       ["unknown", true, "Cỡ mẫu nhỏ (n = 8 < 30): số liệu chỉ để tham khảo"],
     ]);
     expect(view.bars[2].lowSampleNote).toBe("Cỡ mẫu nhỏ (n = 9 < 30): số liệu chỉ để tham khảo");
@@ -90,7 +92,8 @@ describe("fr33 — ba thanh thành phố", () => {
     expect([...view.bars, ...view.legend].every((line) => line.lowSample)).toBe(true);
     expect([...view.bars, ...view.legend].every((line) => line.lowSampleNote !== null)).toBe(true);
     expect(view.bars).toHaveLength(3);
-    expect(view.legend).toHaveLength(2);
+    // Envelope hình cũ (trước #285): có `other`, không có Remote/Nước ngoài; chú thích chỉ còn không xác định.
+    expect(view.legend.map((line) => line.city)).toEqual(["unknown"]);
     expect(view.caption.notes).toHaveLength(4);
     expect(view.caption.snapshotDate).toBe("07/11/2026");
   });
@@ -133,26 +136,30 @@ describe("fr33 — ba thanh thành phố", () => {
 });
 
 describe("fr33 — bảng", () => {
-  it("fr33: bảng có năm dòng; dòng mẫu nhỏ ghi 'chưa đủ dữ liệu' nhưng vẫn ghi n", () => {
+  it("fr33: bảng có ba thành phố, tỉnh khác, rồi ba dòng chú thích; dòng mẫu nhỏ ghi 'chưa đủ dữ liệu' nhưng vẫn ghi n", () => {
     const view = buildCitySharesView(fakeEnvelope("ai_ml"));
 
     expect(view.table.rows.map((row) => [row.label, row.share, row.nText])).toEqual([
       ["Hà Nội", "47,0%", "412"],
       ["TP.HCM", "38,0%", "333"],
       ["Đà Nẵng", "chưa đủ dữ liệu", "21"],
-      ["Khác", "5,2%", "46"],
-      ["Không xác định thành phố", "7,4%", "65"],
+      ["Hải Phòng", "5,2%", "46"],
+      ["Làm từ xa (Remote)", "chưa đủ dữ liệu", "0"],
+      ["Nước ngoài", "chưa đủ dữ liệu", "0"],
+      ["Không xác định nơi làm việc", "7,4%", "65"],
     ]);
-    expect(view.table.rows.map((row) => row.shareShown)).toEqual([true, true, false, true, true]);
+    expect(view.table.rows.map((row) => row.shareShown)).toEqual([true, true, false, true, false, false, true]);
     expect(view.table.rows[2].note).toBe("Cỡ mẫu nhỏ (n = 21 < 30)");
     expect(view.table.rows[0].note).toBe("");
   });
 
-  it("fr33: backend có cả dòng Khác và không xác định, đều 'chưa đủ dữ liệu'", () => {
+  it("fr33: backend có Hải Phòng và ba dòng chú thích, đều 'chưa đủ dữ liệu'", () => {
     const view = buildCitySharesView(fakeEnvelope("backend"));
 
     expect(view.table.rows.slice(3).map((row) => [row.city, row.share, row.nText])).toEqual([
-      ["other", "chưa đủ dữ liệu", "5"],
+      ["hai_phong", "chưa đủ dữ liệu", "5"],
+      ["remote", "chưa đủ dữ liệu", "0"],
+      ["abroad", "chưa đủ dữ liệu", "0"],
       ["unknown", "chưa đủ dữ liệu", "8"],
     ]);
   });
@@ -160,12 +167,14 @@ describe("fr33 — bảng", () => {
   it("fr33: dòng tổng ghi cố định 100% và n của total_cell_id, không cộng các dòng", () => {
     const view = buildCitySharesView(fakeEnvelope("all"));
 
-    // Năm dòng làm tròn riêng cộng ra 100,1%; dòng tổng vẫn là 100%.
+    // Các dòng làm tròn riêng cộng ra 100,1%; dòng tổng vẫn là 100%.
     expect(view.table.rows.map((row) => row.share)).toEqual([
       "41,6%",
       "47,7%",
       "1,8%",
       "3,2%",
+      "chưa đủ dữ liệu",
+      "chưa đủ dữ liệu",
       "5,8%",
     ]);
     expect(view.table.total).toEqual({ label: "Tổng", share: "100%", nText: "3.586" });
@@ -267,7 +276,7 @@ describe("fr33 — nhãn từ labels.ts", () => {
 
   it("fr33: mã không có trong labels.ts thì hiện chính mã đó", () => {
     expect(roleLabel("khong_co_vai_tro")).toBe("khong_co_vai_tro");
-    expect(cityLabel("hai_phong")).toBe("hai_phong");
+    expect(cityLabel("khong_co_noi")).toBe("khong_co_noi");  // #285: hai_phong nay có nhãn
 
     const envelope = buildEnvelope({
       role: "khong_co_vai_tro",
@@ -276,7 +285,7 @@ describe("fr33 — nhãn từ labels.ts", () => {
         { city: "ha_noi", n: 40, value: 0.4, display: "shown" },
         { city: "ho_chi_minh", n: 30, value: 0.3, display: "shown" },
         { city: "da_nang", n: 10, value: 0.1, display: "low_sample_shown" },
-        { city: "hai_phong", n: 10, value: 0.1, display: "low_sample_shown" },
+        { city: "khong_co_noi", n: 10, value: 0.1, display: "low_sample_shown" },
         { city: "other", n: 5, value: 0.05, display: "low_sample_shown" },
         { city: "unknown", n: 5, value: 0.05, display: "low_sample_shown" },
       ],
@@ -285,13 +294,11 @@ describe("fr33 — nhãn từ labels.ts", () => {
 
     expect(view.roleLabel).toBe("khong_co_vai_tro");
     expect(view.bars.map((bar) => bar.city)).toEqual(["ha_noi", "ho_chi_minh", "da_nang"]);
-    // Dòng lạ không thành thanh; nằm sau Khác và không xác định, nhãn là chính mã.
-    expect(view.legend.map((line) => line.label)).toEqual([
-      "Khác",
-      "Không xác định thành phố",
-      "hai_phong",
-    ]);
-    expect(view.table.rows.map((row) => row.label)).toContain("hai_phong");
+    // #285: mã lạ và `other` của snapshot cũ không thành thanh hay chú thích; chúng ở bảng, nhãn là chính mã hoặc "Khác".
+    expect(view.legend.map((line) => line.label)).toEqual(["Không xác định nơi làm việc"]);
+    const labels = view.table.rows.map((row) => row.label);
+    expect(labels).toContain("khong_co_noi");
+    expect(labels).toContain("Khác");
   });
 });
 

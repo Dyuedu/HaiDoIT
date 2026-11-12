@@ -110,8 +110,11 @@ export type CitySharesResult =
     }
   | { kind: "unreadable" };
 
-/** Năm dòng phải có trong mọi envelope: ba thành phố, Khác, không xác định. */
-const REQUIRED_CITIES: readonly string[] = [...BAR_CITIES, ...LEGEND_CITIES];
+/**
+ * Dòng phải có trong mọi envelope: ba thành phố và không xác định. Remote, Nước ngoài (#285) có thì hiện ở chú thích:
+ * snapshot tính trước #285 không có hai dòng đó (mà có `other`) và vẫn phải đọc được tới lượt đêm đầu sau deploy.
+ */
+const REQUIRED_CITIES: readonly string[] = [...BAR_CITIES, "unknown"];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const SHARE_DISPLAYS: readonly string[] = ["shown", "low_sample_shown"];
 const SNAPSHOT_STATUSES: readonly string[] = ["published", "partial"];

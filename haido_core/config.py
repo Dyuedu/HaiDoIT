@@ -62,6 +62,8 @@ class RulesConfig:
     level_groups: dict[str, tuple[str, ...]]
     """Nhóm cấp bậc: tên nhóm sang các mã cấp thành viên (`entry` = intern, fresher, junior; #134)."""
     years_options: tuple[int, ...]
+    always_cities: tuple[str, ...] = ()
+    """Nơi luôn có hàng trong `stat_*` (#285); nơi khác chỉ có hàng khi có tin."""
     """Mốc "tối đa N năm kinh nghiệm" của bản đồ (#280), tăng dần, không gồm `any`. Mã của mốc là `str(N)`."""
 
 
@@ -82,7 +84,6 @@ CV_MAX_BYTES_LIMIT = 50 * 1024 * 1024
 
 _MIME = re.compile(r"[a-z0-9][a-z0-9.+-]*/[a-z0-9][a-z0-9.+-]*")
 
-CITY_CODES = frozenset({"ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"})
 UNKNOWN = "unknown"
 
 
@@ -301,8 +302,19 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
     city_codes = _label_table(raw, "city")
     role_codes = _label_table(raw, "role")
     level_codes = _label_table(raw, "level")
-    if set(city_codes.values()) != CITY_CODES:
-        raise ConfigError(f"labels.city phải có đúng các mã {', '.join(sorted(CITY_CODES))}.")
+    if UNKNOWN not in city_codes.values() or not all(_CODE_SHAPE.fullmatch(c) for c in city_codes.values()):
+        raise ConfigError(f"labels.city phải có mã {UNKNOWN!r} và mọi mã dạng snake_case không dấu.")
+    always = raw.get("always_cities")
+    if always is None:
+        raise ConfigError("Cấu hình thiếu khóa always_cities.")
+    if (
+        not isinstance(always, list)
+        or not all(isinstance(c, str) for c in always)
+        or len(set(always)) != len(always)
+        or not set(always) <= set(city_codes.values())
+        or UNKNOWN not in always
+    ):
+        raise ConfigError("always_cities phải là danh sách mã trong labels.city, không trùng, có 'unknown'.")
     if UNKNOWN not in level_codes.values():
         raise ConfigError(f"labels.level phải có mã {UNKNOWN!r}.")
     if set(role_codes.values()) != set(roles):
@@ -329,6 +341,7 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         level_options=level_options,
         level_groups=level_groups,
         years_options=years_options,
+        always_cities=tuple(always),
     )
 
 
@@ -441,6 +454,17 @@ def _years_steps(raw: dict[str, Any], level_labels: set[str]) -> tuple[Any, ...]
     return tuple(steps)
 
 
+def _address_rules(raw: dict[str, Any]) -> Any:
+    from haido_core.domain.classify import AddressRules
+
+    table = _table(raw, "address")
+    return AddressRules(
+        keys=_regex(table.get("keys"), "address.keys"),
+        window_chars=int(_number(table, "window_chars", "address")),
+        next_lines=int(_number(table, "next_lines", "address")),
+    )
+
+
 def _build_classify(raw: dict[str, Any]) -> Any:
     from haido_core.domain.classify import (
         OTHER_ROLE,
@@ -536,7 +560,10 @@ def _build_classify(raw: dict[str, Any]) -> Any:
         it_only_sources=_str_list(raw, "it_only_sources"),
         seniority_rules=tuple(levels),
         city_rules=tuple(_phrase_rules(raw, "cities")),
-        other_city_phrases=_phrases(_need(raw, "other_city_phrases"), "other_city_phrases"),
+        abroad_phrases=_phrases(_need(raw, "abroad_phrases"), "abroad_phrases"),
+        abroad_location_phrases=_phrases(_need(raw, "abroad_location_phrases"), "abroad_location_phrases"),
+        remote_phrases=_phrases(_need(raw, "remote_phrases"), "remote_phrases"),
+        address=_address_rules(raw),
         multi_city=str(_need(raw, "multi_city")),
         art_phrases=_phrases(_need(raw, "art_phrases"), "art_phrases"),
         art_exceptions=_phrases(_need(raw, "art_exceptions"), "art_exceptions"),

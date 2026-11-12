@@ -4,7 +4,7 @@ import math
 
 from tests.steps.conftest import Env, S
 
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "remote", "abroad", "unknown"]  # #285: always_cities
 
 
 def _build(env: Env, scraper_db, jobs: dict[str, dict]) -> None:
@@ -61,7 +61,7 @@ def test_fr33_moi_vai_tro_cap_va_moc_so_nam_co_du_hang(env: Env, scraper_db) -> 
     roles = 1 + len(env.rules.roles)
     levels = 1 + len(env.rules.level_options)
     years = 1 + len(env.rules.years_options)
-    assert (result.cells, result.shares) == (roles * levels * years * 6, roles * levels * years * 5)
+    assert (result.cells, result.shares) == (roles * levels * years * 7, roles * levels * years * 6)  # #285
     assert {y for (y,) in env.query("SELECT DISTINCT years FROM haido.stat_cells")} == {
         "any",
         *(str(n) for n in env.rules.years_options),

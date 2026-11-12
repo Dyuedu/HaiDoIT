@@ -18,7 +18,7 @@ from haido_core.domain.display_policy import DisplayState, suppression_for
 from haido_core.domain.envelope import Envelope
 from tests.steps.conftest import S
 
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "hai_phong", "unknown"]  # #285: "other" thay bằng một tỉnh
 RULES = load_rules()
 LEVELS = ["all", *RULES.level_options]
 Counts = dict[str, int]
@@ -73,7 +73,7 @@ def _seed(engine: Engine, cells: dict[tuple[str, str], Counts], day: str = S, st
 
 SEEDED: dict[tuple[str, str], Counts] = {
     ("backend", "all"): {"ha_noi": 60, "ho_chi_minh": 30, "da_nang": 30, "unknown": 5},
-    ("backend", "entry"): {"ha_noi": 40, "ho_chi_minh": 29, "da_nang": 30, "other": 1},
+    ("backend", "entry"): {"ha_noi": 40, "ho_chi_minh": 29, "da_nang": 30, "hai_phong": 1},
     ("backend", "senior"): {"ha_noi": 20},
     ("backend", "lead"): {},
 }
@@ -259,7 +259,8 @@ def test_fr33_ban_gia_phuc_vu_entry_va_all_cho_cac_vai_tro_cua_no() -> None:
         for level in ("all", "entry"):
             env = fake.city_shares(role=role, level=level)
             assert env.data.level == level
-            assert [r.city for r in env.data.rows] == CITIES
+            # #285: bản giả có Hải Phòng (thay "other"), Remote, Nước ngoài
+            assert [r.city for r in env.data.rows] == ["ha_noi", "ho_chi_minh", "da_nang", "hai_phong", "remote", "abroad", "unknown"]
             Envelope[CitySharesData].model_validate(env.model_dump(mode="json"))
 
 

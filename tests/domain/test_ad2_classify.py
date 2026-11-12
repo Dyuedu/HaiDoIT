@@ -51,8 +51,9 @@ def test_ad2_nhieu_thanh_pho_lay_cum_xuat_hien_truoc() -> None:
     assert CONFIG.multi_city == "first_phrase"
     assert CLF.classify(_tin("Backend", location="Da Nang / Ha Noi")).city == "Đà Nẵng"
     assert CLF.classify(_tin("Backend", location="Hà Nội và TP.HCM")).city == "Hà Nội"
-    assert CLF.classify(_tin("Backend", location="Hải Phòng")).city == "Khác"
-    assert CLF.classify(_tin("Backend", location="Remote")).city == "không xác định"
+    # #285: mỗi tỉnh có nhãn riêng (không còn "Khác"); Remote là một nơi riêng.
+    assert CLF.classify(_tin("Backend", location="Hải Phòng")).city == "Hải Phòng"
+    assert CLF.classify(_tin("Backend", location="Remote")).city == "Remote"
     assert CLF.classify(_tin("Backend", location=None)).city == "không xác định"
 
 

@@ -61,3 +61,10 @@ nào của #100 đổi.
 - RED: `test_dat20_nguon_chi_it_thi_tin_khong_ro_vai_tro_la_other_va_tin_ngoai_it_bi_loai` đỏ vì "Nhân viên kinh doanh" nay là
   không thuộc IT; đổi ví dụ sang "Chuyên viên sản phẩm" (không mang cụm nào), giữ ý của test.
 - GREEN: `tests/domain/test_dat28_cluster.py`, `tests/steps/test_dat20_aggregate_step.py` xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (nơi của cụm lấy từ `job_posting_facts.city` của tin đại diện khi `classify_version` khớp). Không AC nào của issue này đổi.
+
+- RED: `test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro` đỏ vì dòng `other`.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

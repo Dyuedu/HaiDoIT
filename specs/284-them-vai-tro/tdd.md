@@ -59,3 +59,10 @@ Chrome headless qua DevTools Protocol, khung 360 × 780, `http://localhost:3000`
 | cổng `--require AD-1 AD-17 AD-25 AD-2 AD-7` | 8 pass, 2 skip, 0 fail |
 | `npx vitest run` (web) | **163 passed** |
 | `npm run lint`, `npx tsc --noEmit`, `npm run build` | sạch |
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm `remote`, `abroad` cho mọi vai trò, kể cả bảy vai trò mới). Không AC nào của issue này đổi.
+
+- RED: `test_gh284_vai_tro_moi_co_du_hang_theo_cap_so_nam_pham_vi` đỏ vì số hàng mỗi vai trò nay là `always_cities` + vn.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

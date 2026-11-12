@@ -50,7 +50,7 @@ def test_gh284_vai_tro_moi_co_du_hang_theo_cap_so_nam_pham_vi(env: Env, scraper_
     _build(env, scraper_db)
     per_role = len(env.rules.level_options) + 1  # cộng `all`
     per_role *= len(env.rules.years_options) + 1  # cộng `any`
-    per_role *= len(env.rules.city_codes) + 1  # cộng `vn`
+    per_role *= len(env.rules.always_cities) + 1  # #285: nơi luôn có, cộng `vn` (tin chỉ ở Hà Nội)
     [(count,)] = env.query("SELECT count(*) FROM haido.stat_cells WHERE snapshot_id = :d AND role = 'fullstack'", d=S)
     assert count == per_role
 
