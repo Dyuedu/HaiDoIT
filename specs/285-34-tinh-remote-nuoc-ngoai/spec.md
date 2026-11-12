@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-13
 
-**Status**: Implemented, chờ merge (sau PR #287, #288).
+**Status**: Implemented, chờ merge (sau PR #287, #288). Cập nhật 12/11: câu giới thiệu trang Bản đồ.
 
 **Input**: GitHub issue [#285](https://github.com/Dyuedu/HaiDoIT/issues/285) — Count postings in all 34 provinces, plus Remote and Abroad, reading the address lines of the posting. Phục vụ [#112](https://github.com/Dyuedu/HaiDoIT/issues/112), [#116](https://github.com/Dyuedu/HaiDoIT/issues/116). Dựa trên [#283](https://github.com/Dyuedu/HaiDoIT/issues/283) (phân loại ở ingest) và [#284](https://github.com/Dyuedu/HaiDoIT/issues/284).
 
@@ -93,6 +93,7 @@ Bản đồ đếm ba thành phố, mọi nơi khác là "Khác" hoặc "không 
 2. **Given** dòng dưới 30 tin, **Then** "chưa đủ dữ liệu" như hiện có.
 3. **Given** `web/lib/labels.ts`, **When** so với config, **Then** nhãn của 34 tỉnh trùng nhãn trong `[labels.city]`.
 4. **Given** khung 360px, **Then** không cuộn ngang trang.
+5. **Given** trang Bản đồ, **When** đọc câu giới thiệu, **Then** câu nói tới từng tỉnh, thành, làm từ xa và nước ngoài, không chỉ ba thành phố (người dùng chốt 12/11).
 
 ### Edge Cases
 

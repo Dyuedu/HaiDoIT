@@ -73,3 +73,10 @@ Chrome headless, 360 × 780, `http://localhost:3000`: 18 chip vai trò, `scrollW
 | `uv run alembic heads` | `0008_haido_fact_city (head)` |
 | `npx vitest run` (web) | **166 passed** |
 | `npm run lint`, `npx tsc --noEmit`, `npm run build` | sạch |
+
+## Đợt 2 — 2026-11-12, câu giới thiệu trang Bản đồ
+
+Lý do: câu "Hà Nội, TP.HCM và Đà Nẵng chiếm bao nhiêu phần tin tuyển dụng IT…" của `web/app/page.tsx` không còn đúng khi bảng liệt kê mọi tỉnh; người dùng chốt sửa.
+
+- RED: thêm `web/tests/fr33-map-page-intro.test.tsx`; `npx vitest run tests/fr33-map-page-intro.test.tsx` → **1 failed** (`expected 'Hà Nội, TP.HCM và Đà Nẵng chiếm bao n…' to contain 'từng tỉnh, thành'`).
+- GREEN: câu mới "Tin tuyển dụng IT của vai trò bạn chọn chia theo từng tỉnh, thành, làm từ xa và nước ngoài, kèm cỡ mẫu, nguồn và ngày snapshot." Sửa trong lúc GREEN: regex của test tìm "tin" viết thường, câu mới viết hoa "Tin"; đổi sang tìm "tuyển dụng IT của vai trò bạn chọn". `npx vitest run` → **167 passed**; `lint`, `tsc`, `build` sạch.
