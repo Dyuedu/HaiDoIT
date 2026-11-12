@@ -113,3 +113,22 @@ Lý do: #145, #146 thêm `StatMarket.newcomer_roles`, `_national_cells`, `_cell_
 
 - RED: không test nào của issue này đổi kỳ vọng.
 - GREEN: `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_fr33_city_shares_years.py` xanh trong lượt `uv run pytest -q` (Postgres) → 959 passed.
+
+## Đợt 2026-11-13 — T020: lượt đêm đầu tiên trên production
+
+Lý do: kiểm T020 sau deploy. Không đổi code, chỉ ghi kết quả chạy thật trên VPS (`ssh haidoit`).
+
+- Log `/opt/haidoit/logs/daily-2026-11-13.log`, bước kho bắt đầu lúc 02:28:06 (+07:00) với image `sha-f0de523269d550a7b7c9973c7e4e1583a265a17d` (merge của PR #290):
+  - `alembic upgrade head`: không lỗi.
+  - Ingest snapshot 2026-11-13: 7 lượt chạy, 2566 tin, 2566 quan sát, 71 dữ kiện mới.
+  - Lifecycle: 6534 tin (`config_version 2026-11-13.3`).
+  - Aggregate: 8180 ô, 7208 tỷ trọng thành phố.
+  - Publish: `Đã chốt snapshot 2026-11-13 (partial); nguồn lỗi: topdev.`
+  - Không có traceback hay dòng lỗi nào của bước kho. Cả lượt kết thúc lúc 02:33:17.
+- Snapshot 2026-11-13 được chốt ở trạng thái `partial`, không phải `published`: lúc lấy danh sách, TopDev bị ngắt kết nối (`ConnectionResetError(104)`, `listed=132 complete=False`). `partial` là trạng thái đọc được của API (`READABLE = ("published", "partial")`), và `meta.sources_failed` báo `topdev`.
+- Lệnh `curl http://127.0.0.1:8000/api/v1/city-shares?role=all&level=entry&years=1` chạy trong VPS trả HTTP 200:
+  - `meta.snapshot_date = 2026-11-13`, `snapshot_status = partial`, `sources_failed = ["topdev"]`.
+  - `data.years = "1"`, `data.level = "entry"`, `data.role = "all"`.
+  - `data.years_unstated_cell_id = "vn.all.entry.ynone"`, có trong `meta.cells`, `n = 143`.
+  - `data.total_cell_id = "vn.all.entry.y1"`, `n = 550`; 22 dòng nơi.
+- Kết quả: T020 đạt.
