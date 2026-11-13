@@ -33,3 +33,7 @@ tests/api/test_fr37_newcomer_roles_stat.py   # test mới (chung với #146)
 ```
 
 **Structure Decision**: Không thêm module đọc riêng. `stat_market.py` đã giữ mọi phép đọc `stat_*` của API; thêm một hàm cùng kiểu `_cells`.
+
+## Ghi chú 2026-11-13 (#148)
+
+`haido_api/stat_market.py` và `tests/api/test_fr37_newcomer_roles_stat.py` được sửa bởi #148 và #146: thêm bảo vệ entry > n (`RuntimeError`) và các test thứ tự, ô hỏng. Phép đọc của #145 (`_national_cells`) không đổi; không AC nào của #145 đổi.

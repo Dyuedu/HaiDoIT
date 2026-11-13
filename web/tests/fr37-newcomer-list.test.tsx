@@ -4,10 +4,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import SkillProfilePlaceholder from "@/app/ho-so-ky-nang/page";
 import InsightsPage from "@/app/insights/page";
+import { NOT_ENOUGH_DATA, formatCount, formatPercent } from "@/lib/city-shares-view";
 import { fetchNewcomerRoles, type NewcomerRolesEnvelope } from "@/lib/newcomer-roles";
 
 import fixtureJson from "./fixtures/newcomer-roles.json";
-import { jsonResponse } from "./helpers/fetch";
+import { deferred, jsonResponse } from "./helpers/fetch";
 
 // #147 — màn người mới trên Insights, dựng từ response của API giả (#144). Thứ tự dòng do API quyết (AD-22).
 const fixture = fixtureJson as unknown as NewcomerRolesEnvelope;
@@ -63,12 +64,68 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     expect(within(rows[rows.length - 1]).getByText("AI/ML")).toBeTruthy();
   });
 
+  it("fr37: #110 AC2 — dòng chưa đủ dữ liệu đứng sau mọi dòng có tỷ lệ, theo thứ tự DOM", async () => {
+    const shownRoles = fixture.data.rows.filter((r) => r.share.display === "shown").map((r) => r.role);
+    const nullRoles = fixture.data.rows.filter((r) => r.share.display === "null_data").map((r) => r.role);
+    // fixture phải trộn cả hai loại, nếu không test này không kiểm được gì
+    expect(shownRoles.length).toBeGreaterThan(0);
+    expect(nullRoles.length).toBeGreaterThan(0);
+    routeNewcomer(() => jsonResponse(200, fixture));
+    const rows = items(await openList());
+    const kinds = rows.map((r) => (r.textContent?.includes("chưa đủ dữ liệu") ? "null_data" : "shown"));
+    expect(kinds.filter((k) => k === "shown")).toHaveLength(shownRoles.length);
+    const firstNull = kinds.indexOf("null_data");
+    expect(firstNull).toBe(shownRoles.length);
+    expect(kinds.slice(firstNull).every((k) => k === "null_data")).toBe(true);
+  });
+
+  it("fr37: #110 AC1 — dòng có tỷ lệ theo đúng thứ tự máy chủ, số tin cho người mới giảm dần", async () => {
+    const shown = fixture.data.rows.filter((r) => r.share.display === "shown");
+    const counts = shown.map((r) => fixture.meta.cells[r.entry_cell_id].n);
+    // fixture có các số khác nhau, nên giảm dần là giảm nghiêm ngặt
+    expect(new Set(counts).size).toBe(counts.length);
+    expect(counts).toEqual([...counts].sort((a, b) => b - a));
+    routeNewcomer(() => jsonResponse(200, fixture));
+    const rows = items(await openList()).slice(0, shown.length);
+    const shownCounts = rows.map((r) => Number(/(\d+) tin cho người mới/.exec(r.textContent ?? "")![1]));
+    expect(shownCounts).toEqual(counts);
+    for (let i = 1; i < shownCounts.length; i++) expect(shownCounts[i]).toBeLessThan(shownCounts[i - 1]);
+    rows.forEach((row, i) => expect(within(row).getByRole("link").getAttribute("href")).toContain(`role=${shown[i].role}`));
+  });
+
   it("fr37: dòng đủ mẫu có số tin entry-level, tỷ lệ và n của vai trò", async () => {
     routeNewcomer(() => jsonResponse(200, fixture));
     const row = items(await openList())[0];
     expect(row.textContent).toContain("501 tin cho người mới");
     expect(row.textContent).toContain("57,1%");
     expect(row.textContent).toContain("n = 877");
+  });
+
+  it("fr37: #110 AC1 — MỌI dòng ghi đúng số tin entry-level, n của vai trò và tỷ lệ của chính dòng đó", async () => {
+    routeNewcomer(() => jsonResponse(200, fixture));
+    const rows = items(await openList());
+    expect(rows).toHaveLength(fixture.data.rows.length);
+    const minSample = fixture.meta.thresholds.min_sample;
+    // các n khác nhau, nếu không một dòng hiện n của dòng khác vẫn xanh
+    const ns = fixture.data.rows.map((r) => fixture.meta.cells[r.total_cell_id].n);
+    expect(new Set(ns).size).toBeGreaterThan(5);
+    fixture.data.rows.forEach((row, i) => {
+      const entry = fixture.meta.cells[row.entry_cell_id].n;
+      const n = fixture.meta.cells[row.total_cell_id].n;
+      const view = within(rows[i]);
+      const where = `dòng ${i} (${row.role})`;
+      expect(view.getByText(`${formatCount(entry)} tin cho người mới`), where).toBeTruthy();
+      expect(view.getByText(`n = ${formatCount(n)}`), where).toBeTruthy();
+      if (row.share.display === "shown") {
+        expect(view.getByText(`${formatPercent(row.share.value as number)} số tin của vai trò`), where).toBeTruthy();
+      } else {
+        expect(view.getByText(`${NOT_ENOUGH_DATA} (${formatCount(n)}/${formatCount(minSample)})`), where).toBeTruthy();
+        expect(rows[i].textContent, where).not.toMatch(/%/);
+      }
+    });
+    // tỷ lệ khác nhau giữa các dòng shown, nên "hiện tỷ lệ của dòng 0 ở mọi dòng" bị bắt
+    const values = fixture.data.rows.filter((r) => r.share.display === "shown").map((r) => r.share.value);
+    expect(new Set(values).size).toBeGreaterThan(3);
   });
 
   it("fr37: vai trò dưới 30 tin ghi chưa đủ dữ liệu (X/30), không có phần trăm", async () => {
@@ -187,17 +244,123 @@ describe("fr37 #147 — trang giữ chỗ hồ sơ kỹ năng (tới khi có #11
     expect(screen.getByRole("heading", { level: 1 }).textContent).not.toContain("khong_co");
     expect(screen.getByText(/Không có vai trò này/)).toBeTruthy();
   });
+
+  it("fr37: role=all không phải một vai trò, hiện 'Không có vai trò này' chứ không phải 'Mọi vai trò'", async () => {
+    await renderPlaceholder({ role: "all" });
+    expect(screen.getByText(/Không có vai trò này/)).toBeTruthy();
+    expect(screen.queryByText(/Mọi vai trò/)).toBeNull();
+    expect(screen.getByRole("heading", { level: 1 }).textContent).not.toContain("Mọi vai trò");
+  });
 });
 
-describe("fr37 DEC-6 (#132) — câu trên màn người mới không chứa chữ số", () => {
-  it("fr37: câu giới thiệu và câu trang giữ chỗ không có chữ số", async () => {
-    routeNewcomer(() => jsonResponse(200, fixture));
-    await openList();
-    const sentences = screen.getAllByTestId("insight-sentence").map((el) => el.textContent ?? "");
-    expect(sentences.length).toBeGreaterThan(0);
-    for (const s of sentences) expect(s).not.toMatch(/\d/);
+describe("fr37 ad8 DEC-6 (#132) — câu trên màn người mới không chứa chữ số", () => {
+  const CAPTION = "Nguồn và lưu ý";
 
-    render(await SkillProfilePlaceholder({ searchParams: Promise.resolve({ role: "backend", level: "entry" }) }));
-    for (const el of screen.getAllByTestId("insight-sentence")) expect(el.textContent).not.toMatch(/\d/);
+  /**
+   * Mọi chữ trên trang mà người đọc đọc như câu: duyệt MỌI nút chữ dưới `root` (không chỉ h1-h6, p, a) và các thuộc
+   * tính `aria-label`, `title`, `alt`. Loại hai chỗ: danh sách số `ol` (ô số là số theo thiết kế) và khung "Nguồn và
+   * lưu ý" (region, có số nguồn): chưa rõ có được miễn không, câu hỏi còn mở ở #132 (xem specs/148-test-nguoi-moi/spec.md).
+   * Mã được thực thi là AD-8; #132 mở rộng kiểm chữ số sang câu soạn sẵn.
+   */
+  function narrative(root: HTMLElement): string[] {
+    const caption = within(root).queryByRole("region", { name: CAPTION });
+    const outOfScope = (node: Node) => !!caption?.contains(node) || !!(node.parentElement ?? (node as Element)).closest("ol");
+    const out: string[] = [];
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      if (!outOfScope(node) && (node.textContent ?? "").trim() !== "") out.push(node.textContent!);
+    }
+    root.querySelectorAll("*").forEach((el) => {
+      if (outOfScope(el)) return;
+      for (const attr of ["aria-label", "title", "alt"]) {
+        const value = el.getAttribute(attr);
+        if (value) out.push(value);
+      }
+    });
+    return out;
+  }
+
+  function expectNoDigits(root: HTMLElement, minTexts = 1) {
+    const texts = narrative(root);
+    expect(texts.length).toBeGreaterThanOrEqual(minTexts);
+    for (const t of texts) expect(t).not.toMatch(/\d/);
+  }
+
+  it("fr37 ad8: khung 'Nguồn và lưu ý' là region có tên, và narrative() bỏ qua nó nhưng không bỏ qua tiêu đề", () => {
+    const { container, unmount } = render(
+      <div>
+        <h2>Tiêu đề</h2>
+        <section aria-labelledby="cap">
+          <h2 id="cap">{CAPTION}</h2>
+          <p>trên 8 nguồn</p>
+        </section>
+      </div>,
+    );
+    expect(screen.getByRole("region", { name: CAPTION })).toBeTruthy();
+    expect(narrative(container)).toEqual(["Tiêu đề"]);
+    unmount();
+    const bad = render(
+      <div>
+        <h2>Tiêu đề 3</h2>
+        <section aria-labelledby="cap">
+          <h2 id="cap">{CAPTION}</h2>
+          <p>trên 8 nguồn</p>
+        </section>
+      </div>,
+    );
+    expect(narrative(bad.container).some((t) => /\d/.test(t))).toBe(true);
+    bad.unmount();
+    const attr = render(<a href="/x" title="3 tin">Xem</a>);
+    expect(narrative(attr.container)).toContain("3 tin");
+  });
+
+  it("fr37 ad8: /insights lúc đang tải, báo lỗi, không đọc được, unknown_cell và có số đều không có chữ số", async () => {
+    // đang tải
+    const pending = deferred<Response>();
+    routeNewcomer(() => pending.promise);
+    const loading = render(<InsightsPage />);
+    expect(screen.getByRole("status").textContent).toContain("Đang tải");
+    expectNoDigits(loading.container, 4);
+    loading.unmount();
+
+    // lỗi mạng, có nút thử lại
+    routeNewcomer(() => Promise.reject(new TypeError("mạng hỏng")));
+    const failed = render(<InsightsPage />);
+    await screen.findByRole("button", { name: "Thử lại" });
+    expectNoDigits(failed.container, 5);
+    failed.unmount();
+
+    // envelope sai hợp đồng
+    const broken = clone();
+    broken.data.rows = [];
+    routeNewcomer(() => jsonResponse(200, broken));
+    const unreadable = render(<InsightsPage />);
+    await screen.findByText(/Không đọc được số liệu/);
+    expectNoDigits(unreadable.container, 5);
+    unreadable.unmount();
+
+    // unknown_cell: ngày snapshot là số liệu của máy chủ (như ô số), nên ca này không gửi ngày
+    routeNewcomer(() => jsonResponse(404, { error: { code: "unknown_cell", message: "Chưa có snapshot.", snapshot_date: null } }));
+    const unknown = render(<InsightsPage />);
+    await screen.findByText("Chưa có snapshot.");
+    expectNoDigits(unknown.container, 4);
+    unknown.unmount();
+
+    // có số
+    routeNewcomer(() => jsonResponse(200, fixture));
+    const ok = render(<InsightsPage />);
+    await screen.findByRole("list", { name: /Vai trò theo số tin cho người mới/ });
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Insights");
+    expect(screen.getByRole("heading", { level: 2, name: "Cửa vào cho người mới" })).toBeTruthy();
+    expectNoDigits(ok.container, 3);
+  });
+
+  it("fr37 ad8: trang giữ chỗ không có chữ số, cả khi vai trò lạ và role=all", async () => {
+    for (const params of [{ role: "backend", level: "entry" }, { role: "khong_co" }, { role: "all" }]) {
+      const { container, unmount } = render(await SkillProfilePlaceholder({ searchParams: Promise.resolve(params) }));
+      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
+      expectNoDigits(container, 3);
+      unmount();
+    }
   });
 });

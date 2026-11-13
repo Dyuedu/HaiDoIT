@@ -35,3 +35,7 @@ specs/144-hinh-nguoi-moi/                              # cạnh biên "stat tr�
 ```
 
 **Structure Decision**: Không gom phần dựng `meta` chung với `city_shares` thành hàm riêng trong lượt này; hai chỗ giống nhau sáu dòng, gom lại sẽ đụng code của #93, #163, #280 mà không đổi hành vi.
+
+## Cập nhật 2026-11-13 (#148)
+
+`haido_api/stat_market.py`: trong vòng lặp vai trò của `newcomer_roles`, trước khi tính `share`, nếu `entry_n > total_n` thì `RuntimeError` nêu vai trò, số entry và n. File test thêm: `tests/api/test_fr37_newcomer_roles_stat.py` (bốn test `test_fr37_ad17_o_hong_*`, một test thứ tự). Lý do: tỷ lệ lớn hơn 1 làm `Stat` ném `ValidationError` (500 `invalid_response`, không nêu vai trò), và ở vai trò dưới ngưỡng thì không ai bắt.

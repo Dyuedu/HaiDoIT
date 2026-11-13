@@ -102,3 +102,7 @@ web/tests/fr33-years-filter.test.tsx                 (mới)
 ## Complexity Tracking
 
 Không có vi phạm cần biện minh.
+
+## Ghi chú 2026-11-13 (#148)
+
+`haido_api/stat_market.py` thêm bảo vệ entry > n trong `newcomer_roles`. Phần `city_shares` của #280 không đổi; không AC nào của #280 đổi.

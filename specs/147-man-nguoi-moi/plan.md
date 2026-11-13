@@ -35,3 +35,7 @@ web/tests/fr37-newcomer-list.test.tsx          # mới
 
 - `web/lib/city-shares.ts` thuộc #144, #163, #280, #285 (có `specs/`) và #46 (không có): chỉ thêm `export`, thêm đợt TDD cho các issue có `specs/`.
 - `web/app/insights/page.tsx` thuộc #1 (không có `specs/`): ghi trong mô tả PR.
+
+## Ghi chú 2026-11-13 (#148)
+
+`web/tests/fr37-newcomer-list.test.tsx` thêm test: thứ tự DOM `null_data` sau `shown`, số tin giảm nghiêm ngặt, `role=all`, và DEC-6 mở rộng sang mọi tiêu đề, đoạn văn, liên kết (thay test cũ chỉ đọc `insight-sentence`). Mã web của #147 không đổi. Không AC nào của #147 đổi. Khung "Nguồn và lưu ý" còn ngoài test DEC-6 (câu hỏi mở ở #132).

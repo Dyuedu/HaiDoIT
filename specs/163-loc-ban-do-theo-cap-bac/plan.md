@@ -108,3 +108,7 @@ web/tests/fixtures/envelopes.ts
 ## Complexity Tracking
 
 Không có vi phạm cần biện minh.
+
+## Ghi chú 2026-11-13 (#148)
+
+`haido_api/stat_market.py` thêm bảo vệ entry > n trong `newcomer_roles`. Phần `city_shares` của #163 không đổi; không AC nào của #163 đổi.

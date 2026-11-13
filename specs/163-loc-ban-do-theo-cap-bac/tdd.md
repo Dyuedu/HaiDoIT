@@ -171,3 +171,10 @@ Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`,
 
 - RED: không test nào của issue này đổi kỳ vọng.
 - GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_roles`; phần `city_shares` không đổi.
+
+- RED: không có, không test nào đổi kỳ vọng.
+- GREEN: `uv run pytest tests/api/test_fr33_city_shares_level.py tests/api/test_dat20_stat_market.py -q` → 51 passed; `cd web && npx vitest run tests/fr33-level-filter.test.tsx` → 20 passed.

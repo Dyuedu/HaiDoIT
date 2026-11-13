@@ -17,3 +17,7 @@
 ## Phase 3: Kiểm trên số thật
 
 - [x] T005 Chạy `StatMarket.newcomer_roles` trên DB local `haido` (bản sao prod 12/11), so với `city-shares?level=entry` của prod
+
+## Ghi chú 2026-11-13 (#148)
+
+- [x] Không có task mới. `tests/api/test_fr37_newcomer_roles_stat.py` thêm test của #148; ba test của #145 vẫn xanh.
