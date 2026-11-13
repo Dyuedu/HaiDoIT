@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-13
 
-**Status**: Implemented, chờ merge (sau PR #287 của #283).
+**Status**: Implemented, chờ merge (sau PR #287 của #283). Ngày 2026-11-13 ô Vai trò thành `<select>` gốc (#293). Chữ "mọi nút vai trò" trong AC đã lỗi thời; ý của AC (mọi vai trò trong config, dùng được bằng bàn phím) vẫn đúng. Thay đổi được ghi bằng một ghi chú trên #284 (https://github.com/Dyuedu/HaiDoIT/issues/284#issuecomment-6846775699); chữ AC không sửa.
 
 **Input**: GitHub issue [#284](https://github.com/Dyuedu/HaiDoIT/issues/284) — Add Data Scientist, Fullstack, BA/PO/PM, Security, IT infrastructure, UI/UX and Game to the role list. Phục vụ [#112](https://github.com/Dyuedu/HaiDoIT/issues/112), [#110](https://github.com/Dyuedu/HaiDoIT/issues/110). Dựa trên nhãn của bộ phân loại [#283](https://github.com/Dyuedu/HaiDoIT/issues/283).
 
@@ -68,12 +68,12 @@
 
 **Why this priority**: AC 5 của #284.
 
-**Independent Test**: test web: nhóm "Vai trò" có 18 nút `aria-pressed`, xuống dòng (`flex-wrap`), Tab đi qua đủ 18 nút theo thứ tự; đo trên trình duyệt ở 360px.
+**Independent Test**: test web: ô "Vai trò" là `<select>` có 18 option, Tab tới ô rồi tới ô Cấp bậc (từ #293; trước đó nhóm 18 nút `aria-pressed` xuống dòng bằng `flex-wrap`, Tab đi qua 18 nút); đo trên trình duyệt ở 360px.
 
 **Acceptance Scenarios**:
 
-1. **Given** màn Bản đồ, **When** đếm nút trong nhóm "Vai trò", **Then** 18 nút theo thứ tự config, mỗi nút cao tối thiểu 44px.
-2. **Given** bàn phím, **When** Tab từ nút đầu, **Then** đi qua 18 nút vai trò rồi tới nút cấp bậc.
+1. **Given** màn Bản đồ, **When** đếm option của ô "Vai trò", **Then** 18 option theo thứ tự config, không `optgroup`, ô cao tối thiểu 44px (#293; trước đó 18 nút).
+2. **Given** bàn phím, **When** Tab vào ô "Vai trò", **Then** focus đi tiếp tới ô "Cấp bậc" (#293; trước đó đi qua 18 nút vai trò).
 3. **Given** khung 360px, **When** mở màn Bản đồ, **Then** không có thanh cuộn ngang trang.
 
 ### Edge Cases

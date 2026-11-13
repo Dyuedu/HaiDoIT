@@ -171,3 +171,17 @@ Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`,
 
 - RED: không test nào của issue này đổi kỳ vọng.
 - GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.
+
+## Đợt 2026-11-13 — #293 bộ chọn cấp bậc thành `<select>`
+
+Lý do: #293 đổi hàng nút `aria-pressed` thành `<select>` có nhãn. Không AC nào của #163 đổi (mặc định `entry`, đổi cấp cập nhật bảng và biểu đồ cùng lúc, mẫu nhỏ làm mờ như cũ).
+
+- RED: `web/tests/fr33-level-filter.test.tsx` 19/20 đỏ (`Unable to find an accessible element with the role "combobox" and name "Cấp bậc"`); `tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` 1 đỏ (`level-chips.tsx` đã xóa).
+- GREEN: `fr33-level-filter` 20/20 xanh; test deploy 6/6 xanh; `npx vitest run` → 197 passed, `uv run pytest -q tests/deploy` → 58 passed. Chi tiết ở `specs/293-bo-loc-dropdown/tdd.md`.
+
+## Đợt 2026-11-13 — #293 sửa theo review
+
+Lý do: dòng chú thích "Mới vào nghề gồm Intern, Fresher và Junior." thành hằng `LEVEL_ENTRY_NOTE` trong `web/lib/labels.ts`; test deploy đọc hằng đó theo dòng `export const` thay cho regex trên `map-screen.tsx`. Test bàn phím của `fr33-level-filter` đổi tên cho đúng việc nó làm (Tab tới ô rồi chọn) và bỏ hai assert thừa. Không AC nào của #163 đổi. Dòng "test deploy 5/5" ở đợt trên là sai số: file có 6 test.
+
+- Đột biến: đổi hằng thành "…Intern, Fresher, Junior và Mid." → `test_gh163_dong_chu_thich_...` đỏ (1 failed, 5 passed); thêm `mid` vào `entry` của `config/rules.toml` → 2 failed, 4 passed. Đã hoàn lại cả hai.
+- GREEN: `uv run pytest -q tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 6 passed; `fr33-level-filter` xanh.

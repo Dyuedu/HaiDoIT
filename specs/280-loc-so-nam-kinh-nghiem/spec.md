@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. Cập nhật 2026-11-13 theo #293: bộ chọn số năm là `<select>` thay cho hàng nút `aria-pressed` (hành vi và AC không đổi).
 
 **Input**: GitHub issue [#280](https://github.com/Dyuedu/HaiDoIT/issues/280) — As an entry-level job seeker, I want to narrow the map to postings that ask for no more years of experience than I have, so that I can see where the jobs I can apply for today are. Liên quan: bộ lọc cấp bậc [#163](https://github.com/Dyuedu/HaiDoIT/issues/163) (cùng mẫu), story bản đồ [#112](https://github.com/Dyuedu/HaiDoIT/issues/112), quy tắc mẫu nhỏ AD-17, không đổi ngưỡng [#260](https://github.com/Dyuedu/HaiDoIT/issues/260).
 
@@ -20,12 +20,12 @@ Người dùng thấy, dưới bộ chọn cấp bậc, một bộ chọn số n
 
 **Why this priority**: AC 1 của #280.
 
-**Independent Test**: Render `MapScreen` với API giả; danh sách nút khớp `years_options` của `config/rules.toml` với `any` đứng đầu; lượt gọi đầu có `years=any`.
+**Independent Test**: Render `MapScreen` với API giả; danh sách option khớp `years_options` của `config/rules.toml` với `any` đứng đầu; lượt gọi đầu có `years=any`.
 
 **Acceptance Scenarios**:
 
-1. **Given** trang vừa mở, **When** lượt gọi đầu đi ra, **Then** URL là `/api/v1/city-shares?role=all&level=entry&years=any` và nút "Mọi số năm" có `aria-pressed="true"`.
-2. **Given** bộ chọn số năm, **When** đọc danh sách nút, **Then** thứ tự là any, 0, 1, 2, 3, 5, nhãn tiếng Việt, mỗi nút là `<button aria-pressed>` cao tối thiểu 44px.
+1. **Given** trang vừa mở, **When** lượt gọi đầu đi ra, **Then** URL là `/api/v1/city-shares?role=all&level=entry&years=any` và ô "Số năm kinh nghiệm" đang chọn "Mọi số năm" (từ #293; trước đó nút có `aria-pressed="true"`).
+2. **Given** bộ chọn số năm, **When** đọc danh sách option, **Then** thứ tự là any, 0, 1, 2, 3, 5, nhãn tiếng Việt, trong một `<select>` cao tối thiểu 44px (#293; trước đó mỗi nút là `<button aria-pressed>`).
 3. **Given** `config/rules.toml` có `years_options = [0, 1, 2, 3, 5]`, **When** test đối chiếu `web/lib/labels.ts`, **Then** mã của web đúng bằng `any` cộng các giá trị đó.
 
 ---
@@ -97,12 +97,12 @@ Khi đang lọc theo số năm, màn có một dòng: "N tin của <vai trò> ·
 
 **Why this priority**: AC 6 của #280 và DoD dòng điện thoại (#137).
 
-**Independent Test**: Bộ chọn số năm nằm ngoài khối chỉ-desktop, xuống dòng được (`flex-wrap`), không có cuộn ngang; test web chạy ở lối danh sách (2D) và lối bảng đều thấy bộ chọn.
+**Independent Test**: Bộ chọn số năm nằm ngoài khối chỉ-desktop, một cột ở điện thoại trong lưới của #293 (trước đó `flex-wrap`), không có cuộn ngang; test web chạy ở lối danh sách (2D) và lối bảng đều thấy bộ chọn.
 
 **Acceptance Scenarios**:
 
 1. **Given** khổ 360px ở lối danh sách thành phố, **When** bấm "Tối đa 1 năm", **Then** lượt gọi mang `years=1` và danh sách đổi số.
-2. **Given** bộ chọn số năm, **When** dùng bàn phím, **Then** mỗi nút focus được, có vòng focus và nhãn nhóm "Số năm kinh nghiệm".
+2. **Given** bộ chọn số năm, **When** dùng bàn phím, **Then** ô chọn focus được, có vòng focus và nhãn hiện "Số năm kinh nghiệm" (#293; trước đó mỗi nút và nhãn nhóm).
 
 ---
 

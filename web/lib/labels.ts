@@ -17,7 +17,7 @@ export interface RoleOption {
   label: string;
 }
 
-/** Chip vai trò, theo thứ tự hiện trên màn. */
+/** Lựa chọn của ô Vai trò, theo thứ tự hiện trên màn. */
 export const ROLE_OPTIONS: readonly RoleOption[] = [
   { code: "all", label: "Tất cả" },
   { code: "embedded", label: "Nhúng" },
@@ -48,7 +48,7 @@ export interface LevelOption {
 }
 
 /**
- * Nút cấp bậc, theo thứ tự của #134: nhóm mới vào nghề, từng cấp, chưa ghi cấp bậc, rồi mọi cấp. `entry` là
+ * Lựa chọn của ô Cấp bậc, theo thứ tự của #134: nhóm mới vào nghề, từng cấp, chưa ghi cấp bậc, rồi mọi cấp. `entry` là
  * Intern, Fresher, Junior gộp một và không gồm `unknown`.
  */
 export const LEVEL_OPTIONS: readonly LevelOption[] = [
@@ -63,6 +63,12 @@ export const LEVEL_OPTIONS: readonly LevelOption[] = [
   { code: "all", label: "Mọi cấp bậc" },
 ];
 
+/**
+ * Dòng chú thích dưới ô Cấp bậc, liệt kê các cấp trong nhóm `entry`.
+ * `tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` so chữ này với `[level_groups]` của `config/rules.toml`.
+ */
+export const LEVEL_ENTRY_NOTE = "Mới vào nghề gồm Intern, Fresher và Junior.";
+
 /** Cấp bậc khi mở trang: nhóm mới vào nghề (#134). Mọi màn nói "mới vào nghề" dùng cùng nhóm này. */
 export const DEFAULT_LEVEL = "entry";
 
@@ -72,7 +78,7 @@ export interface YearsOption {
 }
 
 /**
- * Nút số năm kinh nghiệm (#280): mọi số năm, rồi từng mốc "tối đa N năm". Mốc `N` chỉ đếm tin yêu cầu tối thiểu không
+ * Lựa chọn của ô Số năm kinh nghiệm (#280): mọi số năm, rồi từng mốc "tối đa N năm". Mốc `N` chỉ đếm tin yêu cầu tối thiểu không
  * quá N năm; tin không ghi số năm chỉ nằm trong "Mọi số năm".
  */
 export const YEARS_OPTIONS: readonly YearsOption[] = [

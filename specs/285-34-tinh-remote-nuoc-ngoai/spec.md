@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-13
 
-**Status**: Implemented, chờ merge (sau PR #287, #288). Cập nhật 12/11: câu giới thiệu trang Bản đồ.
+**Status**: Implemented, chờ merge (sau PR #287, #288). Cập nhật 12/11: câu giới thiệu trang Bản đồ. Cập nhật 2026-11-13 (#293): test của #285 trong `fr33-map-screen` chọn vai trò bằng `<select>` thay cho chip; đợt 2 bỏ hai assert thừa. Không AC nào đổi.
 
 **Input**: GitHub issue [#285](https://github.com/Dyuedu/HaiDoIT/issues/285) — Count postings in all 34 provinces, plus Remote and Abroad, reading the address lines of the posting. Phục vụ [#112](https://github.com/Dyuedu/HaiDoIT/issues/112), [#116](https://github.com/Dyuedu/HaiDoIT/issues/116). Dựa trên [#283](https://github.com/Dyuedu/HaiDoIT/issues/283) (phân loại ở ingest) và [#284](https://github.com/Dyuedu/HaiDoIT/issues/284).
 

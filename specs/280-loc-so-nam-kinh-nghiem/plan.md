@@ -102,3 +102,7 @@ web/tests/fr33-years-filter.test.tsx                 (mới)
 ## Complexity Tracking
 
 Không có vi phạm cần biện minh.
+
+## Cập nhật 2026-11-13 theo #293
+
+`years-chips.tsx` bị xóa; ô Số năm kinh nghiệm là `FilterSelect` (`filter-select.tsx`) trong `map-screen.tsx` với `YEARS_OPTIONS` và dòng chú thích "Tính theo số năm tối thiểu tin yêu cầu." là prop `note`. `web/tests/fr33-years-filter.test.tsx`, `fr33-level-filter.test.tsx`, `fr33-map-screen.test.tsx` đổi theo. Xem `specs/293-bo-loc-dropdown/`.

@@ -4,16 +4,22 @@ import { useEffect, useRef, useState } from "react";
 
 import { type CitySharesResult, fetchCityShares } from "@/lib/city-shares";
 import { buildCitySharesView } from "@/lib/city-shares-view";
-import { DEFAULT_LEVEL, DEFAULT_ROLE, DEFAULT_YEARS } from "@/lib/labels";
+import {
+  DEFAULT_LEVEL,
+  DEFAULT_ROLE,
+  DEFAULT_YEARS,
+  LEVEL_ENTRY_NOTE,
+  LEVEL_OPTIONS,
+  ROLE_OPTIONS,
+  YEARS_OPTIONS,
+} from "@/lib/labels";
 
-import { LevelChips } from "./level-chips";
+import { FilterSelect } from "./filter-select";
 import { LoadError } from "./load-error";
-import { RoleChips } from "./role-chips";
 import { ShareBars } from "./share-bars";
 import { ShareTable } from "./share-table";
 import { SnapshotCaption } from "./snapshot-caption";
 import { type ViewMode, ViewSwitch } from "./view-switch";
-import { YearsChips } from "./years-chips";
 
 const LOADING = "Đang tải số liệu…";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
@@ -97,12 +103,24 @@ export function MapScreen() {
 
   return (
     <div className="mt-6 flex flex-col gap-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <RoleChips value={request.role} onChange={changeRole} />
-        <ViewSwitch value={mode} onChange={setMode} />
+      <div className="grid grid-cols-1 items-start gap-3 sm:grid-cols-3">
+        <FilterSelect label="Vai trò" value={request.role} options={ROLE_OPTIONS} onChange={changeRole} />
+        <FilterSelect
+          label="Cấp bậc"
+          value={request.level}
+          options={LEVEL_OPTIONS}
+          onChange={changeLevel}
+          note={LEVEL_ENTRY_NOTE}
+        />
+        <FilterSelect
+          label="Số năm kinh nghiệm"
+          value={request.years}
+          options={YEARS_OPTIONS}
+          onChange={changeYears}
+          note="Tính theo số năm tối thiểu tin yêu cầu."
+        />
       </div>
-      <LevelChips value={request.level} onChange={changeLevel} />
-      <YearsChips value={request.years} onChange={changeYears} />
+      <ViewSwitch value={mode} onChange={setMode} />
       <p className="m-0 text-caption text-text-muted sm:hidden">
         Mở trên máy tính để xem bản đồ đầy đủ.
       </p>

@@ -139,3 +139,10 @@ Lý do: kiểm T020 sau deploy. Không đổi code, chỉ ghi kết quả chạy
   - `data.years_unstated_cell_id = "vn.all.entry.ynone"`, có trong `meta.cells`, `n = 143`.
   - `data.total_cell_id = "vn.all.entry.y1"`, `n = 550`; 22 dòng nơi.
 - Kết quả: T020 đạt.
+
+## Đợt 2026-11-13 — #293 bộ chọn số năm thành `<select>`
+
+Lý do: #293 đổi hàng nút `aria-pressed` thành `<select>` có nhãn. Không AC nào của #280 đổi (bộ lọc chạy cùng bộ lọc cấp, màn nêu cả hai và ngày snapshot, mẫu nhỏ mờ như cũ, dùng được ở lối danh sách trên điện thoại).
+
+- RED: `web/tests/fr33-years-filter.test.tsx` 8/11 đỏ (`Unable to find an accessible element with the role "combobox" and name "Số năm kinh nghiệm"`).
+- GREEN: `fr33-years-filter` 11/11 xanh; `npx vitest run` → 197 passed. Đo trình duyệt thật ở `specs/293-bo-loc-dropdown/tdd.md`: ở 360px không cuộn ngang, ô cao 44px.

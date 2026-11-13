@@ -43,9 +43,12 @@ def test_gh163_dong_chu_thich_nhom_entry_liet_ke_dung_nhan_cua_nhom_trong_config
     names = dict(_chips())
     members = [names[code] for code in load_rules().level_groups["entry"]]
     expected = f"Mới vào nghề gồm {', '.join(members[:-1])} và {members[-1]}."
-    chips = (ROOT / "web" / "app" / "components" / "map" / "level-chips.tsx").read_text(encoding="utf-8")
-    note = re.search(r"<p id=\{noteId\}[^>]*>\s*(.*?)\s*</p>", chips, re.DOTALL)
-    assert note, "không thấy dòng chú thích trong level-chips.tsx"
+    # #293: dòng chú thích là hằng `LEVEL_ENTRY_NOTE` trong labels.ts, ô Cấp bậc của map-screen.tsx dùng hằng đó.
+    text = LABELS.read_text(encoding="utf-8")
+    note = re.search(r'^export const LEVEL_ENTRY_NOTE\s*=\s*"([^"]*)";', text, re.MULTILINE)
+    assert note, "không thấy `export const LEVEL_ENTRY_NOTE` trong web/lib/labels.ts"
+    screen = (ROOT / "web" / "app" / "components" / "map" / "map-screen.tsx").read_text(encoding="utf-8")
+    assert "note={LEVEL_ENTRY_NOTE}" in screen
     assert note.group(1) == expected
 
 

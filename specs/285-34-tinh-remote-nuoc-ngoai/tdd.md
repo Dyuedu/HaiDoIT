@@ -87,3 +87,17 @@ Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`,
 
 - RED: không test nào của issue này đổi kỳ vọng.
 - GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.
+
+## Đợt 2026-11-13 — #293 bộ lọc thành `<select>`
+
+Lý do: `web/tests/fr33-map-screen.test.tsx` (nơi #285 có test dòng tỉnh, Remote, Nước ngoài) chọn vai trò bằng `<select>` thay cho chip. Không AC nào của #285 đổi.
+
+- RED: 20/32 test của `fr33-map-screen` đỏ vì không tìm thấy `combobox` "Vai trò"; test về nơi (Remote, Nước ngoài, tỉnh) đỏ chỉ ở bước chọn vai trò.
+- GREEN: 32/32 xanh; `npx vitest run` → 197 passed.
+
+## Đợt 2026-11-13 — #293 sửa theo review
+
+Lý do: `web/tests/fr33-map-screen.test.tsx` bỏ hai assert `.not.toBe(...)` thừa ngay sau `.toBe(...)` của cùng ô chọn. Không AC nào của #285 đổi; hành vi nơi (Remote, Nước ngoài, tỉnh) không đụng tới.
+
+- RED: không có (chỉ bỏ assert không thể đỏ riêng).
+- GREEN: `npx vitest run` toàn bộ xanh (số đếm ở `specs/293-bo-loc-dropdown/tdd.md`, đợt 2).

@@ -66,3 +66,10 @@ Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm
 
 - RED: `test_gh284_vai_tro_moi_co_du_hang_theo_cap_so_nam_pham_vi` đỏ vì số hàng mỗi vai trò nay là `always_cities` + vn.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Đợt 2026-11-13 — #293 bộ chọn vai trò thành `<select>`
+
+Lý do: #293 đổi 18 chip vai trò thành một `<select>`. AC cuối của #284 ("every role button is reachable by keyboard") giữ ý nghĩa: ô chọn vai trò vào được bằng Tab và đổi được bằng bàn phím (đã đo trên Edge: mũi tên xuống đổi "Tất cả" thành "Nhúng"); không có AC nào khác đổi.
+
+- RED: `web/tests/fr33-role-chips-new-roles.test.tsx` 3/3 đỏ (`Unable to find an accessible element with the role "combobox" and name "Vai trò"`).
+- GREEN: 3/3 xanh; `npx vitest run` → 197 passed; ở 360px không cuộn ngang, ô cao 44px (`specs/293-bo-loc-dropdown/tdd.md`).

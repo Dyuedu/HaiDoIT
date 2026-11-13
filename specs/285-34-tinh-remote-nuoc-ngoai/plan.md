@@ -45,3 +45,7 @@ tests/deploy/test_gh285_noi_khop_config.py, web/tests/fr33-provinces.test.tsx   
 
 - `classify.py`, `ingest.py`, `aggregate.py`, `classify.toml`: #283; `rules.toml`, `labels.ts`, bản giả: #284, #163, #280, #144; `aggregate.py` (domain): #93 (không có `specs/`), #100, #163, #280.
 - #112 (không có `specs/`): AC "Other appears only in the legend" không còn đối tượng; ghi trong mô tả PR và báo người dùng.
+
+## Cập nhật 2026-11-13 theo #293
+
+`web/lib/labels.ts` chỉ sửa chú thích ("chip", "nút" thành "lựa chọn"); `web/tests/fr33-map-screen.test.tsx` đổi cách chọn vai trò từ chip sang `<select>`. Không đổi hành vi của #285. Xem `specs/293-bo-loc-dropdown/`.
