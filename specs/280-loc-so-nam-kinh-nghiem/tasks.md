@@ -28,4 +28,4 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 
 ## Phase 3: Sau merge
 
-- [ ] T020 Lượt đêm đầu tiên sau deploy: log bước kho không lỗi, `GET /api/v1/city-shares?role=all&level=entry&years=1` trả 200 và có `years_unstated_cell_id` trỏ tới một ô của `meta.cells`
+- [x] T020 Lượt đêm đầu tiên sau deploy: log bước kho không lỗi, `GET /api/v1/city-shares?role=all&level=entry&years=1` trả 200 và có `years_unstated_cell_id` trỏ tới một ô của `meta.cells`
