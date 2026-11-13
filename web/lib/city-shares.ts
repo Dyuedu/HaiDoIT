@@ -162,23 +162,23 @@ export async function fetchCityShares(
     : { kind: "unreadable" };
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isNonEmptyString(value: unknown): value is string {
+export function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.length > 0;
 }
 
-function isStringArray(value: unknown): value is string[] {
+export function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
 
-function isCount(value: unknown): value is number {
+export function isCount(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value >= 0;
 }
 
-function readErrorBody(body: unknown): ErrorBody | null {
+export function readErrorBody(body: unknown): ErrorBody | null {
   if (!isRecord(body) || !isRecord(body.error)) return null;
   const { code, message, snapshot_date: snapshotDate } = body.error;
   if (!isNonEmptyString(code) || !isNonEmptyString(message)) return null;
@@ -189,7 +189,7 @@ function readErrorBody(body: unknown): ErrorBody | null {
   };
 }
 
-function isMeta(meta: unknown): meta is Meta {
+export function isMeta(meta: unknown): meta is Meta {
   if (!isRecord(meta)) return false;
   const { thresholds, coverage_notes: notes } = meta;
   return (
