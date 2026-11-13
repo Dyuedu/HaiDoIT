@@ -146,3 +146,10 @@ Lý do: #293 đổi hàng nút `aria-pressed` thành `<select>` có nhãn. Khôn
 
 - RED: `web/tests/fr33-years-filter.test.tsx` 8/11 đỏ (`Unable to find an accessible element with the role "combobox" and name "Số năm kinh nghiệm"`).
 - GREEN: `fr33-years-filter` 11/11 xanh; `npx vitest run` → 197 passed. Đo trình duyệt thật ở `specs/293-bo-loc-dropdown/tdd.md`: ở 360px không cuộn ngang, ô cao 44px.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_roles`; phần `city_shares` không đổi.
+
+- RED: không có, không test nào đổi kỳ vọng.
+- GREEN: `uv run pytest tests/api/test_fr33_city_shares_years.py tests/api/test_dat20_stat_market.py -q` → 45 passed; `cd web && npx vitest run tests/fr33-years-filter.test.tsx` → 11 passed.

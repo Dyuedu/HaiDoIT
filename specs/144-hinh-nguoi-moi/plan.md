@@ -84,3 +84,7 @@ tests/steps/test_dat20_api_end_to_end.py
 - `haido_api/routes/market.py`, `schemas/market.py`, `market_source.py`, `fake_market.py`, `stat_market.py`: `city-shares` nhận tham số tùy chọn `level`, response có `data.level`.
 - `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm `level` của `city-shares`.
 - `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `web/lib/city-shares.ts`: cập nhật cho `level`.
+
+## Ghi chú 2026-11-13 (#148)
+
+`haido_api/stat_market.py` (có `newcomer_roles` thay bản giữ chỗ của #144 từ #146) thêm bảo vệ entry > n. Hình response của #144 không đổi; `docs/api/openapi.json` không đổi. Không AC nào của #144 đổi.

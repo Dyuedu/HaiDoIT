@@ -185,3 +185,10 @@ Lý do: dòng chú thích "Mới vào nghề gồm Intern, Fresher và Junior." 
 
 - Đột biến: đổi hằng thành "…Intern, Fresher, Junior và Mid." → `test_gh163_dong_chu_thich_...` đỏ (1 failed, 5 passed); thêm `mid` vào `entry` của `config/rules.toml` → 2 failed, 4 passed. Đã hoàn lại cả hai.
 - GREEN: `uv run pytest -q tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 6 passed; `fr33-level-filter` xanh.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_roles`; phần `city_shares` không đổi.
+
+- RED: không có, không test nào đổi kỳ vọng.
+- GREEN: `uv run pytest tests/api/test_fr33_city_shares_level.py tests/api/test_dat20_stat_market.py -q` → 51 passed; `cd web && npx vitest run tests/fr33-level-filter.test.tsx` → 20 passed.

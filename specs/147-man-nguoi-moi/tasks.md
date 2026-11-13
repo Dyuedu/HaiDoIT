@@ -29,3 +29,7 @@
 ## Phase 4: Sau merge
 
 - [ ] T014 Khi PR #290 đã deploy, mở `/insights` trên prod và kiểm số khớp `GET /api/v1/newcomer-roles`
+
+## Ghi chú 2026-11-13 (#148)
+
+- [x] Không có task mới cho #147. Test bổ sung do #148 (`specs/148-test-nguoi-moi/`).

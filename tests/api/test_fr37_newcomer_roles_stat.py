@@ -210,3 +210,104 @@ def test_fr37_chua_co_snapshot_doc_duoc_la_404(pg_engine: Engine) -> None:
     resp = _client(pg_engine).get(PATH)
     assert resp.status_code == 404
     assert resp.json()["error"]["code"] == "unknown_cell"
+
+
+# ---------------------------------------------------------------- #148: khóa thứ tự (#110 AC1, AC2) và ô hỏng
+
+
+def test_fr37_148_moi_dong_co_ty_le_theo_n_rieng_va_thu_tu_la_bat_bien(pg_engine: Engine) -> None:
+    """#110 AC1, AC2, AD-7: tỷ lệ mỗi dòng là entry / n của CHÍNH vai trò đó, không phải tổng n của mọi vai trò.
+
+    Nhiều vai trò có n khác nhau, nên chia cho tổng n của cả bảng (hay cho n của vai trò khác) làm test đỏ. Cũng khóa
+    thứ tự: mọi dòng `null_data` sau mọi dòng `shown` dù có nhiều entry hơn, cùng số entry thì theo mã.
+    """
+    _seed(
+        pg_engine,
+        {
+            "qa": {"junior": 60, "mid": 40},  # 60 entry, n = 100
+            "backend": {"junior": 40, "mid": 10},  # 40 entry, n = 50
+            "devops": {"junior": 40, "mid": 80},  # 40 entry, n = 120, cùng số entry với backend
+            "mobile": {"junior": 5, "mid": 30},  # 5 entry, n = 35: có tỷ lệ, ít entry hơn ui_ux
+            "ui_ux": {"intern": 29},  # 29 entry, n = 29 dưới 30 tin: null_data
+            "game": {"intern": 10, "mid": 5},  # 10 entry, null_data
+            "embedded": {"mid": 4},  # 0 entry, null_data
+        },
+    )
+    body = _ok(_client(pg_engine))
+    rows = body["data"]["rows"]
+    cells = body["meta"]["cells"]
+    shown = [r for r in rows if r["share"]["display"] == DisplayState.SHOWN]
+    own_n = [cells[r["total_cell_id"]]["n"] for r in shown]
+    assert len(shown) >= 3 and len(set(own_n)) == len(own_n), "cần từ 3 vai trò có tỷ lệ với n khác nhau"
+    expected = {"qa": (60, 100), "backend": (40, 50), "devops": (40, 120), "mobile": (5, 35)}
+    for r in shown:
+        entry_n, n = expected[r["role"]]
+        assert cells[r["entry_cell_id"]]["n"] == entry_n
+        assert cells[r["total_cell_id"]]["n"] == n
+        assert r["share"]["cell_id"] == r["total_cell_id"]
+        assert r["share"]["value"] == pytest.approx(entry_n / n), r["role"]
+    kinds = [r["share"]["display"] for r in rows]
+    first_null = kinds.index(DisplayState.NULL_DATA)
+    assert all(k == DisplayState.SHOWN for k in kinds[:first_null])
+    assert all(k == DisplayState.NULL_DATA for k in kinds[first_null:])
+    key = [(-cells[r["entry_cell_id"]]["n"], r["role"]) for r in rows]
+    assert key[:first_null] == sorted(key[:first_null])
+    assert key[first_null:] == sorted(key[first_null:])
+    assert [r["role"] for r in rows[:first_null]] == ["qa", "backend", "devops", "mobile"]
+    assert [r["role"] for r in rows[first_null : first_null + 2]] == ["ui_ux", "game"]
+
+
+def test_fr37_148_bien_nguong_mau_30_co_ty_le_29_null_data(pg_engine: Engine) -> None:
+    """Biên của `min_sample` (30 trong config): n = 30 có tỷ lệ, n = 29 là null_data."""
+    assert RULES.min_sample == 30
+    _seed(pg_engine, {"backend": {"junior": 10, "mid": 20}, "qa": {"junior": 9, "mid": 20}})
+    rows = _rows(StatMarket(engine_factory=lambda: pg_engine, rules=RULES).newcomer_roles().model_dump(mode="json"))
+    assert rows["backend"][1] == 30
+    assert rows["backend"][2]["display"] == DisplayState.SHOWN
+    assert rows["backend"][2]["value"] == pytest.approx(10 / 30)
+    assert rows["qa"][1] == 29
+    assert rows["qa"][2]["display"] == DisplayState.NULL_DATA
+    assert rows["qa"][2]["value"] is None
+
+
+def _set_entry_n(engine: Engine, role: str, entry_n: int) -> None:
+    with engine.begin() as conn:
+        result = conn.execute(
+            text(
+                "UPDATE haido.stat_cells SET n = :n WHERE snapshot_id = :d AND role = :r "
+                "AND scope = 'vn' AND seniority = 'entry'"
+            ),
+            {"n": entry_n, "d": S, "r": role},
+        )
+        assert result.rowcount == 1, f"phải sửa đúng một ô entry của {role}"
+
+
+def test_fr37_ad17_o_hong_entry_lon_hon_n_thi_loi_noi_ro_vai_tro_va_hai_so(pg_engine: Engine) -> None:
+    """Ô entry có n lớn hơn n của vai trò là dữ liệu hỏng: không trả tỷ lệ > 1, không cắt xuống 1."""
+    _seed(pg_engine, {"backend": {"junior": 40, "mid": 10}, "qa": {"junior": 35}})
+    _set_entry_n(pg_engine, "backend", 80)
+    stat = StatMarket(engine_factory=lambda: pg_engine, rules=RULES)
+    with pytest.raises(RuntimeError, match=r"backend.*80.*50|backend.*50.*80"):
+        stat.newcomer_roles()
+
+
+def test_fr37_ad17_o_hong_entry_lon_hon_n_la_500_envelope_chuan(pg_engine: Engine) -> None:
+    _seed(pg_engine, {"backend": {"junior": 40, "mid": 10}})
+    _set_entry_n(pg_engine, "backend", 80)
+    resp = _client(pg_engine).get(PATH)
+    assert resp.status_code == 500
+    assert resp.json()["error"]["code"] == "internal_error"
+
+
+def test_fr37_ad17_entry_bang_n_van_hop_le_tyle_bang_1(pg_engine: Engine) -> None:
+    _seed(pg_engine, {"backend": {"junior": 40}})
+    share = _rows(_ok(_client(pg_engine)))["backend"][2]
+    assert share["value"] == 1.0
+
+
+def test_fr37_ad17_o_hong_cung_bi_chan_khi_vai_tro_duoi_nguong_mau(pg_engine: Engine) -> None:
+    """Dưới ngưỡng thì không tính tỷ lệ nên schema không bắt được; số entry > n vẫn phải bị chặn."""
+    _seed(pg_engine, {"ui_ux": {"intern": 3, "mid": 9}})
+    _set_entry_n(pg_engine, "ui_ux", 20)
+    with pytest.raises(RuntimeError, match=r"ui_ux.*20.*12"):
+        StatMarket(engine_factory=lambda: pg_engine, rules=RULES).newcomer_roles()

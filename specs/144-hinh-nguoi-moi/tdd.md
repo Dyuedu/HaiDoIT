@@ -93,3 +93,10 @@ Lý do: #147 thêm hàm gọi API và kiểm envelope vào `web/lib/newcomer-rol
 
 - RED: không test nào của #144 đổi kỳ vọng.
 - GREEN: `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh trong lượt `npx vitest run` → 189 passed.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho nguồn `stat` của `newcomer_roles`; bản giả và hình response không đổi.
+
+- RED: không có, không test nào của #144 đổi kỳ vọng.
+- GREEN: `uv run pytest tests/api tests/domain -q` → 487 passed; `cd web && npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed.
