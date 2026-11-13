@@ -6,16 +6,13 @@ import { MapScreen } from "@/app/components/map/map-screen";
 
 import { allLowSampleEnvelope, fakeEnvelope, statEnvelope } from "./fixtures/envelopes";
 import { deferred, jsonResponse, routeCityShares } from "./helpers/fetch";
+import { pick, roleSelect, selectedLabel } from "./helpers/filters";
 
 const LOADING = "Đang tải số liệu…";
 const LOW_SAMPLE_21 = "Cỡ mẫu nhỏ (n = 21 < 30): số liệu chỉ để tham khảo";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
 
 const ok = (role: "all" | "ai_ml" | "backend") => () => jsonResponse(200, fakeEnvelope(role));
-
-function chip(name: string) {
-  return within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name });
-}
 
 function modeButton(name: string) {
   return within(screen.getByRole("group", { name: "Lối xem" })).getByRole("button", { name });
@@ -39,7 +36,7 @@ async function openScreen() {
 }
 
 async function pickRole(user: ReturnType<typeof userEvent.setup>, name: string) {
-  await user.click(chip(name));
+  await pick(user, roleSelect(), name);
 }
 
 /** Mở màn, chọn AI/ML, trả dòng Đà Nẵng (mẫu nhỏ, n = 21) với phần trăm đang ẩn. */
@@ -53,7 +50,7 @@ async function openAiMl() {
 }
 
 describe("fr33 — mở trang", () => {
-  it("fr33: mở trang vào lối 2D, chip Tất cả, ba thanh theo share.value", async () => {
+  it("fr33: mở trang vào lối 2D, ô Vai trò ở Tất cả, ba thanh theo share.value", async () => {
     const fetchMock = routeCityShares({ all: [ok("all")] });
     render(<MapScreen />);
 
@@ -62,8 +59,7 @@ describe("fr33 — mở trang", () => {
 
     // #163: màn luôn gửi cấp bậc, mặc định là nhóm mới vào nghề (entry) của #134.
     expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry&years=any");
-    expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("true");
-    expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("false");
+    expect(selectedLabel(roleSelect())).toBe("Tất cả");
     expect(modeButton("Biểu đồ 2D").getAttribute("aria-pressed")).toBe("true");
     expect(modeButton("Bảng").getAttribute("aria-pressed")).toBe("false");
     expect(screen.getByRole("status").textContent).toBe("");
@@ -298,7 +294,7 @@ describe("fr33 — lối Bảng", () => {
 });
 
 describe("fr33 — đổi vai trò", () => {
-  it("fr33: đổi vai trò hiện trạng thái đang tải thay cho số cũ, aria-pressed đổi theo", async () => {
+  it("fr33: đổi vai trò hiện trạng thái đang tải thay cho số cũ, ô Vai trò đổi theo", async () => {
     const pending = deferred<Response>();
     routeCityShares({ all: [ok("all")], ai_ml: [() => pending.promise] });
     const { user } = await openScreen();
@@ -307,8 +303,7 @@ describe("fr33 — đổi vai trò", () => {
 
     expect(screen.getByRole("status").textContent).toBe(LOADING);
     expect(screen.queryByRole("button", { name: /^Hà Nội:/ })).toBeNull();
-    expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("true");
-    expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("false");
+    expect(selectedLabel(roleSelect())).toBe("AI/ML");
 
     await act(async () => pending.resolve(jsonResponse(200, fakeEnvelope("ai_ml"))));
     expect((await screen.findByRole("button", { name: /^Đà Nẵng:/ })).textContent).toContain(
@@ -334,7 +329,7 @@ describe("fr33 — đổi vai trò", () => {
 
     expect(cityButton("Đà Nẵng").textContent).toContain("n = 9 < 30");
     expect(screen.queryByText(LOW_SAMPLE_21)).toBeNull();
-    expect(chip("Backend").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(roleSelect())).toBe("Backend");
   });
 });
 
@@ -449,7 +444,7 @@ describe("fr33 — lỗi", () => {
     expect(screen.queryByRole("alert")).toBeNull();
   });
 
-  it("fr33: 404 unknown_cell hiện message kèm ngày snapshot, không có Thử lại, chip vẫn đổi được", async () => {
+  it("fr33: 404 unknown_cell hiện message kèm ngày snapshot, không có Thử lại, ô lọc vẫn đổi được", async () => {
     const message = "Không có ô thống kê nào cho vai trò đã chọn.";
     routeCityShares({
       all: [
@@ -505,54 +500,28 @@ describe("fr33 — lỗi", () => {
 });
 
 describe("fr33 — bàn phím", () => {
-  it("fr33: Tab đi qua chip vai trò, cụm lối xem, nút cấp bậc, nút số năm (#280), rồi từng dòng thành phố", async () => {
+  it("fr33: Tab đi qua ô vai trò, ô cấp bậc, ô số năm (#293), cụm lối xem, rồi từng dòng thành phố", async () => {
     routeCityShares({ all: [ok("all")] });
     const { user } = await openScreen();
     const stops: string[] = [];
 
-    for (let i = 0; i < 42; i += 1) {
+    for (let i = 0; i < 12; i += 1) {
       await user.tab();
       const active = document.activeElement as HTMLElement;
-      stops.push(active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? "");
+      stops.push(
+        active instanceof HTMLSelectElement
+          ? `select:${active.labels?.[0]?.textContent}`
+          : (active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? ""),
+      );
     }
 
     expect(stops).toEqual([
-      "Tất cả",
-      "Nhúng",
-      "AI/ML",
-      "Khoa học dữ liệu",
-      "Kỹ sư dữ liệu",
-      "Phân tích dữ liệu",
-      "Kiểm thử (QA)",
-      "DevOps",
-      "Bảo mật",
-      "Hạ tầng & IT support",
-      "Mobile",
-      "Frontend",
-      "Backend",
-      "Fullstack",
-      "BA / PO / PM",
-      "UI/UX",
-      "Phát triển game",
-      "Vai trò khác",
+      "select:Vai trò",
+      "select:Cấp bậc",
+      "select:Số năm kinh nghiệm",
       "3D",
       "Biểu đồ 2D",
       "Bảng",
-      "Mới vào nghề",
-      "Intern",
-      "Fresher",
-      "Junior",
-      "Mid",
-      "Senior",
-      "Lead",
-      "Chưa ghi cấp bậc",
-      "Mọi cấp bậc",
-      "Mọi số năm",
-      "Không cần kinh nghiệm",
-      "Tối đa 1 năm",
-      "Tối đa 2 năm",
-      "Tối đa 3 năm",
-      "Tối đa 5 năm",
       "Hà Nội",
       "TP.HCM",
       "Đà Nẵng",

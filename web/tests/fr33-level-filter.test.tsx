@@ -7,6 +7,7 @@ import { DEFAULT_LEVEL, LEVEL_OPTIONS, levelLabel } from "@/lib/labels";
 
 import { buildEnvelope, fakeEnvelope } from "./fixtures/envelopes";
 import { deferred, jsonResponse, routeCityShares } from "./helpers/fetch";
+import { levelSelect, optionLabels, pick, roleSelect, selectedLabel } from "./helpers/filters";
 
 const LOADING = "Đang tải số liệu…";
 const LEVEL_NAMES = [
@@ -55,14 +56,6 @@ function lead() {
   });
 }
 
-function levelGroup() {
-  return screen.getByRole("group", { name: "Cấp bậc" });
-}
-
-function levelButton(name: string) {
-  return within(levelGroup()).getByRole("button", { name });
-}
-
 function modeButton(name: string) {
   return within(screen.getByRole("group", { name: "Lối xem" })).getByRole("button", { name });
 }
@@ -91,18 +84,15 @@ describe("fr33 #163 — bộ lọc cấp bậc mở ở mặc định của #134
 
     expect(DEFAULT_LEVEL).toBe("entry");
     expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry&years=any");
-    expect(levelButton("Mới vào nghề").getAttribute("aria-pressed")).toBe("true");
-    for (const name of LEVEL_NAMES.slice(1)) {
-      expect(levelButton(name).getAttribute("aria-pressed")).toBe("false");
-    }
+    expect(selectedLabel(levelSelect())).toBe("Mới vào nghề");
+    expect(levelSelect().value).toBe("entry");
   });
 
-  it("fr33: lựa chọn đúng danh sách của #134, theo thứ tự, mỗi lựa chọn một <button aria-pressed>", async () => {
+  it("fr33: lựa chọn đúng danh sách của #134, theo thứ tự, trong một <select>", async () => {
     routeCityShares({ "all|entry": [entry("all")] });
     await openScreen();
 
-    const buttons = within(levelGroup()).getAllByRole("button");
-    expect(buttons.map((button) => button.textContent)).toEqual(LEVEL_NAMES);
+    expect(optionLabels(levelSelect())).toEqual(LEVEL_NAMES);
     expect(LEVEL_OPTIONS.map((option) => option.code)).toEqual([
       "entry",
       "intern",
@@ -114,31 +104,29 @@ describe("fr33 #163 — bộ lọc cấp bậc mở ở mặc định của #134
       "unknown",
       "all",
     ]);
-    for (const button of buttons) {
-      expect(button.tagName).toBe("BUTTON");
-      expect(button.getAttribute("type")).toBe("button");
-      expect(button.hasAttribute("aria-pressed")).toBe(true);
-    }
+    expect(Array.from(levelSelect().options).map((option) => option.value)).toEqual(
+      LEVEL_OPTIONS.map((option) => option.code),
+    );
+    expect(levelSelect().tagName).toBe("SELECT");
+    expect(levelSelect().hasAttribute("aria-pressed")).toBe(false);
   });
 
-  it("fr33: nút đủ 44px, có viền focus chung và nhóm chữ giải thích nhóm mới vào nghề", async () => {
+  it("fr33: ô đủ 44px, có viền focus chung và nhóm chữ giải thích nhóm mới vào nghề", async () => {
     routeCityShares({ "all|entry": [entry("all")] });
     await openScreen();
 
-    for (const button of within(levelGroup()).getAllByRole("button")) {
-      expect(button.className).toContain("min-h-target");
-    }
+    expect(levelSelect().className).toContain("min-h-target");
     screen.getByText("Mới vào nghề gồm Intern, Fresher và Junior.");
     expect(levelLabel("entry")).toBe("Mới vào nghề");
     expect(levelLabel("unknown")).toBe("Chưa ghi cấp bậc");
     expect(levelLabel("khong_co_cap")).toBe("khong_co_cap");
   });
 
-  it("fr33: nhóm cấp bậc được mô tả bằng dòng chú thích (aria-describedby trỏ đúng dòng đó)", async () => {
+  it("fr33: ô cấp bậc được mô tả bằng dòng chú thích (aria-describedby trỏ đúng dòng đó)", async () => {
     routeCityShares({ "all|entry": [entry("all")] });
     await openScreen();
 
-    const noteId = levelGroup().getAttribute("aria-describedby");
+    const noteId = levelSelect().getAttribute("aria-describedby");
     expect(noteId).toBeTruthy();
     expect(document.getElementById(noteId as string)?.textContent).toBe("Mới vào nghề gồm Intern, Fresher và Junior.");
   });
@@ -149,7 +137,7 @@ describe("fr33 #163 — bộ lọc cấp bậc mở ở mặc định của #134
     await user.click(modeButton("Bảng"));
     expect(screen.getByRole("table").querySelector("caption")?.textContent).toContain("· Mới vào nghề");
 
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
     await screen.findByRole("table");
     expect(screen.getByRole("table").querySelector("caption")?.textContent).toContain("· Senior");
   });
@@ -174,13 +162,12 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     });
     const user = await openScreen();
 
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
 
     expect(String(fetchMock.mock.calls[1][0])).toBe("/api/v1/city-shares?role=all&level=senior&years=any");
     expect(screen.getByRole("status").textContent).toBe(LOADING);
     expect(screen.queryByRole("button", { name: /^Hà Nội:/ })).toBeNull();
-    expect(levelButton("Senior").getAttribute("aria-pressed")).toBe("true");
-    expect(levelButton("Mới vào nghề").getAttribute("aria-pressed")).toBe("false");
+    expect(selectedLabel(levelSelect())).toBe("Senior");
 
     await act(async () => pending.resolve(jsonResponse(200, senior())));
     const haNoi = await screen.findByRole("button", { name: /^Hà Nội:/ });
@@ -203,7 +190,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     const user = await openScreen();
     expect(cityButton("Hà Nội").textContent).toContain("848 tin");
 
-    await user.click(levelButton("Mọi cấp bậc"));
+    await pick(user, levelSelect(), "Mọi cấp bậc");
     await screen.findByText(/1\.490 tin/);
     expect(cityButton("Hà Nội").textContent).toContain("41,6%");
 
@@ -226,7 +213,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
         .textContent;
     expect(total()).toBe("2.036");
 
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
     await screen.findByRole("table");
 
     expect(modeButton("Bảng").getAttribute("aria-pressed")).toBe("true");
@@ -242,8 +229,8 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     });
     const user = await openScreen();
 
-    await user.click(levelButton("Senior"));
-    await user.click(levelButton("Lead"));
+    await pick(user, levelSelect(), "Senior");
+    await pick(user, levelSelect(), "Lead");
     const haNoi = await screen.findByRole("button", { name: /^Hà Nội:/ });
     expect(haNoi.textContent).toContain("30 tin");
 
@@ -251,8 +238,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
 
     expect(cityButton("Hà Nội").textContent).toContain("30 tin");
     expect(screen.queryByText(/210 tin/)).toBeNull();
-    expect(levelButton("Lead").getAttribute("aria-pressed")).toBe("true");
-    expect(levelButton("Senior").getAttribute("aria-pressed")).toBe("false");
+    expect(selectedLabel(levelSelect())).toBe("Lead");
   });
 
   it("fr33: đổi vai trò giữ nguyên cấp bậc đang chọn và lượt gọi mang cả hai", async () => {
@@ -262,22 +248,22 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
       "ai_ml|senior": [() => jsonResponse(200, { ...senior(), data: { ...senior().data, role: "ai_ml" } })],
     });
     const user = await openScreen();
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
     await screen.findByText(/210 tin/);
 
-    await user.click(within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name: "AI/ML" }));
+    await pick(user, roleSelect(), "AI/ML");
     await screen.findByRole("button", { name: /^Hà Nội:/ });
 
     const urls = fetchMock.mock.calls.map((call) => String(call[0]));
     expect(urls.at(-1)).toBe("/api/v1/city-shares?role=ai_ml&level=senior&years=any");
-    expect(levelButton("Senior").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(levelSelect())).toBe("Senior");
   });
 
   it("fr33: bấm lại cấp đang chọn không gọi API thêm", async () => {
     const fetchMock = routeCityShares({ "all|entry": [entry("all")] });
     const user = await openScreen();
 
-    await user.click(levelButton("Mới vào nghề"));
+    await pick(user, levelSelect(), "Mới vào nghề");
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -299,14 +285,14 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     });
     const user = await openScreen();
 
-    await user.click(levelButton("Lead"));
+    await pick(user, levelSelect(), "Lead");
     const alert = await screen.findByRole("alert");
     expect(alert.textContent).toContain("không có tin nào ở cấp bậc này");
     expect(alert.textContent).toContain("03/11/2026");
     expect(screen.queryByRole("button", { name: "Thử lại" })).toBeNull();
-    expect(levelButton("Lead").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(levelSelect())).toBe("Lead");
 
-    await user.click(levelButton("Mọi cấp bậc"));
+    await pick(user, levelSelect(), "Mọi cấp bậc");
     await screen.findByRole("button", { name: /^Hà Nội:/ });
     expect(screen.queryByRole("alert")).toBeNull();
   });
@@ -320,7 +306,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
       ],
     });
     const user = await openScreen();
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
     await screen.findByRole("alert");
 
     await user.click(screen.getByRole("button", { name: "Thử lại" }));
@@ -335,7 +321,7 @@ describe("fr33 #163 — đổi cấp bậc thì bảng và biểu đồ đổi c
     render(<MapScreen />);
     await screen.findByRole("button", { name: /^Hà Nội:/ });
 
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
 
     expect((await screen.findByRole("alert")).textContent).toBe("Không đọc được số liệu. Thử lại sau.");
     expect(screen.queryByRole("figure")).toBeNull();
@@ -346,7 +332,7 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
   it("fr33: AI/ML ở entry: Đà Nẵng n = 11 mờ có nhãn mẫu nhỏ, Hà Nội n = 241 không mờ", async () => {
     routeCityShares({ "all|entry": [entry("all")], "ai_ml|entry": [entry("ai_ml")] });
     const user = await openScreen();
-    await user.click(within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name: "AI/ML" }));
+    await pick(user, roleSelect(), "AI/ML");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
 
     expect(fill(daNang).getAttribute("data-low-sample")).toBe("true");
@@ -365,10 +351,10 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
       "ai_ml|all": [every("ai_ml")],
     });
     const user = await openScreen();
-    await user.click(within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name: "AI/ML" }));
+    await pick(user, roleSelect(), "AI/ML");
     expect((await screen.findByRole("button", { name: /^Đà Nẵng:/ })).textContent).toContain("n = 11 < 30");
 
-    await user.click(levelButton("Mọi cấp bậc"));
+    await pick(user, levelSelect(), "Mọi cấp bậc");
 
     const daNang = await screen.findByText(/n = 21 < 30/);
     expect(daNang.closest("button")).toBe(cityButton("Đà Nẵng"));
@@ -378,7 +364,7 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
   it("fr33: ở lối Bảng ô của thành phố mẫu nhỏ ghi 'chưa đủ dữ liệu' kèm n của cấp", async () => {
     routeCityShares({ "all|entry": [entry("all")], "backend|entry": [entry("backend")] });
     const user = await openScreen();
-    await user.click(within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name: "Backend" }));
+    await pick(user, roleSelect(), "Backend");
     await screen.findByRole("button", { name: /^Hà Nội:/ });
     await user.click(modeButton("Bảng"));
 
@@ -393,7 +379,7 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
     routeCityShares({ "all|entry": [entry("all")], "all|lead": [() => jsonResponse(200, lead())] });
     const user = await openScreen();
 
-    await user.click(levelButton("Lead"));
+    await pick(user, levelSelect(), "Lead");
     const haNoi = await screen.findByRole("button", { name: /^Hà Nội:/ });
 
     expect(fill(haNoi).getAttribute("data-low-sample")).toBe("false");
@@ -402,19 +388,19 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
   });
 });
 
-describe("fr33 #163 — bàn phím", () => {
-  it("fr33: Tab đi qua từng nút cấp bậc sau cụm lối xem, Enter chọn cấp", async () => {
+describe("fr33 #163, #293 — bàn phím", () => {
+  it("fr33: Tab tới bộ chọn cấp bậc rồi chọn giá trị, gửi level mới", async () => {
     routeCityShares({ "all|entry": [entry("all")], "all|senior": [() => jsonResponse(200, senior())] });
     const user = await openScreen();
 
-    act(() => levelButton("Mới vào nghề").focus());
+    act(() => roleSelect().focus());
     await user.tab();
-    expect(document.activeElement).toBe(levelButton("Intern"));
-    for (let i = 0; i < 4; i += 1) await user.tab();
-    expect(document.activeElement).toBe(levelButton("Senior"));
-    await user.keyboard("{Enter}");
+    expect(document.activeElement).toBe(levelSelect());
+    // jsdom và user-event không có phím mũi tên của <select>: chọn giá trị bằng selectOptions (đường con trỏ).
+    // Đổi bằng mũi tên được kiểm trong trình duyệt thật (tdd.md của #293).
+    await pick(user, levelSelect(), "Senior");
 
-    expect(levelButton("Senior").getAttribute("aria-pressed")).toBe("true");
+    expect(levelSelect().value).toBe("senior");
     await screen.findByText(/210 tin/);
   });
 });

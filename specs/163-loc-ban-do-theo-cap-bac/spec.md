@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Implemented. Cập nhật 2026-11-12 theo #280: web gửi thêm `years` (mặc định `any`), hai bảng stat có thêm `years` trong khóa; số của mọi cấp ở `years = any` không đổi. Không AC nào của #163 đổi.
+**Status**: Implemented. Cập nhật 2026-11-13 theo #293: bộ chọn cấp bậc là `<select>` thay cho hàng nút `aria-pressed` (hành vi và AC không đổi). Cập nhật 2026-11-12 theo #280: web gửi thêm `years` (mặc định `any`), hai bảng stat có thêm `years` trong khóa; số của mọi cấp ở `years = any` không đổi. Không AC nào của #163 đổi.
 
 **Input**: GitHub issue [#163](https://github.com/Dyuedu/HaiDoIT/issues/163) — The map has a level filter. It opens on the default level recorded on #134, and changing the level updates the table and the chart together. Phục vụ story [#112](https://github.com/Dyuedu/HaiDoIT/issues/112). Quyết định ràng buộc: [#134](https://github.com/Dyuedu/HaiDoIT/issues/134) (cấp mặc định và cách chia cấp), [#260](https://github.com/Dyuedu/HaiDoIT/issues/260) (không đổi ngưỡng, θ, lưu ý độ phủ).
 
@@ -16,12 +16,12 @@ Người mới vào nghề mở bản đồ và thấy bộ chọn cấp bậc �
 
 **Why this priority**: AC thứ nhất của #163. Câu hỏi của story #112 là "ở cấp của tôi", nên mặc định phải là cấp của người dùng chứ không phải mọi cấp.
 
-**Independent Test**: Mở `MapScreen` với API giả. Lượt gọi đầu có `level=entry`, nút "Mới vào nghề" có `aria-pressed="true"`, danh sách nút khớp `level_options` trong `config/rules.toml` cộng `all`.
+**Independent Test**: Mở `MapScreen` với API giả. Lượt gọi đầu có `level=entry`, ô "Cấp bậc" đang chọn "Mới vào nghề" (từ #293; trước đó nút có `aria-pressed="true"`), danh sách option khớp `level_options` trong `config/rules.toml` cộng `all`.
 
 **Acceptance Scenarios**:
 
-1. **Given** trang vừa mở, **When** lượt gọi đầu đi ra, **Then** URL là `/api/v1/city-shares?role=all&level=entry&years=any` (từ #280 web gửi kèm mốc số năm) và nút "Mới vào nghề" được chọn.
-2. **Given** bộ chọn cấp bậc, **When** đọc danh sách nút, **Then** thứ tự là entry, intern, fresher, junior, mid, senior, lead, unknown, all, nhãn tiếng Việt, mỗi nút là `<button aria-pressed>` cao tối thiểu 44px.
+1. **Given** trang vừa mở, **When** lượt gọi đầu đi ra, **Then** URL là `/api/v1/city-shares?role=all&level=entry&years=any` (từ #280 web gửi kèm mốc số năm) và ô "Cấp bậc" đang chọn "Mới vào nghề" (#293).
+2. **Given** bộ chọn cấp bậc, **When** đọc danh sách option, **Then** thứ tự là entry, intern, fresher, junior, mid, senior, lead, unknown, all, nhãn tiếng Việt, trong một `<select>` có `<label>` hiện, cao tối thiểu 44px (#293; trước đó mỗi nút là `<button aria-pressed>`).
 3. **Given** `config/rules.toml` có nhóm `entry = [intern, fresher, junior]`, **When** `aggregate` chạy, **Then** ô `entry` có n bằng tổng n của ba cấp và `unknown` không nằm trong nhóm.
 4. **Given** API gọi không có `level`, **When** route xử lý, **Then** trả số của mọi cấp như trước (tương thích ngược); web luôn gửi `level` rõ ràng.
 

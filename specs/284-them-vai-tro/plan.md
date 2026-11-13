@@ -45,3 +45,7 @@ tests/steps/test_gh283_ingest_classify.py, web/tests/fr33-map-screen.test.tsx (s
 - `config/classify.toml`, `test_gh283_*`: #283 — thêm đợt TDD, ghi `report_as` đã rỗng.
 - `fake_market.json`, `newcomer-roles.json`: #144 — thêm đợt TDD.
 - `test_gh162_ban_do_doc_snapshot_that.py`: #162 (không có `specs/`) — ghi tên trong mô tả PR.
+
+## Cập nhật 2026-11-13 theo #293
+
+18 chip vai trò thành một `<select>` (`FilterSelect` trong `map-screen.tsx`, option từ `ROLE_OPTIONS`, giữ thứ tự config, không `optgroup`); `role-chips.tsx` bị xóa. `web/tests/fr33-role-chips-new-roles.test.tsx` (giữ tên file) và `web/tests/fr33-map-screen.test.tsx` đổi theo. `labels.ts` chỉ sửa chú thích. Xem `specs/293-bo-loc-dropdown/`.

@@ -24,3 +24,7 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 ## Phase 3: Sau merge
 
 - [ ] T020 Lượt đêm đầu tiên sau deploy: `city-shares?role=fullstack` trả 200 với snapshot mới
+
+## Cập nhật 2026-11-13 theo #293
+
+- [x] T003 đổi: `web/tests/fr33-role-chips-new-roles.test.tsx` kiểm ô "Vai trò" có 18 option theo thứ tự, không `optgroup`, `min-h-target`, Tab giữa ba ô, chọn Fullstack gửi `role=fullstack`

@@ -29,3 +29,8 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 ## Phase 3: Sau merge
 
 - [x] T020 Lượt đêm đầu tiên sau deploy: log bước kho không lỗi, `GET /api/v1/city-shares?role=all&level=entry&years=1` trả 200 và có `years_unstated_cell_id` trỏ tới một ô của `meta.cells`
+
+## Cập nhật 2026-11-13 theo #293
+
+- [x] T015 đổi: `years-chips.tsx` thay bằng `web/app/components/map/filter-select.tsx` (ô Số năm kinh nghiệm, `<select>` gốc)
+- [x] T007: `web/tests/fr33-years-filter.test.tsx` chuyển sang `<select>`, giữ đủ hành vi cũ

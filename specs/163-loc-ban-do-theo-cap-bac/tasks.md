@@ -56,3 +56,8 @@
 - [x] T019 Cập nhật `specs/100-cross-source-clusters/` và `specs/205-khoa-ho-so-trinh-duyet/` (cùng commit)
 - [x] T021 Sửa sau review (đợt 7 của `tdd.md`): `stat_market.py` chọn snapshot theo cấp (F1), `config.py` kiểm dạng tên nhóm và mã (F2), `aggregate.py` từ chối thành viên trùng (F3), migration 0005 hạ cấp bỏ cả `stat_cells` theo cấp (F4), test web caption và `aria-describedby` (F5), test dòng chú thích khớp config (F6)
 - [x] T020 Chạy toàn bộ: `uv run pytest -q`, hai lần `-m determinism` (`PYTHONHASHSEED=0` và `1`), `uv run ruff check .`, `python tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11`, `uv run alembic heads`, `npm run lint`, `npm run test`, `npm run build` trong `web/`
+
+## Cập nhật 2026-11-13 theo #293
+
+- [x] T018 đổi: `level-chips.tsx` thay bằng `web/app/components/map/filter-select.tsx` dùng trong `map-screen.tsx` (ô Cấp bậc, `<select>` gốc)
+- [x] T014, T015: test chuyển sang `<select>` (`selectOptions`, `selectedLabel`); test deploy đọc chú thích ở `map-screen.tsx`

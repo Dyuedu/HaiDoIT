@@ -109,6 +109,10 @@ web/tests/fixtures/envelopes.ts
 
 Không có vi phạm cần biện minh.
 
+## Cập nhật 2026-11-13 theo #293
+
+`level-chips.tsx` bị xóa; ô Cấp bậc là `FilterSelect` (`filter-select.tsx`) dựng trong `map-screen.tsx` với `LEVEL_OPTIONS`, dòng chú thích "Mới vào nghề gồm Intern, Fresher và Junior." là prop `note` nối `aria-describedby`. `web/tests/fr33-level-filter.test.tsx`, `web/tests/fr33-map-screen.test.tsx` và `tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` đổi theo. Xem `specs/293-bo-loc-dropdown/`.
+
 ## Ghi chú 2026-11-13 (#148)
 
 `haido_api/stat_market.py` thêm bảo vệ entry > n trong `newcomer_roles`. Phần `city_shares` của #163 không đổi; không AC nào của #163 đổi.

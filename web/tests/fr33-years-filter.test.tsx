@@ -9,6 +9,7 @@ import { DEFAULT_YEARS, YEARS_OPTIONS, yearsLabel } from "@/lib/labels";
 
 import { buildEnvelope, fakeEnvelope } from "./fixtures/envelopes";
 import { deferred, jsonResponse, routeCityShares } from "./helpers/fetch";
+import { optionLabels, pick, roleSelect, selectedLabel, levelSelect, yearsSelect } from "./helpers/filters";
 
 const LOADING = "Đang tải số liệu…";
 const YEARS_NAMES = [
@@ -46,18 +47,6 @@ function upTo(years: string, opts: { level?: string; role?: string; unstated?: n
   });
 }
 
-function yearsGroup() {
-  return screen.getByRole("group", { name: "Số năm kinh nghiệm" });
-}
-
-function yearsButton(name: string) {
-  return within(yearsGroup()).getByRole("button", { name });
-}
-
-function levelButton(name: string) {
-  return within(screen.getByRole("group", { name: "Cấp bậc" })).getByRole("button", { name });
-}
-
 async function openScreen() {
   const user = userEvent.setup();
   render(<MapScreen />);
@@ -76,21 +65,19 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
 
     expect(DEFAULT_YEARS).toBe("any");
     expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry&years=any");
-    expect(yearsButton("Mọi số năm").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(yearsSelect())).toBe("Mọi số năm");
   });
 
-  it("fr33: đúng sáu lựa chọn theo thứ tự, mỗi lựa chọn một <button aria-pressed> cao 44px", async () => {
+  it("fr33: đúng sáu option theo thứ tự trong một <select> cao 44px, không aria-pressed", async () => {
     routeCityShares({ "all|entry": [entry] });
     await openScreen();
 
-    const buttons = within(yearsGroup()).getAllByRole("button");
-    expect(buttons.map((b) => b.textContent)).toEqual(YEARS_NAMES);
+    expect(optionLabels(yearsSelect())).toEqual(YEARS_NAMES);
+    expect(Array.from(yearsSelect().options).map((o) => o.value)).toEqual(["any", "0", "1", "2", "3", "5"]);
     expect(YEARS_OPTIONS.map((o) => o.code)).toEqual(["any", "0", "1", "2", "3", "5"]);
-    for (const button of buttons) {
-      expect(button.getAttribute("type")).toBe("button");
-      expect(button.hasAttribute("aria-pressed")).toBe(true);
-      expect(button.className).toContain("min-h-target");
-    }
+    expect(yearsSelect().tagName).toBe("SELECT");
+    expect(yearsSelect().hasAttribute("aria-pressed")).toBe(false);
+    expect(yearsSelect().className).toContain("min-h-target");
     expect(yearsLabel("2")).toBe("Tối đa 2 năm");
     expect(yearsLabel("la")).toBe("la");
   });
@@ -99,10 +86,10 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     const fetchMock = routeCityShares({ "all|entry|any": [entry], "all|entry|2": [() => jsonResponse(200, upTo("2"))] });
     const user = await openScreen();
 
-    await user.click(yearsButton("Tối đa 2 năm"));
+    await pick(user, yearsSelect(), "Tối đa 2 năm");
     expect(lastUrl(fetchMock)).toBe("/api/v1/city-shares?role=all&level=entry&years=2");
     expect(await screen.findByRole("button", { name: /^Hà Nội: .*, 120 tin/ })).toBeTruthy();
-    expect(yearsButton("Tối đa 2 năm").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(yearsSelect())).toBe("Tối đa 2 năm");
   });
 
   it("fr33: đổi cấp giữ số năm, đổi vai trò giữ cả hai", async () => {
@@ -114,12 +101,12 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     });
     const user = await openScreen();
 
-    await user.click(yearsButton("Tối đa 3 năm"));
+    await pick(user, yearsSelect(), "Tối đa 3 năm");
     await screen.findByText(/37 tin/);
-    await user.click(levelButton("Senior"));
+    await pick(user, levelSelect(), "Senior");
     expect(lastUrl(fetchMock)).toBe("/api/v1/city-shares?role=all&level=senior&years=3");
     await screen.findByText(/37 tin/);
-    await user.click(within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name: "Backend" }));
+    await pick(user, roleSelect(), "Backend");
     expect(lastUrl(fetchMock)).toBe("/api/v1/city-shares?role=backend&level=senior&years=3");
   });
 
@@ -128,7 +115,7 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     const user = await openScreen();
 
     expect(screen.queryByText(/không ghi số năm kinh nghiệm/)).toBeNull();
-    await user.click(yearsButton("Tối đa 1 năm"));
+    await pick(user, yearsSelect(), "Tối đa 1 năm");
     const note = await screen.findByText(/không ghi số năm kinh nghiệm/);
     expect(note.textContent).toBe("1.234 tin của Tất cả · Mới vào nghề không ghi số năm kinh nghiệm nên không được tính.");
   });
@@ -137,7 +124,7 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     routeCityShares({ "all|entry|any": [entry], "all|entry|2": [() => jsonResponse(200, upTo("2"))] });
     const user = await openScreen();
 
-    await user.click(yearsButton("Tối đa 2 năm"));
+    await pick(user, yearsSelect(), "Tối đa 2 năm");
     await screen.findByText(/37 tin/);
     const caption = screen.getByRole("region", { name: "Nguồn và lưu ý" });
     expect(within(caption).getByText("Bộ lọc")).toBeTruthy();
@@ -155,25 +142,25 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     });
     const user = await openScreen();
 
-    await user.click(yearsButton("Tối đa 1 năm"));
+    await pick(user, yearsSelect(), "Tối đa 1 năm");
     expect(screen.getByRole("status").textContent).toBe(LOADING);
-    await user.click(yearsButton("Tối đa 5 năm"));
+    await pick(user, yearsSelect(), "Tối đa 5 năm");
     await screen.findByRole("button", { name: /^Hà Nội: .*, 300 tin/ });
     await act(async () => {
       slow.resolve(jsonResponse(200, upTo("1", { haNoi: 7 })));
     });
     expect(screen.queryByRole("button", { name: /^Hà Nội: .*, 7 tin\b/ })).toBeNull();
-    expect(yearsButton("Tối đa 5 năm").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(yearsSelect())).toBe("Tối đa 5 năm");
   });
 
-  it("fr33: bộ chọn số năm vẫn ở đó trên lối Bảng và lối danh sách", async () => {
+  it("fr33: ô số năm vẫn ở đó trên lối Bảng và lối danh sách", async () => {
     routeCityShares({ "all|entry": [entry] });
     const user = await openScreen();
 
-    expect(yearsGroup()).toBeTruthy();
+    expect(yearsSelect()).toBeTruthy();
     await user.click(within(screen.getByRole("group", { name: "Lối xem" })).getByRole("button", { name: "Bảng" }));
-    expect(yearsGroup()).toBeTruthy();
-    expect(yearsGroup().className).toContain("flex-wrap");
+    expect(yearsSelect()).toBeTruthy();
+    expect(yearsSelect().className).toContain("w-full");
   });
 });
 
