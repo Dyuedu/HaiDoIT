@@ -80,3 +80,10 @@ Lý do: câu "Hà Nội, TP.HCM và Đà Nẵng chiếm bao nhiêu phần tin tu
 
 - RED: thêm `web/tests/fr33-map-page-intro.test.tsx`; `npx vitest run tests/fr33-map-page-intro.test.tsx` → **1 failed** (`expected 'Hà Nội, TP.HCM và Đà Nẵng chiếm bao n…' to contain 'từng tỉnh, thành'`).
 - GREEN: câu mới "Tin tuyển dụng IT của vai trò bạn chọn chia theo từng tỉnh, thành, làm từ xa và nước ngoài, kèm cỡ mẫu, nguồn và ngày snapshot." Sửa trong lúc GREEN: regex của test tìm "tin" viết thường, câu mới viết hoa "Tin"; đổi sang tìm "tuyển dụng IT của vai trò bạn chọn". `npx vitest run` → **167 passed**; `lint`, `tsc`, `build` sạch.
+
+## Đợt 2026-11-12 — #147 export hàm kiểm hợp đồng của `web/lib/city-shares.ts`
+
+Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`, `isCount`, `readErrorBody`, `isMeta` để màn người mới dùng chung luật đọc envelope. Thân hàm không đổi; `fetchCityShares` không đổi.
+
+- RED: không test nào của issue này đổi kỳ vọng.
+- GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.

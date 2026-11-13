@@ -86,3 +86,10 @@ Lý do: #145, #146 thay bản giữ chỗ `StatMarket.newcomer_roles` (luôn 404
 
 - RED: không test nào của #144 đổi kỳ vọng. Test mới nằm ở `tests/api/test_fr37_newcomer_roles_stat.py` (RED ghi trong `specs/145-doc-so-tin-entry/tdd.md`, `specs/146-tra-so-nguoi-moi/tdd.md`).
 - GREEN: `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` xanh trong lượt `uv run pytest -q` → 959 passed.
+
+## Đợt 2026-11-12 — #147 thêm `fetchNewcomerRoles` vào `web/lib/newcomer-roles.ts`
+
+Lý do: #147 thêm hàm gọi API và kiểm envelope vào `web/lib/newcomer-roles.ts`; kiểu và `rowCounts` của #144 giữ nguyên. Hình response không đổi.
+
+- RED: không test nào của #144 đổi kỳ vọng.
+- GREEN: `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh trong lượt `npx vitest run` → 189 passed.
