@@ -22,3 +22,8 @@
 ## Phase 3: Sau merge
 
 - [ ] T010 Gọi `GET /api/v1/newcomer-roles` trên prod, kiểm 200, 17 dòng, ngày snapshot mới nhất
+
+## Phase 5: Cập nhật 2026-11-13 (#148)
+
+- [x] T011 Test ô hỏng entry > n (đỏ trước khi sửa) trong `tests/api/test_fr37_newcomer_roles_stat.py`
+- [x] T012 Bảo vệ entry > n trong `StatMarket.newcomer_roles`

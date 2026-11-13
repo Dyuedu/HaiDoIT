@@ -40,3 +40,10 @@ cd web && npx vitest run tests/fr37-newcomer-list.test.tsx
   - 360px: 17 dòng, không cuộn ngang (360/360), dòng thấp nhất 96px.
   - 1280px: không cuộn ngang, dòng thấp nhất 49px.
   - Bấm dòng đầu: `/ho-so-ky-nang?role=ai_ml&level=entry`, tiêu đề "Hồ sơ kỹ năng: AI/ML".
+
+## Đợt 2026-11-13 (#148): khóa thêm thứ tự, `role=all`, DEC-6
+
+Lý do: review PR #291 thấy test chưa kiểm thứ tự DOM `null_data` sau `shown`, thứ tự giảm dần, `role=all`, và test DEC-6 chỉ đọc phần tử có `data-testid`. Test DEC-6 cũ được thay bằng hai test duyệt `h1..h6`, `p`, `a`.
+
+- RED: không có, mã sản phẩm của #147 đã đúng. Bằng chứng test cắn là các đột biến ở `specs/148-test-nguoi-moi/tdd.md` (đột biến thứ tự làm đỏ 4–5 test; chữ số trong tiêu đề và `role=all` mỗi cái làm đỏ 1 test).
+- GREEN: `npx vitest run tests/fr37-newcomer-list.test.tsx` → 26 passed; `npm run test` → 13 files, 193 passed; `npm run lint` sạch; `npm run build` xong.

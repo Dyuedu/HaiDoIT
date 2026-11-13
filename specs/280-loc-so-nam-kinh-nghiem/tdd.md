@@ -139,3 +139,10 @@ Lý do: kiểm T020 sau deploy. Không đổi code, chỉ ghi kết quả chạy
   - `data.years_unstated_cell_id = "vn.all.entry.ynone"`, có trong `meta.cells`, `n = 143`.
   - `data.total_cell_id = "vn.all.entry.y1"`, `n = 550`; 22 dòng nơi.
 - Kết quả: T020 đạt.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_roles`; phần `city_shares` không đổi.
+
+- RED: không có, không test nào đổi kỳ vọng.
+- GREEN: `uv run pytest tests/api/test_fr33_city_shares_years.py tests/api/test_dat20_stat_market.py -q` → 45 passed; `cd web && npx vitest run tests/fr33-years-filter.test.tsx` → 11 passed.

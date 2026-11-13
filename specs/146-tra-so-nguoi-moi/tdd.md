@@ -31,3 +31,11 @@ HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5433/ha
 - `uv run pytest -q` (Postgres) → 959 passed.
 - `uv run ruff check .` sạch; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
 - Trên DB local `haido` (bản sao prod, snapshot 12/11): 17 dòng; 16 vai trò có tỷ lệ, đứng đầu là `it_infra` 132/485 (27,2%), `ba_po_pm` 128/791, `qa` 77/292; `data_scientist` 5/28 là `null_data` và đứng cuối.
+
+## Đợt 2026-11-13 (#148): ô hỏng entry > n
+
+Lý do sửa: review PR #291 chỉ ra phép chia `entry_n / total_n` không có bảo vệ. Một ô hỏng làm cả danh sách 17 dòng không đọc được ở web.
+
+- RED: `uv run pytest tests/api/test_fr37_newcomer_roles_stat.py -q` → 3 failed, 12 passed. Hai test đỏ vì `ValidationError` của `Stat` thay vì `RuntimeError` và code `invalid_response` thay vì `internal_error`; một test `DID NOT RAISE` (vai trò dưới ngưỡng, entry 20 > n 12).
+- GREEN: cùng lệnh → 15 passed. `uv run pytest tests/api/test_fr37_newcomer_roles_stat.py tests/deploy/test_gh146_nguoi_moi_doc_snapshot_that.py -q` → 17 passed. `uv run pytest -q` → 964 passed.
+- Chi tiết và đột biến: `specs/148-test-nguoi-moi/tdd.md`.

@@ -24,3 +24,10 @@ HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5433/ha
 - `uv run pytest -q` (Postgres) → 959 passed.
 - `uv run ruff check .` sạch; `tools/gates/check_gates.py` → 8 pass (có AD-7), 2 skip, 0 fail.
 - Số thật: `StatMarket.newcomer_roles` trên DB local `haido` (bản sao prod, snapshot 12/11) cho `it_infra` 132/485, `ba_po_pm` 128/791, `backend` 56/470, `game` 43/99; khớp `n` của ô `vn` mà `GET /api/v1/city-shares?level=entry` của prod trả cùng ngày.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `stat_market.py` và file test chung thêm bảo vệ entry > n (xem `specs/146-tra-so-nguoi-moi/tdd.md`). Không đổi kỳ vọng nào của #145.
+
+- RED: không có, test của #145 không đổi.
+- GREEN: `uv run pytest tests/api/test_fr37_newcomer_roles_stat.py -q` → 15 passed (gồm ba test của #145).

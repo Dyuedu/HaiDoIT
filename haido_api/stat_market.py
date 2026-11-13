@@ -175,6 +175,11 @@ class StatMarket:
             total_cell_id, entry_cell_id = f"{NATIONWIDE}.{role}", f"{NATIONWIDE}.{role}.{ENTRY}"
             cells[total_cell_id] = _cell_meta(total_n, total_mix)
             cells[entry_cell_id] = _cell_meta(entry_n, entry_mix)
+            if entry_n > total_n:
+                raise RuntimeError(
+                    f"stat_cells của snapshot {day.isoformat()} sai: vai trò {role} có {entry_n} tin entry-level "
+                    f"nhiều hơn {total_n} tin của vai trò."
+                )
             display = suppression_for(MeasureKind.LEVEL_SHARE, total_n, min_sample=min_sample)
             value = None if display is DisplayState.NULL_DATA else entry_n / total_n
             share = Stat(value=value, kind=MeasureKind.LEVEL_SHARE, display=display, cell_id=total_cell_id)

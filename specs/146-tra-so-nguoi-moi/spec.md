@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. Cập nhật 2026-11-13 theo #148: thêm cạnh biên entry > n (xem Edge Cases). Không AC nào đổi; phạm vi của AC "Every role is present" được ghi rõ là khi dữ liệu nhất quán (quyết định 2026-11-13).
 
 **Input**: GitHub issue [#146](https://github.com/Dyuedu/HaiDoIT/issues/146) — Return each role's entry-level count, share, and n. Phục vụ story #110 (US-A1). Dùng phép đọc của #145 (`specs/145-doc-so-tin-entry/`), hình response của #144 (`specs/144-hinh-nguoi-moi/`).
 
@@ -33,6 +33,7 @@
 
 - Vai trò mới thêm vào config sau khi snapshot được công bố: có dòng 0 tin cho tới lượt chạy đêm sau.
 - Tỷ lệ chia cho n = 0 không xảy ra: n = 0 luôn dưới ngưỡng nên `null_data`, không tính.
+- Ô hỏng, entry > n (thêm 2026-11-13, #148): `StatMarket.newcomer_roles` ném `RuntimeError` nêu mã vai trò và cả hai số, không cắt tỷ lệ về 1; route trả 500 `internal_error` và log. **Quyết định ngày 2026-11-13 (người dùng chọn phương án A):** một ô hỏng làm cả danh sách trả 500, giống ca vai trò đủ mẫu vốn đã 500 trước đó vì `Stat` từ chối tỷ lệ lớn hơn 1. AC "Every role is present" áp dụng khi `stat_cells` nhất quán; dữ liệu hỏng là lỗi nội bộ cần lộ ra, không ẩn riêng dòng hỏng. Test: `test_fr37_ad17_o_hong_*` trong `tests/api/test_fr37_newcomer_roles_stat.py`.
 
 ## Requirements *(mandatory)*
 
