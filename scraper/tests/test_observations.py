@@ -22,7 +22,7 @@ import dedupe  # noqa: E402
 import ingest  # noqa: E402
 import pipeline  # noqa: E402
 import redact  # noqa: E402
-from crawlers import careerlink, itnavi, itviec, topdev, vietnamworks, zalo  # noqa: E402
+from crawlers import careerlink, itnavi, itviec, momo, topdev, vietnamworks, zalo  # noqa: E402
 from crawlers.base import write_jsonl  # noqa: E402
 from crawlers.polite import USER_AGENT, BlockedError, BudgetExhausted, PoliteClient  # noqa: E402
 
@@ -363,6 +363,73 @@ def test_browser_that_stays_dead_stops_without_writing(workdir, monkeypatch, fak
     name = module.__name__.split(".")[1]
     assert not Path(f"data/raw/{name}.jsonl").exists()
     assert len(seen_doc(name)["job_urls"]) == 30
+
+
+MOMO = "https://momo.careers"
+
+
+def install_momo(monkeypatch, paths, fail=None):
+    """The listing (a browser walk) is stubbed to `paths`; detail pages come from a fake
+    HTTP client. fail: {path: exception} raised when that detail page is fetched."""
+    import contextlib
+
+    @contextlib.contextmanager
+    def browser(headless=True):
+        yield object()
+
+    def detail_html(path):
+        data = {"props": {"pageProps": {"dataJobDetail": {"jobTitle": path, "jobDesc": "<p>mo ta</p>"}}}}
+        return f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(data)}</script>'
+
+    class Client:
+        def __init__(self, **_):
+            pass
+
+        def get(self, url):
+            path = url[len(MOMO):]
+            if fail and path in fail:
+                raise fail[path]
+            return Resp(detail_html(path))
+
+    monkeypatch.setattr(momo, "browser_polite", browser)
+    monkeypatch.setattr(momo, "list_job_paths", lambda ctx, group: (paths, True))
+    monkeypatch.setattr(momo, "PoliteClient", Client)
+
+
+def momo_rows():
+    return [json.loads(line) for line in Path("data/raw/momo.jsonl").read_text(encoding="utf-8").splitlines()]
+
+
+def http_404(path):
+    return requests.HTTPError(f"404 Client Error: Not Found for url: {MOMO}{path}")
+
+
+# #297: a posting removed between the listing and its detail page is skipped, not the end.
+def test_momo_detail_404_is_skipped_and_the_rest_are_saved(workdir, monkeypatch, capsys):
+    paths = ["/jobs/a-1", "/jobs/b-2", "/jobs/c-3"]
+    install_momo(monkeypatch, paths, fail={"/jobs/b-2": http_404("/jobs/b-2")})
+    run_crawler(momo, monkeypatch, "--groups", "G1")
+    assert [r["job_url"] for r in momo_rows()] == [MOMO + "/jobs/a-1", MOMO + "/jobs/c-3"]
+    out = capsys.readouterr().out
+    assert MOMO + "/jobs/b-2" in out
+    assert "saved 2 jobs" in out and "skipped 1" in out
+    assert seen_doc("momo")["listing_complete"] is True
+
+
+def test_momo_block_on_a_detail_page_still_stops_the_run(workdir, monkeypatch):
+    paths = ["/jobs/a-1", "/jobs/b-2", "/jobs/c-3"]
+    install_momo(monkeypatch, paths, fail={"/jobs/b-2": BlockedError("HTTP 429 on x")})
+    run_crawler(momo, monkeypatch, "--groups", "G1")
+    assert [r["job_url"] for r in momo_rows()] == [MOMO + "/jobs/a-1"]
+
+
+def test_momo_many_failures_in_a_row_stop_the_run(workdir, monkeypatch, capsys):
+    paths = [f"/jobs/j-{i}" for i in range(momo.MAX_CONSECUTIVE_FAILURES + 5)]
+    install_momo(monkeypatch, paths, fail={p: requests.ConnectionError("down") for p in paths})
+    run_crawler(momo, monkeypatch, "--groups", "G1")
+    out = capsys.readouterr().out
+    assert f"STOP -- {momo.MAX_CONSECUTIVE_FAILURES} details failed in a row" in out
+    assert out.count("detail https://momo.careers") == momo.MAX_CONSECUTIVE_FAILURES
 
 
 def topdev_html(ids, last, total):
