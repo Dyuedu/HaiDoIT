@@ -50,8 +50,12 @@ def workdir(tmp_path, monkeypatch):
     return tmp_path
 
 
-def fake_itnavi(pages, block_on_page=None):
+def fake_itnavi(pages, block_on_page=None, total=None, repeat_last=False):
+    """pages: {page: [ids]}. total: the "N Việc làm" the site prints, None = not shown.
+    repeat_last: past the last page the site serves the last page again, forever."""
     class Client:
+        requested = []
+
         def __init__(self, **_):
             self.count = 0
 
@@ -61,9 +65,15 @@ def fake_itnavi(pages, block_on_page=None):
                 return Resp(data={"success": True, "data": {
                     "job_id": job_id, "job_slug": f"https://x/{job_id}", "job_content": "<p>d</p>"}})
             page = int(url.split("page=")[1])
+            Client.requested.append(page)
             if page == block_on_page:
                 raise BlockedError("HTTP 403")
-            return Resp(listing(pages.get(page, [])))
+            ids = pages.get(page, [])
+            if not ids and repeat_last:
+                ids = pages[max(pages)]
+            head = "" if total is None else (
+                f'<div class="js-tab__show"><h1 style="font-size: 17px">\n   {total}   \n   Việc làm</h1></div>')
+            return Resp(head + listing(ids))
     return Client
 
 
@@ -104,6 +114,49 @@ def test_itnavi_block_mid_walk_is_an_incomplete_run(workdir, monkeypatch):
     assert doc["job_urls"] == ["https://x/1"]
     assert doc["listing_complete"] is False
     assert "403" in doc["error"]
+
+
+# #296: one page that only repeats ids already seen is the listing order drifting, not the end.
+def test_itnavi_repeated_page_mid_listing_does_not_end_the_walk(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1, 2], 2: [2, 1], 3: [3]}, total=3))
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert "https://x/3" in doc["job_urls"]
+    assert doc["listing_complete"] is True
+
+
+def test_itnavi_site_repeating_its_last_page_ends_after_stale_pages(workdir, monkeypatch):
+    client = fake_itnavi({1: [1, 2], 2: [3]}, total=3, repeat_last=True)
+    monkeypatch.setattr(itnavi, "PoliteClient", client)
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is True
+    assert len(doc["job_urls"]) == 3
+    assert client.requested == list(range(1, 3 + itnavi.STALE_PAGES))
+
+
+def test_itnavi_empty_page_far_short_of_the_shown_total_is_an_incomplete_run(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1, 2]}, total=100))
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is False
+    assert "met 2 of 100" in doc["error"]
+
+
+def test_itnavi_empty_page_after_meeting_the_shown_total_is_complete(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1, 2], 2: [3]}, total=3))
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is True
+    assert doc["error"] is None
+
+
+def test_itnavi_page_cap_is_still_an_incomplete_run(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1], 2: [2], 3: [3]}))
+    run_crawler(itnavi, monkeypatch, "--pages", "2")
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is False
+    assert "hit --pages 2" in doc["error"]
 
 
 def careerlink_page(ids):
