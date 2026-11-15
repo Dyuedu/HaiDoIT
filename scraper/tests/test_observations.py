@@ -524,6 +524,72 @@ def test_topdev_zero_results_that_persist_are_an_incomplete_run(workdir, monkeyp
     assert "no results" in doc["error"]
 
 
+# #298: a dropped connection on one listing page is retried, with a growing wait.
+def drops_connection_on(page_no, times, exc=None):
+    class Client(fake_topdev([IT_PAGE], MIXED_PAGES)):
+        left = times
+        calls = 0
+
+        def get(self, url):
+            if "job_categories_ids" not in url and url.endswith(f"page={page_no}"):
+                Client.calls += 1
+                if Client.left:
+                    Client.left -= 1
+                    raise exc or requests.ConnectionError(
+                        "('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))")
+            return super().get(url)
+    return Client
+
+
+@pytest.fixture
+def sleeps(monkeypatch):
+    waits = []
+    monkeypatch.setattr(topdev.time, "sleep", waits.append)
+    return waits
+
+
+def test_topdev_dropped_connection_is_retried_and_the_walk_goes_on(workdir, monkeypatch, sleeps, capsys):
+    monkeypatch.setattr(topdev, "PoliteClient", drops_connection_on(2, 2))
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    doc = seen_doc("topdev")
+    assert TD + "Backend Developer-3" in doc["job_urls"]
+    assert doc["listing_complete"] is True
+    assert sleeps == [topdev.CONNECT_WAIT, topdev.CONNECT_WAIT * 2]
+    out = capsys.readouterr().out
+    assert "https://topdev.vn/jobs/search?page=2" in out and "attempt 1/" in out and "attempt 2/" in out
+
+
+def test_topdev_timeout_is_retried_too(workdir, monkeypatch, sleeps):
+    monkeypatch.setattr(topdev, "PoliteClient", drops_connection_on(2, 1, requests.Timeout("read timed out")))
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    assert seen_doc("topdev")["listing_complete"] is True
+
+
+def test_topdev_connection_that_stays_down_is_an_incomplete_run(workdir, monkeypatch, sleeps):
+    client = drops_connection_on(2, 99)
+    monkeypatch.setattr(topdev, "PoliteClient", client)
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    doc = seen_doc("topdev")
+    assert doc["listing_complete"] is False
+    assert "Connection reset" in doc["error"]
+    assert client.calls == topdev.CONNECT_TRIES
+
+
+def test_topdev_block_is_never_retried(workdir, monkeypatch, sleeps):
+    class Client(fake_topdev([IT_PAGE], MIXED_PAGES, block_listing_page=2)):
+        calls = 0
+
+        def get(self, url):
+            if "job_categories_ids" not in url and url.endswith("page=2"):
+                Client.calls += 1
+            return super().get(url)
+
+    monkeypatch.setattr(topdev, "PoliteClient", Client)
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    assert Client.calls == 1
+    assert sleeps == []
+
+
 def test_vietnamworks_page_cap_is_an_incomplete_run(workdir, monkeypatch):
     class Client:
         def __init__(self, **_):

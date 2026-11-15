@@ -10,6 +10,10 @@ So every run walks the IT category and the whole listing, and only kept jobs get
 details and observations. The end of a listing is `last_page` from the page data,
 never an empty page: past the end the site keeps returning jobs. A walk counts as
 complete only if it also met nearly all of the `total` the site reports.
+
+A dropped connection or a timeout on a listing page is retried CONNECT_TRIES times
+in all, waiting CONNECT_WAIT, then twice that, and so on, before the walk gives up
+(#298). A refusal from the site (BlockedError) is never retried.
 """
 
 import argparse
@@ -31,6 +35,9 @@ MAX_PAGES = 1000
 MAX_CONSECUTIVE_FAILURES = 10
 ZERO_RESULT_TRIES = 3
 ZERO_RESULT_WAIT = 30
+CONNECT_TRIES = 4
+CONNECT_WAIT = 30
+RETRYABLE = (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError)
 IT_KEYWORDS = re.compile(
     r"(?i)\b(developer|engineer|lập trình|phần mềm|software|backend|back-end|frontend|front-end"
     r"|fullstack|full-stack|devops|data|an ninh mạng|security|cntt|công nghệ thông tin|it|tester"
@@ -130,11 +137,26 @@ def page_meta(html: str) -> tuple[int | None, int | None]:
     return (int(last.group(1)) if last else None, int(total.group(1)) if total else None)
 
 
+def get_listing_page(client, url: str) -> str:
+    """The page's HTML, retrying a dropped connection with a growing wait."""
+    for attempt in range(1, CONNECT_TRIES + 1):
+        try:
+            return client.get(url).text
+        except RETRYABLE as exc:
+            if attempt == CONNECT_TRIES:
+                raise
+            wait = CONNECT_WAIT * 2 ** (attempt - 1)
+            print(f"{url}: {str(exc)[:120]}; attempt {attempt}/{CONNECT_TRIES} failed, retrying in {wait}s",
+                  flush=True)
+            time.sleep(wait)
+    raise AssertionError("unreachable")
+
+
 def fetch_results_page(client, url: str) -> tuple[str, int, int]:
     """A page that really has results. The site now and then answers "0 positions",
     last_page 0, with unrelated suggested jobs; that is a hiccup, not the end."""
     for attempt in range(ZERO_RESULT_TRIES):
-        html = client.get(url).text
+        html = get_listing_page(client, url)
         last, total = page_meta(html)
         if last and total:
             return html, last, total
