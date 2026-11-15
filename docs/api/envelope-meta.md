@@ -306,7 +306,7 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `learning-path?role=data_engineer&level=entry` | Sẵn sàng nhưng mọi `rate` là `null_data`, `group = null`: ô entry n = 4 và `vn.data_engineer` n = 22 đều dưới 30; `cell_id = vn.data_engineer`, `fallback_label` giải thích |
 | `learning-path?role=qa` | 200 `not_ready` (mọi vai trò khác của config); `ai_ml&level=entry` cũng `not_ready` nhưng có `skill-rates` để mở hồ sơ |
 | `learning-path?role=backend&level=senior` | 404 `unknown_cell` (bản giả chỉ có ô `entry` và `intern` của backend, như `skill-rates`); `data_engineer&level=senior` cũng 404 vì ô đó không phủ hết kỹ năng của lộ trình |
-| `newcomer-roles` | 10 vai trò: 6 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_engineer` dưới 30; `other` không có tin |
+| `newcomer-roles` | 17 vai trò: 12 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_scientist`, `data_engineer` dưới 30; `other` không có tin |
 
 ## Chạy và chọn nguồn
 

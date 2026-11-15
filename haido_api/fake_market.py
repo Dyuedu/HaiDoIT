@@ -1,5 +1,8 @@
 """Bản giả của `MarketReadModel`: đọc `fixtures/fake_market.json`.
 
+`learning_path` (#212) đọc thêm `fixtures/fake_learning_path.json` (đồ thị và lời dẫn); tỷ lệ của
+từng kỹ năng lấy từ `skill_rates` của `fake_market.json`, nên lộ trình và `/skill-rates` luôn khớp.
+
 Fixture chỉ chứa số thô: `n` của từng ô, giá trị tỷ trọng/tỷ lệ, ngưỡng. Mọi trạng thái hiển
 thị (`display`, `insufficient_by_measure`) do `suppression_for` tính từ `n` và
 `thresholds.min_sample` của fixture; dưới ngưỡng thì bản giả tự ẩn giá trị.
