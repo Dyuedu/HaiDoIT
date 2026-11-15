@@ -117,3 +117,15 @@ Không có vi phạm cần biện minh.
 - `haido_api/fixtures/fake_market.json`: mã trong `skill_rates` đổi sang snake_case, thêm và đổi hàng `skill_rates` (đợt 2: `data_engineer/entry` về `vn.data_engineer`, thêm `backend/intern`). Không đụng `cells` hay `newcomer_roles`.
 - `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm route `learning-path` và ngoại lệ `Ordinal`.
 - `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `test_fr33_city_shares_level.py`, `tests/steps/test_dat20_api_end_to_end.py`: thêm nguồn `learning_path` vào các lời gọi `create_app`, thêm route vào `SAMPLE_QUERY` và danh sách yêu cầu của test `display`.
+
+## Cập nhật 2026-11-13 theo #293
+
+`level-chips.tsx` bị xóa; ô Cấp bậc là `FilterSelect` (`filter-select.tsx`) dựng trong `map-screen.tsx` với `LEVEL_OPTIONS`, dòng chú thích "Mới vào nghề gồm Intern, Fresher và Junior." là prop `note` nối `aria-describedby`. `web/tests/fr33-level-filter.test.tsx`, `web/tests/fr33-map-screen.test.tsx` và `tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` đổi theo. Xem `specs/293-bo-loc-dropdown/`.
+
+## Ghi chú 2026-11-13 (#148)
+
+`haido_api/stat_market.py` thêm bảo vệ entry > n trong `newcomer_roles`. Phần `city_shares` của #163 không đổi; không AC nào của #163 đổi.
+
+## Ghi chú 2026-11-15 (gộp main vào #212)
+
+Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.

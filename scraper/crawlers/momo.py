@@ -4,6 +4,10 @@ The listing loads 12 at a time; the rest load on "Xem them" click via a signed
 API. So listing is read from the DOM of a headless browser (honest UA) that
 clicks "Xem them" like a visitor would. Each job page is server-rendered: its
 __NEXT_DATA__ holds the full job, fetched with a plain HTTP request.
+
+A detail page that fails (a posting taken down between the listing and its page
+answers 404) is logged and skipped (#297). A refusal from the site still stops
+the run, and so do MAX_CONSECUTIVE_FAILURES failures in a row (the network is down).
 """
 
 import argparse
@@ -21,6 +25,7 @@ from crawlers.polite import BlockedError, PoliteClient
 BASE = "https://momo.careers"
 LIST_URL = f"{BASE}/jobs-opening"
 DEFAULT_GROUPS = "DGM.0001,DGM.0002"
+MAX_CONSECUTIVE_FAILURES = 10
 NEXT_DATA = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 
 
@@ -99,20 +104,32 @@ def main() -> None:
         print(f"STOP -- {error}", flush=True)
     write_seen("momo", seen, complete, error=error)
 
+    skipped = failures = 0
     try:
         for url in seen:
-            resp = client.get(url)
+            try:
+                resp = client.get(url)
+            except requests.RequestException as exc:
+                print(f"detail {url}: {str(exc)[:160]}", flush=True)
+                skipped += 1
+                failures += 1
+                if failures >= MAX_CONSECUTIVE_FAILURES:
+                    print(f"STOP -- {failures} details failed in a row", flush=True)
+                    break
+                continue
+            failures = 0
             m = NEXT_DATA.search(resp.text)
             detail = json.loads(m.group(1))["props"]["pageProps"].get("dataJobDetail") if m else None
             if not detail:
                 print(f"  no job data: {url}", flush=True)
+                skipped += 1
                 continue
             write_jsonl(out, [parse_job(url, detail)])
             total += 1
-    except (BlockedError, requests.RequestException) as exc:
+    except BlockedError as exc:
         print(f"STOP -- {exc}", flush=True)
 
-    print(f"saved {total} jobs to {out}")
+    print(f"saved {total} jobs to {out}, skipped {skipped}")
 
 
 if __name__ == "__main__":

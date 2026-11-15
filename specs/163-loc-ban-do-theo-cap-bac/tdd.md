@@ -134,3 +134,78 @@ Lý do: #212 thêm phép `learning_path` vào `create_app`, đổi mã kỹ năn
   - `uv run pytest -q tests/api/test_fr33_city_shares_level.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py tests/api/test_dat20_stat_market.py tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 116 passed.
   - `npx vitest run tests/fr33-level-filter.test.tsx tests/fr33-map-screen.test.tsx tests/ad17-city-shares-client.test.ts` → 104 passed.
 - GREEN: `uv run pytest -q` (có Postgres) → 862 passed, không skip; hai lượt `-m determinism` (`PYTHONHASHSEED=0` và `1`) → 7 passed mỗi lượt; web `npm run test` → 164 passed.
+
+## Đợt 9 — 2026-11-12, #280 thêm chiều số năm kinh nghiệm
+
+Lý do: #280 thêm mốc số năm vào ô và tỷ trọng (cột `years` trong khóa của `stat_cells`, `stat_city_shares`; migration 0006), tham số `years` của `GET /api/v1/city-shares`, và web gửi `years` cùng `level`. Hành vi của #163 ở `years = any` không đổi.
+
+- RED: sau khi có code của #280, `uv run pytest -q` → các test của #163 đỏ vì (1) helper đọc `stat_*` theo (vai trò, cấp, phạm vi) nay có 6 hàng (`too many values to unpack`), (2) số hàng chưa nhân 6 mã số năm, (3) head Alembic là 0006, (4) seed `INSERT` không nêu `years` (`NotNullViolation`), (5) test double `city_shares(role, level)` không nhận `years` (500), (6) bản giả có khóa `entry.y1`. Web: `fr33-level-filter.test.tsx` 4 failed, `fr33-map-screen.test.tsx` 2 failed (URL thiếu `&years=any`, thứ tự Tab có thêm nút số năm).
+- Sửa: chỉ test (đọc hàng `years = 'any'`, nhân số hàng, head 0006, seed nêu `years`/`years_unstated`, test double nhận `years`, so khóa cấp của bản giả, URL có `&years=any`, Tab có sáu nút số năm). Không sửa code của #163 ngoài chỗ #280 nối thêm `years`.
+- GREEN: `uv run pytest -q` → 770 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npx vitest run` → 160 passed; `lint`, `tsc`, `build` sạch; cổng 0 failed.
+
+## Đợt 2026-11-12 — #145, #146 thêm phép đọc người mới vào `stat_market.py`
+
+Lý do: #145, #146 thêm `StatMarket.newcomer_roles`, `_national_cells`, `_cell_meta` và hằng `ENTRY` vào `haido_api/stat_market.py`. `city_shares` và các hàm `_latest_readable`, `_shares`, `_cells`, `_sources` không đổi; `newcomer_roles` dùng lại `_latest_readable(conn, "entry")`.
+
+- RED: không test nào của issue này đổi kỳ vọng.
+- GREEN: `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_fr33_city_shares_years.py` xanh trong lượt `uv run pytest -q` (Postgres) → 959 passed.
+
+## Đợt 2026-11-12 — #147 export hàm kiểm hợp đồng của `web/lib/city-shares.ts`
+
+Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`, `isCount`, `readErrorBody`, `isMeta` để màn người mới dùng chung luật đọc envelope. Thân hàm không đổi; `fetchCityShares` không đổi.
+
+- RED: không test nào của issue này đổi kỳ vọng.
+- GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.
+
+## Đợt 10 — 2026-11-13, #283 phân loại cấp ở bước ingest
+
+Lý do: #283 thay luật cấp trong `haido_core/domain/classify.py` (đọc từ `config/classify.toml`): chữ cấp của nguồn → chức
+danh → số năm theo bảng #134 → không xác định; "Product Manager" không phải cấp Lead; "Experienced (non-manager)" của
+VietnamWorks không cho cấp. Bước `aggregate` dùng nhãn đã lưu ở `job_posting_facts`. Mã cấp và nhóm `entry` không đổi; tỷ lệ
+"không xác định cấp" trên snapshot 12/11 của bản sao giảm từ 68,4% xuống 13,3%. Không AC nào của #163 đổi.
+
+- RED: `test_fr33_migration_0005_noi_tiep_0004_va_la_head_duy_nhat` đỏ vì head là 0007; các test khác của #163 không đổi.
+- GREEN: `tests/steps/test_fr33_aggregate_level_step.py`, `tests/db/test_fr33_stat_city_shares_level.py`,
+  `tests/api/test_fr33_city_shares_level.py` xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 11 — 2026-11-13, #284 thêm bảy vai trò
+
+Lý do: #284 thêm bảy mã vai trò vào `config/rules.toml` và `web/lib/labels.ts`; bộ lọc cấp áp cho mọi vai trò như cũ. Bản giả có city-shares `all` và `entry` cho bảy mã mới (test `test_gh163_ban_gia_chi_co_cap_all_va_entry_la_ma_trong_config` đòi cả hai cấp). Không AC nào của #163 đổi.
+
+- RED: `test_gh163_ban_gia_chi_co_cap_all_va_entry_la_ma_trong_config` đỏ khi bản giả mới chỉ có `all` cho mã mới; thứ tự Tab trong `fr33-map-screen.test.tsx` có thêm bảy nút.
+- GREEN: thêm khối `entry`; `uv run pytest -q` → 908 passed; `npx vitest run` → 163 passed.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (mỗi (vai trò, cấp) có hàng của 6 nơi luôn có và tỉnh có tin, không còn `other`). Không AC nào của issue này đổi.
+
+- RED: các test đếm 5 hàng thành phố mỗi cấp, test head 0005, test seed API dùng `other` đỏ.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Đợt 2026-11-13 — #293 bộ chọn cấp bậc thành `<select>`
+
+Lý do: #293 đổi hàng nút `aria-pressed` thành `<select>` có nhãn. Không AC nào của #163 đổi (mặc định `entry`, đổi cấp cập nhật bảng và biểu đồ cùng lúc, mẫu nhỏ làm mờ như cũ).
+
+- RED: `web/tests/fr33-level-filter.test.tsx` 19/20 đỏ (`Unable to find an accessible element with the role "combobox" and name "Cấp bậc"`); `tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` 1 đỏ (`level-chips.tsx` đã xóa).
+- GREEN: `fr33-level-filter` 20/20 xanh; test deploy 6/6 xanh; `npx vitest run` → 197 passed, `uv run pytest -q tests/deploy` → 58 passed. Chi tiết ở `specs/293-bo-loc-dropdown/tdd.md`.
+
+## Đợt 2026-11-13 — #293 sửa theo review
+
+Lý do: dòng chú thích "Mới vào nghề gồm Intern, Fresher và Junior." thành hằng `LEVEL_ENTRY_NOTE` trong `web/lib/labels.ts`; test deploy đọc hằng đó theo dòng `export const` thay cho regex trên `map-screen.tsx`. Test bàn phím của `fr33-level-filter` đổi tên cho đúng việc nó làm (Tab tới ô rồi chọn) và bỏ hai assert thừa. Không AC nào của #163 đổi. Dòng "test deploy 5/5" ở đợt trên là sai số: file có 6 test.
+
+- Đột biến: đổi hằng thành "…Intern, Fresher, Junior và Mid." → `test_gh163_dong_chu_thich_...` đỏ (1 failed, 5 passed); thêm `mid` vào `entry` của `config/rules.toml` → 2 failed, 4 passed. Đã hoàn lại cả hai.
+- GREEN: `uv run pytest -q tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 6 passed; `fr33-level-filter` xanh.
+
+## Đợt 2026-11-13 (#148)
+
+Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_roles`; phần `city_shares` không đổi.
+
+- RED: không có, không test nào đổi kỳ vọng.
+- GREEN: `uv run pytest tests/api/test_fr33_city_shares_level.py tests/api/test_dat20_stat_market.py -q` → 51 passed; `cd web && npx vitest run tests/fr33-level-filter.test.tsx` → 20 passed.
+
+## Đợt 2026-11-15 — gộp main vào #212
+
+Lý do: `fake_market.json` `skill_rates` đổi; `fake_market.py` giữ `city_shares` có `years` của #280. Hành vi của #163 không đổi.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr33_city_shares_level.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py tests/api/test_dat20_stat_market.py tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 131 passed; toàn bộ `uv run pytest -q` → 1113 passed, web `npm run test` → 221 passed.

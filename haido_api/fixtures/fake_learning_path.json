@@ -241,6 +241,32 @@
           "foundation": false,
           "blurb": "Quy trình lấy, biến đổi và nạp dữ liệu; cần Python và SQL.",
           "resource": {
+            "title": "Extract, transform, load (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Extract,_transform,_load"
+          }
+        },
+        {
+          "skill": "spark",
+          "requires": [
+            "python",
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Công cụ xử lý dữ liệu lớn phân tán; viết phép biến đổi bằng Python và SQL trên cụm hoặc máy cá nhân.",
+          "resource": {
+            "title": "Apache Spark: Quick Start",
+            "url": "https://spark.apache.org/docs/latest/quick-start.html"
+          }
+        },
+        {
+          "skill": "airflow",
+          "requires": [
+            "python",
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Công cụ lập lịch và điều phối các bước xử lý dữ liệu thành một quy trình chạy đều đặn.",
+          "resource": {
             "title": "Xây dựng pipeline dữ liệu với Apache Airflow",
             "url": "https://airflow.apache.org/docs/apache-airflow/stable/tutorial/pipeline.html"
           }

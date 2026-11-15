@@ -13,6 +13,15 @@ API không đọc).
 Mỗi vai trò có thêm ô và tỷ trọng thành phố cho từng cấp bậc lọc được của bản đồ (#163): `all`, nhóm `entry` và từng
 cấp, theo `level_options` và `level_groups` trong `config/rules.toml`. Cột `seniority` của hai bảng là mã cấp lọc.
 
+Ngoài ra mỗi (vai trò, cấp lọc) có bộ ô và tỷ trọng cho từng mốc số năm kinh nghiệm (#280): `any` và từng mốc của
+`years_options`; số năm của cụm lấy từ tin đại diện như nhãn. Cột `years` của hai bảng là mã số năm, và
+`stat_cells.years_unstated` là số cụm không ghi số năm.
+
+Từ #283 vai trò và cấp lấy từ nhãn đã lưu ở `job_posting_facts` khi `classify_version` khớp luật hiện tại (gán ở
+bước `ingest`, lúc văn bản JD còn trong bộ nhớ). Dữ kiện không có nhãn của luật hiện tại thì phân loại ngay từ trường
+đóng (chức danh, chữ cấp, địa điểm), không đọc JD. Thành phố vẫn phân loại từ chữ địa điểm. Nhãn mới chưa có mã
+hiển thị được báo cáo như nhãn cũ theo `report_as` của `config/classify.toml` (#284 bỏ bảng này).
+
 `stat_sources` là các nguồn có ít nhất một tin được đếm trong cửa sổ của S (#259, DEC-12), không phải
 các nguồn có lượt chạy ở S. API đọc danh sách này theo khóa.
 
@@ -28,17 +37,17 @@ from datetime import date
 
 from sqlalchemy import Engine
 
-from haido_core.config import RulesConfig
+from haido_core.config import RulesConfig, load_classify_config
 from haido_core.db import snapshot_store
 from haido_core.domain.aggregate import aggregate_city_shares, sources_in_window
 from haido_core.domain.classify import (
+    ClassifyConfig,
     RuleClassifier,
     counts_in_aggregate,
-    default_classify_config,
 )
 from haido_core.domain.cluster import ClusterMember, collapse_clusters
 from haido_core.domain.population import CountedPosting
-from haido_core.domain.registry import PostingFacts
+from haido_core.domain.registry import Classification, PostingFacts
 from haido_core.steps.common import SnapshotClosedError, StepError, parse_snapshot_id
 
 
@@ -61,9 +70,21 @@ def _code(table: dict[str, str], kind: str, name: str, label: str) -> str:
     return code
 
 
-def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) -> AggregateResult:
+def _stored_or_fresh(
+    fact: snapshot_store.FactVersion, fresh: Classification, cfg: ClassifyConfig
+) -> Classification:
+    """Nhãn đã lưu ở ingest nếu cùng phiên bản luật; không thì nhãn vừa phân loại từ trường đóng. Thành phố luôn mới."""
+    if fact.classify_version != cfg.version or fact.role is None or fact.seniority is None:
+        return fresh
+    return Classification(role=fact.role, branch=fact.branch, seniority=fact.seniority, city=fact.city or fresh.city)
+
+
+def aggregate_snapshot(
+    snapshot_id: str, *, engine: Engine, rules: RulesConfig, classify: ClassifyConfig | None = None
+) -> AggregateResult:
     day = parse_snapshot_id(snapshot_id)
-    classifier = RuleClassifier(default_classify_config())
+    cfg = classify or load_classify_config()
+    classifier = RuleClassifier(cfg)
     with engine.begin() as conn:
         status = snapshot_store.lock_status(conn, day)
         if status is None:
@@ -105,25 +126,32 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
         by_id = {member.posting_id: member for member in members}
         clusters = collapse_clusters(members, source_rank=rules.source_priority)
         rep_inputs = []
+        rep_years: list[float | None] = []
+        rep_facts = []
         for cluster in clusters:
             rep = by_id[cluster.representative_id]
             fact = facts.get(int(rep.posting_id), empty)
             level_text = " ".join(part for part in (fact.job_level, fact.experience_level) if part)
-            rep_inputs.append(PostingFacts(fact.title or "", rep.source, None, level_text or None, fact.location_text))
-        results = classifier.classify(rep_inputs)
-        assert isinstance(results, tuple)
+            rep_inputs.append(PostingFacts(fact.title or "", rep.source, None, level_text or None, fact.location_text,
+                                           years_min=fact.years_min))
+            rep_years.append(fact.years_min)
+            rep_facts.append(fact)
+        fresh = classifier.classify(rep_inputs)
+        assert isinstance(fresh, tuple)
+        results = tuple(_stored_or_fresh(f, r, cfg) for f, r in zip(rep_facts, fresh, strict=True))
         counted = []
         source_rows: list[tuple[str, date]] = []
-        for cluster, result in zip(clusters, results, strict=True):
+        for cluster, result, years_min in zip(clusters, results, rep_years, strict=True):
             if not counts_in_aggregate(result):
                 continue
             counted.append(
                 CountedPosting(
                     cluster_id=cluster.cluster_id,
                     last_seen=max(last_seen[member_id] for member_id in cluster.member_ids),
-                    role=_code(rules.role_codes, "vai trò", "role", result.role),
+                    role=_code(rules.role_codes, "vai trò", "role", cfg.report_as.get(result.role, result.role)),
                     city=_code(rules.city_codes, "thành phố", "city", result.city),
                     seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
+                    years_min=years_min,
                 )
             )
             for member_id in cluster.member_ids:
@@ -138,6 +166,8 @@ def aggregate_snapshot(snapshot_id: str, *, engine: Engine, rules: RulesConfig) 
                 window_days=rules.window_days,
                 level_options=rules.level_options,
                 level_groups=rules.level_groups,
+                years_options=rules.years_options,
+                always_cities=rules.always_cities,
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc

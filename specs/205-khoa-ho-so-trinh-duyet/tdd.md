@@ -73,3 +73,19 @@ Lý do: #212 thêm phép `learning_path` vào `create_app`, đổi mã kỹ năn
   - `uv run pytest -q tests/core/test_fr13_skill_seed.py tests/api/test_fr13_skills_route.py tests/api/test_ad17_routes.py` → 54 passed.
   - `npx vitest run tests/ad23-haido-keys.test.ts` → 9 passed.
 - GREEN: `uv run pytest -q` (có Postgres) → 862 passed, không skip; hai lượt `-m determinism` (`PYTHONHASHSEED=0` và `1`) → 7 passed mỗi lượt; web `npm run test` → 164 passed.
+
+## Đợt 2026-11-13 — #283 mở rộng từ vựng kỹ năng
+
+Lý do: #283 dùng `skills_seed.json` làm từ vựng quét JD: giữ 100 mã cũ (hồ sơ đã lưu, link đã chia sẻ không hỏng), thêm 125
+mã và bí danh tiếng Việt, thêm khóa `composites`, `scan_skip`; `skills.py` có thêm `load_vocabulary()`.
+
+- RED: `test_fr13_danh_sach_moi_du_va_ma_hop_le` đỏ vì trần 150 mã (nay 225); sửa trần thành 400. Các test khác của #205
+  (định dạng mã, tên song ngữ, bí danh không trỏ hai mã, "học máy" → `machine_learning`, không có tên vai trò) xanh.
+- GREEN: `tests/core/test_fr13_skill_seed.py`, `tests/api/test_fr13_skills_route.py` xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 2026-11-15 — gộp main vào #212
+
+Lý do: `fake_market.json` `skill_rates` dùng lại `pandas`, `spark`, `airflow` (đều có trong `skills_seed.json` 225 mã của #283). Hành vi của #205 không đổi.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/core/test_fr13_skill_seed.py tests/api/test_fr13_skills_route.py tests/api/test_ad17_routes.py` → 69 passed; `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts tests/ad23-haido-keys.test.ts` → 14 passed; toàn bộ `uv run pytest -q` → 1113 passed.

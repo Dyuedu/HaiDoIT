@@ -219,7 +219,7 @@ def test_fr24_doi_tu_backend_sang_data_engineer_giao_cua_ho_so_voi_lo_trinh(
     flagged = sorted(s["skill"] for _, s in _skills(body) if s["have"])
     assert flagged == ["git", "sql"]
     assert data["have_on_path"] == 2
-    assert data["path_size"] == 11
+    assert data["path_size"] == 13
     assert data["have_ignored"] == ["java"]
     assert data["current_stage"] == 1
     assert data["status"] == "ready"

@@ -22,7 +22,7 @@ import dedupe  # noqa: E402
 import ingest  # noqa: E402
 import pipeline  # noqa: E402
 import redact  # noqa: E402
-from crawlers import careerlink, itnavi, itviec, topdev, vietnamworks, zalo  # noqa: E402
+from crawlers import careerlink, itnavi, itviec, momo, topdev, vietnamworks, zalo  # noqa: E402
 from crawlers.base import write_jsonl  # noqa: E402
 from crawlers.polite import USER_AGENT, BlockedError, BudgetExhausted, PoliteClient  # noqa: E402
 
@@ -50,8 +50,12 @@ def workdir(tmp_path, monkeypatch):
     return tmp_path
 
 
-def fake_itnavi(pages, block_on_page=None):
+def fake_itnavi(pages, block_on_page=None, total=None, repeat_last=False):
+    """pages: {page: [ids]}. total: the "N Việc làm" the site prints, None = not shown.
+    repeat_last: past the last page the site serves the last page again, forever."""
     class Client:
+        requested = []
+
         def __init__(self, **_):
             self.count = 0
 
@@ -61,9 +65,15 @@ def fake_itnavi(pages, block_on_page=None):
                 return Resp(data={"success": True, "data": {
                     "job_id": job_id, "job_slug": f"https://x/{job_id}", "job_content": "<p>d</p>"}})
             page = int(url.split("page=")[1])
+            Client.requested.append(page)
             if page == block_on_page:
                 raise BlockedError("HTTP 403")
-            return Resp(listing(pages.get(page, [])))
+            ids = pages.get(page, [])
+            if not ids and repeat_last:
+                ids = pages[max(pages)]
+            head = "" if total is None else (
+                f'<div class="js-tab__show"><h1 style="font-size: 17px">\n   {total}   \n   Việc làm</h1></div>')
+            return Resp(head + listing(ids))
     return Client
 
 
@@ -104,6 +114,49 @@ def test_itnavi_block_mid_walk_is_an_incomplete_run(workdir, monkeypatch):
     assert doc["job_urls"] == ["https://x/1"]
     assert doc["listing_complete"] is False
     assert "403" in doc["error"]
+
+
+# #296: one page that only repeats ids already seen is the listing order drifting, not the end.
+def test_itnavi_repeated_page_mid_listing_does_not_end_the_walk(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1, 2], 2: [2, 1], 3: [3]}, total=3))
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert "https://x/3" in doc["job_urls"]
+    assert doc["listing_complete"] is True
+
+
+def test_itnavi_site_repeating_its_last_page_ends_after_stale_pages(workdir, monkeypatch):
+    client = fake_itnavi({1: [1, 2], 2: [3]}, total=3, repeat_last=True)
+    monkeypatch.setattr(itnavi, "PoliteClient", client)
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is True
+    assert len(doc["job_urls"]) == 3
+    assert client.requested == list(range(1, 3 + itnavi.STALE_PAGES))
+
+
+def test_itnavi_empty_page_far_short_of_the_shown_total_is_an_incomplete_run(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1, 2]}, total=100))
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is False
+    assert "met 2 of 100" in doc["error"]
+
+
+def test_itnavi_empty_page_after_meeting_the_shown_total_is_complete(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1, 2], 2: [3]}, total=3))
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is True
+    assert doc["error"] is None
+
+
+def test_itnavi_page_cap_is_still_an_incomplete_run(workdir, monkeypatch):
+    monkeypatch.setattr(itnavi, "PoliteClient", fake_itnavi({1: [1], 2: [2], 3: [3]}))
+    run_crawler(itnavi, monkeypatch, "--pages", "2")
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is False
+    assert "hit --pages 2" in doc["error"]
 
 
 def careerlink_page(ids):
@@ -312,6 +365,73 @@ def test_browser_that_stays_dead_stops_without_writing(workdir, monkeypatch, fak
     assert len(seen_doc(name)["job_urls"]) == 30
 
 
+MOMO = "https://momo.careers"
+
+
+def install_momo(monkeypatch, paths, fail=None):
+    """The listing (a browser walk) is stubbed to `paths`; detail pages come from a fake
+    HTTP client. fail: {path: exception} raised when that detail page is fetched."""
+    import contextlib
+
+    @contextlib.contextmanager
+    def browser(headless=True):
+        yield object()
+
+    def detail_html(path):
+        data = {"props": {"pageProps": {"dataJobDetail": {"jobTitle": path, "jobDesc": "<p>mo ta</p>"}}}}
+        return f'<script id="__NEXT_DATA__" type="application/json">{json.dumps(data)}</script>'
+
+    class Client:
+        def __init__(self, **_):
+            pass
+
+        def get(self, url):
+            path = url[len(MOMO):]
+            if fail and path in fail:
+                raise fail[path]
+            return Resp(detail_html(path))
+
+    monkeypatch.setattr(momo, "browser_polite", browser)
+    monkeypatch.setattr(momo, "list_job_paths", lambda ctx, group: (paths, True))
+    monkeypatch.setattr(momo, "PoliteClient", Client)
+
+
+def momo_rows():
+    return [json.loads(line) for line in Path("data/raw/momo.jsonl").read_text(encoding="utf-8").splitlines()]
+
+
+def http_404(path):
+    return requests.HTTPError(f"404 Client Error: Not Found for url: {MOMO}{path}")
+
+
+# #297: a posting removed between the listing and its detail page is skipped, not the end.
+def test_momo_detail_404_is_skipped_and_the_rest_are_saved(workdir, monkeypatch, capsys):
+    paths = ["/jobs/a-1", "/jobs/b-2", "/jobs/c-3"]
+    install_momo(monkeypatch, paths, fail={"/jobs/b-2": http_404("/jobs/b-2")})
+    run_crawler(momo, monkeypatch, "--groups", "G1")
+    assert [r["job_url"] for r in momo_rows()] == [MOMO + "/jobs/a-1", MOMO + "/jobs/c-3"]
+    out = capsys.readouterr().out
+    assert MOMO + "/jobs/b-2" in out
+    assert "saved 2 jobs" in out and "skipped 1" in out
+    assert seen_doc("momo")["listing_complete"] is True
+
+
+def test_momo_block_on_a_detail_page_still_stops_the_run(workdir, monkeypatch):
+    paths = ["/jobs/a-1", "/jobs/b-2", "/jobs/c-3"]
+    install_momo(monkeypatch, paths, fail={"/jobs/b-2": BlockedError("HTTP 429 on x")})
+    run_crawler(momo, monkeypatch, "--groups", "G1")
+    assert [r["job_url"] for r in momo_rows()] == [MOMO + "/jobs/a-1"]
+
+
+def test_momo_many_failures_in_a_row_stop_the_run(workdir, monkeypatch, capsys):
+    paths = [f"/jobs/j-{i}" for i in range(momo.MAX_CONSECUTIVE_FAILURES + 5)]
+    install_momo(monkeypatch, paths, fail={p: requests.ConnectionError("down") for p in paths})
+    run_crawler(momo, monkeypatch, "--groups", "G1")
+    out = capsys.readouterr().out
+    assert f"STOP -- {momo.MAX_CONSECUTIVE_FAILURES} details failed in a row" in out
+    assert out.count("detail https://momo.careers") == momo.MAX_CONSECUTIVE_FAILURES
+
+
 def topdev_html(ids, last, total):
     links = "".join(f'<a href="/detail-jobs/{t}-{i}">{t}</a>' for i, t in ids)
     return f'{links}<script>x({{\\"last_page\\":{last},\\"total\\":{total}}})</script>'
@@ -402,6 +522,72 @@ def test_topdev_zero_results_that_persist_are_an_incomplete_run(workdir, monkeyp
     doc = seen_doc("topdev")
     assert doc["listing_complete"] is False
     assert "no results" in doc["error"]
+
+
+# #298: a dropped connection on one listing page is retried, with a growing wait.
+def drops_connection_on(page_no, times, exc=None):
+    class Client(fake_topdev([IT_PAGE], MIXED_PAGES)):
+        left = times
+        calls = 0
+
+        def get(self, url):
+            if "job_categories_ids" not in url and url.endswith(f"page={page_no}"):
+                Client.calls += 1
+                if Client.left:
+                    Client.left -= 1
+                    raise exc or requests.ConnectionError(
+                        "('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))")
+            return super().get(url)
+    return Client
+
+
+@pytest.fixture
+def sleeps(monkeypatch):
+    waits = []
+    monkeypatch.setattr(topdev.time, "sleep", waits.append)
+    return waits
+
+
+def test_topdev_dropped_connection_is_retried_and_the_walk_goes_on(workdir, monkeypatch, sleeps, capsys):
+    monkeypatch.setattr(topdev, "PoliteClient", drops_connection_on(2, 2))
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    doc = seen_doc("topdev")
+    assert TD + "Backend Developer-3" in doc["job_urls"]
+    assert doc["listing_complete"] is True
+    assert sleeps == [topdev.CONNECT_WAIT, topdev.CONNECT_WAIT * 2]
+    out = capsys.readouterr().out
+    assert "https://topdev.vn/jobs/search?page=2" in out and "attempt 1/" in out and "attempt 2/" in out
+
+
+def test_topdev_timeout_is_retried_too(workdir, monkeypatch, sleeps):
+    monkeypatch.setattr(topdev, "PoliteClient", drops_connection_on(2, 1, requests.Timeout("read timed out")))
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    assert seen_doc("topdev")["listing_complete"] is True
+
+
+def test_topdev_connection_that_stays_down_is_an_incomplete_run(workdir, monkeypatch, sleeps):
+    client = drops_connection_on(2, 99)
+    monkeypatch.setattr(topdev, "PoliteClient", client)
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    doc = seen_doc("topdev")
+    assert doc["listing_complete"] is False
+    assert "Connection reset" in doc["error"]
+    assert client.calls == topdev.CONNECT_TRIES
+
+
+def test_topdev_block_is_never_retried(workdir, monkeypatch, sleeps):
+    class Client(fake_topdev([IT_PAGE], MIXED_PAGES, block_listing_page=2)):
+        calls = 0
+
+        def get(self, url):
+            if "job_categories_ids" not in url and url.endswith("page=2"):
+                Client.calls += 1
+            return super().get(url)
+
+    monkeypatch.setattr(topdev, "PoliteClient", Client)
+    run_crawler(topdev, monkeypatch, "--skip-details")
+    assert Client.calls == 1
+    assert sleeps == []
 
 
 def test_vietnamworks_page_cap_is_an_incomplete_run(workdir, monkeypatch):

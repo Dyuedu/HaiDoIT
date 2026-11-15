@@ -105,3 +105,32 @@ cd web && npx vitest run tests/fr22-learning-path-fixture.test.ts
 - `retryable` của lộ trình khác `city-shares`: 422 `invalid_query` cũng không thử lại (theo yêu cầu F8); `city-shares` chỉ loại `unknown_cell`. Không đổi `city-shares`.
 - Tên công nghệ chỉ được che khi khớp nguyên từ; "Java 17 năm" vẫn qua vì "Java 17" là đúng một tên công nghệ. Số viết bằng chữ ngoài phạm vi.
 - Tỷ lệ của `vn.backend` (157 tin) trong `fake_market.json` là số giả do đợt 2 đặt, nhóm theo θ.
+
+## Đợt 3 — 2026-11-15 — gộp main, đưa spark/airflow/pandas trở lại
+
+Lý do: gộp `origin/main` (64cc4b8, trước đó 30 commit: #280, #283, #284, #285, #145/#146/#147/#148, #290, #293, các sửa crawler) vào nhánh bằng một commit merge, không rebase. Từ #283 `haido_core/vocab/skills_seed.json` có 225 mã, gồm `spark`, `airflow`, `pandas` (đã kiểm), nên bản giả bỏ cách thay tạm của đợt 1.
+
+### Xung đột (9) và cách giải
+
+- `haido_api/stat_market.py`: giữ `newcomer_roles` thật và bảo vệ entry > n của main, giữ `learning_path` ném `UnknownCell` (chờ #216); docstring nêu cả hai.
+- `haido_api/fake_market.py`: giữ `CitySharesData` có `years`, `years_unstated_cell_id` của #280; giữ `learning_path`, `_paths`, `_roles` của nhánh.
+- `docs/api/envelope-meta.md`: dòng `NEWCOMER_ROLES` lấy bản của main (nguồn `stat`), giữ dòng `LEARNING_PATH`.
+- `specs/144/plan.md`, `tdd.md`; `specs/163/plan.md`, `tasks.md`, `tdd.md`; `specs/205/tdd.md`: giữ cả hai bên, xếp lại các mục theo ngày (cùng ngày giữ thứ tự: bên nhánh trước). Không bỏ đợt nào.
+
+### Sửa không có xung đột văn bản
+
+- `create_app` đòi mọi khóa nguồn: thêm `"learning_path"` vào `tests/api/test_fr33_city_shares_years.py` (hai chỗ, #280), `tests/api/test_fr37_newcomer_roles_stat.py` (#145, #146, #148), `tests/steps/test_gh284_aggregate_vai_tro_moi.py` (#284). Tìm bằng `grep "create_app("`, không chạy RED riêng cho ba chỗ này; chỉ đổi dòng dựng app. Test `create_app({"city_shares": ...})` ở `test_ad17_routes.py` cố ý thiếu khóa nên giữ.
+- `docs/api/openapi.json` sinh lại bằng `HAIDO_UPDATE_OPENAPI=1 uv run pytest -q tests/api`; `tests/api/test_ad17_web_fixtures.py` đỏ hai ca (`data_engineer` entry, có và không có `have`) sau khi thêm hai nút, nên sinh lại `web/tests/fixtures/learning-path-data_engineer.json` và `-have.json` từ response của `app`. Fixture city-shares và newcomer-roles tự gộp đã khớp, không sinh lại.
+- 17 vai trò: bản giả coi mọi vai trò khác `backend` và `data_engineer` là `not_ready`. `test_fr22_vai_tro_cua_du_lieu_gia_khop_config` đã duyệt cả 17 ở `entry`; thêm `test_fr22_moi_vai_tro_cua_config_nhan_moi_cap_cua_config` (17 vai trò x 8 cấp của `level_options`, mọi vai trò ngoài hai vai trò sẵn sàng phải `not_ready`, `stages = []`, `entry_cell_id` đúng).
+
+### Đưa spark, airflow, pandas trở lại
+
+- `fake_market.json` `skill_rates`: `ai_ml/entry` dùng lại `pandas` (0,351, core) và `spark` (0,122, common) thay `data_analysis`, `deep_learning`; `data_engineer/senior` dùng lại `spark` (0,833) và `airflow` (0,5) thay `databricks`, `etl`, xếp lại theo chữ cái như bản gốc; `data_engineer/entry` (null_data) thêm `airflow` và `spark` để lộ trình và `/skill-rates` vẫn bằng nhau.
+- `fake_learning_path.json` `data_engineer`: thêm `spark` và `airflow`, mỗi nút `requires` `python`, `sql` (chặng 2), có lời dẫn qua `prepared_text.py` (không số, không `%`, không nói tần suất) và một tài nguyên chính thức miễn phí. Lộ trình từ 11 lên 13 nút.
+- Link kiểm bằng `curl -sIL` (HTTP 200 ở đích cuối): `https://spark.apache.org/docs/latest/quick-start.html`; `https://airflow.apache.org/docs/apache-airflow/stable/tutorial/pipeline.html`; `etl` đổi từ hướng dẫn Airflow sang `https://en.wikipedia.org/wiki/Extract,_transform,_load` (trung lập với nhà cung cấp, không thuộc host hay tiền tố đã bỏ).
+
+### Test pin số đếm hoặc mã, sửa theo giá trị thật (không nới)
+
+- RED (chạy thật sau khi sửa fixture, trước khi sửa test): `uv run pytest -q -x -k "not web_fixtures"` → 1 failed, 247 passed: `test_fr24_doi_tu_backend_sang_data_engineer_giao_cua_ho_so_voi_lo_trinh` (`13 == 11`); `HAIDO_UPDATE_OPENAPI=1 uv run pytest -q tests/api` → 2 failed, 338 passed: hai ca `test_ad17_fixture_web_khop_response_learning_path[data_engineer-entry-...]` (fixture web cũ); `npm run test` → 1 failed, 220 passed: `fr22-learning-path-fixture.test.ts` ví dụ FR-24 (`expected 13 to be 11`).
+- Sửa: `test_fr24_...` và `web/tests/fr22-learning-path-fixture.test.ts` từ "2 trên 11" thành "2 trên 13" (`have_on_path = 2` không đổi: `sql`, `git`; `java` vẫn ở `have_ignored`); sinh lại hai fixture web.
+- GREEN: `uv run pytest -q` (Postgres 5433, không skip) → 1113 passed; `-m determinism` với `PYTHONHASHSEED=0` và `1` → 7 passed mỗi lượt; `uv run ruff check .` sạch; `check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11` → 8 pass, 2 skip (hoãn), 0 fail; web `npm run lint` sạch, `npm run test` → 221 passed (15 file), `npm run build` qua.

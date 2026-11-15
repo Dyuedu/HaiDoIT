@@ -5,9 +5,15 @@ detail comes from the JSON endpoint the page itself calls,
 /ajax/get-job-by-id/{id}. A run fetches at most --limit new details (default 150)
 and skips jobs already in the output file, but always walks the whole listing:
 that walk is what proves a known job is still open.
+
+The listing order drifts between requests, so a page can repeat only ids already
+seen without being the end (#296). The walk ends on a page with no cards, or after
+STALE_PAGES pages in a row with no new id. It counts as complete only if it met
+MIN_COVERAGE of the job total the page prints ("485 Việc làm"), as topdev.py does.
 """
 
 import argparse
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -20,6 +26,15 @@ from crawlers.polite import BlockedError, PoliteClient
 BASE = "https://itnavi.com.vn"
 LIST_URL = f"{BASE}/job"
 DETAIL_URL = f"{BASE}/ajax/get-job-by-id/{{}}"
+STALE_PAGES = 3
+MIN_COVERAGE = 0.9
+
+
+def listed_total(soup: BeautifulSoup) -> int | None:
+    """The "N Việc làm" count the listing page shows, None if it is not there."""
+    head = soup.select_one("div.js-tab__show h1")
+    m = re.search(r"\d[\d.,]*", head.get_text(" ", strip=True)) if head else None
+    return int(re.sub(r"\D", "", m.group(0))) if m else None
 
 
 def iso_date(text: str | None) -> str | None:
@@ -53,6 +68,16 @@ def parse_job(d: dict) -> dict:
     }
 
 
+def covered(met: int, total: int | None) -> tuple[bool, str | None]:
+    """(complete, error) for a walk that reached the end of the listing."""
+    if total is None:
+        print("listing total not found on the page; trusting the end of the listing", flush=True)
+        return True, None
+    if met >= total * MIN_COVERAGE:
+        return True, None
+    return False, f"met {met} of {total} listed jobs"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Crawl ITNavi jobs (resumable)")
     parser.add_argument("--limit", type=int, default=150, help="new job details per run")
@@ -67,14 +92,28 @@ def main() -> None:
     client = PoliteClient(delay=args.delay)
     seen_ids, saved, unresolved = set(), 0, 0
     complete, error = False, None
+    total, stale = None, 0
     try:
         for page in range(1, args.pages + 1):
             soup = BeautifulSoup(client.get(f"{LIST_URL}?page={page}").text, "lxml")
+            page_total = listed_total(soup)
+            if page_total is not None:
+                total = max(total or 0, page_total)
             ids = [int(c["data-id"]) for c in soup.select("div.jsl-item[data-id]")]
             new_ids = [i for i in ids if i not in seen_ids]
-            if not new_ids:  # empty page, or the site repeating its last page
-                complete = True
+            if not ids:
+                print(f"end: page {page} is empty", flush=True)
+                complete, error = covered(len(seen_ids), total)
                 break
+            if not new_ids:
+                stale += 1
+                if stale >= STALE_PAGES:
+                    print(f"end: {stale} pages in a row with no new id", flush=True)
+                    complete, error = covered(len(seen_ids), total)
+                    break
+                print(f"page {page}: no new id ({stale}/{STALE_PAGES})", flush=True)
+                continue
+            stale = 0
             for job_id in new_ids:
                 seen_ids.add(job_id)
                 if job_id in known:

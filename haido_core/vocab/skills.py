@@ -108,3 +108,44 @@ def seed_version() -> str:
 
 
 VOCAB_VERSION = seed_version()
+
+
+@dataclass(frozen=True, slots=True)
+class Vocabulary:
+    """Từ vựng để quét JD (#283). Mọi khóa đã bỏ dấu (`posting_text.fold`)."""
+
+    version: str
+    lookup: dict[str, str]
+    """Tên và bí danh đã bỏ dấu → mã. Gồm cả từ không được quét riêng (`c`, `r`): phần của mã ghép tra ở đây."""
+    scan_terms: tuple[str, ...]
+    """Từ được tìm trong văn bản: `lookup` trừ `scan_skip` (mơ hồ khi đứng riêng), cộng mã ghép."""
+    composites: dict[str, tuple[str, ...]]
+    """Cụm ghép như `c/c++` → các phần (`c`, `c++`), mỗi phần là một lượt nhắc."""
+
+
+@cache
+def load_vocabulary() -> Vocabulary:
+    """Từ vựng đã kiểm. Hai tên/bí danh trùng nhau sau khi bỏ dấu mà thuộc hai mã thì ném `ValueError`."""
+    from haido_core.domain.posting_text import fold
+
+    doc = _load_document()
+    version, skills = _seed()
+    lookup: dict[str, str] = {}
+    for skill in skills:
+        for term in (skill.name_en, skill.name_vi, *skill.aliases):
+            key = fold(term)
+            if lookup.setdefault(key, skill.code) != skill.code:
+                raise ValueError(f"{_SEED_FILE}: {term!r} (bỏ dấu: {key!r}) thuộc cả {lookup[key]} và {skill.code}.")
+    raw_composites = doc.get("composites", {})
+    raw_skip = doc.get("scan_skip", [])
+    if not isinstance(raw_composites, dict) or not isinstance(raw_skip, list):
+        raise TypeError(f"{_SEED_FILE}: composites phải là object, scan_skip phải là danh sách.")
+    composites: dict[str, tuple[str, ...]] = {}
+    for term, parts in raw_composites.items():
+        folded_parts = tuple(fold(p) for p in parts) if isinstance(parts, list) else ()
+        if len(folded_parts) < 2 or any(p not in lookup for p in folded_parts):
+            raise ValueError(f"{_SEED_FILE}: mã ghép {term!r} phải có từ hai phần, mỗi phần là tên hoặc bí danh.")
+        composites[fold(term)] = folded_parts
+    skip = {fold(t) for t in raw_skip if isinstance(t, str)}
+    scan_terms = tuple(sorted((set(lookup) - skip) | set(composites)))
+    return Vocabulary(version=version, lookup=lookup, scan_terms=scan_terms, composites=composites)

@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge. Đợt 2 (2026-11-12) sửa theo review: xem `tdd.md`.
+**Status**: Implemented, chờ merge. Đợt 2 (2026-11-12) sửa theo review; đợt 3 (2026-11-15) gộp main và đưa `spark`, `airflow`, `pandas` trở lại: xem `tdd.md`.
 
 **Input**: GitHub issue [#212](https://github.com/Dyuedu/HaiDoIT/issues/212) — Agree the learning-path response shape and add fake data. Phục vụ story #121 (US-C1: biết nên học gì trước cho vai trò đã chọn) và cũng phải đủ cho story #122 (so sánh hai hướng: "N of M skills on this path", số tin entry-level của từng vai trò; task #220, #221).
 
@@ -49,7 +49,7 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 4. **Given** `web/tests/fixtures/learning-path-*.json` (backend, backend có `have`, backend intern, data_engineer, data_engineer có `have` theo ví dụ FR-24, ai_ml, qa), **When** so với response của API giả, **Then** giống hệt.
 5. **Given** mọi vai trò của `config/rules.toml` × mọi `LevelCode`, có và không có `have`, **When** quét, **Then** mọi response là 200 hoặc 404, không bao giờ 500, và mọi 200 giữ các điều kiện: mọi kỹ năng `core`/`common` của ô tỷ lệ có trên lộ trình, kỹ năng nhóm khác `core`/`common` có `foundation_for` không rỗng, `cell_id` thuộc vai trò đã chọn.
 6. **Given** đồ thị `requires` có mã không có nút hoặc chu trình, **When** tính chặng, **Then** `PathGraphError` rõ ràng (không `KeyError`, không `RecursionError`); fixture thật không có lỗi đó.
-7. **Given** hồ sơ {java, sql, git} và vai trò Data Engineer (FR-24), **When** gọi, **Then** `sql` và `git` có `have = true`, `have_on_path = 2` trên `path_size = 11`, `java` nằm ở `have_ignored`.
+7. **Given** hồ sơ {java, sql, git} và vai trò Data Engineer (FR-24), **When** gọi, **Then** `sql` và `git` có `have = true`, `have_on_path = 2` trên `path_size = 13`, `java` nằm ở `have_ignored`.
 
 ---
 
@@ -92,7 +92,7 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 
 ## Assumptions
 
-- Mã kỹ năng trong dữ liệu giả chỉ lấy từ `skills_seed.json`. Bản mồi thiếu `spark`, `airflow`, `pandas`; #96 (bộ từ vựng v1) nên thêm.
+- Mã kỹ năng trong dữ liệu giả chỉ lấy từ `skills_seed.json`. Từ #283 bản mồi có 225 mã, gồm `spark`, `airflow`, `pandas`; bản giả dùng lại ba mã này (đợt 3), không còn thay tạm.
 - Đợt 1 để data_engineer quay về `vn.all.entry` (mọi vai trò); đợt 2 bỏ vì FR-19 giữ quay về trong vai trò. Demo quay về có số là backend ở `intern` (`vn.backend`, n = 157); demo "chưa đủ dữ liệu" là data_engineer ở `entry`. Tỷ lệ của `vn.backend` trong `fake_market.json` là số giả do đợt 2 đặt (157 tin, nhóm theo θ), không phải số đo thật.
 - Hàm kiểm lời dẫn ở `haido_core/vocab/prepared_text.py` là nơi #138 nên lấy quy tắc FR-23 cho cổng CI (`tools/gates/check_gates.py` chưa đổi ở #212). Số viết bằng chữ ngoài phạm vi. Tên công nghệ như "Java 17" được che nguyên từ; "Java 17 năm" vẫn qua vì "Java 17" là đúng một tên công nghệ.
 - `cell_id = null` khi `not_ready` (không có ô nào cho tỷ lệ).

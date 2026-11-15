@@ -295,6 +295,21 @@ def test_fr22_vai_tro_chua_co_lo_trinh_la_not_ready(client: TestClient) -> None:
     assert body["meta"]["coverage_notes"]
 
 
+def test_fr22_moi_vai_tro_cua_config_nhan_moi_cap_cua_config(client: TestClient) -> None:
+    """Quét vai trò x cấp của `config/rules.toml` (17 vai trò sau #284): vai trò chưa có lộ trình luôn `not_ready`."""
+    rules = load_rules()
+    assert len(rules.roles) == 17
+    ready = {"backend", "data_engineer"}
+    for role in rules.roles:
+        if role in ready:
+            continue
+        for level in rules.level_options:
+            data = _get(client, role=role, level=level)["data"]
+            assert data["status"] == "not_ready", (role, level)
+            assert data["stages"] == [], (role, level)
+            assert data["entry_cell_id"] == f"vn.{role}.entry", (role, level)
+
+
 def test_fr22_not_ready_o_moi_cap_hop_le(client: TestClient) -> None:
     body = _get(client, role="ai_ml", level="senior")
     assert body["data"]["status"] == "not_ready"

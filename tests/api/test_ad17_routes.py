@@ -121,10 +121,13 @@ def _stats(node: Any) -> list[dict[str, Any]]:
 
 def _all_fixture_requests() -> list[tuple[str, dict[str, str]]]:
     raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    # #163: mỗi vai trò có `all` và `entry`; #280: khóa `<cấp>.y<N>` là cấp đó ở mốc số năm N.
     reqs = [
-        ("/api/v1/city-shares", {"role": role, "level": level})  # #163: mỗi vai trò có `all` và `entry`
-        for role, levels in raw["city_shares"].items()
-        for level in levels
+        ("/api/v1/city-shares", {"role": role, "level": key.split(".y")[0], "years": key.split(".y")[1]})
+        if ".y" in key
+        else ("/api/v1/city-shares", {"role": role, "level": key})
+        for role, keys in raw["city_shares"].items()
+        for key in keys
     ]
     reqs += [
         ("/api/v1/skill-rates", {"role": role, "level": level})
@@ -171,7 +174,7 @@ def test_ad17_ty_trong_thanh_pho_du_mau_va_mau_nho(client: TestClient) -> None:
     assert cells[rows["da_nang"]["cell_id"]]["n"] == 21
     assert rows["da_nang"]["display"] == "low_sample_shown"
     assert rows["da_nang"]["value"] is not None
-    assert {"other", "unknown"} <= set(rows)
+    assert {"remote", "abroad", "unknown"} <= set(rows)  # #285
     assert math.isclose(math.fsum(s["value"] for s in rows.values()), 1.0, abs_tol=1e-9)
 
     total_n = cells[body["data"]["total_cell_id"]]["n"]
@@ -261,7 +264,7 @@ def test_ad17_chon_nguon_rieng_cho_tung_phep() -> None:
     fake = FakeMarket()
 
     class _CityOnly:
-        def city_shares(self, *, role: str, level: str) -> Any:
+        def city_shares(self, *, role: str, level: str, years: str = "any") -> Any:
             raise UnknownCell("nguồn thử", snapshot_date=date(2026, 11, 4))
 
         def skill_rates(self, *, role: str, level: str) -> Any:
@@ -290,7 +293,7 @@ def test_ad17_thieu_nguon_cho_mot_phep_la_loi_khoi_dong() -> None:
 
 def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
     class _Broken:
-        def city_shares(self, *, role: str, level: str) -> Any:
+        def city_shares(self, *, role: str, level: str, years: str = "any") -> Any:
             return {"data": {"role": role, "level": level, "total_cell_id": "vn.x", "rows": []}}
 
         def skill_rates(self, *, role: str, level: str) -> Any:
@@ -308,7 +311,7 @@ def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
 
 def test_ad17_nguon_dung_model_sai_thanh_invalid_response() -> None:
     class _BuildsBadStat:
-        def city_shares(self, *, role: str, level: str) -> Any:
+        def city_shares(self, *, role: str, level: str, years: str = "any") -> Any:
             return Stat(value=0.5, kind="skill_rate", display="low_sample_shown", cell_id="o")
 
         def skill_rates(self, *, role: str, level: str) -> Any:
@@ -323,8 +326,8 @@ def test_ad17_instance_sua_bang_model_copy_van_bi_kiem_lai() -> None:
     fake = FakeMarket()
 
     class _CopiesWithGroup:
-        def city_shares(self, *, role: str, level: str) -> Any:
-            return fake.city_shares(role=role, level=level)
+        def city_shares(self, *, role: str, level: str, years: str = "any") -> Any:
+            return fake.city_shares(role=role, level=level, years=years)
 
         def skill_rates(self, *, role: str, level: str) -> Any:
             env = fake.skill_rates(role=role, level=level)

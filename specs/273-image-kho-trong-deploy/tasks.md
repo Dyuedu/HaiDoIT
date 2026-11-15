@@ -23,6 +23,6 @@
 
 ## Phase 3: Sau merge
 
-- [ ] T010 Run deploy xanh; trên VPS có image kho `sha-<commit>` và `.warehouse-tag`
-- [ ] T011 Chạy bước kho qua đường của `daily.sh` trên VPS với snapshot đã chốt: image GHCR khởi động, migration chạy, bước `ingest` dừng ở `SnapshotClosedError` mà không ghi gì
-- [ ] T012 Sáng 12/11: log lượt đêm ghi `image kho: sha-...`, `stat_sources` có hàng của `2026-11-12`, `/api/v1/city-shares` trả 200
+- [x] T010 Run deploy xanh; trên VPS có image kho `sha-<commit>` và `.warehouse-tag`
+- [x] T011 Chạy bước kho qua đường của `daily.sh` trên VPS với snapshot đã chốt: image GHCR khởi động, migration chạy, bước `ingest` dừng ở `SnapshotClosedError` mà không ghi gì
+- [x] T012 Sáng 12/11: log lượt đêm ghi `image kho: sha-...`, `stat_sources` có hàng của `2026-11-12`, `/api/v1/city-shares` trả 200

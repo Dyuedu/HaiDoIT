@@ -80,3 +80,9 @@ web/tests/fr22-learning-path-fixture.test.ts (mới)
 - `create_app` đòi nguồn cho mọi phép: các test của #2, #93, #163 truyền thêm `learning_path`. Issue cũ chưa có `specs/` mà branch này đụng tới file của chúng (ghi trong mô tả PR): #2, #93, #162, #259, #263 (`stat_market.py`, `envelope.py`, `market_source.py`, `fake_market.json`, test), #140 (`docs/api/envelope-meta.md`), #46 (`tests/api/test_ad17_web_fixtures.py`).
 - Cập nhật `specs/144-...`, `specs/163-...`, `specs/205-...` (mục "Thay đổi sau merge" và đợt TDD mới). `main.py` không đổi.
 - Đợt 2: `haido_core/domain/envelope.py` còn thuộc #144 (đã có `specs/`): hành vi `Stat` và `MeasureKind` của #144 không đổi.
+
+## Cập nhật 2026-11-15 (đợt 3, gộp main)
+
+- Gộp `origin/main` bằng commit merge; chín xung đột giữ cả hai bên (xem `tdd.md` đợt 3). Thêm `learning_path` vào ba test dựng app của main: `tests/api/test_fr33_city_shares_years.py`, `tests/api/test_fr37_newcomer_roles_stat.py`, `tests/steps/test_gh284_aggregate_vai_tro_moi.py`.
+- File đổi thêm: `haido_api/fixtures/fake_market.json` (`skill_rates`), `haido_api/fixtures/fake_learning_path.json` (`spark`, `airflow`, tài nguyên `etl`), `web/tests/fixtures/learning-path-data_engineer.json`, `-have.json`, `docs/api/openapi.json`; test: `tests/api/test_fr22_learning_path.py` (quét 17 vai trò x cấp), `tests/api/test_fr22_learning_path_review.py`, `web/tests/fr22-learning-path-fixture.test.ts` (13 nút).
+- Kích thước lộ trình `data_engineer` là 13 nút.

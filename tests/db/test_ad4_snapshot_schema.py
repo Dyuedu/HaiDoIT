@@ -77,6 +77,10 @@ def test_ad4_cot_dung_thiet_ke_va_khong_co_cot_van_ban_jd(pg_engine: Engine) -> 
     assert _columns(pg_engine, "job_postings") == {"id", "source", "source_url"}
     assert _columns(pg_engine, "job_posting_facts") == {
         "posting_id", "snapshot_id", "title", "company", "location_text", "experience_level", "job_level",
+        "years_min",  # #280: số năm tối thiểu, là số, không phải văn bản JD
+        # #283: nhãn và mã kỹ năng của bộ phân loại, không phải văn bản JD
+        "role", "branch", "seniority", "skills", "classify_version",
+        "city",  # #285: nhãn nơi làm việc
     }  # fmt: skip
     assert _columns(pg_engine, "job_observations") == {"posting_id", "snapshot_id", "pipeline_run_id"}
     assert _columns(pg_engine, "stat_job_lifecycle") == {

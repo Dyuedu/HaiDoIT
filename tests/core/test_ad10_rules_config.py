@@ -22,12 +22,14 @@ ROLE = '[labels.role]\n"Backend" = "backend"\n"Other" = "other"\n'
 LEVEL = '[labels.level]\n"Junior" = "junior"\n"không xác định" = "unknown"\n'
 LEVEL_OPTIONS = 'level_options = ["entry", "junior", "unknown"]\n'
 LEVEL_GROUPS = '[level_groups]\nentry = ["junior"]\n'
+YEARS_OPTIONS = "years_options = [0, 1, 3]\n"
+ALWAYS_CITIES = 'always_cities = ["ha_noi", "unknown"]\n'  # #285
 
 CV = f'cv_max_bytes = 5242880\ncv_types = ["{PDF}", "{DOCX}"]\n'
 
 BASE = (
     'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_core = 0.3\ntheta_common = 0.1\n'
-    f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{CV}\n'
+    f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{YEARS_OPTIONS}{ALWAYS_CITIES}{CV}\n'
     f"{SOURCES}\n{LEVEL_GROUPS}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
 )
 
@@ -115,9 +117,11 @@ def test_ad10_nguong_va_danh_sach_vai_tro_sai_thi_bao_loi(tmp_path: Path, swap: 
 @pytest.mark.parametrize(
     ("bang", "moi", "khoa"),
     [
-        (CITY, CITY.replace('"Đà Nẵng" = "da_nang"\n', ""), "labels.city"),
+        # #285: mã bắt buộc là always_cities (BASE: ha_noi, unknown); bỏ Hà Nội là lỗi.
+        (CITY, CITY.replace('"Hà Nội" = "ha_noi"\n', ""), "labels.city"),
         (CITY, CITY.replace('"không xác định" = "unknown"\n', ""), "labels.city"),
-        (CITY, CITY + '"Huế" = "hue"\n', "labels.city"),
+        # #285: Huế là một tỉnh hợp lệ; mã sai dạng (chữ hoa) mới là lỗi.
+        (CITY, CITY + '"Huế" = "Hue"\n', "labels.city"),
         (LEVEL, LEVEL.replace('"không xác định" = "unknown"\n', '"Senior" = "senior"\n'), "labels.level"),
         (CITY, CITY.replace('"Khác" = "other"', '"Khác" = "unknown"'), "labels.city"),
         (ROLE, ROLE.replace('"Other" = "other"', '"Other" = "backend"'), "labels.role"),
@@ -153,8 +157,9 @@ def test_ad10_khoa_moi_cua_tong_hop_thanh_pho() -> None:
     rules = load_rules()
     assert (rules.min_sample, rules.theta_core, rules.theta_common) == (30, 0.3, 0.1)
     assert rules.roles == (
-        "embedded", "ai_ml", "data_engineer", "data_analyst", "qa", "devops", "mobile", "frontend", "backend", "other",
-    )  # fmt: skip
+        "embedded", "ai_ml", "data_scientist", "data_engineer", "data_analyst", "qa", "devops", "security", "it_infra",
+        "mobile", "frontend", "backend", "fullstack", "ba_po_pm", "ui_ux", "game", "other",
+    )  # fmt: skip  # #284 thêm bảy vai trò
     assert rules.config_version != "2026-11-06.1"
 
 
@@ -169,14 +174,19 @@ def test_ad10_ghi_chu_pham_vi_ba_ghi_chu_fr36_va_ghi_chu_so_nguon() -> None:
 
 def test_ad10_bang_nhan_sang_ma_snake_case_dung_theo_issue() -> None:
     rules = load_rules()
-    assert rules.city_codes == {
-        "Hà Nội": "ha_noi", "TP.HCM": "ho_chi_minh", "Đà Nẵng": "da_nang", "Khác": "other", "không xác định": "unknown",
-    }  # fmt: skip
-    assert list(rules.city_codes.values()) == ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+    # #285: 34 tỉnh, thành sau 1/7/2025, Remote, Nước ngoài, không xác định; không còn "Khác".
+    codes = list(rules.city_codes.values())
+    assert codes[:4] == ["ha_noi", "ho_chi_minh", "da_nang", "hai_phong"]
+    assert codes[-3:] == ["remote", "abroad", "unknown"]
+    assert len(codes) == 37 and "other" not in codes
+    assert rules.city_codes["TP.HCM"] == "ho_chi_minh" and rules.city_codes["Nước ngoài"] == "abroad"
     assert rules.role_codes == {
         "Embedded": "embedded", "AI/ML Engineer": "ai_ml", "Data Engineer": "data_engineer",
         "Data Analyst/BI": "data_analyst", "QA/Tester": "qa", "DevOps": "devops", "Mobile": "mobile",
         "Frontend": "frontend", "Backend": "backend", "Other": "other",
+        # #284: nhãn mới của bộ phân loại (#283)
+        "Data Scientist": "data_scientist", "Security": "security", "Hạ tầng/IT support": "it_infra",
+        "Fullstack": "fullstack", "BA/PO/PM": "ba_po_pm", "UI/UX": "ui_ux", "Game": "game",
     }  # fmt: skip
     assert rules.level_codes == {
         "Intern": "intern", "Fresher": "fresher", "Junior": "junior", "Mid": "mid", "Senior": "senior",
@@ -187,16 +197,18 @@ def test_ad10_bang_nhan_sang_ma_snake_case_dung_theo_issue() -> None:
 
 def test_ad10_bang_nhan_khop_voi_luat_cua_bo_phan_loai() -> None:
     from haido_core.domain.classify import (
+        ABROAD_CITY,
         NON_IT,
-        OTHER_CITY,
         OTHER_ROLE,
+        REMOTE_CITY,
         UNKNOWN,
         default_classify_config,
     )
 
     rules, cfg = load_rules(), default_classify_config()
-    assert set(rules.city_codes) == {r.label for r in cfg.city_rules} | {OTHER_CITY, UNKNOWN}
-    assert set(rules.role_codes) == {r.label for r in cfg.role_rules} | {OTHER_ROLE}
+    assert set(rules.city_codes) == {r.label for r in cfg.city_rules} | {REMOTE_CITY, ABROAD_CITY, UNKNOWN}  # #285
+    # #283: nhãn mới của bộ phân loại báo cáo như nhãn cũ qua report_as cho tới #284.
+    assert set(rules.role_codes) == {cfg.report_as.get(r.label, r.label) for r in cfg.role_rules} | {OTHER_ROLE}
     assert NON_IT not in rules.role_codes
     assert set(rules.level_codes) == {r.label for r in cfg.seniority_rules} | {UNKNOWN}
 
@@ -422,4 +434,32 @@ def test_fr33_hai_nhom_khong_chung_thanh_vien(tmp_path: Path) -> None:
         .replace(LEVEL_GROUPS, '[level_groups]\nentry = ["intern", "junior"]\nearly = ["junior"]\n')
     )
     with pytest.raises(ConfigError, match="level_groups"):
+        load_rules(_write(tmp_path, body))
+
+
+# ----------------------------------------------------------------------------- #280: số năm kinh nghiệm
+
+
+def test_fr33_moc_so_nam_nam_trong_config_theo_dung_issue_280() -> None:
+    assert load_rules().years_options == (0, 1, 2, 3, 5)
+
+
+def test_fr33_config_version_da_tang_khi_them_moc_so_nam() -> None:
+    old = {"2026-11-06.1", "2026-11-09.1", "2026-11-10.1", "2026-11-10.2", "2026-11-10.3", "2026-11-11.1"}
+    assert load_rules().config_version not in old
+
+
+def test_fr33_moc_so_nam_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
+    assert load_rules(_write(tmp_path, BASE)).years_options == (0, 1, 3)
+
+
+def test_fr33_thieu_years_options_thi_bao_loi_tieng_viet(tmp_path: Path) -> None:
+    with pytest.raises(ConfigError, match="years_options"):
+        load_rules(_write(tmp_path, BASE.replace(YEARS_OPTIONS, "")))
+
+
+@pytest.mark.parametrize("value", ["[]", "[-1, 2]", "[1, 1]", "[2, 1]", "[1.5]", '["1"]', "[true]", "3"])
+def test_fr33_years_options_sai_thi_bao_loi_tieng_viet(tmp_path: Path, value: str) -> None:
+    body = BASE.replace(YEARS_OPTIONS, f"years_options = {value}\n")
+    with pytest.raises(ConfigError, match="years_options"):
         load_rules(_write(tmp_path, body))

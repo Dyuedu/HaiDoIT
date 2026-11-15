@@ -20,5 +20,5 @@
 
 ## Dữ liệu giả
 
-- Mã kỹ năng chỉ lấy từ `haido_core/vocab/skills_seed.json`. Bản mồi thiếu `spark`, `airflow`, `pandas`. **#96 (từ vựng v1) nên thêm ba mã này**; bản giả tạm thay `pandas` bằng `data_analysis`, `spark` bằng `deep_learning` (ai_ml) và `databricks` (data_engineer), `airflow` bằng `etl`.
+- Mã kỹ năng chỉ lấy từ `haido_core/vocab/skills_seed.json`. Đợt 1 thấy bản mồi 100 mã thiếu `spark`, `airflow`, `pandas` nên tạm thay bằng `data_analysis`, `deep_learning`, `databricks`, `etl`. Từ #283 bản mồi có 225 mã gồm cả ba (đã kiểm ngày 2026-11-15), nên đợt 3 dùng lại `pandas`, `spark`, `airflow` và bỏ các thay thế tạm.
 - Mã cũ kiểu `spring-boot` trong `skill_rates` giả đổi sang snake_case theo #205.

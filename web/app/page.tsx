@@ -9,7 +9,7 @@ export default function MapPage() {
     <section className="py-2">
       <h1 className="m-0 text-title text-text">Bản đồ nhu cầu IT</h1>
       <p className="mt-2 mb-0 max-w-[68ch] text-body-md text-text-quiet">
-        Hà Nội, TP.HCM và Đà Nẵng chiếm bao nhiêu phần tin tuyển dụng IT của vai trò bạn chọn,
+        Tin tuyển dụng IT của vai trò bạn chọn chia theo từng tỉnh, thành, làm từ xa và nước ngoài,
         kèm cỡ mẫu, nguồn và ngày snapshot.
       </p>
       <MapScreen />

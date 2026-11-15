@@ -10,7 +10,7 @@ from haido_core.db import snapshot_store
 from tests.steps.conftest import Env, S
 
 SD = date.fromisoformat(S)
-CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "other", "unknown"]
+CITIES = ["ha_noi", "ho_chi_minh", "da_nang", "remote", "abroad", "unknown"]  # #285: always_cities
 
 
 def _day(back: int) -> str:
@@ -32,7 +32,8 @@ def _job(level: str | None, city: str = "Hà Nội", title: str = "Backend Dev",
 
 def _n(env: Env, role: str, level: str, scope: str, day: str = S) -> int:
     [(n,)] = env.query(
-        "SELECT n FROM haido.stat_cells WHERE snapshot_id = :d AND role = :r AND seniority = :l AND scope = :s",
+        "SELECT n FROM haido.stat_cells WHERE snapshot_id = :d AND role = :r AND seniority = :l AND scope = :s"
+        " AND years = 'any'",
         d=day,
         r=role,
         l=level,
@@ -43,7 +44,8 @@ def _n(env: Env, role: str, level: str, scope: str, day: str = S) -> int:
 
 def _mix(env: Env, role: str, level: str, scope: str) -> dict[str, int]:
     [(mix,)] = env.query(
-        "SELECT seniority_mix FROM haido.stat_cells WHERE role = :r AND seniority = :l AND scope = :s",
+        "SELECT seniority_mix FROM haido.stat_cells WHERE role = :r AND seniority = :l AND scope = :s"
+        " AND years = 'any'",
         r=role,
         l=level,
         s=scope,
@@ -53,7 +55,9 @@ def _mix(env: Env, role: str, level: str, scope: str) -> dict[str, int]:
 
 def _shares(env: Env, role: str, level: str) -> dict[str, float]:
     rows = env.query(
-        "SELECT city, share FROM haido.stat_city_shares WHERE role = :r AND seniority = :l", r=role, l=level
+        "SELECT city, share FROM haido.stat_city_shares WHERE role = :r AND seniority = :l AND years = 'any'",
+        r=role,
+        l=level,
     )
     return dict(rows)
 
@@ -77,7 +81,11 @@ def test_fr33_moi_vai_tro_va_cap_loc_duoc_co_du_hang_ke_ca_khi_khong_co_tin(env:
     result = env.aggregate()
     roles = ["all", *env.rules.roles]
     levels = ["all", *env.rules.level_options]
-    assert (result.cells, result.shares) == (len(roles) * len(levels) * 6, len(roles) * len(levels) * 5)
+    years = 1 + len(env.rules.years_options)  # #280: mỗi cấp có `any` và từng mốc số năm
+    assert (result.cells, result.shares) == (
+        len(roles) * len(levels) * years * 7,  # #285: 6 nơi luôn có + vn
+        len(roles) * len(levels) * years * 6,
+    )
     assert env.count("stat_cells") == result.cells
     assert env.count("stat_city_shares") == result.shares
     for role in roles:
@@ -103,10 +111,10 @@ def test_fr33_o_cap_don_va_ty_trong_cua_cap_do_chi_dem_tin_cua_cap_do(env: Env, 
     assert _n(env, "backend", "junior", "da_nang") == 1
     assert _mix(env, "backend", "junior", "vn") == {"junior": 2}
     assert _shares(env, "backend", "junior") == {
-        "ha_noi": 0.0, "ho_chi_minh": 0.5, "da_nang": 0.5, "other": 0.0, "unknown": 0.0,
+        "ha_noi": 0.0, "ho_chi_minh": 0.5, "da_nang": 0.5, "remote": 0.0, "abroad": 0.0, "unknown": 0.0,
     }  # fmt: skip
     assert _shares(env, "backend", "entry") == {
-        "ha_noi": 0.5, "ho_chi_minh": 0.25, "da_nang": 0.25, "other": 0.0, "unknown": 0.0,
+        "ha_noi": 0.5, "ho_chi_minh": 0.25, "da_nang": 0.25, "remote": 0.0, "abroad": 0.0, "unknown": 0.0,
     }  # fmt: skip
     assert _shares(env, "all", "senior")["ho_chi_minh"] == 1.0
     assert _shares(env, "backend", "all")["ha_noi"] == pytest.approx(4 / 8)
@@ -174,8 +182,8 @@ def test_fr33_nhom_lay_tu_config_khong_viet_cung_trong_ma(env: Env, scraper_db) 
 
 def test_fr33_loi_giua_chung_thi_giu_nguyen_hang_theo_cap_cu(env: Env, scraper_db, monkeypatch) -> None:
     _build(env, scraper_db, MIXED)
-    cells = "SELECT * FROM haido.stat_cells ORDER BY role, seniority, scope"
-    shares = "SELECT * FROM haido.stat_city_shares ORDER BY role, seniority, city"
+    cells = "SELECT * FROM haido.stat_cells ORDER BY role, seniority, years, scope"
+    shares = "SELECT * FROM haido.stat_city_shares ORDER BY role, seniority, years, city"
     before = env.query(cells), env.query(shares)
     real = snapshot_store.replace_stats
 
@@ -208,11 +216,14 @@ def test_fr33_determinism_hai_lan_aggregate_ra_cung_hang_theo_cap(env: Env, scra
             for i in range(41)
         },
     )
-    cells = "SELECT * FROM haido.stat_cells ORDER BY snapshot_id, role, branch, seniority, scope"
-    shares = "SELECT * FROM haido.stat_city_shares ORDER BY snapshot_id, role, seniority, city"
+    cells = "SELECT * FROM haido.stat_cells ORDER BY snapshot_id, role, branch, seniority, years, scope"
+    shares = "SELECT * FROM haido.stat_city_shares ORDER BY snapshot_id, role, seniority, years, city"
     first = env.query(cells), env.query(shares)
     env.aggregate()
     assert (env.query(cells), env.query(shares)) == first
     roles = len(env.rules.roles) + 1
     levels = len(env.rules.level_options) + 1
-    assert len(first[0]) == roles * levels * 6 and len(first[1]) == roles * levels * 5
+    levels *= len(env.rules.years_options) + 1  # #280: mỗi cấp có `any` và từng mốc số năm
+    # #285: mỗi bộ lọc ít nhất 6 nơi luôn có + vn; Cần Thơ có hàng khi bộ lọc có tin ở đó.
+    assert len(first[0]) >= roles * levels * 7 and len(first[1]) >= roles * levels * 6
+    assert any("can_tho" in row for row in first[1])

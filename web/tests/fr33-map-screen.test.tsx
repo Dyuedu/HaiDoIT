@@ -6,16 +6,13 @@ import { MapScreen } from "@/app/components/map/map-screen";
 
 import { allLowSampleEnvelope, fakeEnvelope, statEnvelope } from "./fixtures/envelopes";
 import { deferred, jsonResponse, routeCityShares } from "./helpers/fetch";
+import { pick, roleSelect, selectedLabel } from "./helpers/filters";
 
 const LOADING = "Đang tải số liệu…";
 const LOW_SAMPLE_21 = "Cỡ mẫu nhỏ (n = 21 < 30): số liệu chỉ để tham khảo";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
 
 const ok = (role: "all" | "ai_ml" | "backend") => () => jsonResponse(200, fakeEnvelope(role));
-
-function chip(name: string) {
-  return within(screen.getByRole("group", { name: "Vai trò" })).getByRole("button", { name });
-}
 
 function modeButton(name: string) {
   return within(screen.getByRole("group", { name: "Lối xem" })).getByRole("button", { name });
@@ -39,7 +36,7 @@ async function openScreen() {
 }
 
 async function pickRole(user: ReturnType<typeof userEvent.setup>, name: string) {
-  await user.click(chip(name));
+  await pick(user, roleSelect(), name);
 }
 
 /** Mở màn, chọn AI/ML, trả dòng Đà Nẵng (mẫu nhỏ, n = 21) với phần trăm đang ẩn. */
@@ -53,7 +50,7 @@ async function openAiMl() {
 }
 
 describe("fr33 — mở trang", () => {
-  it("fr33: mở trang vào lối 2D, chip Tất cả, ba thanh theo share.value", async () => {
+  it("fr33: mở trang vào lối 2D, ô Vai trò ở Tất cả, ba thanh theo share.value", async () => {
     const fetchMock = routeCityShares({ all: [ok("all")] });
     render(<MapScreen />);
 
@@ -61,9 +58,8 @@ describe("fr33 — mở trang", () => {
     const haNoi = await screen.findByRole("button", { name: /^Hà Nội:/ });
 
     // #163: màn luôn gửi cấp bậc, mặc định là nhóm mới vào nghề (entry) của #134.
-    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry");
-    expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("true");
-    expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("false");
+    expect(String(fetchMock.mock.calls[0][0])).toBe("/api/v1/city-shares?role=all&level=entry&years=any");
+    expect(selectedLabel(roleSelect())).toBe("Tất cả");
     expect(modeButton("Biểu đồ 2D").getAttribute("aria-pressed")).toBe("true");
     expect(modeButton("Bảng").getAttribute("aria-pressed")).toBe("false");
     expect(screen.getByRole("status").textContent).toBe("");
@@ -75,19 +71,19 @@ describe("fr33 — mở trang", () => {
     expect(haNoi.textContent).toContain("1.490 tin");
   });
 
-  it("fr33: chỉ ba thanh nằm trong figure; Khác và không xác định là dòng chú thích", async () => {
+  it("fr33: chỉ ba thanh nằm trong figure; Remote, Nước ngoài, không xác định là dòng chú thích; tỉnh khác chỉ ở bảng", async () => {
     routeCityShares({ all: [ok("all")] });
     await openScreen();
     const figure = screen.getByRole("figure");
 
     expect(figure.querySelectorAll('[data-part="track"]')).toHaveLength(3);
-    const other = cityButton("Khác");
-    const unknown = cityButton("Không xác định thành phố");
-    expect(other.querySelector('[data-part="track"]')).toBeNull();
+    const remote = cityButton("Làm từ xa \\(Remote\\)");
+    const unknown = cityButton("Không xác định nơi làm việc");
+    expect(remote.querySelector('[data-part="track"]')).toBeNull();
     expect(unknown.querySelector('[data-part="track"]')).toBeNull();
-    expect(other.textContent).toContain("3,2%");
-    expect(other.textContent).toContain("113 tin");
+    expect(remote.textContent).toContain("n = 0");
     expect(unknown.textContent).toContain("207 tin");
+    expect(screen.queryByRole("button", { name: /^Hải Phòng:/ })).toBeNull();
   });
 
   it("fr33: màn không thêm thẻ <a> hay <nav>", async () => {
@@ -202,19 +198,19 @@ describe("fr33 — mẫu nhỏ", () => {
     expect(daNang.textContent).not.toContain("2,4%");
   });
 
-  it("fr33: Khác n = 5 và không xác định n = 8 có nhãn mẫu nhỏ ở chú thích (backend)", async () => {
+  it("fr33: Remote n = 0 và không xác định n = 8 có nhãn mẫu nhỏ ở chú thích (backend)", async () => {
     routeCityShares({ all: [ok("all")], backend: [ok("backend")] });
     const { user } = await openScreen();
     await pickRole(user, "Backend");
-    const other = await screen.findByRole("button", { name: /^Khác:/ });
-    const unknown = cityButton("Không xác định thành phố");
+    const remote = await screen.findByRole("button", { name: /^Làm từ xa \(Remote\):/ });
+    const unknown = cityButton("Không xác định nơi làm việc");
 
-    expect(other.textContent).toContain("Cỡ mẫu nhỏ (n = 5 < 30): số liệu chỉ để tham khảo");
-    expect(other.textContent).not.toContain("3,2%");
+    expect(remote.textContent).toContain("Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo");
     expect(unknown.textContent).toContain("Cỡ mẫu nhỏ (n = 8 < 30): số liệu chỉ để tham khảo");
+    expect(unknown.textContent).not.toContain("%");
 
-    await user.hover(other);
-    expect(other.textContent).toContain("3,2%");
+    await user.hover(unknown);
+    expect(unknown.textContent).toContain("%");
   });
 
   it("fr33: tỷ trọng 0 vẫn có rãnh, button focus được, nhãn n = 0", async () => {
@@ -236,7 +232,7 @@ describe("fr33 — mẫu nhỏ", () => {
     await pickRole(user, "Backend");
     await screen.findByRole("button", { name: /^Hà Nội:.*Cỡ mẫu nhỏ/ });
 
-    for (const label of ["Hà Nội", "TP.HCM", "Đà Nẵng", "Khác", "Không xác định thành phố"]) {
+    for (const label of ["Hà Nội", "TP.HCM", "Đà Nẵng", "Không xác định nơi làm việc"]) {
       const button = cityButton(label);
       expect(button.textContent).toContain("Cỡ mẫu nhỏ");
       expect(button.textContent).not.toContain("%");
@@ -266,15 +262,15 @@ describe("fr33 — lối Bảng", () => {
     expect(within(haNoi).getAllByRole("cell")[0].textContent).toBe("47,0%");
   });
 
-  it("fr33: bảng có dòng Khác và không xác định (backend)", async () => {
+  it("fr33: bảng có dòng Hải Phòng và không xác định (backend)", async () => {
     routeCityShares({ all: [ok("all")], backend: [ok("backend")] });
     const { user } = await openScreen();
     await user.click(modeButton("Bảng"));
     await pickRole(user, "Backend");
     const table = await screen.findByRole("table");
 
-    const other = within(table).getByRole("row", { name: /^Khác/ });
-    const unknown = within(table).getByRole("row", { name: /Không xác định thành phố/ });
+    const other = within(table).getByRole("row", { name: /^Hải Phòng/ });
+    const unknown = within(table).getByRole("row", { name: /Không xác định nơi làm việc/ });
     expect(within(other).getAllByRole("cell").map((cell) => cell.textContent).slice(0, 2)).toEqual([
       "chưa đủ dữ liệu",
       "5",
@@ -298,7 +294,7 @@ describe("fr33 — lối Bảng", () => {
 });
 
 describe("fr33 — đổi vai trò", () => {
-  it("fr33: đổi vai trò hiện trạng thái đang tải thay cho số cũ, aria-pressed đổi theo", async () => {
+  it("fr33: đổi vai trò hiện trạng thái đang tải thay cho số cũ, ô Vai trò đổi theo", async () => {
     const pending = deferred<Response>();
     routeCityShares({ all: [ok("all")], ai_ml: [() => pending.promise] });
     const { user } = await openScreen();
@@ -307,8 +303,7 @@ describe("fr33 — đổi vai trò", () => {
 
     expect(screen.getByRole("status").textContent).toBe(LOADING);
     expect(screen.queryByRole("button", { name: /^Hà Nội:/ })).toBeNull();
-    expect(chip("AI/ML").getAttribute("aria-pressed")).toBe("true");
-    expect(chip("Tất cả").getAttribute("aria-pressed")).toBe("false");
+    expect(selectedLabel(roleSelect())).toBe("AI/ML");
 
     await act(async () => pending.resolve(jsonResponse(200, fakeEnvelope("ai_ml"))));
     expect((await screen.findByRole("button", { name: /^Đà Nẵng:/ })).textContent).toContain(
@@ -334,7 +329,7 @@ describe("fr33 — đổi vai trò", () => {
 
     expect(cityButton("Đà Nẵng").textContent).toContain("n = 9 < 30");
     expect(screen.queryByText(LOW_SAMPLE_21)).toBeNull();
-    expect(chip("Backend").getAttribute("aria-pressed")).toBe("true");
+    expect(selectedLabel(roleSelect())).toBe("Backend");
   });
 });
 
@@ -449,7 +444,7 @@ describe("fr33 — lỗi", () => {
     expect(screen.queryByRole("alert")).toBeNull();
   });
 
-  it("fr33: 404 unknown_cell hiện message kèm ngày snapshot, không có Thử lại, chip vẫn đổi được", async () => {
+  it("fr33: 404 unknown_cell hiện message kèm ngày snapshot, không có Thử lại, ô lọc vẫn đổi được", async () => {
     const message = "Không có ô thống kê nào cho vai trò đã chọn.";
     routeCityShares({
       all: [
@@ -505,46 +500,34 @@ describe("fr33 — lỗi", () => {
 });
 
 describe("fr33 — bàn phím", () => {
-  it("fr33: Tab đi qua chip vai trò, cụm lối xem, nút cấp bậc, rồi từng dòng thành phố", async () => {
+  it("fr33: Tab đi qua ô vai trò, ô cấp bậc, ô số năm (#293), cụm lối xem, rồi từng dòng thành phố", async () => {
     routeCityShares({ all: [ok("all")] });
     const { user } = await openScreen();
     const stops: string[] = [];
 
-    for (let i = 0; i < 28; i += 1) {
+    for (let i = 0; i < 12; i += 1) {
       await user.tab();
       const active = document.activeElement as HTMLElement;
-      stops.push(active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? "");
+      stops.push(
+        active instanceof HTMLSelectElement
+          ? `select:${active.labels?.[0]?.textContent}`
+          : (active.getAttribute("aria-label")?.split(":")[0] ?? active.textContent ?? ""),
+      );
     }
 
     expect(stops).toEqual([
-      "Tất cả",
-      "Nhúng",
-      "AI/ML",
-      "Kỹ sư dữ liệu",
-      "Phân tích dữ liệu",
-      "Kiểm thử (QA)",
-      "DevOps",
-      "Mobile",
-      "Frontend",
-      "Backend",
-      "Vai trò khác",
+      "select:Vai trò",
+      "select:Cấp bậc",
+      "select:Số năm kinh nghiệm",
       "3D",
       "Biểu đồ 2D",
       "Bảng",
-      "Mới vào nghề",
-      "Intern",
-      "Fresher",
-      "Junior",
-      "Mid",
-      "Senior",
-      "Lead",
-      "Chưa ghi cấp bậc",
-      "Mọi cấp bậc",
       "Hà Nội",
       "TP.HCM",
       "Đà Nẵng",
-      "Khác",
-      "Không xác định thành phố",
+      "Làm từ xa (Remote)",
+      "Nước ngoài",
+      "Không xác định nơi làm việc",
     ]);
   });
 

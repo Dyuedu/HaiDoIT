@@ -92,7 +92,7 @@ describe("FR-22 fixture lộ trình học", () => {
 
   it("data_engineer với hồ sơ {java, sql, git}: giao là sql và git, java nằm ở have_ignored (FR-24)", () => {
     expect(dataEngineerHave.data.have_on_path).toBe(2);
-    expect(dataEngineerHave.data.path_size).toBe(11);
+    expect(dataEngineerHave.data.path_size).toBe(13);
     expect(dataEngineerHave.data.have_ignored).toEqual(["java"]);
     expect(allSkills(dataEngineerHave).filter((s) => s.have).map((s) => s.skill).sort()).toEqual(["git", "sql"]);
   });

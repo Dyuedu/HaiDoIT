@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Implemented, chờ merge. Lượt đêm đầu tiên dùng image GHCR là snapshot `2026-11-12`.
+**Status**: Done. Merge qua PR #274; lượt đêm `2026-11-12` chạy kho bằng image GHCR `sha-cd57eb8` và chốt snapshot.
 
 **Input**: GitHub issue [#273](https://github.com/Dyuedu/HaiDoIT/issues/273) — The nightly warehouse image is built from the same commit as the API and web, so the VPS never runs warehouse code that is older than `main`.
 

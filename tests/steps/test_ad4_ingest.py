@@ -31,6 +31,9 @@ class FakeReader:
         self.calls += 1
         return self.data
 
+    def read_facts(self, urls: object) -> tuple[SourceFactsRow, ...]:
+        return tuple(f for f in self.data.facts if f.job_url in set(urls))  # type: ignore[call-overload]
+
 
 def _data(
     runs: tuple[SourceRunRow, ...] = (SourceRunRow("itviec", True, 2, None),),
@@ -258,11 +261,7 @@ def test_ad4_loi_giua_chung_thi_khong_con_hang_nao_cua_lan_chay(
 
 
 def test_ad4_doc_nguon_khong_cham_cot_van_ban_va_khong_ghi_vao_bang_scraper(env: Env, scraper_db) -> None:
-    import inspect
-
-    from haido_core.db import scraper_source
-
-    assert "description" not in inspect.getsource(scraper_source).lower()
+    # #283: nguồn đọc mô tả để phân loại trong bộ nhớ (REGISTRY.md phép 6); mô tả vẫn không xuống bảng nào.
     jd = "văn bản JD không được chép"
     scraper_db.day("itviec", S, ["i1"])
     scraper_db.job("i1", "itviec", title="Dev", description=jd)
@@ -273,3 +272,34 @@ def test_ad4_doc_nguon_khong_cham_cot_van_ban_va_khong_ghi_vao_bang_scraper(env:
     assert facts and all(jd not in row[0] for row in facts)
     assert env.query(jobs_sql) == before
     assert any(jd in str(v) for v in before[0])
+
+
+# ------------------------------------------------------------------ #280: số năm kinh nghiệm tối thiểu
+
+
+def test_fr33_plan_mang_so_nam_toi_thieu_cua_scraper_vao_phien_ban_du_kien() -> None:
+    facts = (SourceFactsRow("u1", "Dev", "A", "Hà Nội", None, None, 2.5), SourceFactsRow("u2", "QA", "B", None, None, None))
+    plan = plan_ingest(date(2026, 11, 3), _data(facts=facts), RULES.auto_sources)
+    assert [f.years_min for f in plan.facts] == [2.5, None]
+    assert plan.facts[0].version().years_min == 2.5
+    assert snapshot_store.FactVersion("Dev", "A", "Hà Nội", None, None).years_min is None
+
+
+def test_fr33_ingest_chep_years_experience_min_va_doi_so_nam_thi_co_phien_ban_moi(env: Env, scraper_db) -> None:
+    scraper_db.day("itviec", S, ["i1", "i2"])
+    scraper_db.job("i1", "itviec", title="Backend Dev", company="A", years_experience_min="2")
+    scraper_db.job("i2", "itviec", title="QA", company="B")
+    env.ingest()
+    assert env.query("SELECT title, years_min FROM haido.job_posting_facts ORDER BY title") == [
+        ("Backend Dev", 2.0),
+        ("QA", None),
+    ]
+    later = "2026-11-04"
+    scraper_db.day("itviec", later, ["i1", "i2"])
+    scraper_db.job("i2", "itviec", title="QA", company="B", years_experience_min="0.5")
+    result = env.ingest(later)
+    assert result.facts_added == 1
+    assert env.query(
+        "SELECT f.snapshot_id::text, f.years_min FROM haido.job_posting_facts f "
+        "JOIN haido.job_postings p ON p.id = f.posting_id WHERE p.source_url = 'i2' ORDER BY 1"
+    ) == [(S, None), (later, 0.5)]

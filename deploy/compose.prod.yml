@@ -11,6 +11,8 @@ services:
       # Production đọc snapshot đã công bố (#162). Mặc định trong mã vẫn là `fake`; compose.local giữ `fake`
       # để job smoke của CI chạy trên DB rỗng.
       HAIDO_MARKET_SOURCE_CITY_SHARES: stat
+      # Màn người mới đọc ô `entry` của snapshot đã công bố (#146).
+      HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat
     ports:
       - "127.0.0.1:8000:8000"
     healthcheck:

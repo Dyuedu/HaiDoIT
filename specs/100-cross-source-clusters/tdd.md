@@ -44,3 +44,27 @@ Sau khi thêm migration 0005 mà `aggregate` chưa ghi cột `seniority`: `tests
 ### GREEN
 
 `tests/steps/test_fr33_aggregate_level_step.py` 12 passed. Sau khi sửa truy vấn và số đếm (66 → 594 ô, 55 → 495 tỷ trọng), `tests/steps` + `tests/test_dat20_cli.py` + `tests/test_ad4_cli.py` xanh. Các đợt trước giữ nguyên.
+
+## Đợt 2026-11-12 — #280 thêm chiều số năm kinh nghiệm
+
+Lý do: #280 sửa `haido_core/domain/aggregate.py`, `population.py`, `steps/aggregate.py`, `db/snapshot_store.py`, `config.py`: hàm tổng hợp lọc tập cụm theo mốc số năm rồi chạy lại cùng phép đếm; số năm của cụm lấy từ tin đại diện.
+
+- RED: không có test nào của #100 đổi kỳ vọng. `test_dat28_hai_nguon_cung_cong_ty_va_chuc_danh_dem_mot_va_lay_thanh_pho_dai_dien` đỏ một lượt vì helper `_n` gặp 6 hàng `stat_cells` (một hàng mỗi mã số năm), sửa bằng `years = 'any'` (xem tdd của #280).
+- GREEN: `tests/domain/test_dat28_cluster.py`, `tests/steps/test_dat20_aggregate_step.py`, `tests/steps/test_fr33_aggregate_level_step.py` xanh; `uv run pytest -q` → 770 passed.
+
+## Đợt 2026-11-13 — #283 nhãn của tin đại diện lấy từ dữ kiện đã lưu
+
+Lý do: #283 sửa `haido_core/steps/aggregate.py`: nhãn vai trò và cấp của cụm lấy từ dữ kiện đã lưu của tin đại diện khi
+`classify_version` khớp, không thì phân loại từ trường đóng như trước. Quy tắc cụm và chọn tin đại diện không đổi. Không AC
+nào của #100 đổi.
+
+- RED: `test_dat20_nguon_chi_it_thi_tin_khong_ro_vai_tro_la_other_va_tin_ngoai_it_bi_loai` đỏ vì "Nhân viên kinh doanh" nay là
+  không thuộc IT; đổi ví dụ sang "Chuyên viên sản phẩm" (không mang cụm nào), giữ ý của test.
+- GREEN: `tests/domain/test_dat28_cluster.py`, `tests/steps/test_dat20_aggregate_step.py` xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (nơi của cụm lấy từ `job_posting_facts.city` của tin đại diện khi `classify_version` khớp). Không AC nào của issue này đổi.
+
+- RED: `test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro` đỏ vì dòng `other`.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.

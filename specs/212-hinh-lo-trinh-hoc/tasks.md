@@ -36,3 +36,10 @@ Test trước, chạy đỏ, ghi `tdd.md` đợt 2.
 ## Phase 3: Sau merge
 
 - [ ] T013 Comment hợp đồng lên #212 cho người làm #213, #216, #217, #218, #220, #221
+
+## Phase 4: Gộp main (đợt 3, 2026-11-15)
+
+- [x] T022 Gộp `origin/main` bằng commit merge, giải chín xung đột giữ cả hai bên
+- [x] T023 Thêm `learning_path` vào ba test dựng app của main; sinh lại `openapi.json` và hai fixture web của `data_engineer`
+- [x] T024 Test quét 17 vai trò x cấp (`test_fr22_moi_vai_tro_cua_config_nhan_moi_cap_cua_config`)
+- [x] T025 Test trước: kỳ vọng "2 trên 13"; rồi đưa `spark`, `airflow`, `pandas` trở lại trong `fake_market.json` và `fake_learning_path.json`

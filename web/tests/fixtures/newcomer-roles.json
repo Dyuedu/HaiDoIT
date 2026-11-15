@@ -29,6 +29,28 @@
         }
       },
       {
+        "role": "it_infra",
+        "total_cell_id": "vn.it_infra",
+        "entry_cell_id": "vn.it_infra.entry",
+        "share": {
+          "value": 0.2721649484536082,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.it_infra"
+        }
+      },
+      {
+        "role": "ba_po_pm",
+        "total_cell_id": "vn.ba_po_pm",
+        "entry_cell_id": "vn.ba_po_pm.entry",
+        "share": {
+          "value": 0.16182048040455121,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.ba_po_pm"
+        }
+      },
+      {
         "role": "qa",
         "total_cell_id": "vn.qa",
         "entry_cell_id": "vn.qa.entry",
@@ -62,6 +84,39 @@
         }
       },
       {
+        "role": "game",
+        "total_cell_id": "vn.game",
+        "entry_cell_id": "vn.game.entry",
+        "share": {
+          "value": 0.43434343434343436,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.game"
+        }
+      },
+      {
+        "role": "security",
+        "total_cell_id": "vn.security",
+        "entry_cell_id": "vn.security.entry",
+        "share": {
+          "value": 0.1935483870967742,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.security"
+        }
+      },
+      {
+        "role": "fullstack",
+        "total_cell_id": "vn.fullstack",
+        "entry_cell_id": "vn.fullstack.entry",
+        "share": {
+          "value": 0.18994413407821228,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.fullstack"
+        }
+      },
+      {
         "role": "mobile",
         "total_cell_id": "vn.mobile",
         "entry_cell_id": "vn.mobile.entry",
@@ -70,6 +125,17 @@
           "kind": "level_share",
           "display": "shown",
           "cell_id": "vn.mobile"
+        }
+      },
+      {
+        "role": "ui_ux",
+        "total_cell_id": "vn.ui_ux",
+        "entry_cell_id": "vn.ui_ux.entry",
+        "share": {
+          "value": 0.2727272727272727,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.ui_ux"
         }
       },
       {
@@ -92,6 +158,17 @@
           "kind": "level_share",
           "display": "null_data",
           "cell_id": "vn.embedded"
+        }
+      },
+      {
+        "role": "data_scientist",
+        "total_cell_id": "vn.data_scientist",
+        "entry_cell_id": "vn.data_scientist.entry",
+        "share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.data_scientist"
         }
       },
       {
@@ -235,6 +312,90 @@
           "salary": true
         }
       },
+      "vn.it_infra": {
+        "n": 485,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 155,
+          "lead": 56,
+          "intern": 14,
+          "junior": 85,
+          "senior": 61,
+          "fresher": 33,
+          "unknown": 81
+        },
+        "n_by_measure": {
+          "skill_count": 485,
+          "experience_years": 340,
+          "salary": 107
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.it_infra.entry": {
+        "n": 132,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 14,
+          "junior": 85,
+          "fresher": 33
+        },
+        "n_by_measure": {
+          "skill_count": 132,
+          "experience_years": 92,
+          "salary": 29
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.ba_po_pm": {
+        "n": 791,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 309,
+          "lead": 95,
+          "intern": 14,
+          "junior": 88,
+          "senior": 170,
+          "fresher": 26,
+          "unknown": 89
+        },
+        "n_by_measure": {
+          "skill_count": 791,
+          "experience_years": 554,
+          "salary": 174
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.ba_po_pm.entry": {
+        "n": 128,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 14,
+          "junior": 88,
+          "fresher": 26
+        },
+        "n_by_measure": {
+          "skill_count": 128,
+          "experience_years": 90,
+          "salary": 28
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
       "vn.qa": {
         "n": 130,
         "fallback_label": null,
@@ -355,6 +516,132 @@
           "salary": true
         }
       },
+      "vn.game": {
+        "n": 99,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 23,
+          "lead": 2,
+          "intern": 10,
+          "junior": 21,
+          "senior": 10,
+          "fresher": 12,
+          "unknown": 21
+        },
+        "n_by_measure": {
+          "skill_count": 99,
+          "experience_years": 69,
+          "salary": 22
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.game.entry": {
+        "n": 43,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 10,
+          "junior": 21,
+          "fresher": 12
+        },
+        "n_by_measure": {
+          "skill_count": 43,
+          "experience_years": 30,
+          "salary": 9
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.security": {
+        "n": 186,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 48,
+          "lead": 26,
+          "intern": 6,
+          "junior": 22,
+          "senior": 47,
+          "fresher": 8,
+          "unknown": 29
+        },
+        "n_by_measure": {
+          "skill_count": 186,
+          "experience_years": 130,
+          "salary": 41
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.security.entry": {
+        "n": 36,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 6,
+          "junior": 22,
+          "fresher": 8
+        },
+        "n_by_measure": {
+          "skill_count": 36,
+          "experience_years": 25,
+          "salary": 8
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.fullstack": {
+        "n": 179,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 71,
+          "lead": 8,
+          "intern": 6,
+          "junior": 24,
+          "senior": 51,
+          "fresher": 4,
+          "unknown": 15
+        },
+        "n_by_measure": {
+          "skill_count": 179,
+          "experience_years": 125,
+          "salary": 39
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      },
+      "vn.fullstack.entry": {
+        "n": 34,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 6,
+          "junior": 24,
+          "fresher": 4
+        },
+        "n_by_measure": {
+          "skill_count": 34,
+          "experience_years": 24,
+          "salary": 7
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": true,
+          "salary": true
+        }
+      },
       "vn.mobile": {
         "n": 75,
         "fallback_label": null,
@@ -391,6 +678,48 @@
         },
         "insufficient_by_measure": {
           "skill_count": false,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.ui_ux": {
+        "n": 77,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 34,
+          "lead": 2,
+          "intern": 1,
+          "junior": 16,
+          "senior": 14,
+          "fresher": 4,
+          "unknown": 6
+        },
+        "n_by_measure": {
+          "skill_count": 77,
+          "experience_years": 54,
+          "salary": 17
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      },
+      "vn.ui_ux.entry": {
+        "n": 21,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 1,
+          "junior": 16,
+          "fresher": 4
+        },
+        "n_by_measure": {
+          "skill_count": 21,
+          "experience_years": 15,
+          "salary": 5
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
           "experience_years": true,
           "salary": true
         }
@@ -459,6 +788,46 @@
         },
         "n_by_measure": {
           "skill_count": 6,
+          "experience_years": 4,
+          "salary": 1
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.data_scientist": {
+        "n": 28,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 6,
+          "lead": 4,
+          "intern": 4,
+          "junior": 1,
+          "senior": 11,
+          "unknown": 2
+        },
+        "n_by_measure": {
+          "skill_count": 28,
+          "experience_years": 20,
+          "salary": 6
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      },
+      "vn.data_scientist.entry": {
+        "n": 5,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "junior": 1
+        },
+        "n_by_measure": {
+          "skill_count": 5,
           "experience_years": 4,
           "salary": 1
         },

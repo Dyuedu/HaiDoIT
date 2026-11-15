@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Implemented. Cập nhật 2026-11-11 theo #163: ô theo cấp bậc lọc được cũng đếm cụm (một cụm một lần, ở cấp của đại diện). Không AC nào của #100 đổi.
+**Status**: Implemented. Cập nhật 2026-11-11 theo #163: ô theo cấp bậc lọc được cũng đếm cụm (một cụm một lần, ở cấp của đại diện). Không AC nào của #100 đổi. Cập nhật 2026-11-12 theo #280: ô theo mốc số năm cũng đếm cụm, số năm của cụm lấy từ tin đại diện như nhãn.
 
 **Input**: GitHub issue [#100](https://github.com/Dyuedu/HaiDoIT/issues/100) — Operation 7 collapses cross-source duplicates into clusters. Later counts use clusters, and the representative is chosen by an explicit rule.
 

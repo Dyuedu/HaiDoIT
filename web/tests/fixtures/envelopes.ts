@@ -42,6 +42,10 @@ export interface EnvelopeSpec {
   role: string;
   /** Cấp bậc lọc; mặc định `all`. Khác `all` thì mã ô có đuôi `.<level>` như API. */
   level?: string;
+  /** Mốc số năm (#280); mặc định `any`. Khác `any` thì mã ô có thêm đuôi `.y<N>` như API. */
+  years?: string;
+  /** Số tin không ghi số năm (#280): `n` của ô `vn.<role>[.<level>].ynone`; chỉ dùng khi `years` khác `any`. */
+  yearsUnstated?: number;
   totalN: number;
   rows: RowSpec[];
   snapshotDate?: string;
@@ -82,7 +86,8 @@ function statCell(n: number): CellMeta {
 /** Dựng một envelope hợp đồng từ mô tả gọn. `display` lấy nguyên từ mô tả, không suy từ `n`. */
 export function buildEnvelope(spec: EnvelopeSpec): CitySharesEnvelope {
   const level = spec.level ?? "all";
-  const suffix = level === "all" ? "" : `.${level}`;
+  const years = spec.years ?? "any";
+  const suffix = (level === "all" ? "" : `.${level}`) + (years === "any" ? "" : `.y${years}`);
   const totalCellId = `vn.${spec.role}${suffix}`;
   const cells: Record<string, CellMeta> = { [totalCellId]: statCell(spec.totalN) };
   const rows = spec.rows.map((row) => {
@@ -98,8 +103,20 @@ export function buildEnvelope(spec: EnvelopeSpec): CitySharesEnvelope {
       },
     };
   });
+  let unstatedCellId: string | null = null;
+  if (years !== "any") {
+    unstatedCellId = `vn.${spec.role}${level === "all" ? "" : `.${level}`}.ynone`;
+    cells[unstatedCellId] = statCell(spec.yearsUnstated ?? 0);
+  }
   return {
-    data: { role: spec.role, level, total_cell_id: totalCellId, rows },
+    data: {
+      role: spec.role,
+      level,
+      years,
+      years_unstated_cell_id: unstatedCellId,
+      total_cell_id: totalCellId,
+      rows,
+    },
     meta: {
       snapshot_date: spec.snapshotDate ?? "2026-11-07",
       snapshot_status: spec.snapshotStatus ?? "published",

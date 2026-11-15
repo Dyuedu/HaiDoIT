@@ -65,3 +65,8 @@
 - `haido_api/fixtures/fake_market.json`: mã trong `skill_rates` đổi sang snake_case, thêm và đổi hàng `skill_rates` (đợt 2: `data_engineer/entry` về `vn.data_engineer`, thêm `backend/intern`). Không đụng `cells` hay `newcomer_roles`.
 - `docs/api/openapi.json`, `docs/api/envelope-meta.md`: thêm route `learning-path` và ngoại lệ `Ordinal`.
 - `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `test_fr33_city_shares_level.py`, `tests/steps/test_dat20_api_end_to_end.py`: thêm nguồn `learning_path` vào các lời gọi `create_app`, thêm route vào `SAMPLE_QUERY` và danh sách yêu cầu của test `display`.
+
+## Cập nhật 2026-11-13 theo #293
+
+- [x] T018 đổi: `level-chips.tsx` thay bằng `web/app/components/map/filter-select.tsx` dùng trong `map-screen.tsx` (ô Cấp bậc, `<select>` gốc)
+- [x] T014, T015: test chuyển sang `<select>` (`selectOptions`, `selectedLabel`); test deploy đọc chú thích ở `map-screen.tsx`
