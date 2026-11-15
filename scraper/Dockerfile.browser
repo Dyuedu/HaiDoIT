@@ -15,7 +15,8 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY requirements-vps.txt .
-RUN pip install --no-cache-dir -r requirements-vps.txt playwright \
+# Ghim playwright: 1.65.2 cần libatomic.so.1 mà python:3.13-slim không có, build hỏng (2026-11-15).
+RUN pip install --no-cache-dir -r requirements-vps.txt playwright==1.64.1 \
  && playwright install --with-deps chromium \
  && rm -rf /var/lib/apt/lists/*
 
