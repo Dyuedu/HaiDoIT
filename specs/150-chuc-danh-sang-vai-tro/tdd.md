@@ -56,3 +56,10 @@ cd web && npx vitest run tests/fr19-skill-profile.test.tsx tests/fr18-role-for-t
   - Tick Java rồi tải lại: Java vẫn tick, dòng đếm "1/6 kỹ năng cốt lõi bạn đã có" (số của API).
   - Chạm Spring Boot: `/co-van?role=backend&level=entry&skill=spring_boot`, tiêu đề "Lộ trình học: Backend".
   - Chức danh "Lập trình viên Java" qua phép 6 thật: "Hải Đồ dùng vai trò Backend cho chức danh này.", URL `?role=backend&level=entry`.
+
+## Đợt 2026-11-16 (CI của PR #304): thứ tự import
+
+Lý do: job `Python - ruff and pytest` đỏ ở `ruff check` (I001, thứ tự import của `haido_api/routes/roles.py`); lượt kiểm ở máy trước đó không chạy ruff. Không đổi hành vi.
+
+- RED: `uv run ruff check .` → 1 error (I001, `haido_api/routes/roles.py`).
+- GREEN: `uv run ruff check --fix` rồi `uv run ruff check .` → All checks passed; `uv run pytest tests/api -q` → 385 passed, 74 skipped; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.

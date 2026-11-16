@@ -14,7 +14,11 @@ from fastapi.exceptions import RequestValidationError
 from haido_api.schemas.error import ErrorEnvelope
 from haido_api.schemas.roles import RoleForTitleData, RoleForTitleResponse, TitleMatch
 from haido_core.config import load_rules
-from haido_core.domain.classify import OTHER_ROLE, RuleClassifier, default_classify_config
+from haido_core.domain.classify import (
+    OTHER_ROLE,
+    RuleClassifier,
+    default_classify_config,
+)
 from haido_core.domain.registry import PostingFacts
 
 MAX_TITLE_LEN = 120
