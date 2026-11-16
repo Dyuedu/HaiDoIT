@@ -170,16 +170,28 @@ def get_city_shares(
 )
 def get_skill_rates(
     role: Annotated[str, _code("Mã vai trò, snake_case.")],
-    level: Annotated[str, _code("Mã cấp bậc, snake_case.")],
+    level: Annotated[
+        LevelCode,
+        Query(description="Cấp bậc lọc, như `city-shares`. Màn hồ sơ kỹ năng mặc định gửi `entry` (#134)."),
+    ],
     source: Annotated[MarketReadModel, Depends(_source_for("skill_rates"))],
+    have: Annotated[
+        str | None,
+        Query(
+            description=(
+                "Mã kỹ năng người dùng đã có, như `learning-path` (AD-22): ngăn bằng dấu phẩy, tối đa 200 mã. "
+                "Đặt cờ `have` từng dòng và đếm `data.have_core`; không đổi thứ tự dòng."
+            ),
+        ),
+    ] = None,
 ) -> Envelope[SkillRatesData]:
     """Tỷ lệ xuất hiện của từng kỹ năng trong ô của vai trò × cấp bậc.
 
     Khi ô đã chọn không đủ mẫu, số lấy từ ô rộng hơn; `data.cell_id` là ô đã dùng và
     `meta.cells[data.cell_id].fallback_label` giải thích. Dưới ngưỡng thì `rate` là
-    `null_data` và `group` là `null`.
+    `null_data`, `group` là `null`, `core_size` và `have_core` là `null`. Dòng đã theo thứ tự hiển thị.
     """
-    return source.skill_rates(role=role, level=level)
+    return source.skill_rates(role=role, level=level, have=parse_have(have))
 
 
 @router.get(

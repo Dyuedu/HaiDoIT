@@ -43,3 +43,9 @@ Lượt cron 02:00 trên VPS, snapshot `2026-11-12`, là lượt đêm đầu ti
 - `haido.stat_sources` có 8 hàng cho `2026-11-12` (careerlink, itnavi, itviec, momo, topcv, topdev, vietnamworks, zalo). Truy vấn trong transaction READ ONLY.
 - `GET /api/v1/city-shares?role=ai_ml|backend|frontend` → 200, `snapshot_date: 2026-11-12`, `sources_failed: []`.
 - Sau khi kiểm, đã xoá image `haidoit-warehouse:local` và hai image GHCR cũ (`sha-28a7cd6`, `sha-ca51d8e`) trên VPS; giữ image đang ghi trong `.warehouse-tag`.
+
+## Chạy lại (2026-11-16, #302)
+
+#302 sửa `deploy/daily.sh` (thêm `topcv` vào bước trình duyệt) và `deploy/compose.scraper.yml` (`shm_size` của `scraper-browser` lên `1g`). Không đụng image kho hay `.warehouse-tag`, không đổi scenario của #273.
+
+- `uv run pytest tests/deploy -q` → 62 passed.

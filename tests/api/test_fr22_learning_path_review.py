@@ -166,7 +166,8 @@ def test_fr22_ai_ml_entry_not_ready_nhung_co_skill_rates_de_mo_ho_so(
     body = _get(client, role="ai_ml", level="entry")
     assert body["data"]["status"] == "not_ready"
     assert _get_rates(client, "ai_ml", "entry")["data"]["rows"]
-    qa = client.get("/api/v1/skill-rates", params={"role": "qa", "level": "entry"})
+    # Từ #149 mọi vai trò có skill-rates ở `entry` và `all`; cấp khác của vai trò không có lộ trình vẫn 404.
+    qa = client.get("/api/v1/skill-rates", params={"role": "qa", "level": "senior"})
     assert qa.status_code == 404
 
 

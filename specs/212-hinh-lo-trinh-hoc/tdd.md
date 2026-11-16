@@ -134,3 +134,11 @@ Lý do: gộp `origin/main` (64cc4b8, trước đó 30 commit: #280, #283, #284,
 - RED (chạy thật sau khi sửa fixture, trước khi sửa test): `uv run pytest -q -x -k "not web_fixtures"` → 1 failed, 247 passed: `test_fr24_doi_tu_backend_sang_data_engineer_giao_cua_ho_so_voi_lo_trinh` (`13 == 11`); `HAIDO_UPDATE_OPENAPI=1 uv run pytest -q tests/api` → 2 failed, 338 passed: hai ca `test_ad17_fixture_web_khop_response_learning_path[data_engineer-entry-...]` (fixture web cũ); `npm run test` → 1 failed, 220 passed: `fr22-learning-path-fixture.test.ts` ví dụ FR-24 (`expected 13 to be 11`).
 - Sửa: `test_fr24_...` và `web/tests/fr22-learning-path-fixture.test.ts` từ "2 trên 11" thành "2 trên 13" (`have_on_path = 2` không đổi: `sql`, `git`; `java` vẫn ở `have_ignored`); sinh lại hai fixture web.
 - GREEN: `uv run pytest -q` (Postgres 5433, không skip) → 1113 passed; `-m determinism` với `PYTHONHASHSEED=0` và `1` → 7 passed mỗi lượt; `uv run ruff check .` sạch; `check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11` → 8 pass, 2 skip (hoãn), 0 fail; web `npm run lint` sạch, `npm run test` → 221 passed (15 file), `npm run build` qua.
+
+## Đợt 4 (2026-11-16, #149): fixture có `skill_rates` cho mọi vai trò
+
+Lý do: #149 thêm `skill_rates[role].entry` và `.all` cho mọi vai trò vào `haido_api/fixtures/fake_market.json` (chỉ thêm, không sửa mục cũ), và `skill-rates` kiểm `level`, nhận `have`. Lộ trình đọc chung `skill_rates`, nên hai chỗ test dựa vào việc fixture *thiếu* ô phải đổi. Hai AC của #212 vẫn đúng.
+
+- RED: `uv run pytest tests/api -q` sau khi thêm fixture → `test_ad17_cap_khac_cua_vai_tro_san_sang_la_404_nhu_skill_rates` (backend · `all` giờ 200) và `test_fr22_ai_ml_entry_not_ready_nhung_co_skill_rates_de_mo_ho_so` (`qa` · `entry` giờ có `skill-rates`) đỏ.
+- Sửa test: dùng `lead` thay `all`, và `qa` · `senior` thay `qa` · `entry`, kèm chú thích. Mã lộ trình không đổi; thứ tự và nhóm của `backend`, `data_engineer` không đổi (các fixture `web/tests/fixtures/learning-path-*.json` vẫn khớp).
+- GREEN: `uv run pytest tests/api -q` → 379 passed, 74 skipped.

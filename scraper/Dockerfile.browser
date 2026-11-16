@@ -1,22 +1,33 @@
-# Anh cho cac nguon can trinh duyet: MoMo, TopDev, ITviec. Chi lam buoc crawl;
-# moi buoc con lai chay o anh `scraper`, nhe hon nhieu.
+# Anh cho cac nguon can trinh duyet: MoMo, ITviec (Playwright), TopCV (nodriver + Chrome
+# duoi Xvfb). Chi lam buoc crawl; moi buoc con lai chay o anh `scraper`, nhe hon nhieu.
 FROM python:3.13-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8 \
     PIP_NO_CACHE_DIR=1 \
     PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    CHROME_PATH=/usr/bin/google-chrome-stable \
     TZ=Asia/Ho_Chi_Minh
 
 WORKDIR /app
 
+# xvfb + xauth: man hinh ao cho xvfb-run. Chrome Stable lay tu kho apt cua Google:
+# kho chi giu ban moi nhat nen khong ghim duoc, `google-chrome-stable --version` in trong log build.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends ca-certificates tzdata \
+ && apt-get install -y --no-install-recommends ca-certificates tzdata wget gnupg xvfb xauth \
+ && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub \
+      | gpg --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg \
+ && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+      > /etc/apt/sources.list.d/google-chrome.list \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends google-chrome-stable \
+ && google-chrome-stable --version \
  && rm -rf /var/lib/apt/lists/*
 
 COPY requirements-vps.txt .
 # Ghim playwright: 1.65.2 cần libatomic.so.1 mà python:3.13-slim không có, build hỏng (2026-11-15).
-RUN pip install --no-cache-dir -r requirements-vps.txt playwright==1.64.1 \
+# Ghim nodriver theo bản đang chạy tay cho TopCV (#302).
+RUN pip install --no-cache-dir -r requirements-vps.txt playwright==1.64.1 nodriver==0.50.99 \
  && playwright install --with-deps chromium \
  && rm -rf /var/lib/apt/lists/*
 

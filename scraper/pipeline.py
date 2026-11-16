@@ -73,8 +73,9 @@ SOURCES = {
     "topcv": {
         "module": "crawlers.topcv",
         "type": "nodriver",
-        "has_limit": False,
+        "has_limit": True,
         "args": [],
+        "timeout": 6 * 3600,  # the seen file is written before details; details have cooldowns
     },
 }
 
@@ -88,6 +89,9 @@ SCRAPER_DIR = Path(__file__).resolve().parent
 
 def run_crawler(name: str, cfg: dict, extra_args: list[str]) -> bool:
     cmd = [sys.executable, "-m", cfg["module"]] + cfg["args"] + extra_args
+    # nodriver runs a headed Chrome; in the container there is no display, so give it Xvfb.
+    if cfg["type"] == "nodriver" and sys.platform.startswith("linux") and not os.environ.get("DISPLAY"):
+        cmd = ["xvfb-run", "--auto-servernum", "--server-args=-screen 0 1920x1080x24", *cmd]
 
     print(f"\n{'='*60}", flush=True)
     print(f"  [{name}] starting -- {cfg['module']}", flush=True)
@@ -206,7 +210,10 @@ def main() -> None:
             cfg = SOURCES[name]
             extra = []
             if cfg["type"] == "nodriver":
-                pass
+                if args.skip_details:
+                    extra.append("--skip-details")
+                if args.limit and cfg.get("has_limit"):
+                    extra.extend(["--limit", str(args.limit)])
             else:
                 if args.skip_details and cfg["type"] == "playwright" and name != "momo":
                     extra.append("--skip-details")

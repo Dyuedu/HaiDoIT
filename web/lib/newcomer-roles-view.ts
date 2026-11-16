@@ -10,7 +10,7 @@ import { FAILED_SOURCES_PREFIX, NOT_ENOUGH_DATA, type SnapshotCaption, formatCou
 import { levelLabel, roleLabel } from "./labels";
 import { type NewcomerRolesEnvelope, rowCounts } from "./newcomer-roles";
 
-/** Đường dẫn hồ sơ kỹ năng của một vai trò. Tới khi có #111 thì là trang giữ chỗ. */
+/** Đường dẫn hồ sơ kỹ năng của một vai trò (#152; trước đó là trang giữ chỗ của #147). */
 export const SKILL_PROFILE_PATH = "/ho-so-ky-nang";
 /** Cấp mở sẵn khi chạm một vai trò trên màn người mới. */
 export const NEWCOMER_LEVEL = "entry";

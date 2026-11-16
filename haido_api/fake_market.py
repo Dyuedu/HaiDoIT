@@ -116,7 +116,9 @@ class FakeMarket:
             cell_ids.append(data.years_unstated_cell_id)
         return Envelope[CitySharesData](data=data, meta=self._meta(cell_ids, {}))
 
-    def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:
+    def skill_rates(
+        self, *, role: str, level: str, have: Collection[str] = ()
+    ) -> Envelope[SkillRatesData]:
         entry = self._skill_rates.get(role, {}).get(level)
         if entry is None:
             raise UnknownCell(
@@ -124,12 +126,26 @@ class FakeMarket:
                 snapshot_date=self._snapshot_date,
             )
         cell_id: str = entry["cell_id"]
+        owned = set(have)
         rows = []
         for row in entry["rows"]:
             rate = self._stat(row["rate"], MeasureKind.SKILL_RATE, cell_id)
             group = None if rate.display is DisplayState.NULL_DATA else row["group"]
-            rows.append(SkillRateRow(skill=row["skill"], rate=rate, group=group))
-        data = SkillRatesData(role=role, level=level, cell_id=cell_id, rows=rows)
+            rows.append(
+                SkillRateRow(skill=row["skill"], rate=rate, group=group, have=row["skill"] in owned)
+            )
+        # Thứ tự hiển thị do máy chủ quyết (#149): dòng có tỷ lệ trước, tỷ lệ giảm dần, rồi mã. Bản thật theo cùng quy tắc.
+        rows.sort(key=lambda r: (r.rate.value is None, -(r.rate.value or 0.0), r.skill))
+        core = [r for r in rows if r.group == "core"]
+        shown = any(r.rate.value is not None for r in rows)
+        data = SkillRatesData(
+            role=role,
+            level=level,
+            cell_id=cell_id,
+            rows=rows,
+            core_size=len(core) if shown else None,
+            have_core=sum(r.have for r in core) if shown else None,
+        )
         meta = self._meta([cell_id], {cell_id: entry["fallback_label"]})
         return Envelope[SkillRatesData](data=data, meta=meta)
 

@@ -123,7 +123,7 @@
           "market"
         ],
         "summary": "Tỷ lệ xuất hiện kỹ năng của một ô",
-        "description": "Tỷ lệ xuất hiện của từng kỹ năng trong ô của vai trò × cấp bậc.\n\nKhi ô đã chọn không đủ mẫu, số lấy từ ô rộng hơn; `data.cell_id` là ô đã dùng và\n`meta.cells[data.cell_id].fallback_label` giải thích. Dưới ngưỡng thì `rate` là\n`null_data` và `group` là `null`.",
+        "description": "Tỷ lệ xuất hiện của từng kỹ năng trong ô của vai trò × cấp bậc.\n\nKhi ô đã chọn không đủ mẫu, số lấy từ ô rộng hơn; `data.cell_id` là ô đã dùng và\n`meta.cells[data.cell_id].fallback_label` giải thích. Dưới ngưỡng thì `rate` là\n`null_data`, `group` là `null`, `core_size` và `have_core` là `null`. Dòng đã theo thứ tự hiển thị.",
         "operationId": "get_skill_rates_api_v1_skill_rates_get",
         "parameters": [
           {
@@ -145,14 +145,40 @@
             "in": "query",
             "required": true,
             "schema": {
+              "enum": [
+                "all",
+                "entry",
+                "intern",
+                "fresher",
+                "junior",
+                "mid",
+                "senior",
+                "lead",
+                "unknown"
+              ],
               "type": "string",
-              "minLength": 1,
-              "maxLength": 64,
-              "pattern": "^[a-z0-9_]+$",
-              "description": "Mã cấp bậc, snake_case.",
+              "description": "Cấp bậc lọc, như `city-shares`. Màn hồ sơ kỹ năng mặc định gửi `entry` (#134).",
               "title": "Level"
             },
-            "description": "Mã cấp bậc, snake_case."
+            "description": "Cấp bậc lọc, như `city-shares`. Màn hồ sơ kỹ năng mặc định gửi `entry` (#134)."
+          },
+          {
+            "name": "have",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Mã kỹ năng người dùng đã có, như `learning-path` (AD-22): ngăn bằng dấu phẩy, tối đa 200 mã. Đặt cờ `have` từng dòng và đếm `data.have_core`; không đổi thứ tự dòng.",
+              "title": "Have"
+            },
+            "description": "Mã kỹ năng người dùng đã có, như `learning-path` (AD-22): ngăn bằng dấu phẩy, tối đa 200 mã. Đặt cờ `have` từng dòng và đếm `data.have_core`; không đổi thứ tự dòng."
           }
         ],
         "responses": {
@@ -375,6 +401,62 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SkillsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/role-for-title": {
+      "get": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Vai trò cho một chức danh",
+        "description": "Đưa chức danh vào phép 6 và trả vai trò Hải Đồ dùng (FR-18, #150).\n\n`matched` kèm mã vai trò; `generic` khi chức danh thuộc IT nhưng không chỉ một vai trò (ví dụ `Developer`);\n`not_it` khi chức danh không thuộc IT. Hai trường hợp sau có `role = null`: màn hiện danh sách vai trò để chọn.",
+        "operationId": "get_role_for_title_api_v1_role_for_title_get",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 184,
+              "description": "Chức danh người dùng gõ, ví dụ `Lập trình viên Java`. Tối đa 120 ký tự sau khi bỏ khoảng trắng hai đầu. Không được lưu hay ghi log.",
+              "title": "Title"
+            },
+            "description": "Chức danh người dùng gõ, ví dụ `Lập trình viên Java`. Tối đa 120 ký tự sau khi bỏ khoảng trắng hai đầu. Không được lưu hay ghi log."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleForTitleResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Chức danh rỗng hoặc quá dài (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
                 }
               }
             }
@@ -1060,6 +1142,48 @@
         ],
         "title": "PathStatus"
       },
+      "RoleForTitleData": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/TitleMatch",
+            "description": "`matched`, `generic` hoặc `not_it`."
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "Mã vai trò của `config/rules.toml` khi `matched`; `null` khi không."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "role"
+        ],
+        "title": "RoleForTitleData",
+        "description": "Vai trò Hải Đồ dùng cho chức danh người dùng gõ."
+      },
+      "RoleForTitleResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RoleForTitleData"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "RoleForTitleResponse",
+        "description": "`{data}`. Không có `meta` vì không có con số nào."
+      },
       "SkillRateRow": {
         "properties": {
           "skill": {
@@ -1082,6 +1206,12 @@
             ],
             "title": "Group",
             "description": "Nhóm kỹ năng theo θ: `core`, `common`, `company_specific`. `null` khi `rate` bị ẩn (`null_data`)."
+          },
+          "have": {
+            "type": "boolean",
+            "title": "Have",
+            "description": "Mã kỹ năng có trong `have=` của request (AD-22, #149). Web tick theo cờ này, không tự so mã.",
+            "default": false
           }
         },
         "additionalProperties": false,
@@ -1118,7 +1248,33 @@
             },
             "type": "array",
             "title": "Rows",
-            "description": "Mỗi kỹ năng của ô một dòng."
+            "description": "Mỗi kỹ năng của ô một dòng, theo thứ tự hiển thị: dòng có tỷ lệ trước, tỷ lệ giảm dần, rồi mã kỹ năng (#149).\nWeb không sắp xếp lại."
+          },
+          "core_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Core Size",
+            "description": "Số dòng `group = core`. `null` khi mọi `rate` là `null_data` (chưa đủ dữ liệu để chia nhóm)."
+          },
+          "have_core": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Have Core",
+            "description": "Số dòng core có `have` (AD-22: web không đếm). `null` cùng lúc với `core_size`."
           }
         },
         "additionalProperties": false,
@@ -1294,6 +1450,16 @@
         ],
         "title": "Thresholds",
         "description": "Các ngưỡng đã dùng cho response, lấy từ cấu hình có phiên bản (AD-10)."
+      },
+      "TitleMatch": {
+        "type": "string",
+        "enum": [
+          "matched",
+          "generic",
+          "not_it"
+        ],
+        "title": "TitleMatch",
+        "description": "Kết quả phân loại một chức danh."
       }
     }
   }

@@ -5,5 +5,5 @@ Ba thư của issue #8. Chưa thư nào được gửi. Đồng hồ 14 ngày b�
 | Bên | File | Ngày gửi | Hạn trả lời | Kết quả | Công tắc |
 |---|---|---|---|---|---|
 | ITviec | `itviec.md` | | | chưa gửi | không đổi |
-| TopCV | `topcv.md` | | | chưa gửi | không đổi |
+| TopCV | `topcv.md` | | | chưa gửi | bật trong lượt đêm từ 16/11 (#302) |
 | Tác giả repo gốc | `repo-goc.md` | | | chưa gửi | không đổi |

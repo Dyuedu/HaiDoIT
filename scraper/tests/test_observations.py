@@ -677,6 +677,162 @@ def test_topcv_empty_first_page_is_not_a_complete_run(topcv):
     assert walk_topcv(topcv, {1: []}) == ([], False)
 
 
+# --------------------------------------------------------------- TopCV main (#302)
+
+def run_topcv_main(module, monkeypatch, pages, argv=()):
+    """Run topcv.main() with a fake browser. pages: {page: [ids] | html}; detail pages answer NOT_FOUND."""
+    details = []
+
+    class Client:
+        async def start(self):
+            pass
+
+        async def fetch(self, url, is_listing=False):
+            if not is_listing:
+                details.append(url)
+                return "NOT_FOUND"
+            value = pages.get(int(url.split("page=")[1]), "NOT_FOUND")
+            return "<html>" + "".join(topcv_card(i) for i in value) if isinstance(value, list) else value
+
+        def close(self):
+            pass
+
+    import asyncio
+
+    monkeypatch.setattr(module, "TopCVBrowserClient", Client)
+    monkeypatch.setattr(sys, "argv", ["topcv", *argv])
+    asyncio.run(module.main())
+    return details
+
+
+def test_topcv_blocked_first_page_writes_no_old_urls(topcv, monkeypatch):
+    conn = topcv.init_db()
+    conn.execute("INSERT INTO job_queue (job_id, url) VALUES ('9', '/viec-lam/cu/9.html')")
+    conn.commit()
+    conn.close()
+
+    run_topcv_main(topcv, monkeypatch, {1: "<title>Just a moment...</title>"})
+
+    doc = seen_doc("topcv")
+    assert doc["job_urls"] == [] and doc["listing_complete"] is False
+
+
+def test_topcv_skip_details_fetches_no_detail_page(topcv, monkeypatch):
+    details = run_topcv_main(topcv, monkeypatch, {1: [1, 2]}, ["--skip-details"])
+    assert details == []
+    assert seen_doc("topcv")["listing_complete"] is True
+
+
+def test_topcv_limit_caps_detail_pages(topcv, monkeypatch):
+    details = run_topcv_main(topcv, monkeypatch, {1: [1, 2, 3]}, ["--limit", "2"])
+    assert len(details) == 2
+
+
+def test_topcv_profile_and_queue_default_under_data_state(topcv, monkeypatch):
+    import importlib
+
+    monkeypatch.delenv("TOPCV_DB", raising=False)
+    monkeypatch.delenv("TOPCV_PROFILE_DIR", raising=False)
+    importlib.reload(topcv)
+    assert Path(topcv.DB_PATH) == Path("data/state/topcv_jobs.db")
+    assert Path(topcv.PROFILE_DIR) == (Path.cwd() / "data/state/chrome_topcv_profile").resolve()
+
+
+def topcv_page(ids, total=None):
+    title = f"<title>Tuyển dụng {total:,} việc làm Công nghệ Thông tin</title>".replace(",", ".") if total else ""
+    return "<html>" + title + "".join(topcv_card(i) for i in ids)
+
+
+def test_topcv_listed_total_reads_the_title(topcv):
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(topcv_page([1], total=2293), "lxml")
+    assert topcv.listed_total(soup) == 2293
+    assert topcv.listed_total(BeautifulSoup("<html></html>", "lxml")) is None
+
+
+def test_topcv_empty_page_is_fetched_again_before_ending(topcv):
+    calls = collections.Counter()
+    pages = {1: [[1]], 2: [[], [2]], 3: [[], [], []]}
+
+    class Client:
+        async def fetch(self, url, is_listing=False):
+            n = int(url.split("page=")[1])
+            calls[n] += 1
+            answers = pages.get(n, [[]])
+            return topcv_page(answers[min(calls[n], len(answers)) - 1])
+
+    import asyncio
+
+    seen, complete = asyncio.run(topcv.crawl_listing_pages(topcv.init_db(), Client()))
+    assert len(seen) == 2 and complete is True
+    assert calls[2] == 2 and calls[3] == topcv.EMPTY_PAGE_TRIES
+
+
+def test_topcv_listing_short_of_the_listed_total_is_incomplete(topcv, monkeypatch):
+    pages = {1: topcv_page([1], total=100), 2: topcv_page([2], total=100)}
+    run_topcv_main(topcv, monkeypatch, pages, ["--skip-details"])
+    doc = seen_doc("topcv")
+    assert doc["listing_complete"] is False
+    assert "met 2 of 100" in doc["error"]
+
+
+def test_topcv_listing_that_meets_the_total_is_complete(topcv, monkeypatch):
+    pages = {1: topcv_page([1], total=2), 2: topcv_page([2], total=2)}
+    run_topcv_main(topcv, monkeypatch, pages, ["--skip-details"])
+    assert seen_doc("topcv")["listing_complete"] is True
+
+
+def run_pipeline_crawl(monkeypatch, argv):
+    calls = []
+    monkeypatch.setattr(pipeline, "run_crawler", lambda name, cfg, extra: calls.append((name, extra)) or True)
+    monkeypatch.setattr(sys, "argv", ["pipeline.py", "crawl", *argv])
+    pipeline.main()
+    return dict(calls)
+
+
+def test_pipeline_passes_skip_details_and_limit_to_topcv(workdir, monkeypatch):
+    calls = run_pipeline_crawl(monkeypatch, ["--sources", "topcv", "--skip-details", "--limit", "5"])
+    assert calls["topcv"] == ["--skip-details", "--limit", "5"]
+
+
+def capture_run(monkeypatch):
+    seen = {}
+
+    def fake_run(cmd, **kwargs):
+        seen["cmd"], seen["timeout"] = cmd, kwargs.get("timeout")
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(pipeline.subprocess, "run", fake_run)
+    return seen
+
+
+def test_pipeline_wraps_topcv_in_xvfb_without_display(monkeypatch):
+    seen = capture_run(monkeypatch)
+    monkeypatch.setattr(pipeline.sys, "platform", "linux")
+    monkeypatch.delenv("DISPLAY", raising=False)
+
+    pipeline.run_crawler("topcv", pipeline.SOURCES["topcv"], [])
+
+    assert seen["cmd"][0] == "xvfb-run"
+    assert seen["cmd"][-2:] == ["-m", "crawlers.topcv"]
+    assert seen["timeout"] == 6 * 3600
+
+
+@pytest.mark.parametrize("name,display", [("topcv", ":0"), ("momo", None), ("itviec", None)])
+def test_pipeline_does_not_wrap_when_display_or_not_nodriver(monkeypatch, name, display):
+    seen = capture_run(monkeypatch)
+    monkeypatch.setattr(pipeline.sys, "platform", "linux")
+    if display:
+        monkeypatch.setenv("DISPLAY", display)
+    else:
+        monkeypatch.delenv("DISPLAY", raising=False)
+
+    pipeline.run_crawler(name, pipeline.SOURCES[name], [])
+
+    assert seen["cmd"][0] == sys.executable
+
+
 # --------------------------------------------------------------- real Postgres
 
 DSN = os.environ.get("TEST_DATABASE_URL")

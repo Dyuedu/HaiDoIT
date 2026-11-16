@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented. 2026-11-16: trang giữ chỗ `/ho-so-ky-nang` được #152 thay bằng hồ sơ kỹ năng thật (FR-005); US2 scenario 2 không còn áp dụng.
 
 **Input**: GitHub issue [#147](https://github.com/Dyuedu/HaiDoIT/issues/147) — Show the newcomer list and open a role's skill profile. Phục vụ story #110 (US-A1). Hình dữ liệu của #144; số thật của #145, #146 (PR #290). Quy tắc câu không có số của DEC-6 (#132).
 
@@ -37,7 +37,7 @@ Một sinh viên mở Insights và thấy mọi vai trò, mỗi dòng có số t
 **Acceptance Scenarios**:
 
 1. **Given** danh sách, **When** chạm dòng AI/ML, **Then** đi tới `/ho-so-ky-nang?role=ai_ml&level=entry`.
-2. **Given** #111 chưa có, **When** mở trang đó, **Then** tiêu đề gọi tên vai trò ("Hồ sơ kỹ năng: AI/ML"), ghi cấp "Mới vào nghề", và nói hồ sơ kỹ năng có ở sprint sau; có nút quay lại `/insights`.
+2. *(Thay bởi #152, 2026-11-16: `/ho-so-ky-nang` là hồ sơ kỹ năng thật; tiêu đề vẫn gọi tên vai trò, cấp là "Mới vào nghề".)* **Given** #111 chưa có, **When** mở trang đó, **Then** tiêu đề gọi tên vai trò ("Hồ sơ kỹ năng: AI/ML"), ghi cấp "Mới vào nghề", và nói hồ sơ kỹ năng có ở sprint sau; có nút quay lại `/insights`.
 3. **Given** mã vai trò lạ, **When** mở trang, **Then** không in mã như một tên, ghi "Không có vai trò này".
 
 ### User Story 3 - Câu không chứa số (DEC-6) (Priority: P1)

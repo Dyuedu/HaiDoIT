@@ -1,0 +1,234 @@
+{
+  "data": {
+    "role": "backend",
+    "level": "entry",
+    "cell_id": "vn.backend.entry",
+    "rows": [
+      {
+        "skill": "java",
+        "rate": {
+          "value": 0.6538461538461539,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "core",
+        "have": true
+      },
+      {
+        "skill": "sql",
+        "rate": {
+          "value": 0.5961538461538461,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "core",
+        "have": true
+      },
+      {
+        "skill": "spring_boot",
+        "rate": {
+          "value": 0.5192307692307693,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "git",
+        "rate": {
+          "value": 0.4230769230769231,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "core",
+        "have": true
+      },
+      {
+        "skill": "rest_api",
+        "rate": {
+          "value": 0.36538461538461536,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "postgresql",
+        "rate": {
+          "value": 0.3076923076923077,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "nodejs",
+        "rate": {
+          "value": 0.2692307692307692,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "docker",
+        "rate": {
+          "value": 0.23076923076923078,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "mysql",
+        "rate": {
+          "value": 0.21153846153846154,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "microservices",
+        "rate": {
+          "value": 0.15384615384615385,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "ci_cd",
+        "rate": {
+          "value": 0.1346153846153846,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "redis",
+        "rate": {
+          "value": 0.1346153846153846,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "unit_testing",
+        "rate": {
+          "value": 0.1346153846153846,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "kafka",
+        "rate": {
+          "value": 0.07692307692307693,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "company_specific",
+        "have": false
+      },
+      {
+        "skill": "linux",
+        "rate": {
+          "value": 0.07692307692307693,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.backend.entry"
+        },
+        "group": "company_specific",
+        "have": false
+      }
+    ],
+    "core_size": 6,
+    "have_core": 3
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.backend.entry": {
+        "n": 52,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32
+        },
+        "n_by_measure": {
+          "skill_count": 52,
+          "experience_years": 37,
+          "salary": 13
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      }
+    }
+  }
+}
