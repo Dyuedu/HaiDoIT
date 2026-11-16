@@ -9,7 +9,7 @@ from typing import Annotated, Union, get_args, get_origin
 
 from pydantic import BaseModel
 
-from haido_api.routes import market, skills
+from haido_api.routes import market, roles, skills
 from haido_core.domain.envelope import OrdinalRef
 
 ALLOWED = {
@@ -17,6 +17,9 @@ ALLOWED = {
     "LearningPathData.current_stage",
     "LearningPathData.have_on_path",
     "LearningPathData.path_size",
+    # #149: "bạn có X trong Y kỹ năng core" của hồ sơ kỹ năng, đếm ở API (AD-22).
+    "SkillRatesData.core_size",
+    "SkillRatesData.have_core",
 }
 
 
@@ -54,7 +57,7 @@ def test_ad17_chi_nhung_truong_trong_danh_sach_mang_dau_ordinal() -> None:
     found: set[str] = set()
     seen: set[type[BaseModel]] = set()
     checked = 0
-    for route in [*market.router.routes, *skills.router.routes]:
+    for route in [*market.router.routes, *skills.router.routes, *roles.router.routes]:
         model = getattr(route, "response_model", None)
         if not (isinstance(model, type) and issubclass(model, BaseModel)):
             continue

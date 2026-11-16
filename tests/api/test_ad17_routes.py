@@ -43,7 +43,12 @@ SAMPLE_QUERY: dict[str, dict[str, str]] = {
 
 # Route không trả con số nào nên không dùng Envelope (AD-17 chỉ áp cho response chứa số).
 # Test bên dưới kiểm response của chúng không có số. Thêm route vào đây phải có lý do.
-NUMBERLESS_ROUTES: frozenset[str] = frozenset({"/api/v1/skills"})
+# Giá trị là truy vấn hợp lệ của route. `role-for-title` (#150) trả mã vai trò, không trả số.
+NUMBERLESS_SAMPLE: dict[str, dict[str, str]] = {
+    "/api/v1/skills": {},
+    "/api/v1/role-for-title": {"title": "Lập trình viên Java"},
+}
+NUMBERLESS_ROUTES: frozenset[str] = frozenset(NUMBERLESS_SAMPLE)
 
 
 @pytest.fixture(scope="module")
@@ -88,7 +93,7 @@ def test_ad17_moi_route_tra_envelope(client: TestClient) -> None:
     assert set(routes) == set(SAMPLE_QUERY)
     for path in NUMBERLESS_ROUTES:
         assert path in all_routes, path
-        assert _numbers(_get(client, path)) == [], f"{path} có số nhưng không dùng Envelope"
+        assert _numbers(_get(client, path, **NUMBERLESS_SAMPLE[path])) == [], f"{path} có số nhưng không dùng Envelope"
     for path, route in routes.items():
         model = route.response_model
         assert isinstance(model, type) and issubclass(model, Envelope), path
@@ -215,7 +220,8 @@ def test_ad17_o_duoi_nguong_tra_null_data(client: TestClient) -> None:
     [
         ("/api/v1/city-shares", {"role": "khong_ton_tai"}),
         ("/api/v1/skill-rates", {"role": "khong_ton_tai", "level": "entry"}),
-        ("/api/v1/skill-rates", {"role": "ai_ml", "level": "khong_ton_tai"}),
+        # Từ #149 cấp lạ là 422 (`level` là danh sách đóng); cấp hợp lệ mà không có ô vẫn 404.
+        ("/api/v1/skill-rates", {"role": "ai_ml", "level": "senior"}),
     ],
 )
 def test_ad17_khong_co_o_tra_404(client: TestClient, path: str, params: dict[str, str]) -> None:
@@ -329,8 +335,8 @@ def test_ad17_instance_sua_bang_model_copy_van_bi_kiem_lai() -> None:
         def city_shares(self, *, role: str, level: str, years: str = "any") -> Any:
             return fake.city_shares(role=role, level=level, years=years)
 
-        def skill_rates(self, *, role: str, level: str) -> Any:
-            env = fake.skill_rates(role=role, level=level)
+        def skill_rates(self, *, role: str, level: str, have: Any = ()) -> Any:
+            env = fake.skill_rates(role=role, level=level, have=have)
             rows = [row.model_copy(update={"group": "core"}) for row in env.data.rows]
             return env.model_copy(update={"data": env.data.model_copy(update={"rows": rows})})
 

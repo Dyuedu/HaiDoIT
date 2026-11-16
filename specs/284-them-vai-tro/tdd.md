@@ -80,3 +80,10 @@ Lý do: nhánh #212 thêm `"learning_path": FakeMarket()` vào `tests/steps/test
 
 - RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
 - GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/steps/test_gh284_aggregate_vai_tro_moi.py tests/deploy/test_gh284_vai_tro_moi.py` → 7 passed; toàn bộ `uv run pytest -q` → 1113 passed.
+
+## Đợt 2026-11-16 (#111): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: nhánh `gh-111-ho-so-ky-nang` sửa file mà issue này từng đụng: `haido_api/fixtures/fake_market.json` (thêm `skill_rates` cho mọi vai trò, #149), `haido_api/schemas/market.py`, `routes/market.py`, `market_source.py`, `fake_market.py`, `stat_market.py` (chữ ký `skill_rates` nhận `have`, #149), `haido_api/main.py` và `tests/api/test_ad17_routes.py` (route `role-for-title`, #150), `docs/api/*`. Các thay đổi chỉ chạm `skill-rates` và route mới; `city-shares`, `newcomer-roles`, `skills` và khóa trình duyệt không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi.
+- GREEN: `uv run pytest -q` → 1018 passed, 217 skipped; `cd web && npx vitest run` → 21 files, 281 passed; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.

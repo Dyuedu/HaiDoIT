@@ -3215,6 +3215,72 @@
             "group": "company_specific"
           }
         ]
+      },
+      "all": {
+        "cell_id": "vn.ai_ml",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "python",
+            "rate": 0.81,
+            "group": "core"
+          },
+          {
+            "skill": "machine_learning",
+            "rate": 0.62,
+            "group": "core"
+          },
+          {
+            "skill": "deep_learning",
+            "rate": 0.47,
+            "group": "core"
+          },
+          {
+            "skill": "pytorch",
+            "rate": 0.39,
+            "group": "core"
+          },
+          {
+            "skill": "tensorflow",
+            "rate": 0.31,
+            "group": "core"
+          },
+          {
+            "skill": "llm",
+            "rate": 0.28,
+            "group": "common"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.24,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.19,
+            "group": "common"
+          },
+          {
+            "skill": "nlp",
+            "rate": 0.17,
+            "group": "common"
+          },
+          {
+            "skill": "computer_vision",
+            "rate": 0.14,
+            "group": "common"
+          },
+          {
+            "skill": "mlops",
+            "rate": 0.09,
+            "group": "company_specific"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.08,
+            "group": "company_specific"
+          }
+        ]
       }
     },
     "backend": {
@@ -3376,6 +3442,87 @@
           {
             "skill": "kafka",
             "rate": 0.09554140127388536,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "all": {
+        "cell_id": "vn.backend",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "sql",
+            "rate": 0.64,
+            "group": "core"
+          },
+          {
+            "skill": "java",
+            "rate": 0.62,
+            "group": "core"
+          },
+          {
+            "skill": "spring_boot",
+            "rate": 0.51,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.48,
+            "group": "core"
+          },
+          {
+            "skill": "rest_api",
+            "rate": 0.45,
+            "group": "core"
+          },
+          {
+            "skill": "postgresql",
+            "rate": 0.35,
+            "group": "core"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.32,
+            "group": "core"
+          },
+          {
+            "skill": "microservices",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.25,
+            "group": "common"
+          },
+          {
+            "skill": "mysql",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "redis",
+            "rate": 0.17,
+            "group": "common"
+          },
+          {
+            "skill": "unit_testing",
+            "rate": 0.14,
+            "group": "common"
+          },
+          {
+            "skill": "ci_cd",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.09,
             "group": "company_specific"
           }
         ]
@@ -3569,6 +3716,1628 @@
             "skill": "sql",
             "rate": null,
             "group": null
+          }
+        ]
+      },
+      "all": {
+        "cell_id": "vn.data_engineer",
+        "fallback_label": "Kỹ sư dữ liệu ở mọi cấp bậc chỉ có 22 tin, chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "sql",
+            "rate": 0.74,
+            "group": "core"
+          },
+          {
+            "skill": "python",
+            "rate": 0.66,
+            "group": "core"
+          },
+          {
+            "skill": "spark",
+            "rate": 0.45,
+            "group": "core"
+          },
+          {
+            "skill": "etl",
+            "rate": 0.41,
+            "group": "core"
+          },
+          {
+            "skill": "airflow",
+            "rate": 0.32,
+            "group": "core"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.28,
+            "group": "common"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "data_warehouse",
+            "rate": 0.19,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.14,
+            "group": "common"
+          },
+          {
+            "skill": "dbt",
+            "rate": 0.09,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "embedded": {
+      "all": {
+        "cell_id": "vn.embedded",
+        "fallback_label": "Nhúng ở mọi cấp bậc chỉ có 12 tin, chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "c",
+            "rate": 0.72,
+            "group": "core"
+          },
+          {
+            "skill": "cpp",
+            "rate": 0.61,
+            "group": "core"
+          },
+          {
+            "skill": "embedded",
+            "rate": 0.55,
+            "group": "core"
+          },
+          {
+            "skill": "mcu",
+            "rate": 0.41,
+            "group": "core"
+          },
+          {
+            "skill": "rtos",
+            "rate": 0.33,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "firmware",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "autosar",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "python",
+            "rate": 0.11,
+            "group": "common"
+          },
+          {
+            "skill": "fpga",
+            "rate": 0.07,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.embedded",
+        "fallback_label": "Nhúng · Mới vào nghề chỉ có 6 tin và Nhúng ở mọi cấp bậc chỉ có 12 tin; cả hai chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "c",
+            "rate": 0.72,
+            "group": "core"
+          },
+          {
+            "skill": "cpp",
+            "rate": 0.61,
+            "group": "core"
+          },
+          {
+            "skill": "embedded",
+            "rate": 0.55,
+            "group": "core"
+          },
+          {
+            "skill": "mcu",
+            "rate": 0.41,
+            "group": "core"
+          },
+          {
+            "skill": "rtos",
+            "rate": 0.33,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "firmware",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "autosar",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "python",
+            "rate": 0.11,
+            "group": "common"
+          },
+          {
+            "skill": "fpga",
+            "rate": 0.07,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "data_scientist": {
+      "all": {
+        "cell_id": "vn.data_scientist",
+        "fallback_label": "Khoa học dữ liệu ở mọi cấp bậc chỉ có 28 tin, chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "python",
+            "rate": 0.78,
+            "group": "core"
+          },
+          {
+            "skill": "machine_learning",
+            "rate": 0.6,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.52,
+            "group": "core"
+          },
+          {
+            "skill": "statistics",
+            "rate": 0.44,
+            "group": "core"
+          },
+          {
+            "skill": "pandas",
+            "rate": 0.35,
+            "group": "core"
+          },
+          {
+            "skill": "scikit_learn",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "deep_learning",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "r",
+            "rate": 0.13,
+            "group": "common"
+          },
+          {
+            "skill": "tableau",
+            "rate": 0.08,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.data_scientist",
+        "fallback_label": "Khoa học dữ liệu · Mới vào nghề chỉ có 5 tin và Khoa học dữ liệu ở mọi cấp bậc chỉ có 28 tin; cả hai chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "python",
+            "rate": 0.78,
+            "group": "core"
+          },
+          {
+            "skill": "machine_learning",
+            "rate": 0.6,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.52,
+            "group": "core"
+          },
+          {
+            "skill": "statistics",
+            "rate": 0.44,
+            "group": "core"
+          },
+          {
+            "skill": "pandas",
+            "rate": 0.35,
+            "group": "core"
+          },
+          {
+            "skill": "scikit_learn",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "deep_learning",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "r",
+            "rate": 0.13,
+            "group": "common"
+          },
+          {
+            "skill": "tableau",
+            "rate": 0.08,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "data_analyst": {
+      "all": {
+        "cell_id": "vn.data_analyst",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "sql",
+            "rate": 0.79,
+            "group": "core"
+          },
+          {
+            "skill": "excel",
+            "rate": 0.63,
+            "group": "core"
+          },
+          {
+            "skill": "power_bi",
+            "rate": 0.48,
+            "group": "core"
+          },
+          {
+            "skill": "python",
+            "rate": 0.37,
+            "group": "core"
+          },
+          {
+            "skill": "tableau",
+            "rate": 0.3,
+            "group": "core"
+          },
+          {
+            "skill": "data_analysis",
+            "rate": 0.26,
+            "group": "common"
+          },
+          {
+            "skill": "statistics",
+            "rate": 0.18,
+            "group": "common"
+          },
+          {
+            "skill": "looker",
+            "rate": 0.07,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.data_analyst.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "sql",
+            "rate": 0.8532,
+            "group": "core"
+          },
+          {
+            "skill": "excel",
+            "rate": 0.5922,
+            "group": "core"
+          },
+          {
+            "skill": "power_bi",
+            "rate": 0.4512,
+            "group": "core"
+          },
+          {
+            "skill": "python",
+            "rate": 0.3478,
+            "group": "core"
+          },
+          {
+            "skill": "tableau",
+            "rate": 0.282,
+            "group": "common"
+          },
+          {
+            "skill": "data_analysis",
+            "rate": 0.2444,
+            "group": "common"
+          },
+          {
+            "skill": "statistics",
+            "rate": 0.1692,
+            "group": "common"
+          },
+          {
+            "skill": "looker",
+            "rate": 0.0658,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "qa": {
+      "all": {
+        "cell_id": "vn.qa",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "manual_testing",
+            "rate": 0.58,
+            "group": "core"
+          },
+          {
+            "skill": "automation_testing",
+            "rate": 0.44,
+            "group": "core"
+          },
+          {
+            "skill": "selenium",
+            "rate": 0.36,
+            "group": "core"
+          },
+          {
+            "skill": "api_testing",
+            "rate": 0.31,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.28,
+            "group": "common"
+          },
+          {
+            "skill": "jira",
+            "rate": 0.25,
+            "group": "common"
+          },
+          {
+            "skill": "postman",
+            "rate": 0.21,
+            "group": "common"
+          },
+          {
+            "skill": "java",
+            "rate": 0.15,
+            "group": "common"
+          },
+          {
+            "skill": "playwright",
+            "rate": 0.11,
+            "group": "common"
+          },
+          {
+            "skill": "istqb",
+            "rate": 0.09,
+            "group": "company_specific"
+          },
+          {
+            "skill": "jmeter",
+            "rate": 0.06,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.qa.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "manual_testing",
+            "rate": 0.696,
+            "group": "core"
+          },
+          {
+            "skill": "automation_testing",
+            "rate": 0.4136,
+            "group": "core"
+          },
+          {
+            "skill": "selenium",
+            "rate": 0.3384,
+            "group": "core"
+          },
+          {
+            "skill": "api_testing",
+            "rate": 0.2914,
+            "group": "common"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.3024,
+            "group": "core"
+          },
+          {
+            "skill": "jira",
+            "rate": 0.235,
+            "group": "common"
+          },
+          {
+            "skill": "postman",
+            "rate": 0.1974,
+            "group": "common"
+          },
+          {
+            "skill": "java",
+            "rate": 0.141,
+            "group": "common"
+          },
+          {
+            "skill": "playwright",
+            "rate": 0.1034,
+            "group": "common"
+          },
+          {
+            "skill": "istqb",
+            "rate": 0.0846,
+            "group": "company_specific"
+          },
+          {
+            "skill": "jmeter",
+            "rate": 0.0564,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "devops": {
+      "all": {
+        "cell_id": "vn.devops",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "docker",
+            "rate": 0.77,
+            "group": "core"
+          },
+          {
+            "skill": "kubernetes",
+            "rate": 0.66,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.61,
+            "group": "core"
+          },
+          {
+            "skill": "ci_cd",
+            "rate": 0.55,
+            "group": "core"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.47,
+            "group": "core"
+          },
+          {
+            "skill": "terraform",
+            "rate": 0.36,
+            "group": "core"
+          },
+          {
+            "skill": "jenkins",
+            "rate": 0.28,
+            "group": "common"
+          },
+          {
+            "skill": "ansible",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "prometheus",
+            "rate": 0.17,
+            "group": "common"
+          },
+          {
+            "skill": "helm",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "argocd",
+            "rate": 0.08,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.devops",
+        "fallback_label": "DevOps · Mới vào nghề chỉ có 0 tin, chưa đủ để tính riêng, nên số dưới đây lấy từ DevOps ở mọi cấp bậc (48 tin).",
+        "rows": [
+          {
+            "skill": "docker",
+            "rate": 0.77,
+            "group": "core"
+          },
+          {
+            "skill": "kubernetes",
+            "rate": 0.66,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.61,
+            "group": "core"
+          },
+          {
+            "skill": "ci_cd",
+            "rate": 0.55,
+            "group": "core"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.47,
+            "group": "core"
+          },
+          {
+            "skill": "terraform",
+            "rate": 0.36,
+            "group": "core"
+          },
+          {
+            "skill": "jenkins",
+            "rate": 0.28,
+            "group": "common"
+          },
+          {
+            "skill": "ansible",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "prometheus",
+            "rate": 0.17,
+            "group": "common"
+          },
+          {
+            "skill": "helm",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "argocd",
+            "rate": 0.08,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "security": {
+      "all": {
+        "cell_id": "vn.security",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "cybersecurity",
+            "rate": 0.64,
+            "group": "core"
+          },
+          {
+            "skill": "network_security",
+            "rate": 0.47,
+            "group": "core"
+          },
+          {
+            "skill": "penetration_testing",
+            "rate": 0.38,
+            "group": "core"
+          },
+          {
+            "skill": "siem",
+            "rate": 0.33,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "firewall",
+            "rate": 0.24,
+            "group": "common"
+          },
+          {
+            "skill": "owasp",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "iso27001",
+            "rate": 0.15,
+            "group": "common"
+          },
+          {
+            "skill": "incident_response",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "python",
+            "rate": 0.1,
+            "group": "common"
+          },
+          {
+            "skill": "edr",
+            "rate": 0.07,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.security.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "cybersecurity",
+            "rate": 0.6016,
+            "group": "core"
+          },
+          {
+            "skill": "network_security",
+            "rate": 0.4418,
+            "group": "core"
+          },
+          {
+            "skill": "penetration_testing",
+            "rate": 0.3572,
+            "group": "core"
+          },
+          {
+            "skill": "siem",
+            "rate": 0.3102,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.2726,
+            "group": "common"
+          },
+          {
+            "skill": "firewall",
+            "rate": 0.2256,
+            "group": "common"
+          },
+          {
+            "skill": "owasp",
+            "rate": 0.188,
+            "group": "common"
+          },
+          {
+            "skill": "iso27001",
+            "rate": 0.141,
+            "group": "common"
+          },
+          {
+            "skill": "incident_response",
+            "rate": 0.1128,
+            "group": "common"
+          },
+          {
+            "skill": "python",
+            "rate": 0.094,
+            "group": "company_specific"
+          },
+          {
+            "skill": "edr",
+            "rate": 0.0658,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "it_infra": {
+      "all": {
+        "cell_id": "vn.it_infra",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "networking",
+            "rate": 0.71,
+            "group": "core"
+          },
+          {
+            "skill": "windows_server",
+            "rate": 0.58,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.46,
+            "group": "core"
+          },
+          {
+            "skill": "helpdesk",
+            "rate": 0.39,
+            "group": "core"
+          },
+          {
+            "skill": "virtualization",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "vmware",
+            "rate": 0.22,
+            "group": "common"
+          },
+          {
+            "skill": "cisco",
+            "rate": 0.19,
+            "group": "common"
+          },
+          {
+            "skill": "backup",
+            "rate": 0.14,
+            "group": "common"
+          },
+          {
+            "skill": "firewall",
+            "rate": 0.11,
+            "group": "common"
+          },
+          {
+            "skill": "itil",
+            "rate": 0.06,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.it_infra.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "networking",
+            "rate": 0.6674,
+            "group": "core"
+          },
+          {
+            "skill": "windows_server",
+            "rate": 0.5452,
+            "group": "core"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.4324,
+            "group": "core"
+          },
+          {
+            "skill": "helpdesk",
+            "rate": 0.507,
+            "group": "core"
+          },
+          {
+            "skill": "virtualization",
+            "rate": 0.2538,
+            "group": "common"
+          },
+          {
+            "skill": "vmware",
+            "rate": 0.2068,
+            "group": "common"
+          },
+          {
+            "skill": "cisco",
+            "rate": 0.1786,
+            "group": "common"
+          },
+          {
+            "skill": "backup",
+            "rate": 0.1316,
+            "group": "common"
+          },
+          {
+            "skill": "firewall",
+            "rate": 0.1034,
+            "group": "common"
+          },
+          {
+            "skill": "itil",
+            "rate": 0.0564,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "mobile": {
+      "all": {
+        "cell_id": "vn.mobile",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "android",
+            "rate": 0.58,
+            "group": "core"
+          },
+          {
+            "skill": "ios",
+            "rate": 0.51,
+            "group": "core"
+          },
+          {
+            "skill": "flutter",
+            "rate": 0.42,
+            "group": "core"
+          },
+          {
+            "skill": "kotlin",
+            "rate": 0.36,
+            "group": "core"
+          },
+          {
+            "skill": "swift",
+            "rate": 0.33,
+            "group": "core"
+          },
+          {
+            "skill": "react_native",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.25,
+            "group": "common"
+          },
+          {
+            "skill": "firebase",
+            "rate": 0.18,
+            "group": "common"
+          },
+          {
+            "skill": "rest_api",
+            "rate": 0.16,
+            "group": "common"
+          },
+          {
+            "skill": "dart",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "mvvm",
+            "rate": 0.09,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.mobile.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "android",
+            "rate": 0.5452,
+            "group": "core"
+          },
+          {
+            "skill": "ios",
+            "rate": 0.4794,
+            "group": "core"
+          },
+          {
+            "skill": "flutter",
+            "rate": 0.3948,
+            "group": "core"
+          },
+          {
+            "skill": "kotlin",
+            "rate": 0.3384,
+            "group": "core"
+          },
+          {
+            "skill": "swift",
+            "rate": 0.3102,
+            "group": "core"
+          },
+          {
+            "skill": "react_native",
+            "rate": 0.2538,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.3125,
+            "group": "core"
+          },
+          {
+            "skill": "firebase",
+            "rate": 0.1692,
+            "group": "common"
+          },
+          {
+            "skill": "rest_api",
+            "rate": 0.1504,
+            "group": "common"
+          },
+          {
+            "skill": "dart",
+            "rate": 0.1128,
+            "group": "common"
+          },
+          {
+            "skill": "mvvm",
+            "rate": 0.0846,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "frontend": {
+      "all": {
+        "cell_id": "vn.frontend",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "javascript",
+            "rate": 0.82,
+            "group": "core"
+          },
+          {
+            "skill": "react",
+            "rate": 0.66,
+            "group": "core"
+          },
+          {
+            "skill": "typescript",
+            "rate": 0.54,
+            "group": "core"
+          },
+          {
+            "skill": "html",
+            "rate": 0.49,
+            "group": "core"
+          },
+          {
+            "skill": "css",
+            "rate": 0.47,
+            "group": "core"
+          },
+          {
+            "skill": "vue",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "nextjs",
+            "rate": 0.24,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.21,
+            "group": "common"
+          },
+          {
+            "skill": "redux",
+            "rate": 0.15,
+            "group": "common"
+          },
+          {
+            "skill": "tailwind",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "angular",
+            "rate": 0.11,
+            "group": "common"
+          },
+          {
+            "skill": "webpack",
+            "rate": 0.06,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.frontend.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "javascript",
+            "rate": 0.7708,
+            "group": "core"
+          },
+          {
+            "skill": "react",
+            "rate": 0.6204,
+            "group": "core"
+          },
+          {
+            "skill": "typescript",
+            "rate": 0.5076,
+            "group": "core"
+          },
+          {
+            "skill": "html",
+            "rate": 0.539,
+            "group": "core"
+          },
+          {
+            "skill": "css",
+            "rate": 0.517,
+            "group": "core"
+          },
+          {
+            "skill": "vue",
+            "rate": 0.2726,
+            "group": "common"
+          },
+          {
+            "skill": "nextjs",
+            "rate": 0.2256,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.2625,
+            "group": "common"
+          },
+          {
+            "skill": "redux",
+            "rate": 0.141,
+            "group": "common"
+          },
+          {
+            "skill": "tailwind",
+            "rate": 0.1128,
+            "group": "common"
+          },
+          {
+            "skill": "angular",
+            "rate": 0.1034,
+            "group": "common"
+          },
+          {
+            "skill": "webpack",
+            "rate": 0.0564,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "fullstack": {
+      "all": {
+        "cell_id": "vn.fullstack",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "javascript",
+            "rate": 0.74,
+            "group": "core"
+          },
+          {
+            "skill": "react",
+            "rate": 0.55,
+            "group": "core"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.51,
+            "group": "core"
+          },
+          {
+            "skill": "typescript",
+            "rate": 0.43,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.38,
+            "group": "core"
+          },
+          {
+            "skill": "html",
+            "rate": 0.32,
+            "group": "core"
+          },
+          {
+            "skill": "css",
+            "rate": 0.31,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.19,
+            "group": "common"
+          },
+          {
+            "skill": "mongodb",
+            "rate": 0.16,
+            "group": "common"
+          },
+          {
+            "skill": "nextjs",
+            "rate": 0.13,
+            "group": "common"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.09,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.fullstack.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "javascript",
+            "rate": 0.6956,
+            "group": "core"
+          },
+          {
+            "skill": "react",
+            "rate": 0.517,
+            "group": "core"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.4794,
+            "group": "core"
+          },
+          {
+            "skill": "typescript",
+            "rate": 0.4042,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.4104,
+            "group": "core"
+          },
+          {
+            "skill": "html",
+            "rate": 0.352,
+            "group": "core"
+          },
+          {
+            "skill": "css",
+            "rate": 0.341,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.3375,
+            "group": "core"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.1786,
+            "group": "common"
+          },
+          {
+            "skill": "mongodb",
+            "rate": 0.1504,
+            "group": "common"
+          },
+          {
+            "skill": "nextjs",
+            "rate": 0.1222,
+            "group": "common"
+          },
+          {
+            "skill": "aws",
+            "rate": 0.0846,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "ba_po_pm": {
+      "all": {
+        "cell_id": "vn.ba_po_pm",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "business_analysis",
+            "rate": 0.52,
+            "group": "core"
+          },
+          {
+            "skill": "communication",
+            "rate": 0.47,
+            "group": "core"
+          },
+          {
+            "skill": "agile",
+            "rate": 0.44,
+            "group": "core"
+          },
+          {
+            "skill": "scrum",
+            "rate": 0.36,
+            "group": "core"
+          },
+          {
+            "skill": "jira",
+            "rate": 0.31,
+            "group": "core"
+          },
+          {
+            "skill": "ba_docs",
+            "rate": 0.28,
+            "group": "common"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.19,
+            "group": "common"
+          },
+          {
+            "skill": "bpmn_uml",
+            "rate": 0.17,
+            "group": "common"
+          },
+          {
+            "skill": "english",
+            "rate": 0.15,
+            "group": "common"
+          },
+          {
+            "skill": "figma",
+            "rate": 0.08,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.ba_po_pm.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "business_analysis",
+            "rate": 0.4888,
+            "group": "core"
+          },
+          {
+            "skill": "communication",
+            "rate": 0.4418,
+            "group": "core"
+          },
+          {
+            "skill": "agile",
+            "rate": 0.4136,
+            "group": "core"
+          },
+          {
+            "skill": "scrum",
+            "rate": 0.3384,
+            "group": "core"
+          },
+          {
+            "skill": "jira",
+            "rate": 0.2914,
+            "group": "common"
+          },
+          {
+            "skill": "ba_docs",
+            "rate": 0.2632,
+            "group": "common"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.2052,
+            "group": "common"
+          },
+          {
+            "skill": "bpmn_uml",
+            "rate": 0.1598,
+            "group": "common"
+          },
+          {
+            "skill": "english",
+            "rate": 0.141,
+            "group": "common"
+          },
+          {
+            "skill": "figma",
+            "rate": 0.0752,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "ui_ux": {
+      "all": {
+        "cell_id": "vn.ui_ux",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "figma",
+            "rate": 0.81,
+            "group": "core"
+          },
+          {
+            "skill": "ui_design",
+            "rate": 0.57,
+            "group": "core"
+          },
+          {
+            "skill": "ux_research",
+            "rate": 0.38,
+            "group": "core"
+          },
+          {
+            "skill": "photoshop",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "responsive",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "html",
+            "rate": 0.14,
+            "group": "common"
+          },
+          {
+            "skill": "css",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "blender_3d",
+            "rate": 0.05,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.ui_ux",
+        "fallback_label": "UI/UX · Mới vào nghề chỉ có 21 tin, chưa đủ để tính riêng, nên số dưới đây lấy từ UI/UX ở mọi cấp bậc (77 tin).",
+        "rows": [
+          {
+            "skill": "figma",
+            "rate": 0.81,
+            "group": "core"
+          },
+          {
+            "skill": "ui_design",
+            "rate": 0.57,
+            "group": "core"
+          },
+          {
+            "skill": "ux_research",
+            "rate": 0.38,
+            "group": "core"
+          },
+          {
+            "skill": "photoshop",
+            "rate": 0.29,
+            "group": "common"
+          },
+          {
+            "skill": "responsive",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "html",
+            "rate": 0.14,
+            "group": "common"
+          },
+          {
+            "skill": "css",
+            "rate": 0.12,
+            "group": "common"
+          },
+          {
+            "skill": "blender_3d",
+            "rate": 0.05,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "game": {
+      "all": {
+        "cell_id": "vn.game",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "unity",
+            "rate": 0.62,
+            "group": "core"
+          },
+          {
+            "skill": "csharp",
+            "rate": 0.55,
+            "group": "core"
+          },
+          {
+            "skill": "cpp",
+            "rate": 0.31,
+            "group": "core"
+          },
+          {
+            "skill": "game_design",
+            "rate": 0.27,
+            "group": "common"
+          },
+          {
+            "skill": "unreal",
+            "rate": 0.21,
+            "group": "common"
+          },
+          {
+            "skill": "cocos",
+            "rate": 0.16,
+            "group": "common"
+          },
+          {
+            "skill": "lua",
+            "rate": 0.11,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.1,
+            "group": "common"
+          },
+          {
+            "skill": "blender_3d",
+            "rate": 0.06,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.game.entry",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "unity",
+            "rate": 0.5828,
+            "group": "core"
+          },
+          {
+            "skill": "csharp",
+            "rate": 0.517,
+            "group": "core"
+          },
+          {
+            "skill": "cpp",
+            "rate": 0.2914,
+            "group": "common"
+          },
+          {
+            "skill": "game_design",
+            "rate": 0.2538,
+            "group": "common"
+          },
+          {
+            "skill": "unreal",
+            "rate": 0.1974,
+            "group": "common"
+          },
+          {
+            "skill": "cocos",
+            "rate": 0.1504,
+            "group": "common"
+          },
+          {
+            "skill": "lua",
+            "rate": 0.1034,
+            "group": "common"
+          },
+          {
+            "skill": "git",
+            "rate": 0.125,
+            "group": "common"
+          },
+          {
+            "skill": "blender_3d",
+            "rate": 0.0564,
+            "group": "company_specific"
+          }
+        ]
+      }
+    },
+    "other": {
+      "all": {
+        "cell_id": "vn.other",
+        "fallback_label": "Vai trò khác ở mọi cấp bậc chỉ có 0 tin, chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "communication",
+            "rate": 0.4,
+            "group": "core"
+          },
+          {
+            "skill": "english",
+            "rate": 0.3,
+            "group": "core"
+          },
+          {
+            "skill": "ms_office",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "teamwork",
+            "rate": 0.1,
+            "group": "common"
+          }
+        ]
+      },
+      "entry": {
+        "cell_id": "vn.other",
+        "fallback_label": "Vai trò khác · Mới vào nghề chỉ có 0 tin và Vai trò khác ở mọi cấp bậc chỉ có 0 tin; cả hai chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "rows": [
+          {
+            "skill": "communication",
+            "rate": 0.4,
+            "group": "core"
+          },
+          {
+            "skill": "english",
+            "rate": 0.3,
+            "group": "core"
+          },
+          {
+            "skill": "ms_office",
+            "rate": 0.2,
+            "group": "common"
+          },
+          {
+            "skill": "teamwork",
+            "rate": 0.1,
+            "group": "common"
           }
         ]
       }

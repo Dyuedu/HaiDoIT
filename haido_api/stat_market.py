@@ -150,7 +150,9 @@ class StatMarket:
         )
         return Envelope[CitySharesData](data=data, meta=meta)
 
-    def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:
+    def skill_rates(
+        self, *, role: str, level: str, have: Collection[str] = ()
+    ) -> Envelope[SkillRatesData]:
         raise UnknownCell("Tỷ lệ kỹ năng chưa có số liệu thật.", snapshot_date=None)
 
     def newcomer_roles(self) -> Envelope[NewcomerRolesData]:

@@ -20,7 +20,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
    `Ordinal | None` và giá trị là số nguyên không âm (không phải `bool`); kiểu ghép như `tuple[Ordinal, float]` hay
    `list[Stat] | Ordinal` vẫn bị kiểm. Tập trường dùng `Ordinal` bị khóa bằng test
    (`tests/api/test_ad17_ordinal_allowlist.py`): hiện chỉ `PathStage.stage`, `LearningPathData.current_stage`,
-   `have_on_path` và `path_size`.
+   `have_on_path`, `path_size`, và `SkillRatesData.core_size`, `have_core` (#149).
 2. **Máy chủ quyết số liệu nào được hiện** (`suppression_for`), giao diện chỉ đọc `display`. Không so `n` với 30 ở
    giao diện, không tự tính tỷ trọng hay tỷ lệ. Envelope tự kiểm: `display` của tỷ trọng và tỷ lệ
    kỹ năng, cùng `insufficient_by_measure`, phải đúng bằng kết quả `suppression_for`.
@@ -134,9 +134,10 @@ luôn gửi `years` (mặc định `any`). Nguồn giả chỉ có `any` cho m�
 - Thành phố dưới ngưỡng vẫn có `value`, kèm `low_sample_shown`: vẽ cột mờ, không ẩn cột. Ngưỡng xét theo `n` của ô
   thành phố ở cấp và mốc số năm đã chọn, không theo `n` của mọi cấp.
 
-## `GET /api/v1/skill-rates?role=<mã>&level=<mã>`
+## `GET /api/v1/skill-rates?role=<mã>&level=<mã>&have=<mã,mã,...>`
 
-Tỷ lệ xuất hiện của từng kỹ năng trong ô vai trò × cấp bậc. Cả hai tham số bắt buộc.
+Tỷ lệ xuất hiện của từng kỹ năng trong ô vai trò × cấp bậc. `role` và `level` bắt buộc; `level` là `all` hoặc một mã
+của `level_options` (#149). `have` tùy chọn, cùng luật với `learning-path` (AD-22).
 
 ```json
 {
@@ -145,8 +146,9 @@ Tỷ lệ xuất hiện của từng kỹ năng trong ô vai trò × cấp bậc
     "rows": [
       { "skill": "java",
         "rate": { "value": 0.6538461538461539, "kind": "skill_rate", "display": "shown", "cell_id": "vn.backend.entry" },
-        "group": "core" }
-    ]
+        "group": "core", "have": true }
+    ],
+    "core_size": 7, "have_core": 1
   },
   "meta": { "…": "…",
     "cells": {
@@ -163,6 +165,24 @@ Tỷ lệ xuất hiện của từng kỹ năng trong ô vai trò × cấp bậc
 - `group` là nhóm kỹ năng theo θ: `core`, `common`, `company_specific`. Khi `rate.display = null_data`
   thì `group = null`: không hiện tên nhóm, không hiện phần trăm. Khi ô bị ẩn số liệu, thứ tự dòng
   không mang nghĩa xếp hạng (bản giả xếp theo mã kỹ năng).
+- Dòng đã theo thứ tự hiển thị (#149): có tỷ lệ trước, tỷ lệ giảm dần, rồi mã kỹ năng. Giao diện không sắp lại.
+- `have` của dòng: mã kỹ năng có trong `have=`. `core_size` là số dòng `core`, `have_core` là số dòng `core` có
+  `have`; cả hai `null` khi mọi `rate` là `null_data`. Hai số này là `Ordinal` (quy tắc 1), như `path_size` và
+  `have_on_path` của `learning-path`: số đếm trên mã kỹ năng của ô và của người dùng, không phải số tin.
+
+## `GET /api/v1/role-for-title?title=<chức danh>`
+
+Chức danh người dùng gõ thành một vai trò qua phép 6 (#150). Response không có số nên không dùng Envelope (như
+`GET /api/v1/skills`).
+
+```json
+{ "data": { "status": "matched", "role": "backend" } }
+```
+
+- `status`: `matched` (có `role`), `generic` (chức danh IT chung chung như `Developer`, `role = null`), `not_it`
+  (`role = null`). Hai trường hợp sau: giao diện nói không khớp và hiện danh sách vai trò, không hiện số.
+- `title` 1–120 ký tự sau khi bỏ khoảng trắng hai đầu; sai là 422 `invalid_query`. Chức danh không được lưu, ghi log hay
+  lặp lại trong response.
 
 ## `GET /api/v1/newcomer-roles`
 

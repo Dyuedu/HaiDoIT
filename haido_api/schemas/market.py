@@ -11,7 +11,7 @@ from typing import Annotated, Self
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from haido_core.domain.display_policy import DisplayState, MeasureKind
-from haido_core.domain.envelope import CellId, Stat
+from haido_core.domain.envelope import CellId, Ordinal, Stat
 
 _CONFIG = ConfigDict(extra="forbid", use_attribute_docstrings=True, revalidate_instances="always")
 
@@ -90,6 +90,9 @@ class SkillRateRow(BaseModel):
     group: str | None
     """Nhóm kỹ năng theo θ: `core`, `common`, `company_specific`. `null` khi `rate` bị ẩn (`null_data`)."""
 
+    have: bool = False
+    """Mã kỹ năng có trong `have=` của request (AD-22, #149). Web tick theo cờ này, không tự so mã."""
+
     @model_validator(mode="after")
     def _nhom_theo_hien_thi(self) -> Self:
         if self.rate.kind is not MeasureKind.SKILL_RATE:
@@ -116,13 +119,26 @@ class SkillRatesData(BaseModel):
     """Ô thật sự dùng để tính. Khác ô đã chọn khi quay về ô rộng hơn; lý do ở `fallback_label`."""
 
     rows: list[SkillRateRow]
-    """Mỗi kỹ năng của ô một dòng."""
+    """Mỗi kỹ năng của ô một dòng, theo thứ tự hiển thị: dòng có tỷ lệ trước, tỷ lệ giảm dần, rồi mã kỹ năng (#149).
+    Web không sắp xếp lại."""
+
+    core_size: Ordinal | None = None
+    """Số dòng `group = core`. `null` khi mọi `rate` là `null_data` (chưa đủ dữ liệu để chia nhóm)."""
+
+    have_core: Ordinal | None = None
+    """Số dòng core có `have` (AD-22: web không đếm). `null` cùng lúc với `core_size`."""
 
     @model_validator(mode="after")
     def _cung_mot_o(self) -> Self:
         lech = sorted({row.rate.cell_id for row in self.rows} - {self.cell_id})
         if lech:
             raise ValueError(f"Mọi rate phải thuộc ô {self.cell_id!r}, có ô lạ: {', '.join(lech)}.")
+        if (self.core_size is None) != (self.have_core is None):
+            raise ValueError("core_size và have_core cùng null hoặc cùng có giá trị.")
+        if self.core_size is not None and self.have_core is not None:
+            core = [row for row in self.rows if row.group == "core"]
+            if self.core_size != len(core) or self.have_core != sum(row.have for row in core):
+                raise ValueError("core_size/have_core phải khớp các dòng core và cờ have của chúng.")
         return self
 
 

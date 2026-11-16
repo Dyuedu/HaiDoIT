@@ -383,7 +383,8 @@ def test_ad17_backend_khong_quay_ve_va_du_mau(backend: dict[str, Any]) -> None:
 def test_ad17_cap_khac_cua_vai_tro_san_sang_la_404_nhu_skill_rates(
     client: TestClient,
 ) -> None:
-    for level in ("senior", "all"):
+    # `all` có skill-rates từ #149 nên không còn là cấp thiếu ô; dùng hai cấp fixture vẫn không có.
+    for level in ("senior", "lead"):
         resp = client.get(PATH, params={"role": "backend", "level": level})
         assert resp.status_code == 404
         assert resp.json()["error"]["code"] == "unknown_cell"
