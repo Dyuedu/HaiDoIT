@@ -18,6 +18,7 @@ TABLES = {
     "stat_cells",
     "stat_city_shares",
     "stat_sources",
+    "stat_skill_rates",  # #101
 }
 
 
@@ -81,6 +82,7 @@ def test_ad4_cot_dung_thiet_ke_va_khong_co_cot_van_ban_jd(pg_engine: Engine) -> 
         # #283: nhãn và mã kỹ năng của bộ phân loại, không phải văn bản JD
         "role", "branch", "seniority", "skills", "classify_version",
         "city",  # #285: nhãn nơi làm việc
+        "vocab_version",  # #101: phiên bản từ vựng đã quét kỹ năng
     }  # fmt: skip
     assert _columns(pg_engine, "job_observations") == {"posting_id", "snapshot_id", "pipeline_run_id"}
     assert _columns(pg_engine, "stat_job_lifecycle") == {

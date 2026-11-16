@@ -45,7 +45,7 @@ specs/212-hinh-lo-trinh-hoc/
 ```text
 haido_api/schemas/learning_path.py         (mới; đợt 2: validator foundation_for bắc cầu)
 haido_api/learning_path.py                 (mới; đợt 2: PathGraphError, stage_numbers, foundation_targets)
-haido_core/vocab/prepared_text.py          (đợt 2, mới: kiểm lời dẫn FR-23 cho #138 dùng lại)
+haido_core/vocab/prepared_text.py          (đợt 2, mới: kiểm lời dẫn FR-23 cho #138 dùng lại; đợt 5: chuẩn hóa NFKC, `phần\s+trăm`)
 haido_api/fixtures/fake_learning_path.json (mới)
 haido_api/market_source.py
 haido_api/fake_market.py                   (đợt 2: UnknownCell thay KeyError, quay về trong vai trò, foundation_for bắc cầu)
@@ -61,7 +61,7 @@ tests/api/test_fr22_learning_path_review.py (đợt 2, mới: quét vai trò × 
 tests/api/test_fr22_learning_path_graph.py (đợt 2, mới: chặng, foundation_for bắc cầu, validator)
 tests/api/test_fr23_blurbs.py              (đợt 2, mới)
 tests/api/test_ad17_ordinal_allowlist.py   (đợt 2, mới)
-tests/core/test_fr23_prepared_text.py      (đợt 2, mới)
+tests/core/test_fr23_prepared_text.py      (đợt 2, mới; đợt 5: ca NFKC và "phần trăm")
 tests/domain/test_ad17_ordinal.py          (đợt 2, mới)
 tests/api/test_ad17_routes.py
 tests/api/test_ad17_web_fixtures.py

@@ -16,7 +16,7 @@
 
 - Link tài nguyên đã kiểm bằng `curl -sIL`: JUnit chuyển sang `docs.junit.org/current/user-guide/`; Linux Journey chuyển sang trang bán khóa học nên đổi sang hướng dẫn dòng lệnh của Ubuntu; `restfulapi.net` đổi sang MDN (Tổng quan HTTP); ETL dùng hướng dẫn pipeline của Apache Airflow (mã nguồn mở, trung lập); kho dữ liệu dùng bài Wikipedia; AWS dùng trang Bắt đầu với Amazon S3 của tài liệu AWS (miễn phí, chính thức). Link Node.js và Spring ghi theo đích sau chuyển hướng.
 - FR-19 (`_bmad-output/planning-artifacts/epics.md`) giữ quay về trong vai trò; bản giả đợt 1 trỏ data_engineer sang ô mọi vai trò là sai và đã bỏ.
-- Quy tắc kiểm lời dẫn (FR-23) nay ở một hàm `haido_core/vocab/prepared_text.py`. **#138 nên dùng lại hàm này** cho cổng CI thay vì viết quy tắc riêng. Số viết bằng chữ ngoài phạm vi.
+- Quy tắc kiểm lời dẫn (FR-23) nay ở một hàm `haido_core/vocab/prepared_text.py`. **#138 đã dùng lại hàm này** cho cổng CI FR-24 thay vì viết quy tắc riêng (đợt 5, 2026-11-16). Số viết bằng chữ ngoài phạm vi.
 
 ## Dữ liệu giả
 

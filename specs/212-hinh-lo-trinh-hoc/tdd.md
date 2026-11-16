@@ -142,3 +142,12 @@ Lý do: #149 thêm `skill_rates[role].entry` và `.all` cho mọi vai trò vào 
 - RED: `uv run pytest tests/api -q` sau khi thêm fixture → `test_ad17_cap_khac_cua_vai_tro_san_sang_la_404_nhu_skill_rates` (backend · `all` giờ 200) và `test_fr22_ai_ml_entry_not_ready_nhung_co_skill_rates_de_mo_ho_so` (`qa` · `entry` giờ có `skill-rates`) đỏ.
 - Sửa test: dùng `lead` thay `all`, và `qa` · `senior` thay `qa` · `entry`, kèm chú thích. Mã lộ trình không đổi; thứ tự và nhóm của `backend`, `data_engineer` không đổi (các fixture `web/tests/fixtures/learning-path-*.json` vẫn khớp).
 - GREEN: `uv run pytest tests/api -q` → 379 passed, 74 skipped.
+
+## Đợt 5 (2026-11-16, review #138): `prepared_text.py` chuẩn hóa NFKC
+
+Lý do: review #138 chỉ ra `prepared_text_problems` bỏ lọt `％` toàn chiều, `²`, `①`, và "phần trăm" khi viết hai dấu cách, NBSP, xuống dòng, dạng NFD (hàm giờ được cổng CI FR-24 gọi, nên lọt ở đây là lọt ở CI). Hai AC của #212 không đổi; AC 3 chỉ chặt hơn. `TECH_NAMES` không nới: vẫn khớp nguyên từ, thất bại theo hướng chặt.
+
+- Lệnh: `uv run pytest -q tests/core/test_fr23_prepared_text.py`.
+- RED (chạy thật trước khi sửa code): 10 failed, 26 passed trong file này. Hai ca `％`; hai ca `²` và `①` (không phải `\d` nên không tính); sáu ca "phần trăm" (hai dấu cách, NBSP, xuống dòng, tab và CRLF, hai ca NFD). Ca viết hoa, chữ số toàn chiều `１２` và "Java 17," / "(HTML5)" đã xanh sẵn.
+- Sửa: `unicodedata.normalize("NFKC", ...)` trong `prepared_text_problems` và `digits_outside_tech`; `phần\s+trăm` trên `casefold()`.
+- GREEN: 37 passed trong file (một ca thêm sau kiểm đột biến: `digits_outside_tech` tự chuẩn hóa, mất chuẩn hóa ở đó thì xanh oan nên thêm `test_fr23_digits_outside_tech_cung_chuan_hoa_nfkc`, đỏ khi bỏ NFKC trong hàm đó). Chi tiết đột biến và toàn bộ test xem `specs/138-cong-loi-dan-khong-so/tdd.md` đợt 2.

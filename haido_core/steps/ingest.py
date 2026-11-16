@@ -3,7 +3,8 @@
 Nguồn là bảng của scraper (cầu nối C-11), đọc qua `SourceReader` để test thuần không cần DB.
 Từ #283 mỗi dữ kiện được phân loại ngay ở đây, lúc mô tả JD còn trong bộ nhớ (phép 1 và phép 6, luật ở
 `config/classify.toml`): kho chỉ nhận nhãn vai trò, chức danh con, cấp, mã kỹ năng có số lượt, số năm đã giải và
-phiên bản luật. Tin còn trong cửa sổ mà dữ kiện mới nhất mang nhãn của luật khác được phân loại lại tại S.
+phiên bản luật và phiên bản từ vựng. Tin còn trong cửa sổ mà dữ kiện mới nhất mang nhãn của luật khác, hoặc kỹ năng quét
+bằng từ vựng khác (#101), được phân loại và quét lại tại S.
 Đích là schema `haido`. Mọi hàng của một lần chạy ghi trong một transaction; S đã `published`
 hoặc `partial` thì từ chối và không ghi gì. Chạy lại cho S đang `open` không sinh hàng trùng.
 """
@@ -69,11 +70,13 @@ class PlannedFact:
     skills: tuple[tuple[str, int], ...] | None = None
     classify_version: str | None = None
     city: str | None = None
+    vocab_version: str | None = None
 
     def version(self) -> FactVersion:
         return FactVersion(
             self.title, self.company, self.location_text, self.experience_level, self.job_level, self.years_min,
             self.role, self.branch, self.seniority, self.skills, self.classify_version, self.city,
+            self.vocab_version,
         )
 
 
@@ -100,7 +103,7 @@ class FactLabeler:
         assert isinstance(result, Classification)
         return PlannedFact(
             source, row.job_url, row.title, row.company, row.location, row.experience_level, row.job_level, years,
-            result.role, result.branch, result.seniority, skills, self.cfg.version, result.city,
+            result.role, result.branch, result.seniority, skills, self.cfg.version, result.city, self.vocab.version,
         )
 
 
@@ -222,11 +225,13 @@ def _refresh_labels(
     current: dict[int, FactVersion],
     done: set[int],
 ) -> int:
-    """Phân loại lại tại S các tin trong cửa sổ có dữ kiện mới nhất mang nhãn của luật khác (#283).
+    """Phân loại lại tại S các tin trong cửa sổ có dữ kiện mới nhất mang nhãn của luật khác (#283) hoặc đã quét kỹ năng
+    bằng từ vựng khác phiên bản hiện hành (#101; `vocab_version` NULL cũng là khác).
 
     Chỉ thêm phiên bản (AD-4). Tin không còn hàng trong bảng `jobs` của scraper thì giữ nguyên.
     """
-    stale = [row for row in snapshot_store.stale_in_window(conn, day, rules.window_days, cfg.version) if row[0] not in done]
+    stale_rows = snapshot_store.stale_in_window(conn, day, rules.window_days, cfg.version, load_vocabulary().version)
+    stale = [row for row in stale_rows if row[0] not in done]
     if not stale:
         return 0
     by_url = {url: (posting_id, source) for posting_id, source, url in stale}

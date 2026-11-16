@@ -115,3 +115,9 @@ Lý do: nhánh `gh-111-ho-so-ky-nang` sửa file mà issue này từng đụng: 
 
 - RED: không có, vì không có hành vi nào của issue này đổi.
 - GREEN: `uv run pytest -q` → 1018 passed, 217 skipped; `cd web && npx vitest run` → 21 files, 281 passed; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: #101 sửa `haido_core/steps/ingest.py` (dữ kiện mang thêm `vocab_version`; nhãn thành phố không đổi), `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`FactVersion` có trường mới ở cuối, sau `city`), `haido_core/db/tables.py`. `tests/db/test_gh285_fact_city.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Không thêm hành vi mới nào của issue này, không AC nào đổi.
+
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/steps/test_gh285_ingest_city.py tests/db/test_gh285_fact_city.py tests/domain/test_gh285_aggregate_sparse.py -q` → **8 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.

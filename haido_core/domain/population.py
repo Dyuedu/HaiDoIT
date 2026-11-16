@@ -37,6 +37,9 @@ class CountedPosting:
     years_min: float | None = None
     """Số năm kinh nghiệm tối thiểu tin yêu cầu (#280); `None` là tin không ghi. Phép đếm không đọc trường này:
     bước tổng hợp lọc tin theo mốc số năm trước khi dựng `ClusterPopulation`."""
+    skills: frozenset[str] | None = None
+    """Mã kỹ năng tin nhắc ít nhất một lần (#101). `None` là chưa quét (dữ kiện cũ); `frozenset()` là đã quét mà không
+    thấy mã nào. Phép đếm không đọc trường này; `skill_rates` đọc."""
 
 
 def window_start(day: date, window_days: int) -> date:
@@ -44,7 +47,15 @@ def window_start(day: date, window_days: int) -> date:
     return day - timedelta(days=window_days - 1)
 
 
-def _matches(posting: CountedPosting, cell: CellKey) -> bool:
+def postings_in_window(postings: Sequence[CountedPosting], day: date, window_days: int) -> tuple[CountedPosting, ...]:
+    """Tin có `last_seen` trong cửa sổ `window_days` ngày kết thúc ở `day`. Chỗ duy nhất định nghĩa cửa sổ đếm (#93);
+    `skill_rates` (#101) dùng lại hàm này."""
+    first = window_start(day, window_days)
+    return tuple(p for p in postings if first <= p.last_seen <= day)
+
+
+def matches_cell(posting: CountedPosting, cell: CellKey) -> bool:
+    """Tin có rơi vào ô (vai trò, phạm vi, cấp) hay không. Chỗ duy nhất định nghĩa việc khớp ô; `skill_rates` dùng lại."""
     return (
         (cell.role == ALL or posting.role == cell.role)
         and (cell.scope == NATIONWIDE or posting.city == cell.scope)
@@ -72,11 +83,10 @@ class ClusterPopulation:
         if cell.branch not in (None, ALL):
             raise ValueError(f"Chưa hỗ trợ nhánh {cell.branch!r}; nhánh là phạm vi của story sau.")
         window = self._window(date.fromisoformat(cell.snapshot_id), request.window_days)
-        return len({p.cluster_id for p in window if _matches(p, cell)})
+        return len({p.cluster_id for p in window if matches_cell(p, cell)})
 
     def _window(self, day: date, window_days: int) -> tuple[CountedPosting, ...]:
         key = (day, window_days)
         if key not in self._in_window:
-            first = window_start(day, window_days)
-            self._in_window[key] = tuple(p for p in self._postings if first <= p.last_seen <= day)
+            self._in_window[key] = postings_in_window(self._postings, day, window_days)
         return self._in_window[key]

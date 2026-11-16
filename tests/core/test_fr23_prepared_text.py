@@ -1,8 +1,10 @@
 """FR-23 — kiểm câu chữ viết sẵn: không chữ số ngoài tên công nghệ, không `%` (#212, sửa sau review).
 
-Một hàm duy nhất ở `haido_core.vocab.prepared_text`; cổng CI của #138 nên dùng lại hàm này thay vì viết quy tắc riêng.
+Một hàm duy nhất ở `haido_core.vocab.prepared_text`; cổng CI FR-24 của #138 dùng lại hàm này, trên văn bản đã chuẩn hóa NFKC (review #138, 2026-11-16).
 Ngoài phạm vi: số viết bằng chữ ("mười hai") không bị bắt.
 """
+
+import unicodedata
 
 import pytest
 
@@ -73,3 +75,45 @@ def test_fr23_phan_tram_bang_chu_bi_tu_choi() -> None:
 
 def test_fr23_van_ban_sach_khong_co_loi() -> None:
     assert prepared_text_problems("Học Java 17 trước khi học framework.") == []
+
+
+# --- Đợt 2 (2026-11-16, review #138): chuẩn hóa NFKC, "phần trăm" chịu khoảng trắng ---
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["Tăng 5％", "Mức 100 ％"],
+)
+def test_fr23_percent_toan_chieu_bi_tu_choi(text: str) -> None:
+    assert any("%" in p for p in prepared_text_problems(text))
+
+
+@pytest.mark.parametrize("text", ["Bước ²", "Mục ①", "Có １２ tin"])
+def test_fr23_chu_so_la_va_toan_chieu_bi_tinh_la_chu_so(text: str) -> None:
+    assert any("chữ số" in p for p in prepared_text_problems(text))
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Chiếm phần trăm lớn",
+        "Chiếm PHẦN TRĂM lớn",
+        "Chiếm phần  trăm lớn",
+        "Chiếm phần trăm lớn",
+        "Chiếm phần\ntrăm lớn",
+        "Chiếm phần\t\r\ntrăm lớn",
+        unicodedata.normalize("NFD", "Chiếm phần trăm lớn"),
+        unicodedata.normalize("NFD", "Chiếm Phần  Trăm lớn"),
+    ],
+)
+def test_fr23_phan_tram_moi_kieu_viet_deu_bi_bat(text: str) -> None:
+    assert any("phần trăm" in p for p in prepared_text_problems(text))
+
+
+@pytest.mark.parametrize("text", ["Java 17, rồi framework", "Viết (HTML5) trước", "Học phần trước, trăm năm sau"])
+def test_fr23_van_ban_hop_le_van_qua_sau_chuan_hoa(text: str) -> None:
+    assert prepared_text_problems(text) == []
+
+
+def test_fr23_digits_outside_tech_cung_chuan_hoa_nfkc() -> None:
+    assert digits_outside_tech("Bước ②, mục １２ và Java 17") == ["2", "12"]
