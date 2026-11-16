@@ -1,7 +1,7 @@
 {
   "FR-22": {
     "issue": "https://github.com/Dyuedu/HaiDoIT/issues/139",
-    "due": "2026-11-22",
-    "note": "Deadline 2026-12-13 for match level, signals, and Insights sentences"
+    "due": "2026-12-13",
+    "note": "The learning-order check already runs in this gate. Match level, signals, and Insight sentences are still to be covered by the same check."
   }
 }
