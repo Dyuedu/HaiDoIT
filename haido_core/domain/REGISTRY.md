@@ -1,6 +1,6 @@
 # Registry đóng — tám phép dùng chung (AD-2)
 
-Mỗi phép có một chữ ký trong `registry.py`. Chữ ký gọi được cho một đối tượng và cho một lô (`list` hoặc `tuple`). Không có biến thể chỉ-theo-lô. Thân hàm chưa có. Thêm phép thứ chín thì sửa file này trong cùng thay đổi.
+Mỗi phép có một chữ ký trong `registry.py`. Chữ ký gọi được cho một đối tượng và cho một lô (`list` hoặc `tuple`). Không có biến thể chỉ-theo-lô. Cột "Cài sau" là nơi đặt thân hàm duy nhất của phép; phép 4 (`group_skills`) đã có thân hàm duy nhất ở `haido_core/domain/skill_groups.py` (#101). Thêm phép thứ chín thì sửa file này trong cùng thay đổi.
 
 | # | Phép | Hàm | Chữ ký | Cài sau |
 |---|---|---|---|---|

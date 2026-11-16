@@ -76,7 +76,7 @@ def _run_aggregate(snapshot_id: str) -> str:
         target.dispose()
     return (
         f"Đã tổng hợp snapshot {result.snapshot_id.isoformat()}: {result.cells} ô, {result.shares} tỷ trọng "
-        f"thành phố (config_version {result.config_version})."
+        f"thành phố, {result.skill_rates} tỷ lệ kỹ năng (config_version {result.config_version})."
     )
 
 

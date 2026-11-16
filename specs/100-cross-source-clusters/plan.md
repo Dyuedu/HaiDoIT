@@ -67,3 +67,10 @@ tests/steps/test_fr33_aggregate_level_step.py   # #163: cụm đếm ở cấp c
 ## Complexity Tracking
 
 Không có vi phạm cần biện minh.
+
+
+## Cập nhật 2026-11-16 theo #101
+
+File của issue này bị sửa: `haido_core/steps/aggregate.py` (vòng gộp cụm đưa mỗi cụm một tin mang hợp kỹ năng của mọi thành viên trong cửa sổ; cách gộp cụm và chọn đại diện không đổi), `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`.
+
+Test của issue này không phải sửa. `tests/db/test_dat20_stat_tables.py` (kiểm head Alembic, thuộc #93) đổi sang head 0009. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.

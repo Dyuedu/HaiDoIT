@@ -4,6 +4,7 @@ import dataclasses
 import json
 
 from haido_core.config import load_classify_config
+from haido_core.steps import ingest as ingest_module
 from haido_core.steps.aggregate import aggregate_snapshot
 from haido_core.steps.ingest import ingest_snapshot
 from tests.steps.conftest import Env, S
@@ -71,6 +72,59 @@ def test_gh283_lam_moi_tin_trong_cua_so_co_phien_ban_luat_cu(env: Env, scraper_d
     # Lượt sau cùng luật: không thêm gì.
     ingest_snapshot(S2, reader=env.reader, engine=env.write, rules=env.rules, classify=current)
     assert len(_facts(env)) == 4
+
+
+def _versions(env: Env) -> dict[str, list[tuple[str, str | None]]]:
+    out: dict[str, list[tuple[str, str | None]]] = {}
+    for url, day, vocab in env.query(
+        "SELECT p.source_url, f.snapshot_id, f.vocab_version FROM haido.job_posting_facts f "
+        "JOIN haido.job_postings p ON p.id = f.posting_id ORDER BY p.source_url, f.snapshot_id"
+    ):
+        out.setdefault(url, []).append((str(day), vocab))
+    return out
+
+
+def test_dat29_d3_ingest_luu_phien_ban_tu_vung_cua_moi_phien_ban_du_kien(env: Env, scraper_db) -> None:
+    scraper_db.job("u1", "topcv", title="DevOps Engineer", location="Hà Nội", description=DEVOPS_JD)
+    scraper_db.day("topcv", S, ["u1"])
+    env.ingest()
+    assert _versions(env) == {"u1": [(S, ingest_module.load_vocabulary().version)]}
+
+
+def test_dat29_d3_doi_tu_vung_thi_ingest_ke_tiep_quet_lai_tin_trong_cua_so(env: Env, scraper_db, monkeypatch) -> None:
+    vocab = ingest_module.load_vocabulary()
+    scraper_db.job("u1", "topcv", title="DevOps Engineer", location="Hà Nội", description=DEVOPS_JD)
+    scraper_db.job("u2", "topcv", title="Data Analyst", location="Hà Nội")
+    scraper_db.day("topcv", S, ["u1", "u2"])
+    env.ingest()
+    # Cùng từ vựng: ngày sau chỉ thấy u2, u1 không được thêm phiên bản.
+    scraper_db.day("topcv", S2, ["u2"])
+    env.ingest(S2)
+    assert len(_versions(env)["u1"]) == 1
+    # Từ vựng đổi phiên bản: lượt kế tiếp quét lại cả u1 (không còn trong lượt ngày S2) lẫn u2.
+    new = dataclasses.replace(vocab, version="seed-moi")
+    monkeypatch.setattr(ingest_module, "load_vocabulary", lambda: new)
+    result = env.ingest(S2)
+    assert result.facts_added == 2
+    versions = _versions(env)
+    assert versions["u1"] == [(S, vocab.version), (S2, "seed-moi")]
+    assert versions["u2"] == [(S, vocab.version), (S2, "seed-moi")]
+    # Lượt sau cùng từ vựng: không thêm gì.
+    assert env.ingest(S2).facts_added == 0
+    assert len(_facts(env)) == 4
+
+
+def test_dat29_d3_du_kien_cu_chua_ghi_phien_ban_tu_vung_cung_bi_quet_lai(env: Env, scraper_db) -> None:
+    scraper_db.job("u1", "topcv", title="DevOps Engineer", location="Hà Nội", description=DEVOPS_JD)
+    scraper_db.day("topcv", S, ["u1"])
+    env.ingest()
+    with env.write.begin() as conn:  # bảng chỉ-thêm có trigger chặn UPDATE: tắt trong lúc dựng dữ kiện cũ
+        conn.exec_driver_sql("ALTER TABLE haido.job_posting_facts DISABLE TRIGGER USER")
+        conn.exec_driver_sql("UPDATE haido.job_posting_facts SET vocab_version = NULL")
+        conn.exec_driver_sql("ALTER TABLE haido.job_posting_facts ENABLE TRIGGER USER")
+    scraper_db.day("topcv", S2, [])
+    env.ingest(S2)
+    assert [v for _, v in _versions(env)["u1"]] == [None, ingest_module.load_vocabulary().version]
 
 
 def _n(env: Env, role: str) -> int:

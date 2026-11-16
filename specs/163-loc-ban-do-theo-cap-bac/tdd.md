@@ -216,3 +216,9 @@ Lý do: nhánh `gh-111-ho-so-ky-nang` sửa file mà issue này từng đụng: 
 
 - RED: không có, vì không có hành vi nào của issue này đổi.
 - GREEN: `uv run pytest -q` → 1018 passed, 217 skipped; `cd web && npx vitest run` → 21 files, 281 passed; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: #101 sửa `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`replace_stats` bắt buộc nhận `skill_rates`), `haido_core/db/tables.py`; ô theo nhóm cấp được dùng lại để tính tỷ lệ kỹ năng nhưng cách lọc cấp không đổi. `tests/db/test_fr33_stat_city_shares_level.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Không thêm hành vi mới nào của issue này, không AC nào đổi.
+
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/domain/test_fr33_aggregate_level.py tests/steps/test_fr33_aggregate_level_step.py tests/db/test_fr33_stat_city_shares_level.py tests/db/test_dat20_stat_tables.py -q` → **40 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.

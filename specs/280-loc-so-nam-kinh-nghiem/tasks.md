@@ -34,3 +34,8 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 
 - [x] T015 đổi: `years-chips.tsx` thay bằng `web/app/components/map/filter-select.tsx` (ô Số năm kinh nghiệm, `<select>` gốc)
 - [x] T007: `web/tests/fr33-years-filter.test.tsx` chuyển sang `<select>`, giữ đủ hành vi cũ
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; `tests/db/test_fr33_stat_years.py` đổi kỳ vọng head Alembic từ 0008 sang 0009.
