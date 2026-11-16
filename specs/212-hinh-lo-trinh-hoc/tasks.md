@@ -43,3 +43,8 @@ Test trước, chạy đỏ, ghi `tdd.md` đợt 2.
 - [x] T023 Thêm `learning_path` vào ba test dựng app của main; sinh lại `openapi.json` và hai fixture web của `data_engineer`
 - [x] T024 Test quét 17 vai trò x cấp (`test_fr22_moi_vai_tro_cua_config_nhan_moi_cap_cua_config`)
 - [x] T025 Test trước: kỳ vọng "2 trên 13"; rồi đưa `spark`, `airflow`, `pandas` trở lại trong `fake_market.json` và `fake_learning_path.json`
+
+## Đợt 5 (2026-11-16, review #138)
+
+- [x] T026 Test trước (`tests/core/test_fr23_prepared_text.py`): `％`, `²`, `①`, chữ số toàn chiều; "phần trăm" viết hoa, NFD, nhiều dấu cách, NBSP, xuống dòng; "Java 17," và "(HTML5)" vẫn qua
+- [x] T027 `haido_core/vocab/prepared_text.py`: chuẩn hóa NFKC trước mọi kiểm tra, "phần trăm" bằng `phần\s+trăm` trên văn bản casefold; cập nhật docstring

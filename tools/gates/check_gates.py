@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Chín cổng kiến trúc của AD-24 — chặn merge.
+"""Mười cổng kiến trúc của AD-24 — chặn merge.
 
 Mỗi cổng là một hàm có tên chứa mã AD hoặc FR, đúng yêu cầu của AD-24.
 
@@ -21,6 +21,7 @@ import datetime
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -374,20 +375,114 @@ def check_deferred(code: str) -> tuple[str, str, list[str]]:
 # ---------------------------------------------------------------- FR-24
 @gate("FR-24", "Blurbs contain no numbers")
 def gate_fr24_loi_dan_khong_so():
+    # Một quy tắc duy nhất: haido_core/vocab/prepared_text.py (cùng quy tắc test FR-23 dùng). Module chỉ cần stdlib.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    try:
+        from haido_core.vocab.prepared_text import prepared_text_problems
+    finally:
+        sys.path.pop(0)
+
     blurbs = ROOT / "haido_core" / "vocab" / "blurbs"
-    if not blurbs.is_dir():
+    fixture = ROOT / "haido_api" / "fixtures" / "fake_learning_path.json"
+    if not blurbs.is_dir() and not fixture.is_file():
         return check_deferred("FR-24")
-    # cho phép số nằm trong tên công nghệ: Java 17, S3, EC2, OAuth2, Web3, HTML5, Vue 3
-    tech = re.compile(r"[A-Za-z][A-Za-z+#.]*\s?\d+")
-    hits = []
-    for f in blurbs.rglob("*"):
-        if not f.is_file():
+
+    hits: list[str] = []
+    where_scanned: list[str] = []
+    count = 0
+    if blurbs.is_dir():
+        where_scanned.append("haido_core/vocab/blurbs")
+        for f in sorted(blurbs.rglob("*")):
+            if not f.is_file():
+                continue
+            rel = f.relative_to(ROOT).as_posix()
+            try:
+                text = f.read_bytes().decode("utf-8")  # chặt: không dùng read() vì nó nuốt lỗi
+            except (OSError, UnicodeDecodeError) as exc:
+                hits.append("%s: cannot read as UTF-8: %r" % (rel, exc))
+                continue
+            count += 1
+            line_hit = False
+            for i, line in enumerate(text.splitlines(), 1):
+                problems = prepared_text_problems(line)
+                if problems:
+                    line_hit = True
+                    hits.append("%s:%d: %s: %s" % (rel, i, "; ".join(problems), line.strip()[:90]))
+            if not line_hit:
+                # Cụm chữ vắt qua nhiều dòng ("phần" / "trăm"): quét cả tệp, báo dòng bắt đầu cụm.
+                whole = prepared_text_problems(text)
+                if whole:
+                    norm = unicodedata.normalize("NFKC", text).casefold()
+                    m = re.search(r"phần\s+trăm", norm)
+                    line_no = norm.count("\n", 0, m.start()) + 1 if m else 1
+                    hits.append("%s:%d: %s" % (rel, line_no, "; ".join(whole)))
+    # Lời dẫn đang hiện ra hôm nay: blurb và resource.title của lộ trình giả (#138, quyết định 2026-11-16).
+    if fixture.is_file():
+        where_scanned.append("haido_api/fixtures/fake_learning_path.json")
+        fx_hits, fx_count = _fr24_scan_fixture(fixture, prepared_text_problems)
+        hits += fx_hits
+        count += fx_count
+    detail = "scanned %d texts in %s" % (count, ", ".join(where_scanned))
+    if count == 0:
+        hits.append("scanned 0 texts: an empty scan is not a pass")
+    return (FAIL if hits else PASS), detail, hits
+
+
+_FR24_KEYS = {
+    "top": {"_note", "roles"},
+    "role": {"skills"},
+    "node": {"skill", "requires", "foundation", "blurb", "resource"},
+    "resource": {"title", "url"},
+}
+
+
+def _fr24_scan_fixture(fixture: Path, prepared_text_problems) -> tuple[list[str], int]:
+    """Quét blurb và resource.title; khóa lạ hay kiểu sai là lỗi, để trường chữ mới không lọt qua cổng."""
+    name = "fake_learning_path.json"
+    try:
+        data = json.loads(fixture.read_bytes().decode("utf-8"))
+    except (OSError, ValueError) as exc:  # UnicodeDecodeError là ValueError
+        return ["%s: unreadable: %r" % (name, exc)], 0
+    hits: list[str] = []
+    count = 0
+
+    def unknown(obj: dict, kind: str, where: str) -> None:
+        for key in sorted(set(obj) - _FR24_KEYS[kind], key=str):
+            hits.append("%s: %s: unknown key %r (new prose field must be added to the gate)" % (name, where, key))
+
+    if not isinstance(data, dict) or not isinstance(data.get("roles"), dict):
+        return ["%s: top level must be an object with a 'roles' object" % name], 0
+    unknown(data, "top", "top level")
+    for role, entry in data["roles"].items():
+        if not isinstance(entry, dict) or not isinstance(entry.get("skills"), list):
+            hits.append("%s: %s: must be an object with a 'skills' list" % (name, role))
             continue
-        for i, line in enumerate(read(f).splitlines(), 1):
-            stripped = tech.sub("", line)
-            if re.search(r"\d|%", stripped):
-                hits.append("%s:%d: %s" % (f.relative_to(ROOT).as_posix(), i, line.strip()[:90]))
-    return (FAIL if hits else PASS), "scanned blurbs", hits
+        unknown(entry, "role", role)
+        for idx, node in enumerate(entry["skills"]):
+            if not isinstance(node, dict):
+                hits.append("%s: %s.skills[%d]: must be an object" % (name, role, idx))
+                continue
+            skill = node.get("skill")
+            label = "%s.%s" % (role, skill if isinstance(skill, str) else "skills[%d]" % idx)
+            unknown(node, "node", label)
+            resource = node.get("resource")
+            if resource is not None and not isinstance(resource, dict):
+                hits.append("%s: %s.resource: must be an object" % (name, label))
+                resource = None
+            if isinstance(resource, dict):
+                unknown(resource, "resource", label + ".resource")
+            for field, text in (
+                ("blurb", node.get("blurb")),
+                ("resource.title", (resource or {}).get("title")),
+            ):
+                if not isinstance(text, str):
+                    hits.append("%s: %s.%s: missing or not a string (%s)" % (name, label, field, type(text).__name__))
+                    continue
+                count += 1
+                problems = prepared_text_problems(text)
+                if problems:
+                    hits.append("%s: %s.%s: %s: %s" % (name, label, field, "; ".join(problems), text.strip()[:90]))
+    return hits, count
 
 
 # ---------------------------------------------------------------- FR-22
