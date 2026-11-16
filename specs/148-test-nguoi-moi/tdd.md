@@ -102,3 +102,9 @@ Lý do: nhánh #212 thêm `"learning_path": fake` vào lời dựng `create_app`
 
 - RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
 - GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr37_newcomer_roles_stat.py tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_web_fixtures.py` → 42 passed; toàn bộ `uv run pytest -q` → 1113 passed.
+
+## Đợt 2026-11-16 (#111, #152)
+
+Lý do: test trang giữ chỗ trong `web/tests/fr37-newcomer-list.test.tsx` (khối DEC-6 của đợt 2026-11-13) đổi theo trang hồ sơ kỹ năng thật của #152; xem `specs/147-man-nguoi-moi/tdd.md`. Các test thứ tự, `null_data`, `role=all` của #148 không đổi.
+
+- GREEN: `npx vitest run` → 21 files, 281 passed.

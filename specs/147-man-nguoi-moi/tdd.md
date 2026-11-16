@@ -47,3 +47,11 @@ Lý do: review PR #291 thấy test chưa kiểm thứ tự DOM `null_data` sau `
 
 - RED: không có, mã sản phẩm của #147 đã đúng. Bằng chứng test cắn là các đột biến ở `specs/148-test-nguoi-moi/tdd.md` (đột biến thứ tự làm đỏ 4–5 test; chữ số trong tiêu đề và `role=all` mỗi cái làm đỏ 1 test).
 - GREEN: `npx vitest run tests/fr37-newcomer-list.test.tsx` → 26 passed; `npm run test` → 13 files, 193 passed; `npm run lint` sạch; `npm run build` xong.
+
+## Đợt 2026-11-16 (#111, #152): trang giữ chỗ được thay
+
+Lý do: #152 thay `web/app/ho-so-ky-nang/page.tsx` bằng hồ sơ kỹ năng thật, như FR-005 của spec này đã báo trước. Liên kết của dòng (`skillProfileHref`) không đổi.
+
+- Test của khối "trang giữ chỗ hồ sơ kỹ năng" trong `web/tests/fr37-newcomer-list.test.tsx` viết lại thành "trang đích của một dòng": mở đúng vai trò ở cấp mới vào nghề, mã lạ và `role=all` không in như tên. Bỏ kiểm câu "sprint sau" và nút quay lại `/insights` (không còn trên trang). Test DEC-6 của trang đó kiểm khung trang trước khi có số, với `fetch` giả treo.
+- RED: sau khi thay trang, `npx vitest run` → 1 failed ("gọi tên vai trò, cấp mới vào nghề, và nói hồ sơ kỹ năng có ở sprint sau"), đúng chỗ đã đổi chủ ý.
+- GREEN: `npx vitest run` → 21 files, 281 passed.

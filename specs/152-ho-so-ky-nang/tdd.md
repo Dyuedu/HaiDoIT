@@ -1,0 +1,46 @@
+# TDD: Hồ sơ kỹ năng của một vai trò ở một cấp
+
+Theo `docs/templates/test-driven-tdd/test-driven-development.md`. Test web thay `fetch` bằng fixture `web/tests/fixtures/skill-rates-*.json` và `skills.json` (response của API giả, khóa bằng `tests/api/test_ad17_web_fixtures.py`), không gọi mạng.
+
+Lệnh:
+
+```text
+cd web && npx vitest run tests/fr19-skill-profile.test.tsx
+```
+
+## Các hành vi
+
+1. Không có `level` → ô Cấp bậc "Mới vào nghề", gọi `level=entry`.
+2. Đổi cấp → gọi `level=intern`, URL đổi.
+3. Dòng: tên tiếng Việt, "65,4%", "Cốt lõi", đúng thứ tự API; API đảo thứ tự thì màn đảo theo.
+4. Quay về: câu `fallback_label` nguyên văn, "n = 157".
+5. Chưa đủ dữ liệu: "chưa đủ dữ liệu" mỗi dòng, không "%", không tên nhóm, không dòng đếm core.
+6. Hồ sơ `java,sql,git`: ba ô được tick; "3/6" lấy từ API; request gửi `have=java,sql,git`.
+7. `unknown_cell`: thông báo, không "Thử lại"; mạng hỏng: "Thử lại" tải lại được.
+8. Envelope sai hợp đồng → không đọc được.
+
+## RED web (2026-11-16)
+
+Lệnh chạy cả sáu file test mới của màn (từ ổ `D:\` viết hoa: chạy từ `/d/...` của Git Bash làm Vitest nạp hai bản `vitest` và mọi file, kể cả test cũ, báo "failed to find the current suite"; đó không phải RED):
+
+```text
+cd web && npx vitest run tests/fr19-skill-profile.test.tsx tests/fr18-role-for-title.test.tsx tests/fr22-mo-lo-trinh-tu-ky-nang.test.tsx tests/fr14-luu-tick-trinh-duyet.test.tsx tests/fr13-tim-ky-nang-song-ngu.test.tsx tests/fr18-fr19-us-a2-ac.test.tsx
+```
+
+- `fr19-skill-profile`, `fr18-role-for-title`, `fr22-mo-lo-trinh-tu-ky-nang`, `fr13-tim-ky-nang-song-ngu`: không nạp được, `Failed to resolve import` `@/lib/skill-rates`, `@/lib/role-for-title`, `@/lib/skill-profile-view`, `@/lib/vocab` (chưa có).
+- `fr14-luu-tick-trinh-duyet`: 6/6 failed, `Unable to find role="list" and name /Kỹ năng theo tỷ lệ tin yêu cầu/` (trang vẫn là trang giữ chỗ của #147).
+- `fr18-fr19-us-a2-ac`: 7/8 failed cùng lý do; test khóa tên xanh sẵn.
+
+## GREEN web (2026-11-16)
+
+- Lượt đầu sau khi viết màn: 58 passed, 2 failed (`fr13`): ô tìm kỹ năng bị `disabled` tới khi danh sách kỹ năng về, chữ gõ sớm bị mất. Đây là lỗi thật của màn: bỏ `disabled`, kết quả hiện khi danh sách về. Không sửa test.
+- `npm run lint` chặn `setState` đồng bộ trong effect khi đọc hồ sơ. Đổi sang `useSyncExternalStore` với `web/lib/profile-store.ts` (server và lần hydrate đầu dùng hồ sơ rỗng).
+- Cổng AD-23 chặn `localStorage.getItem/setItem` trong file test; test gieo và đọc hồ sơ bằng `writeProfile`/`readProfile` của `haido-keys.ts`.
+- `npx vitest run` → 21 files, 281 passed; `npx tsc --noEmit`, `npm run lint` sạch; `npm run build` xong (`/ho-so-ky-nang`, `/co-van` động).
+- `uv run pytest -q` → 1018 passed, 217 skipped; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+- Chrome headless trên `next start` với API local (nguồn giả), `/ho-so-ky-nang?role=backend&level=entry`:
+  - 360×640: không cuộn ngang (360/360), 15 dòng, không ô bấm nào thấp hơn 44px.
+  - 1280×900: không cuộn ngang, không ô bấm nào thấp hơn 44px.
+  - Tick Java rồi tải lại: Java vẫn tick, dòng đếm "1/6 kỹ năng cốt lõi bạn đã có" (số của API).
+  - Chạm Spring Boot: `/co-van?role=backend&level=entry&skill=spring_boot`, tiêu đề "Lộ trình học: Backend".
+  - Chức danh "Lập trình viên Java" qua phép 6 thật: "Hải Đồ dùng vai trò Backend cho chức danh này.", URL `?role=backend&level=entry`.
