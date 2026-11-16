@@ -74,3 +74,7 @@ Hành vi mới:
 ### Kiểm trên VPS (2026-11-16)
 
 Build lại `scraper-browser` với `topcv.py` mới, chạy `pipeline.py crawl --sources topcv --skip-details`: 47 trang, `seen: 2294 jobs, listing_complete=True`, `[topcv] OK in 645s`. Tiêu đề ghi 2.293 việc làm. Trang 47 lặp lại trang 46 nên lượt dừng ở đó; lượt này không trang nào phải tải lại. 108 tin mới vào hàng đợi ở trạng thái `PENDING`.
+
+### CI (2026-11-16)
+
+Job "Python - ruff and pytest" đỏ ở `tests/domain/test_perm08_emails.py` (#8, chưa có `specs/`): thư TopCV phải có cụm "một lượt mỗi ngày", bản sửa đã viết "một lượt tự động mỗi ngày". Đổi câu thành "một lượt mỗi ngày, chạy tự động, ...". `uv run pytest -q` → 752 passed, 217 skipped.

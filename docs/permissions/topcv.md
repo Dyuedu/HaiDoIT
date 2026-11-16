@@ -12,7 +12,7 @@ Nhóm sinh viên Hải Đồ IT xin phép dùng tin tuyển dụng IT công khai
 
 Phạm vi dữ liệu: chức danh, tên kỹ năng, khoảng lương nếu tin có ghi, thành phố, và ngày tin còn trên danh sách. Nhóm không đăng lại toàn văn tin. Thông tin liên hệ của người đăng được xóa trước khi lưu. Số liệu công bố chỉ ở mức tổng hợp.
 
-Tần suất: một lượt tự động mỗi ngày, mỗi trang cách nhau vài giây.
+Tần suất: một lượt mỗi ngày, chạy tự động, mỗi trang cách nhau vài giây.
 
 Nếu TopCV muốn gỡ tin hoặc không cho dùng, trả lời thư này. Nhóm tắt nguồn TopCV và gỡ dữ liệu đã lưu của TopCV trong 48 giờ kể từ khi nhận yêu cầu. Nếu TopCV từ chối, nguồn sẽ tắt.
 
