@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Code xong, test xanh. Chưa build image trên VPS.
+**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa, chờ chạy thử lại.
 
 **Input**: GitHub issue [#302](https://github.com/Dyuedu/HaiDoIT/issues/302) — Run TopCV in the nightly crawl on the VPS.
 
@@ -64,6 +64,17 @@ Khi rà code có một lỗi độc lập: `main()` nạp toàn bộ URL trong `
 4. **Given** `topcv-manual.sh`, **Then** không còn đặt `TOPCV_DB`.
 5. README của scraper và `docs/permissions/topcv.md` không còn ghi TopCV chỉ chạy tay.
 
+### User Story 5 - Trang rỗng tạm thời không làm lượt báo đủ (Priority: P1)
+
+**Why this priority**: lượt thử trên VPS ngày 16/11 thấy 705 tin, ghi `complete=True`, trong khi tiêu đề trang ghi 2.293 việc làm. Trang 16 lúc đó rỗng; tải lại thì đủ 50 tin. Ghi đủ khi chưa đủ làm vòng đời coi khoảng 1.600 tin là đã gỡ. Thuộc AC thứ nhất của #302 (file seen đúng với hôm nay).
+
+**Acceptance Scenarios**:
+
+1. **Given** tiêu đề "Tuyển dụng 2.293 việc làm ...", **When** đọc tổng, **Then** được 2293; không có tiêu đề thì không có tổng.
+2. **Given** trang 2 rỗng lần đầu rồi có tin, **When** crawler chạy, **Then** trang 2 được tải lại và tin của nó có trong file seen; trang rỗng `EMPTY_PAGE_TRIES` lần liền mới là hết listing.
+3. **Given** tiêu đề ghi 100 tin mà listing hết sau 2 tin, **When** `main()` chạy, **Then** `listing_complete = false`, `error` có "met 2 of 100".
+4. **Given** tiêu đề ghi 2 tin và listing thấy 2, **Then** `listing_complete = true`.
+
 ### Edge Cases
 
 - Container lần trước bị kill: file `Singleton*` trong profile bị xoá trước khi mở Chrome.
@@ -77,6 +88,7 @@ Khi rà code có một lỗi độc lập: `main()` nạp toàn bộ URL trong `
 - **FR-002**: `TOPCV_PROFILE_DIR` mặc định `data/state/chrome_topcv_profile`, tuyệt đối theo thư mục chạy.
 - **FR-003**: `topcv.py` nhận `--skip-details` và `--limit N` (0 = không giới hạn).
 - **FR-004**: `pipeline.py` truyền hai cờ trên cho nguồn `nodriver`; bọc `xvfb-run` khi Linux không có `DISPLAY`; topcv timeout `6 * 3600`.
+- **FR-006**: Trang không có thẻ tin được tải lại tới `EMPTY_PAGE_TRIES` (3) lần. Hết listing với ít hơn `MIN_COVERAGE` (90%) tổng trên tiêu đề thì lượt chưa đủ, lý do ghi vào `error` của file seen.
 - **FR-005**: Chrome mở với `--no-sandbox`, `--disable-setuid-sandbox`, `--disable-dev-shm-usage`, `--window-size=1920,1080`.
 
 ## Success Criteria *(mandatory)*

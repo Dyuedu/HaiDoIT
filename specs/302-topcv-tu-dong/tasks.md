@@ -21,8 +21,14 @@
 - [x] T008 Sửa `scraper/Dockerfile.browser`, `deploy/compose.scraper.yml`, `deploy/daily.sh`, `deploy/topcv-manual.sh`
 - [x] T009 Sửa `scraper/README.md`, `docs/permissions/topcv.md`, `docs/permissions/README.md`
 
+## Phase 4: Sửa sau lượt thử 16/11
+
+- [x] T013 [US5] Test `listed_total`, tải lại trang rỗng, so với tổng trên tiêu đề, trong `scraper/tests/test_observations.py`
+- [x] T014 Thêm `EMPTY_PAGE_TRIES`, `MIN_COVERAGE`, `listed_total()` và tham số `problems` trong `scraper/crawlers/topcv.py`
+- [ ] T015 Chạy lại `--sources topcv --skip-details` trên VPS: `complete=True`, số tin gần tổng trên tiêu đề
+
 ## Phase 3: Triển khai
 
-- [ ] T010 Chép `scraper/` lên `/opt/haidoit/scraper` (không phải git repo), build `scraper-browser`, chạy thử `pipeline.py crawl --sources topcv --limit 5`
+- [x] T010 Chép `scraper/` lên `/opt/haidoit/scraper` (không phải git repo), build `scraper-browser`, chạy thử `pipeline.py crawl --sources topcv --limit 5`
 - [ ] T011 Merge sau khi image đã build, vì merge đẩy `daily.sh` mới lên VPS
 - [ ] T012 Đêm đầu: log có `[topcv] OK`, `topcv listed=… complete=True`

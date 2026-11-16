@@ -46,3 +46,27 @@ uv run pytest tests/deploy -q
 - Ruff không chạy trên `scraper/` trong CI; `ruff --select E,F,W` trên `topcv.py`, `pipeline.py` chỉ còn lỗi E501 (88 cột) giống các dòng cũ của hai file.
 
 `-p no:cacheprovider`: venv thử của máy dev lỗi `No module named '_pytest.stepwise'`, không liên quan code.
+
+## Đợt 2: lượt thử trên VPS dừng sớm (2026-11-16)
+
+Lý do: `docker compose run --rm scraper-browser pipeline.py crawl --sources topcv --limit 5` trên VPS báo `[topcv] OK in 312s`, `seen: 705 jobs, listing_complete=True`. Các lượt chạy tay 05–10/11 thấy 2.520–2.886 tin. Log: trang 1–15 mỗi trang 50 tin, trang 16 "Không tìm thấy danh sách job". Probe ngay sau đó tải trang 16, 17: mỗi trang 50 tin, tiêu đề "Tuyển dụng 2.293 việc làm", không có trang kiểm tra Cloudflare. File seen sai đổi tên thành `seen/2026-11-16/topcv.json.test-bad`.
+
+Hành vi mới:
+
+12. Tiêu đề "Tuyển dụng 2.293 việc làm" → `listed_total` = 2293; không có tiêu đề → `None`.
+13. Trang 2 rỗng một lần rồi có tin; trang 3 rỗng mãi → thấy 2 tin, `complete`, trang 2 gọi 2 lần, trang 3 gọi `EMPTY_PAGE_TRIES` lần.
+14. Tổng 100, listing hết sau 2 tin → `listing_complete = false`, `error` có "met 2 of 100".
+15. Tổng 2, thấy 2 → `listing_complete = true`.
+
+### RED (2026-11-16)
+
+`python -m pytest tests -q -p no:cacheprovider` → 3 failed, 71 passed, 9 skipped.
+
+- Hành vi 12 đỏ: `AttributeError: module 'crawlers.topcv' has no attribute 'listed_total'`.
+- Hành vi 13 đỏ: `assert (1 == 2)`: trang rỗng đầu tiên kết thúc listing.
+- Hành vi 14 đỏ: `assert True is False` (`listing_complete`).
+- Hành vi 15 xanh sẵn: giữ để chặn bản sửa đánh dấu chưa đủ khi đã đủ.
+
+### GREEN (2026-11-16)
+
+- `python -m pytest tests -q -p no:cacheprovider` → 74 passed, 9 skipped.

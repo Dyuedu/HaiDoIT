@@ -159,6 +159,22 @@ def is_challenge(html: str) -> bool:
     return any(m in html[:5000] for m in ("Just a moment", "Attention Required", "cf-challenge"))
 
 
+# Trang tải chậm có thể chưa hiện thẻ tin khi đọc HTML (16/11 trên VPS: trang 16 rỗng, tải lại thì đủ 50 tin).
+EMPTY_PAGE_TRIES = 3
+# Thấy ít hơn tỷ lệ này so với tổng TopCV ghi trên tiêu đề thì lượt chưa đủ.
+MIN_COVERAGE = 0.9
+
+
+def listed_total(soup) -> int | None:
+    """Tổng số việc làm TopCV ghi trên tiêu đề: "Tuyển dụng 2.293 việc làm ..."."""
+    title = soup.title.get_text(" ", strip=True) if soup.title else ""
+    match = re.search(r"([\d.,]+)\s*việc làm", title)
+    if not match:
+        return None
+    digits = re.sub(r"[.,]", "", match.group(1))
+    return int(digits) if digits else None
+
+
 def extract_job_id_from_url(url: str) -> str | None:
     match = re.search(r"(?:/|-j)(\d+)\.html", url)
     return match.group(1) if match else None
@@ -169,8 +185,13 @@ async def crawl_listing_pages(
     client: TopCVBrowserClient,
     start_page: int = 1,
     seen: list[str] | None = None,
+    problems: list[str] | None = None,
 ):
     """Walk the listing until it ends. Returns (absolute URLs seen, reached_the_end).
+
+    A page without job cards is fetched again up to EMPTY_PAGE_TRIES times before it
+    counts as the end. When the walk ends with fewer than MIN_COVERAGE of the total the
+    title prints, it is not complete, and the reason goes into `problems`.
 
     Passing `seen` in place ensures that if the user presses Ctrl+C mid-walk,
     all URLs collected up to that point are preserved for `write_seen`.
@@ -178,7 +199,10 @@ async def crawl_listing_pages(
     cursor = conn.cursor()
     if seen is None:
         seen = []
+    if problems is None:
+        problems = []
     reached_end = False
+    total = None
     page_num = start_page - 1
 
     while True:
@@ -196,6 +220,24 @@ async def crawl_listing_pages(
 
         soup = BeautifulSoup(html, "lxml")
         job_cards = soup.select("div.job-item-search-result")
+        tries = 1
+        while not job_cards and tries < EMPTY_PAGE_TRIES:
+            tries += 1
+            print(f"[~] Trang {page_num} không có tin, tải lại ({tries}/{EMPTY_PAGE_TRIES})", flush=True)
+            html = await client.fetch(url, is_listing=True)
+            if not html or html == "NOT_FOUND" or is_challenge(html):
+                break
+            soup = BeautifulSoup(html, "lxml")
+            job_cards = soup.select("div.job-item-search-result")
+        if total is None:
+            total = listed_total(soup)
+
+        if not html or is_challenge(html):
+            print(f"[!] Trang {page_num}: bị chặn hoặc lỗi tải. Listing chưa hoàn chỉnh.")
+            break
+        if html == "NOT_FOUND":
+            reached_end = page_num > start_page
+            break
 
         if not job_cards:
             reached_end = page_num > start_page
@@ -241,6 +283,11 @@ async def crawl_listing_pages(
         if len(seen) == seen_before_page:  # the site is repeating a page: nothing further
             reached_end = True
             break
+
+    if reached_end and total and len(seen) < MIN_COVERAGE * total:
+        reached_end = False
+        problems.append(f"met {len(seen)} of {total} listed jobs")
+        print(f"[!] Listing dừng ở trang {page_num} với {len(seen)}/{total} tin: chưa đủ.", flush=True)
 
     return seen, reached_end
 
@@ -486,19 +533,22 @@ async def main():
     seen: list[str] = []
     complete = False
     error = None
+    problems: list[str] = []
     seen_written = False
 
     try:
         await client.start()
         try:
-            seen, complete = await crawl_listing_pages(db_conn, client, start_page=1, seen=seen)
+            seen, complete = await crawl_listing_pages(
+                db_conn, client, start_page=1, seen=seen, problems=problems
+            )
         except (Exception, KeyboardInterrupt, asyncio.CancelledError) as exc:
             error = f"Listing interrupted ({type(exc).__name__}): {exc}"[:300]
             print(f"\n[!] Listing dừng sớm: {error}", flush=True)
 
         # Chỉ ghi những URL listing hôm nay thật sự hiện ra. Không lấy URL cũ trong job_queue:
         # job_observations sẽ hiểu là tin đó hôm nay vẫn còn.
-        write_seen("topcv", seen, complete, error=error)
+        write_seen("topcv", seen, complete, error=error or "; ".join(problems) or None)
         seen_written = True
 
         if not args.skip_details and seen and error is None:
