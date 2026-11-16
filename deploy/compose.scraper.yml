@@ -46,7 +46,8 @@ services:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
-  # MoMo, TopDev, ITviec: can Chromium. Chromium hay vo voi /dev/shm mac dinh 64 MB.
+  # MoMo, ITviec: Chromium cua Playwright. TopCV: Chrome + Xvfb (nodriver).
+  # Chrome chay nhieu gio hay vo voi /dev/shm nho.
   scraper-browser:
     build:
       context: ../scraper
@@ -57,7 +58,7 @@ services:
       TZ: Asia/Ho_Chi_Minh
     volumes:
       - scraper_data:/app/data
-    shm_size: 512m
+    shm_size: 1g
     deploy:
       resources:
         limits:

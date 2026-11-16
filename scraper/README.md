@@ -31,6 +31,11 @@ Bốn crawler mới dùng chung `crawlers/polite.py`: User-Agent trung thực, k
 `robots.txt`, giãn cách cố định giữa các request, và **dừng hẳn** khi gặp
 403/429 hoặc captcha (không tìm cách vượt qua).
 
+TopCV là ngoại lệ (#302, bỏ quyết định ngày 03/11 giữ TopCV chạy tay): crawler mở Chrome thật
+qua `nodriver`, dùng profile cố định ở `data/state/chrome_topcv_profile`, và đợi tối đa 60 giây
+cho trang kiểm tra của Cloudflare tự qua. Trang listing vẫn hiện kiểm tra thì lượt dừng và ghi
+`listing_complete = false`.
+
 ## Pipeline
 
 ```
@@ -50,7 +55,7 @@ Chạy cả chuỗi: `python pipeline.py`. Từng chặng: `pipeline.py crawl|re
 
 `job_observations` lấy từ `data/seen`, không lấy từ file raw: crawler bỏ qua tin đã biết nên
 tin còn đăng không sinh dòng raw mới. Tin chỉ được coi là đã gỡ khi vắng mặt ở một lượt
-`source_runs.listing_complete = true`. MoMo và ITviec chạy trong ảnh `scraper-browser` có Chromium. TopDev chỉ lấy tin IT: thuộc danh mục IT của trang hoặc khớp từ khóa. TopCV không nằm trong lịch tự động và chưa ghi `data/seen`.
+`source_runs.listing_complete = true`. MoMo và ITviec chạy trong ảnh `scraper-browser` có Chromium. TopDev chỉ lấy tin IT: thuộc danh mục IT của trang hoặc khớp từ khóa. TopCV chạy trong cùng ảnh, Chrome dưới Xvfb (`pipeline.py` bọc `xvfb-run`); hàng đợi SQLite và profile nằm ở `data/state/`, giữ qua các đêm trong volume `scraper_data`. `deploy/topcv-manual.sh` còn lại để chạy tay khi cần.
 
 `data/raw` không bị xóa sau `ingest` và còn chứa liên hệ chưa xóa (AD-21). ITviec, TopDev, CareerLink và ITNavi dựng
 tập tin đã biết từ đó; Zalo, VietnamWorks và MoMo ghi lại file của mình từ đầu mỗi lượt. `ingest` và `dedupe` chỉ đọc `data/redacted`. MoMo và ITviec không hỏi `robots.txt` khi mở trang bằng trình duyệt (AD-20).

@@ -36,7 +36,7 @@ BEAT_ONE=0
 {
   echo "=== $(date -Is) snapshot=$SNAPSHOT nhip mot"
   run pipeline.py crawl --sources zalo,itnavi,careerlink,vietnamworks,topdev
-  run_browser pipeline.py crawl --sources momo,itviec
+  run_browser pipeline.py crawl --sources momo,itviec,topcv
   run pipeline.py redact && run pipeline.py ingest
   BEAT_ONE=$?
   if [ "$BEAT_ONE" -eq 0 ]; then
