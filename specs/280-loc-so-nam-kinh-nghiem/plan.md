@@ -110,3 +110,7 @@ Không có vi phạm cần biện minh.
 ## Ghi chú 2026-11-13 (#148)
 
 `haido_api/stat_market.py` thêm bảo vệ entry > n trong `newcomer_roles`. Phần `city_shares` của #280 không đổi; không AC nào của #280 đổi.
+
+## Ghi chú 2026-11-15 (gộp main vào #212)
+
+`tests/api/test_fr33_city_shares_years.py`: hai lời gọi `create_app` thêm `"learning_path": FakeMarket()`. Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.

@@ -50,3 +50,7 @@ Hai file test không có issue cũ nào thiếu `specs/`.
 
 - Test DEC-6 quá rộng sẽ bắt số trong khung "Nguồn và lưu ý"; đã loại khung đó (điểm mở 1 ở spec).
 - Bảo vệ entry > n chỉ chạy trong `StatMarket`; `FakeMarket` không đọc DB nên không cần.
+
+## Ghi chú 2026-11-15 (gộp main vào #212)
+
+`tests/api/test_fr37_newcomer_roles_stat.py`: lời dựng `create_app` thêm `"learning_path": fake`. `haido_api/stat_market.py` thêm `learning_path` (ném `UnknownCell`, chờ #216), `newcomer_roles` giữ nguyên.

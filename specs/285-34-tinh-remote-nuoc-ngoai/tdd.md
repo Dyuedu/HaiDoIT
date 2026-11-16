@@ -101,3 +101,10 @@ Lý do: `web/tests/fr33-map-screen.test.tsx` bỏ hai assert `.not.toBe(...)` th
 
 - RED: không có (chỉ bỏ assert không thể đỏ riêng).
 - GREEN: `npx vitest run` toàn bộ xanh (số đếm ở `specs/293-bo-loc-dropdown/tdd.md`, đợt 2).
+
+## Đợt 2026-11-15 — gộp main vào #212
+
+Lý do: `fake_market.json` đổi `skill_rates` (phần `city_shares` của #285 giữ nguyên); `test_ad17_web_fixtures.py` còn khớp sáu fixture city-shares.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_ad17_web_fixtures.py tests/api/test_fr33_city_shares_level.py tests/api/test_fr33_city_shares_years.py tests/api/test_dat20_stat_market.py` → 85 passed; toàn bộ `uv run pytest -q` → 1113 passed.

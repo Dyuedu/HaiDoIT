@@ -6,7 +6,12 @@ Hình `data` của từng route nằm ở `haido_api/schemas/`.
 
 Ba quy tắc của hợp đồng:
 
-- mọi con số trong `data` là một `Stat`, không có số nào đứng riêng ngoài `Stat`;
+- mọi con số trong `data` là một `Stat`, không có số nào đứng riêng ngoài `Stat`. Ngoại lệ duy nhất là dấu `Ordinal`
+  (AD-22, #212): vị trí và số đếm trên chính các mã kỹ năng của người dùng (số chặng, "N of M skills on this path"),
+  không bao giờ là số tin, tỷ lệ, tỷ trọng hay n. Trường `Ordinal` chỉ được miễn khi kiểu của nó đúng là `Ordinal`
+  hoặc `Ordinal | None` và giá trị là `int` không âm (không phải `bool`) hoặc `None`; kiểu ghép (tuple, union với kiểu
+  khác, list) vẫn bị kiểm như thường. Danh sách trường dùng dấu này bị khóa bằng test
+  (`tests/api/test_ad17_ordinal_allowlist.py`);
 - `Stat.display` khớp với `value` và `kind` (`null_data` thì không có giá trị; chỉ tỷ trọng
   cấu phần được `low_sample_shown`), và với `suppression_for` trên `n` của ô;
 - mọi `cell_id` trong `data` có mục tương ứng trong `meta.cells`.
@@ -16,7 +21,8 @@ import numbers
 from collections.abc import Iterator, Mapping
 from datetime import date
 from enum import StrEnum
-from typing import Annotated, Self, get_args
+from types import UnionType
+from typing import Annotated, Self, Union, get_args, get_origin
 
 from pydantic import (
     BaseModel,
@@ -26,6 +32,7 @@ from pydantic import (
     PositiveInt,
     model_validator,
 )
+from pydantic.fields import FieldInfo
 
 from haido_core.domain.display_policy import DisplayState, MeasureKind, suppression_for
 
@@ -46,11 +53,31 @@ class CellRef:
 CellId = Annotated[str, CellRef(), Field(min_length=1)]
 """Mã ô thống kê. Chuỗi opaque: giao diện chỉ dùng nó để tra `meta.cells`."""
 
+
+class OrdinalRef:
+    """Dấu đặt trong `Annotated[...]`: trường là số thứ tự hoặc số đếm trên chính response, không phải số liệu
+    thị trường (ví dụ số chặng, "N of M skills on this path"). `Envelope` không đòi bọc trong `Stat`.
+
+    Dùng qua bí danh `Ordinal`. Số đo thị trường (tỷ lệ, tỷ trọng, cỡ mẫu) vẫn phải là `Stat` hoặc ở `meta.cells`.
+    Chỉ có tác dụng khi trường được khai đúng `Ordinal` hoặc `Ordinal | None` (xem `_is_ordinal_field`).
+    """
+
+    __slots__ = ()
+
+    def __repr__(self) -> str:
+        return "OrdinalRef()"
+
+
+Ordinal = Annotated[int, OrdinalRef(), Field(ge=0)]
+"""Số nguyên không âm là thứ tự hoặc số đếm của response (#212), không phải số liệu thị trường."""
+
 Fraction = Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)]
 
 # revalidate_instances: một instance sửa bằng `model_copy(update=...)` vẫn qua validator khi
 # lồng vào model khác hoặc khi FastAPI kiểm response.
-_CONFIG = ConfigDict(extra="forbid", use_attribute_docstrings=True, revalidate_instances="always")
+_CONFIG = ConfigDict(
+    extra="forbid", use_attribute_docstrings=True, revalidate_instances="always"
+)
 _RATIO_KINDS = frozenset(
     {MeasureKind.COMPOSITION_SHARE, MeasureKind.SKILL_RATE, MeasureKind.LEVEL_SHARE}
 )
@@ -87,7 +114,11 @@ class Stat(BaseModel):
             raise ValueError(
                 f"Chỉ composition_share được low_sample_shown, nhận kind = {self.kind}."
             )
-        if self.value is not None and self.kind in _RATIO_KINDS and not 0 <= self.value <= 1:
+        if (
+            self.value is not None
+            and self.kind in _RATIO_KINDS
+            and not 0 <= self.value <= 1
+        ):
             raise ValueError(f"{self.kind} phải nằm trong 0–1, nhận {self.value}.")
         return self
 
@@ -121,7 +152,9 @@ class CellMeta(BaseModel):
             )
         vuot = sorted(m for m, n in self.n_by_measure.items() if n > self.n)
         if vuot:
-            raise ValueError(f"n_by_measure vượt n của ô ({self.n}) ở: {', '.join(vuot)}.")
+            raise ValueError(
+                f"n_by_measure vượt n của ô ({self.n}) ở: {', '.join(vuot)}."
+            )
         return self
 
 
@@ -235,7 +268,9 @@ class Envelope[T: BaseModel](BaseModel):
                     )
         for cell_id, cell in cells.items():
             for measure, n in cell.n_by_measure.items():
-                hidden = suppression_for(MeasureKind.PERCENTILE, n, min_sample=min_sample)
+                hidden = suppression_for(
+                    MeasureKind.PERCENTILE, n, min_sample=min_sample
+                )
                 expected = hidden is DisplayState.NULL_DATA
                 if cell.insufficient_by_measure[measure] is not expected:
                     loi.append(
@@ -245,6 +280,31 @@ class Envelope[T: BaseModel](BaseModel):
         if loi:
             raise ValueError("Hợp đồng envelope bị vỡ: " + "; ".join(loi) + ".")
         return self
+
+
+def _is_ordinal_annotation(annotation: object) -> bool:
+    """Kiểu đúng là `Ordinal` hoặc `Ordinal | None`, không phải kiểu ghép khác chứa `Ordinal`."""
+    if get_origin(annotation) is Annotated:
+        base, *marks = get_args(annotation)
+        return base is int and any(isinstance(m, OrdinalRef) for m in marks)
+    if get_origin(annotation) in (Union, UnionType):
+        rest = [arg for arg in get_args(annotation) if arg is not type(None)]
+        return len(rest) == 1 and _is_ordinal_annotation(rest[0])
+    return False
+
+
+def _declares_ordinal(info: FieldInfo) -> bool:
+    """Trường khai đúng `Ordinal` hoặc `Ordinal | None`."""
+    if any(isinstance(m, OrdinalRef) for m in info.metadata):
+        return info.annotation is int
+    return _is_ordinal_annotation(info.annotation)
+
+
+def _valid_ordinal(value: object) -> bool:
+    """`int` không âm (không phải `bool`) hoặc `None`."""
+    return value is None or (
+        isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    )
 
 
 def _has_cell_ref(annotation: object) -> bool:
@@ -275,7 +335,13 @@ def _walk(value: object, path: str) -> Iterator[tuple[str, Stat | str | None]]:
         for name, info in type(value).model_fields.items():
             field_value = getattr(value, name)
             field_path = f"{path}.{name}"
-            if any(isinstance(m, CellRef) for m in info.metadata) or _has_cell_ref(info.annotation):
+            if _declares_ordinal(info):
+                if not _valid_ordinal(field_value):
+                    yield field_path, None
+                continue
+            if any(isinstance(m, CellRef) for m in info.metadata) or _has_cell_ref(
+                info.annotation
+            ):
                 yield from _strings(field_value, field_path)
             else:
                 yield from _walk(field_value, field_path)

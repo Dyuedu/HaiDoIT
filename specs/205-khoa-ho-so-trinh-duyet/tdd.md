@@ -64,6 +64,16 @@ Sau khi thêm `data.level` và tham số `level`: `tests/api/test_ad17_routes.py
 
 Sửa stub và dữ liệu thử, sinh lại ảnh chụp bằng `HAIDO_UPDATE_OPENAPI=1 uv run pytest tests/api -q`: `tests/api` xanh, mục `/api/v1/skills` trong `openapi.json` không đổi. Các đợt trước giữ nguyên.
 
+## Đợt 3 — 2026-11-12, sau khi thêm lộ trình học (#212)
+
+Lý do: #212 thêm phép `learning_path` vào `create_app`, đổi mã kỹ năng của `skill_rates` giả sang snake_case và (đợt 2 của #212) sửa nội dung `skill_rates`, `envelope.py`, schema OpenAPI.
+
+- Không viết test mới của issue này và không có đợt RED: hành vi của issue không đổi. Bản ghi trước ghi một RED giả định ("sẽ báo...") không kèm số đếm; thay bằng ghi chú này.
+- Đã chạy lại các test có sẵn của issue này trên mã sau đợt 2 của #212 (kết quả thật, 2026-11-12):
+  - `uv run pytest -q tests/core/test_fr13_skill_seed.py tests/api/test_fr13_skills_route.py tests/api/test_ad17_routes.py` → 54 passed.
+  - `npx vitest run tests/ad23-haido-keys.test.ts` → 9 passed.
+- GREEN: `uv run pytest -q` (có Postgres) → 862 passed, không skip; hai lượt `-m determinism` (`PYTHONHASHSEED=0` và `1`) → 7 passed mỗi lượt; web `npm run test` → 164 passed.
+
 ## Đợt 2026-11-13 — #283 mở rộng từ vựng kỹ năng
 
 Lý do: #283 dùng `skills_seed.json` làm từ vựng quét JD: giữ 100 mã cũ (hồ sơ đã lưu, link đã chia sẻ không hỏng), thêm 125
@@ -72,3 +82,10 @@ mã và bí danh tiếng Việt, thêm khóa `composites`, `scan_skip`; `skills.
 - RED: `test_fr13_danh_sach_moi_du_va_ma_hop_le` đỏ vì trần 150 mã (nay 225); sửa trần thành 400. Các test khác của #205
   (định dạng mã, tên song ngữ, bí danh không trỏ hai mã, "học máy" → `machine_learning`, không có tên vai trò) xanh.
 - GREEN: `tests/core/test_fr13_skill_seed.py`, `tests/api/test_fr13_skills_route.py` xanh; `uv run pytest -q` → 887 passed.
+
+## Đợt 2026-11-15 — gộp main vào #212
+
+Lý do: `fake_market.json` `skill_rates` dùng lại `pandas`, `spark`, `airflow` (đều có trong `skills_seed.json` 225 mã của #283). Hành vi của #205 không đổi.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/core/test_fr13_skill_seed.py tests/api/test_fr13_skills_route.py tests/api/test_ad17_routes.py` → 69 passed; `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts tests/ad23-haido-keys.test.ts` → 14 passed; toàn bộ `uv run pytest -q` → 1113 passed.

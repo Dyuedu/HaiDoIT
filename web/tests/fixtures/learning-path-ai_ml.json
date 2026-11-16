@@ -1,0 +1,72 @@
+{
+  "data": {
+    "role": "ai_ml",
+    "level": "entry",
+    "status": "not_ready",
+    "cell_id": null,
+    "entry_cell_id": "vn.ai_ml.entry",
+    "stages": [],
+    "current_stage": null,
+    "have_on_path": 0,
+    "path_size": 0,
+    "have_ignored": []
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.ai_ml.entry": {
+        "n": 501,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 73,
+          "fresher": 123,
+          "junior": 305
+        },
+        "n_by_measure": {
+          "skill_count": 501,
+          "experience_years": 360,
+          "salary": 120
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      }
+    }
+  }
+}

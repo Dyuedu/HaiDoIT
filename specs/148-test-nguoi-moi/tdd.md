@@ -95,3 +95,10 @@ Ngày snapshot ở ca `unknown_cell` là số liệu, nên ca đó gửi `snapsh
 - `cd web && npm run lint` sạch; `npm run test`: 13 files, 195 passed (đợt 1: 193); `npm run build` xong.
 - Web `fr37-newcomer-list.test.tsx`: 28 passed (đợt 1: 26).
 - Chỉ đụng hai file test của #148 và `specs/148-test-nguoi-moi/`; không đụng file sản phẩm, nên không cần đợt mới ở spec của issue khác.
+
+## Đợt 2026-11-15 — gộp main vào #212 (thêm nguồn `learning_path`)
+
+Lý do: nhánh #212 thêm `"learning_path": fake` vào lời dựng `create_app` ở `tests/api/test_fr37_newcomer_roles_stat.py` (file dùng chung của #148); `StatMarket.newcomer_roles` và bảo vệ entry > n giữ nguyên.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr37_newcomer_roles_stat.py tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_web_fixtures.py` → 42 passed; toàn bộ `uv run pytest -q` → 1113 passed.

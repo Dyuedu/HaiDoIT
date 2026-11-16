@@ -73,3 +73,10 @@ Lý do: #293 đổi 18 chip vai trò thành một `<select>`. AC cuối của #2
 
 - RED: `web/tests/fr33-role-chips-new-roles.test.tsx` 3/3 đỏ (`Unable to find an accessible element with the role "combobox" and name "Vai trò"`).
 - GREEN: 3/3 xanh; `npx vitest run` → 197 passed; ở 360px không cuộn ngang, ô cao 44px (`specs/293-bo-loc-dropdown/tdd.md`).
+
+## Đợt 2026-11-15 — gộp main vào #212 (thêm nguồn `learning_path`)
+
+Lý do: nhánh #212 thêm `"learning_path": FakeMarket()` vào `tests/steps/test_gh284_aggregate_vai_tro_moi.py`; lộ trình giả coi 15 trong 17 vai trò (mọi vai trò ngoài `backend`, `data_engineer`) là `not_ready`, có test quét 17 vai trò.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/steps/test_gh284_aggregate_vai_tro_moi.py tests/deploy/test_gh284_vai_tro_moi.py` → 7 passed; toàn bộ `uv run pytest -q` → 1113 passed.

@@ -153,3 +153,10 @@ Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_role
 
 - RED: không có, không test nào đổi kỳ vọng.
 - GREEN: `uv run pytest tests/api/test_fr33_city_shares_years.py tests/api/test_dat20_stat_market.py -q` → 45 passed; `cd web && npx vitest run tests/fr33-years-filter.test.tsx` → 11 passed.
+
+## Đợt 2026-11-15 — gộp main vào #212 (thêm nguồn `learning_path`)
+
+Lý do: nhánh #212 thêm khóa `"learning_path"` vào hai lời gọi `create_app` của `tests/api/test_fr33_city_shares_years.py` (`create_app` đòi mọi nguồn) và đưa `pandas`, `spark`, `airflow` trở lại trong `skill_rates` của `fake_market.json`.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr33_city_shares_years.py tests/api/test_ad17_web_fixtures.py` → 34 passed; toàn bộ `uv run pytest -q` → 1113 passed.

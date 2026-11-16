@@ -39,3 +39,10 @@ Lý do sửa: review PR #291 chỉ ra phép chia `entry_n / total_n` không có 
 - RED: `uv run pytest tests/api/test_fr37_newcomer_roles_stat.py -q` → 3 failed, 12 passed. Hai test đỏ vì `ValidationError` của `Stat` thay vì `RuntimeError` và code `invalid_response` thay vì `internal_error`; một test `DID NOT RAISE` (vai trò dưới ngưỡng, entry 20 > n 12).
 - GREEN: cùng lệnh → 15 passed. `uv run pytest tests/api/test_fr37_newcomer_roles_stat.py tests/deploy/test_gh146_nguoi_moi_doc_snapshot_that.py -q` → 17 passed. `uv run pytest -q` → 964 passed.
 - Chi tiết và đột biến: `specs/148-test-nguoi-moi/tdd.md`.
+
+## Đợt 2026-11-15 — gộp main vào #212 (thêm nguồn `learning_path`)
+
+Lý do: nhánh #212 thêm `"learning_path": fake` vào lời dựng `create_app` ở `tests/api/test_fr37_newcomer_roles_stat.py` (file dùng chung của #146); `StatMarket.newcomer_roles` và bảo vệ entry > n giữ nguyên.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr37_newcomer_roles_stat.py tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_web_fixtures.py` → 42 passed; toàn bộ `uv run pytest -q` → 1113 passed.

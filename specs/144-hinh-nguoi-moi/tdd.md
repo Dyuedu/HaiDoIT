@@ -59,26 +59,22 @@ Lý do: #163 sửa `fake_market.json`, route, schema và tài liệu API dùng c
   - `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed.
   - `uv run pytest -q` (có Postgres) → 715 passed.
 
+## Đợt 3 — 2026-11-12, sau khi thêm lộ trình học (#212)
+
+Lý do: #212 thêm phép `learning_path` vào `create_app`, đổi mã kỹ năng của `skill_rates` giả sang snake_case và (đợt 2 của #212) sửa nội dung `skill_rates`, `envelope.py`, schema OpenAPI.
+
+- Không viết test mới của issue này và không có đợt RED: hành vi của issue không đổi. Bản ghi trước ghi một RED giả định ("sẽ báo...") không kèm số đếm; thay bằng ghi chú này.
+- Đã chạy lại các test có sẵn của issue này trên mã sau đợt 2 của #212 (kết quả thật, 2026-11-12):
+  - `uv run pytest tests/api tests/domain -q` → 425 passed (lệnh quét cả thư mục nên gồm cả test mới của #212).
+  - `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed.
+- GREEN: `uv run pytest -q` (có Postgres) → 862 passed, không skip; hai lượt `-m determinism` (`PYTHONHASHSEED=0` và `1`) → 7 passed mỗi lượt; web `npm run test` → 164 passed.
+
 ## Đợt 2026-11-12 — #280 thêm tham số `years` cho city-shares
 
 Lý do: #280 sửa `haido_api/schemas/market.py` (`CitySharesData.years`, `years_unstated_cell_id`), `market_source.py`, `routes/market.py`, `stat_market.py`, `fake_market.py`, `fake_market.json` (thêm khóa `all/entry.y1` và ô `vn.all.entry.ynone`), `web/lib/city-shares.ts`, và sinh lại `docs/api/openapi.json`. Phần `newcomer-roles` không đổi.
 
 - RED: không có test nào của #144 đỏ. Hành vi của #144 không đổi.
 - GREEN: `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` xanh; `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh; `uv run pytest -q` → 770 passed.
-
-## Đợt 2026-11-13 — #284 thêm bảy vai trò vào bản giả
-
-Lý do: #284 thêm dòng `newcomer_roles.rows` cho bảy mã mới (theo đúng thứ tự `roles`) và ô `vn.<mã>`, `vn.<mã>.entry` vào `haido_api/fixtures/fake_market.json`; sinh lại `web/tests/fixtures/newcomer-roles.json`. Hình của response không đổi.
-
-- RED: không chạy riêng. Fixture web được sinh lại ngay sau khi đổi bản giả; không test nào của #144 đổi kỳ vọng.
-- GREEN: sinh lại fixture; `tests/api/test_fr37_newcomer_roles.py`, `tests/api/test_ad17_web_fixtures.py`, `web/tests/fr37-newcomer-roles-fixture.test.ts` xanh.
-
-## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
-
-Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm `remote`, `abroad`; sinh lại sáu fixture city-shares và `newcomer-roles.json` của web). Không AC nào của issue này đổi.
-
-- RED: không test nào của #144 đổi kỳ vọng; fixture sinh lại ngay sau khi đổi bản giả.
-- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
 
 ## Đợt 2026-11-12 — #145, #146 cài bản thật của `newcomer-roles`
 
@@ -94,9 +90,30 @@ Lý do: #147 thêm hàm gọi API và kiểm envelope vào `web/lib/newcomer-rol
 - RED: không test nào của #144 đổi kỳ vọng.
 - GREEN: `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` xanh trong lượt `npx vitest run` → 189 passed.
 
+## Đợt 2026-11-13 — #284 thêm bảy vai trò vào bản giả
+
+Lý do: #284 thêm dòng `newcomer_roles.rows` cho bảy mã mới (theo đúng thứ tự `roles`) và ô `vn.<mã>`, `vn.<mã>.entry` vào `haido_api/fixtures/fake_market.json`; sinh lại `web/tests/fixtures/newcomer-roles.json`. Hình của response không đổi.
+
+- RED: không chạy riêng. Fixture web được sinh lại ngay sau khi đổi bản giả; không test nào của #144 đổi kỳ vọng.
+- GREEN: sinh lại fixture; `tests/api/test_fr37_newcomer_roles.py`, `tests/api/test_ad17_web_fixtures.py`, `web/tests/fr37-newcomer-roles-fixture.test.ts` xanh.
+
+## Đợt 2026-11-13 — #285 34 tỉnh, Remote, Nước ngoài
+
+Lý do: #285 đổi mã nơi (bản giả thay `other` bằng `hai_phong`, thêm `remote`, `abroad`; sinh lại sáu fixture city-shares và `newcomer-roles.json` của web). Không AC nào của issue này đổi.
+
+- RED: không test nào của #144 đổi kỳ vọng; fixture sinh lại ngay sau khi đổi bản giả.
+- GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
 ## Đợt 2026-11-13 (#148)
 
 Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho nguồn `stat` của `newcomer_roles`; bản giả và hình response không đổi.
 
 - RED: không có, không test nào của #144 đổi kỳ vọng.
 - GREEN: `uv run pytest tests/api tests/domain -q` → 487 passed; `cd web && npx vitest run tests/fr37-newcomer-roles-fixture.test.ts` → 5 passed.
+
+## Đợt 2026-11-15 — gộp main vào #212
+
+Lý do: `fake_market.json` `skill_rates` đổi (xem `specs/212-hinh-lo-trinh-hoc/tdd.md` đợt 3); `fake_market.py` và `stat_market.py` gộp với `newcomer_roles` thật của #145, #146, #148. Hành vi của #144 không đổi.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py` → 86 passed; `npx vitest run tests/fr37-newcomer-roles-fixture.test.ts tests/ad23-haido-keys.test.ts` → 14 passed; toàn bộ `uv run pytest -q` → 1113 passed, web `npm run test` → 221 passed.

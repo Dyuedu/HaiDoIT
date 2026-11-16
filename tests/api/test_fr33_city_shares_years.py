@@ -30,7 +30,7 @@ Counts = dict[str, int]
 def client(pg_engine: Engine) -> TestClient:
     stat = StatMarket(engine_factory=lambda: pg_engine, rules=RULES)
     return TestClient(
-        create_app({"city_shares": stat, "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket()}),
+        create_app({"city_shares": stat, "skill_rates": FakeMarket(), "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()}),
         raise_server_exceptions=False,
     )
 
@@ -218,7 +218,7 @@ def test_fr33_route_chuyen_years_cho_nguon_va_mac_dinh_la_any() -> None:
             raise UnknownCell("thử", snapshot_date=None)
 
     source = _Records()
-    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": FakeMarket()}))
+    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": FakeMarket(), "learning_path": FakeMarket()}))
     test_client.get("/api/v1/city-shares", params={"role": "ai_ml"})
     test_client.get("/api/v1/city-shares", params={"role": "ai_ml", "level": "entry", "years": "1"})
     assert seen == [("ai_ml", "all", "any"), ("ai_ml", "entry", "1")]

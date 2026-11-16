@@ -49,3 +49,7 @@ tests/deploy/test_gh285_noi_khop_config.py, web/tests/fr33-provinces.test.tsx   
 ## Cập nhật 2026-11-13 theo #293
 
 `web/lib/labels.ts` chỉ sửa chú thích ("chip", "nút" thành "lựa chọn"); `web/tests/fr33-map-screen.test.tsx` đổi cách chọn vai trò từ chip sang `<select>`. Không đổi hành vi của #285. Xem `specs/293-bo-loc-dropdown/`.
+
+## Ghi chú 2026-11-15 (gộp main vào #212)
+
+Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.

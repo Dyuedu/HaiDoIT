@@ -26,7 +26,7 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
 """
 
 import threading
-from collections.abc import Callable
+from collections.abc import Callable, Collection
 from datetime import date
 from typing import Any
 
@@ -34,6 +34,7 @@ import sqlalchemy as sa
 from sqlalchemy import Connection, Engine
 
 from haido_api.market_source import UnknownCell
+from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import (
     CityShareRow,
     CitySharesData,
@@ -63,7 +64,7 @@ ENTRY = "entry"
 
 
 class StatMarket:
-    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#101) chưa có số thật."""
+    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#101) và `learning_path` (#216) chưa có số thật."""
 
     def __init__(
         self, *, engine_factory: Callable[[], Engine] | None = None, rules: RulesConfig | None = None
@@ -203,6 +204,9 @@ class StatMarket:
             cells=cells,
         )
         return Envelope[NewcomerRolesData](data=NewcomerRolesData(levels=list(levels), rows=rows), meta=meta)
+
+    def learning_path(self, *, role: str, level: str, have: Collection[str]) -> Envelope[LearningPathData]:
+        raise UnknownCell("Lộ trình học chưa có số liệu thật.", snapshot_date=None)
 
 
 def _latest_readable(conn: Connection, level: str, years: str = ANY) -> Any:

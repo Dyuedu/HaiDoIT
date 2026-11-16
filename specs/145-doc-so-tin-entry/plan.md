@@ -37,3 +37,7 @@ tests/api/test_fr37_newcomer_roles_stat.py   # test mới (chung với #146)
 ## Ghi chú 2026-11-13 (#148)
 
 `haido_api/stat_market.py` và `tests/api/test_fr37_newcomer_roles_stat.py` được sửa bởi #148 và #146: thêm bảo vệ entry > n (`RuntimeError`) và các test thứ tự, ô hỏng. Phép đọc của #145 (`_national_cells`) không đổi; không AC nào của #145 đổi.
+
+## Ghi chú 2026-11-15 (gộp main vào #212)
+
+`tests/api/test_fr37_newcomer_roles_stat.py`: lời dựng `create_app` thêm `"learning_path": fake`. `haido_api/stat_market.py` thêm `learning_path` (ném `UnknownCell`, chờ #216), `newcomer_roles` giữ nguyên.

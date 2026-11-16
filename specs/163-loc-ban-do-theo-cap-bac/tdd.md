@@ -125,6 +125,16 @@ Lý do: `main` nhận #144 (hình response màn người mới), bắt `create_a
 - Sửa: thêm `"newcomer_roles": FakeMarket()` vào các app dựng trong test; ghép `fake_market.json` theo nội dung (ô của hai bên không trùng).
 - GREEN: `tests/api/test_fr33_city_shares_level.py` → 26 passed; `uv run pytest -q` → 715 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npm run test` → 149 passed, `lint` sạch, `build` qua; `ruff` sạch; cổng 0 failed.
 
+## Đợt 9 — 2026-11-12, sau khi thêm lộ trình học (#212)
+
+Lý do: #212 thêm phép `learning_path` vào `create_app`, đổi mã kỹ năng của `skill_rates` giả sang snake_case và (đợt 2 của #212) sửa nội dung `skill_rates`, `envelope.py`, schema OpenAPI.
+
+- Không viết test mới của issue này và không có đợt RED: hành vi của issue không đổi. Bản ghi trước ghi một RED giả định ("sẽ báo...") không kèm số đếm; thay bằng ghi chú này.
+- Đã chạy lại các test có sẵn của issue này trên mã sau đợt 2 của #212 (kết quả thật, 2026-11-12):
+  - `uv run pytest -q tests/api/test_fr33_city_shares_level.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py tests/api/test_dat20_stat_market.py tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 116 passed.
+  - `npx vitest run tests/fr33-level-filter.test.tsx tests/fr33-map-screen.test.tsx tests/ad17-city-shares-client.test.ts` → 104 passed.
+- GREEN: `uv run pytest -q` (có Postgres) → 862 passed, không skip; hai lượt `-m determinism` (`PYTHONHASHSEED=0` và `1`) → 7 passed mỗi lượt; web `npm run test` → 164 passed.
+
 ## Đợt 9 — 2026-11-12, #280 thêm chiều số năm kinh nghiệm
 
 Lý do: #280 thêm mốc số năm vào ô và tỷ trọng (cột `years` trong khóa của `stat_cells`, `stat_city_shares`; migration 0006), tham số `years` của `GET /api/v1/city-shares`, và web gửi `years` cùng `level`. Hành vi của #163 ở `years = any` không đổi.
@@ -132,6 +142,20 @@ Lý do: #280 thêm mốc số năm vào ô và tỷ trọng (cột `years` trong
 - RED: sau khi có code của #280, `uv run pytest -q` → các test của #163 đỏ vì (1) helper đọc `stat_*` theo (vai trò, cấp, phạm vi) nay có 6 hàng (`too many values to unpack`), (2) số hàng chưa nhân 6 mã số năm, (3) head Alembic là 0006, (4) seed `INSERT` không nêu `years` (`NotNullViolation`), (5) test double `city_shares(role, level)` không nhận `years` (500), (6) bản giả có khóa `entry.y1`. Web: `fr33-level-filter.test.tsx` 4 failed, `fr33-map-screen.test.tsx` 2 failed (URL thiếu `&years=any`, thứ tự Tab có thêm nút số năm).
 - Sửa: chỉ test (đọc hàng `years = 'any'`, nhân số hàng, head 0006, seed nêu `years`/`years_unstated`, test double nhận `years`, so khóa cấp của bản giả, URL có `&years=any`, Tab có sáu nút số năm). Không sửa code của #163 ngoài chỗ #280 nối thêm `years`.
 - GREEN: `uv run pytest -q` → 770 passed; hai lượt `-m determinism` → 6 passed mỗi lượt; web `npx vitest run` → 160 passed; `lint`, `tsc`, `build` sạch; cổng 0 failed.
+
+## Đợt 2026-11-12 — #145, #146 thêm phép đọc người mới vào `stat_market.py`
+
+Lý do: #145, #146 thêm `StatMarket.newcomer_roles`, `_national_cells`, `_cell_meta` và hằng `ENTRY` vào `haido_api/stat_market.py`. `city_shares` và các hàm `_latest_readable`, `_shares`, `_cells`, `_sources` không đổi; `newcomer_roles` dùng lại `_latest_readable(conn, "entry")`.
+
+- RED: không test nào của issue này đổi kỳ vọng.
+- GREEN: `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_fr33_city_shares_years.py` xanh trong lượt `uv run pytest -q` (Postgres) → 959 passed.
+
+## Đợt 2026-11-12 — #147 export hàm kiểm hợp đồng của `web/lib/city-shares.ts`
+
+Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`, `isCount`, `readErrorBody`, `isMeta` để màn người mới dùng chung luật đọc envelope. Thân hàm không đổi; `fetchCityShares` không đổi.
+
+- RED: không test nào của issue này đổi kỳ vọng.
+- GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.
 
 ## Đợt 10 — 2026-11-13, #283 phân loại cấp ở bước ingest
 
@@ -158,20 +182,6 @@ Lý do: #285 đổi mã nơi (mỗi (vai trò, cấp) có hàng của 6 nơi lu�
 - RED: các test đếm 5 hàng thành phố mỗi cấp, test head 0005, test seed API dùng `other` đỏ.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
 
-## Đợt 2026-11-12 — #145, #146 thêm phép đọc người mới vào `stat_market.py`
-
-Lý do: #145, #146 thêm `StatMarket.newcomer_roles`, `_national_cells`, `_cell_meta` và hằng `ENTRY` vào `haido_api/stat_market.py`. `city_shares` và các hàm `_latest_readable`, `_shares`, `_cells`, `_sources` không đổi; `newcomer_roles` dùng lại `_latest_readable(conn, "entry")`.
-
-- RED: không test nào của issue này đổi kỳ vọng.
-- GREEN: `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_fr33_city_shares_years.py` xanh trong lượt `uv run pytest -q` (Postgres) → 959 passed.
-
-## Đợt 2026-11-12 — #147 export hàm kiểm hợp đồng của `web/lib/city-shares.ts`
-
-Lý do: #147 thêm `export` cho `isRecord`, `isNonEmptyString`, `isStringArray`, `isCount`, `readErrorBody`, `isMeta` để màn người mới dùng chung luật đọc envelope. Thân hàm không đổi; `fetchCityShares` không đổi.
-
-- RED: không test nào của issue này đổi kỳ vọng.
-- GREEN: các test `fr33-*` và `ad17-city-shares-client` xanh trong lượt `npx vitest run` → 189 passed; `npx tsc --noEmit` sạch.
-
 ## Đợt 2026-11-13 — #293 bộ chọn cấp bậc thành `<select>`
 
 Lý do: #293 đổi hàng nút `aria-pressed` thành `<select>` có nhãn. Không AC nào của #163 đổi (mặc định `entry`, đổi cấp cập nhật bảng và biểu đồ cùng lúc, mẫu nhỏ làm mờ như cũ).
@@ -192,3 +202,10 @@ Lý do: `haido_api/stat_market.py` thêm bảo vệ entry > n cho `newcomer_role
 
 - RED: không có, không test nào đổi kỳ vọng.
 - GREEN: `uv run pytest tests/api/test_fr33_city_shares_level.py tests/api/test_dat20_stat_market.py -q` → 51 passed; `cd web && npx vitest run tests/fr33-level-filter.test.tsx` → 20 passed.
+
+## Đợt 2026-11-15 — gộp main vào #212
+
+Lý do: `fake_market.json` `skill_rates` đổi; `fake_market.py` giữ `city_shares` có `years` của #280. Hành vi của #163 không đổi.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr33_city_shares_level.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py tests/api/test_dat20_stat_market.py tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 131 passed; toàn bộ `uv run pytest -q` → 1113 passed, web `npm run test` → 221 passed.

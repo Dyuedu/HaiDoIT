@@ -31,3 +31,10 @@ Lý do: `stat_market.py` và file test chung thêm bảo vệ entry > n (xem `sp
 
 - RED: không có, test của #145 không đổi.
 - GREEN: `uv run pytest tests/api/test_fr37_newcomer_roles_stat.py -q` → 15 passed (gồm ba test của #145).
+
+## Đợt 2026-11-15 — gộp main vào #212 (thêm nguồn `learning_path`)
+
+Lý do: nhánh #212 thêm `"learning_path": fake` vào lời dựng `create_app` ở `tests/api/test_fr37_newcomer_roles_stat.py` (file dùng chung của #145); `StatMarket.newcomer_roles` và bảo vệ entry > n giữ nguyên.
+
+- RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
+- GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr37_newcomer_roles_stat.py tests/api/test_fr37_newcomer_roles.py tests/api/test_ad17_web_fixtures.py` → 42 passed; toàn bộ `uv run pytest -q` → 1113 passed.
