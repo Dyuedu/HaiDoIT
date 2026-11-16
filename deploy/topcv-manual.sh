@@ -23,7 +23,6 @@ done
 cd "$(dirname "$0")/../scraper" || exit 1
 PY=".venv/Scripts/python"
 [ -x "$PY" ] || PY=".venv/bin/python"
-export TOPCV_DB="../topcv_jobs.db"
 COMPOSE="cd /opt/haidoit/deploy && docker compose -f compose.scraper.yml run --rm scraper"
 
 die() { echo; echo "DUNG LAI: $*"; exit 1; }

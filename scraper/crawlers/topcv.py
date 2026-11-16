@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import os
 import sqlite3
@@ -13,7 +14,11 @@ from crawlers.base import write_seen
 
 DB_PATH = os.environ.get("TOPCV_DB", "data/state/topcv_jobs.db")
 CHROME_PATH = os.environ.get("CHROME_PATH")  # nodriver auto-detects when unset
-PROFILE_DIR = os.path.abspath("./chrome_topcv_profile")
+# Ca profile lan hang doi nam duoi data/state: trong container la volume scraper_data, giu qua cac dem.
+PROFILE_DIR = os.environ.get(
+    "TOPCV_PROFILE_DIR",
+    str(Path("data/state/chrome_topcv_profile").resolve()),
+)
 BASE_SEARCH_URL = "https://www.topcv.vn/tim-viec-lam-cong-nghe-thong-tin-cr257?page={page}"
 
 
@@ -72,15 +77,25 @@ class TopCVBrowserClient:
         self.page = None
 
     async def start(self):
-        print(f"[*] Đang khởi động trình duyệt với Profile cố định tại: {PROFILE_DIR}")
+        print(f"[*] Đang khởi động trình duyệt với Profile cố định tại: {PROFILE_DIR}", flush=True)
         os.makedirs(PROFILE_DIR, exist_ok=True)
+        # Container lần trước bị kill thì Chrome để lại file khóa, lần sau không mở được profile
+        for lock_name in ("SingletonLock", "SingletonCookie", "SingletonSocket"):
+            lock_file = Path(PROFILE_DIR) / lock_name
+            if lock_file.exists() or lock_file.is_symlink():
+                lock_file.unlink(missing_ok=True)
 
-        # Để headless=False khi chạy tay giúp vượt Cloudflare Turnstile dễ dàng
+        # headless=False: trên VPS chạy dưới Xvfb (pipeline.py bọc xvfb-run), trên máy local là cửa sổ thật
         start_kwargs = dict(
             headless=False,
             user_data_dir=PROFILE_DIR,
             browser_args=[
                 "--disable-blink-features=AutomationControlled",
+                # Chrome chạy dưới user runner trong container
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--window-size=1920,1080",
             ],
         )
         if CHROME_PATH:
@@ -336,7 +351,7 @@ async def process_job_queue(
     print(f"\n[*] Bắt đầu cào chi tiết {len(pending_jobs)} jobs đang chờ...")
 
     for idx, (job_id, url, q_title, q_company, q_salary) in enumerate(pending_jobs, 1):
-        print(f"  [{idx}/{len(pending_jobs)}] Job ID {job_id}: {q_title[:48]}...")
+        print(f"  [{idx}/{len(pending_jobs)}] Job ID {job_id}: {(q_title or '')[:48]}...")
 
         html = await client.fetch(url, is_listing=False)
         now = datetime.now().isoformat()
@@ -457,21 +472,15 @@ def export_jsonl(db_path: str = DB_PATH, out_path: str = "data/raw/topcv.jsonl")
     return count
 
 
-def _load_fallback_urls_from_db(conn: sqlite3.Connection) -> list[str]:
-    """Lấy danh sách URL đã có trong bảng job_queue làm fallback nếu bấm Ctrl+C sớm."""
-    cur = conn.cursor()
-    cur.execute("SELECT url FROM job_queue")
-    urls: list[str] = []
-    for (u,) in cur.fetchall():
-        if not u:
-            continue
-        abs_u = u if u.startswith("http") else "https://www.topcv.vn" + u
-        if abs_u not in urls:
-            urls.append(abs_u)
-    return urls
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description="TopCV nodriver crawler")
+    parser.add_argument("--skip-details", action="store_true", help="chỉ quét trang danh sách")
+    parser.add_argument("--limit", type=int, default=0, help="giới hạn số trang chi tiết (0 = không giới hạn)")
+    return parser.parse_args(argv)
 
 
 async def main():
+    args = parse_args()
     db_conn = init_db()
     client = TopCVBrowserClient()
     seen: list[str] = []
@@ -485,32 +494,28 @@ async def main():
             seen, complete = await crawl_listing_pages(db_conn, client, start_page=1, seen=seen)
         except (Exception, KeyboardInterrupt, asyncio.CancelledError) as exc:
             error = f"Listing interrupted ({type(exc).__name__}): {exc}"[:300]
-            print(f"\n[!] Listing dừng sớm: {error}")
+            print(f"\n[!] Listing dừng sớm: {error}", flush=True)
 
-        if not seen:
-            seen = _load_fallback_urls_from_db(db_conn)
-
-        # Ghi file seen ngay trước khi sang bước cào chi tiết
+        # Chỉ ghi những URL listing hôm nay thật sự hiện ra. Không lấy URL cũ trong job_queue:
+        # job_observations sẽ hiểu là tin đó hôm nay vẫn còn.
         write_seen("topcv", seen, complete, error=error)
         seen_written = True
 
-        # Tiếp tục cào chi tiết các job PENDING trong queue
-        if complete or seen:
-            await process_job_queue(db_conn, client, batch_size=-1, cooldown_every=30)
+        if not args.skip_details and seen and error is None:
+            batch_size = args.limit if args.limit > 0 else -1
+            await process_job_queue(db_conn, client, batch_size=batch_size, cooldown_every=30)
 
     except (Exception, KeyboardInterrupt, asyncio.CancelledError) as exc:
         error = f"{type(exc).__name__}: {exc}"[:300]
-        print(f"\n[!] Dừng phiên cào: {error}")
+        print(f"\n[!] Dừng phiên cào: {error}", flush=True)
     finally:
         if not seen_written:
-            if not seen:
-                seen = _load_fallback_urls_from_db(db_conn)
             write_seen("topcv", seen, complete, error=error)
         client.close()
         db_conn.close()
-        print("\n[+] Hoàn tất phiên cào dữ liệu TopCV!")
+        print("\n[+] Hoàn tất phiên cào dữ liệu TopCV!", flush=True)
 
-    export_jsonl(out_path="data/raw/topcv.jsonl")
+    export_jsonl(db_path=DB_PATH, out_path="data/raw/topcv.jsonl")
 
 
 if __name__ == "__main__":
