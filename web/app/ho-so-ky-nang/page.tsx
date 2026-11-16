@@ -1,7 +1,6 @@
-import Link from "next/link";
+import { DEFAULT_LEVEL, LEVEL_OPTIONS, ROLE_OPTIONS } from "@/lib/labels";
 
-import { LEVEL_OPTIONS, ROLE_OPTIONS, levelLabel, roleLabel } from "@/lib/labels";
-import { NEWCOMER_LEVEL } from "@/lib/newcomer-roles-view";
+import { SkillProfileScreen } from "../components/skill-profile/skill-profile-screen";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -10,40 +9,24 @@ function first(value: string | string[] | undefined): string | undefined {
 }
 
 /**
- * Trang giữ chỗ của hồ sơ kỹ năng (#147, tới khi có #111): gọi tên vai trò và cấp đã chọn, nói hồ sơ kỹ năng có ở
- * sprint sau. Mã vai trò hay cấp lạ thì không in mã ra như một tên. Câu trên trang không chứa số (DEC-6).
+ * Trang `/ho-so-ky-nang?role=&level=` (#111, #152): kỹ năng mà tin tuyển dụng của một vai trò yêu cầu, ở cấp của người
+ * dùng. Server chỉ đọc tham số; số, hồ sơ trình duyệt và danh sách kỹ năng nằm ở `SkillProfileScreen`. Không có `level`
+ * thì dùng cấp mặc định `entry` (#134). Mã vai trò lạ không được in như một tên.
  */
-export default async function SkillProfilePlaceholder({ searchParams }: { searchParams: SearchParams }) {
+export default async function SkillProfilePage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const roleCode = first(params.role);
-  const levelCode = first(params.level) ?? NEWCOMER_LEVEL;
+  const levelCode = first(params.level);
   const knownRole = ROLE_OPTIONS.some((option) => option.code === roleCode && option.code !== "all");
   const knownLevel = LEVEL_OPTIONS.some((option) => option.code === levelCode);
 
   return (
     <section className="py-2">
-      <h1 className="m-0 text-title text-text">
-        {knownRole ? `Hồ sơ kỹ năng: ${roleLabel(roleCode as string)}` : "Hồ sơ kỹ năng"}
-      </h1>
-      {knownRole ? (
-        <>
-          {knownLevel && <p className="mt-2 mb-0 text-body-md text-text-secondary">{levelLabel(levelCode)}</p>}
-          <p data-testid="insight-sentence" className="mt-4 mb-0 max-w-[68ch] text-body-md text-text-quiet">
-            Hồ sơ kỹ năng của vai trò này, gồm các kỹ năng mà tin tuyển dụng yêu cầu và mức thường gặp của từng kỹ
-            năng, sẽ có ở sprint sau.
-          </p>
-        </>
-      ) : (
-        <p data-testid="insight-sentence" className="mt-4 mb-0 max-w-[68ch] text-body-md text-text-quiet">
-          Không có vai trò này. Chọn một vai trò trong danh sách người mới.
-        </p>
-      )}
-      <Link
-        href="/insights"
-        className="mt-6 inline-flex min-h-target items-center rounded-md border border-border-chip px-4 text-ui text-text-secondary transition-colors hover:border-selected hover:text-text"
-      >
-        Quay lại danh sách người mới
-      </Link>
+      <SkillProfileScreen
+        initialRole={knownRole ? (roleCode as string) : null}
+        initialLevel={knownLevel ? (levelCode as string) : DEFAULT_LEVEL}
+        unknownRole={roleCode !== undefined && !knownRole}
+      />
     </section>
   );
 }

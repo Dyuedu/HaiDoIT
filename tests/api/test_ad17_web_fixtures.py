@@ -62,7 +62,7 @@ def test_ad17_fixture_web_khop_response_newcomer_roles() -> None:
         ("data_engineer", "entry", None),  # không ô nào đủ 30: mọi tỷ lệ null_data
         ("data_engineer", "entry", "java,sql,git"),  # ví dụ FR-24
         ("ai_ml", "entry", None),  # not_ready, có hồ sơ kỹ năng để mở (#111)
-        ("qa", "entry", None),  # not_ready, không có hồ sơ kỹ năng
+        ("qa", "entry", None),  # not_ready; từ #149 có hồ sơ kỹ năng
     ],
 )
 def test_ad17_fixture_web_khop_response_learning_path(
@@ -78,4 +78,33 @@ def test_ad17_fixture_web_khop_response_learning_path(
 
     name = f"learning-path-{role}{'' if level == 'entry' else '.' + level}{'-have' if have else ''}.json"
     fixture = json.loads((WEB_FIXTURES / name).read_text(encoding="utf-8"))
+    assert resp.json() == fixture
+
+
+SKILL_RATES_CASES = [
+    ("backend", "entry", None),  # ô đủ mẫu, cả ba nhóm
+    ("backend", "entry", "java,sql,git"),  # tick sẵn, đếm core ở API (AD-22)
+    ("backend", "intern", None),  # quay về Backend ở mọi cấp, có `fallback_label`
+    ("data_engineer", "entry", None),  # không ô nào đủ 30: mọi tỷ lệ null_data
+    ("frontend", "entry", None),  # đổi vai trò trên màn (#150)
+]
+
+
+@pytest.mark.parametrize(("role", "level", "have"), SKILL_RATES_CASES)
+def test_ad17_fixture_web_khop_response_skill_rates(role: str, level: str, have: str | None) -> None:
+    """#149: `skill-rates-<role>.<cấp>[-have].json` là response của `?role=&level=[&have=java,sql,git]`."""
+    params = {"role": role, "level": level} | ({"have": have} if have else {})
+    resp = TestClient(app).get("/api/v1/skill-rates", params=params)
+    assert resp.status_code == 200, resp.text
+
+    name = f"skill-rates-{role}.{level}{'-have' if have else ''}.json"
+    fixture = json.loads((WEB_FIXTURES / name).read_text(encoding="utf-8"))
+    assert resp.json() == fixture
+
+
+def test_ad17_fixture_web_khop_response_skills() -> None:
+    """#207: `skills.json` là response của `GET /api/v1/skills` (danh sách tìm kỹ năng song ngữ)."""
+    resp = TestClient(app).get("/api/v1/skills")
+    assert resp.status_code == 200, resp.text
+    fixture = json.loads((WEB_FIXTURES / "skills.json").read_text(encoding="utf-8"))
     assert resp.json() == fixture

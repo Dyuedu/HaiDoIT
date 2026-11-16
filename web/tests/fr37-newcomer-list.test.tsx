@@ -2,13 +2,14 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import SkillProfilePlaceholder from "@/app/ho-so-ky-nang/page";
+import SkillProfilePage from "@/app/ho-so-ky-nang/page";
 import InsightsPage from "@/app/insights/page";
 import { NOT_ENOUGH_DATA, formatCount, formatPercent } from "@/lib/city-shares-view";
 import { fetchNewcomerRoles, type NewcomerRolesEnvelope } from "@/lib/newcomer-roles";
 
 import fixtureJson from "./fixtures/newcomer-roles.json";
 import { deferred, jsonResponse } from "./helpers/fetch";
+import { routeSkillProfile } from "./helpers/skill-profile";
 
 // #147 — màn người mới trên Insights, dựng từ response của API giả (#144). Thứ tự dòng do API quyết (AD-22).
 const fixture = fixtureJson as unknown as NewcomerRolesEnvelope;
@@ -226,27 +227,29 @@ describe("fr37 #147 — envelope sai hợp đồng thì không dùng", () => {
   });
 });
 
-describe("fr37 #147 — trang giữ chỗ hồ sơ kỹ năng (tới khi có #111)", () => {
-  async function renderPlaceholder(params: Record<string, string>) {
-    render(await SkillProfilePlaceholder({ searchParams: Promise.resolve(params) }));
+describe("fr37 #147 #152 — trang đích của một dòng: hồ sơ kỹ năng (thay trang giữ chỗ)", () => {
+  // #152 thay trang giữ chỗ của #147 bằng hồ sơ kỹ năng thật (FR-005 của #147). Ở đây chỉ giữ điều #147 hứa: dòng mở
+  // đúng vai trò ở cấp mới vào nghề, và mã lạ không được in như một tên. Hành vi của hồ sơ test ở fr19-skill-profile.
+  async function renderProfile(params: Record<string, string>) {
+    routeSkillProfile();
+    render(await SkillProfilePage({ searchParams: Promise.resolve(params) }));
   }
 
-  it("fr37: gọi tên vai trò, cấp mới vào nghề, và nói hồ sơ kỹ năng có ở sprint sau", async () => {
-    await renderPlaceholder({ role: "backend", level: "entry" });
+  it("fr37: mở đúng vai trò của dòng, ở cấp mới vào nghề", async () => {
+    await renderProfile({ role: "backend", level: "entry" });
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain("Backend");
-    expect(screen.getByText(/Mới vào nghề/)).toBeTruthy();
-    expect(screen.getByText(/sprint sau/)).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Quay lại/ }).getAttribute("href")).toBe("/insights");
+    expect((screen.getByRole("combobox", { name: "Cấp bậc" }) as HTMLSelectElement).value).toBe("entry");
+    await screen.findByRole("list", { name: /Kỹ năng theo tỷ lệ tin yêu cầu/ });
   });
 
   it("fr37: mã vai trò lạ thì không bịa tên vai trò", async () => {
-    await renderPlaceholder({ role: "khong_co" });
+    await renderProfile({ role: "khong_co" });
     expect(screen.getByRole("heading", { level: 1 }).textContent).not.toContain("khong_co");
     expect(screen.getByText(/Không có vai trò này/)).toBeTruthy();
   });
 
   it("fr37: role=all không phải một vai trò, hiện 'Không có vai trò này' chứ không phải 'Mọi vai trò'", async () => {
-    await renderPlaceholder({ role: "all" });
+    await renderProfile({ role: "all" });
     expect(screen.getByText(/Không có vai trò này/)).toBeTruthy();
     expect(screen.queryByText(/Mọi vai trò/)).toBeNull();
     expect(screen.getByRole("heading", { level: 1 }).textContent).not.toContain("Mọi vai trò");
@@ -355,9 +358,11 @@ describe("fr37 ad8 DEC-6 (#132) — câu trên màn người mới không chứa
     expectNoDigits(ok.container, 3);
   });
 
-  it("fr37 ad8: trang giữ chỗ không có chữ số, cả khi vai trò lạ và role=all", async () => {
+  it("fr37 ad8: trang hồ sơ kỹ năng lúc chưa có số không có chữ số, cả khi vai trò lạ và role=all", async () => {
+    // Từ #152 trang có số khi tải xong (ô số, như danh sách người mới); ở đây kiểm câu của khung trang trước khi có số.
+    routeSkillProfile({ skillRates: () => new Promise<Response>(() => {}) });
     for (const params of [{ role: "backend", level: "entry" }, { role: "khong_co" }, { role: "all" }]) {
-      const { container, unmount } = render(await SkillProfilePlaceholder({ searchParams: Promise.resolve(params) }));
+      const { container, unmount } = render(await SkillProfilePage({ searchParams: Promise.resolve(params) }));
       expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
       expectNoDigits(container, 3);
       unmount();

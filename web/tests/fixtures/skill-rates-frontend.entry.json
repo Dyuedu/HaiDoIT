@@ -1,0 +1,201 @@
+{
+  "data": {
+    "role": "frontend",
+    "level": "entry",
+    "cell_id": "vn.frontend.entry",
+    "rows": [
+      {
+        "skill": "javascript",
+        "rate": {
+          "value": 0.7708,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "react",
+        "rate": {
+          "value": 0.6204,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "html",
+        "rate": {
+          "value": 0.539,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "css",
+        "rate": {
+          "value": 0.517,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "typescript",
+        "rate": {
+          "value": 0.5076,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "core",
+        "have": false
+      },
+      {
+        "skill": "vue",
+        "rate": {
+          "value": 0.2726,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "git",
+        "rate": {
+          "value": 0.2625,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "nextjs",
+        "rate": {
+          "value": 0.2256,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "redux",
+        "rate": {
+          "value": 0.141,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "tailwind",
+        "rate": {
+          "value": 0.1128,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "angular",
+        "rate": {
+          "value": 0.1034,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "common",
+        "have": false
+      },
+      {
+        "skill": "webpack",
+        "rate": {
+          "value": 0.0564,
+          "kind": "skill_rate",
+          "display": "shown",
+          "cell_id": "vn.frontend.entry"
+        },
+        "group": "company_specific",
+        "have": false
+      }
+    ],
+    "core_size": 5,
+    "have_core": 0
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.frontend.entry": {
+        "n": 140,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 20,
+          "fresher": 34,
+          "junior": 86
+        },
+        "n_by_measure": {
+          "skill_count": 140,
+          "experience_years": 98,
+          "salary": 28
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": true
+        }
+      }
+    }
+  }
+}

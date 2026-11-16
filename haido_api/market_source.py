@@ -37,8 +37,12 @@ class MarketReadModel(Protocol):
         """
         ...
 
-    def skill_rates(self, *, role: str, level: str) -> Envelope[SkillRatesData]:
+    def skill_rates(
+        self, *, role: str, level: str, have: Collection[str] = ()
+    ) -> Envelope[SkillRatesData]:
         """Tỷ lệ xuất hiện của từng kỹ năng trong ô của `role` × `level`, sau khi quay về.
+
+        `have` là mã kỹ năng của hồ sơ (AD-22): đặt cờ `have` từng dòng và đếm `have_core`. Không đổi thứ tự dòng.
 
         Raises:
             UnknownCell: không có ô nào, kể cả sau khi quay về.

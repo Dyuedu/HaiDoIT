@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge. Đợt 2 (2026-11-12) sửa theo review; đợt 3 (2026-11-15) gộp main và đưa `spark`, `airflow`, `pandas` trở lại: xem `tdd.md`.
+**Status**: Implemented, chờ merge. Đợt 2 (2026-11-12) sửa theo review; đợt 3 (2026-11-15) gộp main và đưa `spark`, `airflow`, `pandas` trở lại; đợt 4 (2026-11-16) fixture `skill_rates` mở rộng theo #149: xem `tdd.md`.
 
 **Input**: GitHub issue [#212](https://github.com/Dyuedu/HaiDoIT/issues/212) — Agree the learning-path response shape and add fake data. Phục vụ story #121 (US-C1: biết nên học gì trước cho vai trò đã chọn) và cũng phải đủ cho story #122 (so sánh hai hướng: "N of M skills on this path", số tin entry-level của từng vai trò; task #220, #221).
 
@@ -43,7 +43,7 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 
 **Acceptance Scenarios**:
 
-1. **Given** dữ liệu giả, **When** liệt kê vai trò, **Then** `backend` entry sẵn sàng (n >= 30, ít nhất 3 chặng, 12–16 kỹ năng, có kỹ năng nền tảng, cốt lõi và thường gặp xen trong một chặng), `backend` intern sẵn sàng qua `vn.backend` (có số, nhãn ghi tỷ lệ Mid trở lên), `data_engineer` entry sẵn sàng nhưng mọi tỷ lệ `null_data`, mọi vai trò khác của `config/rules.toml` là `not_ready`. `ai_ml` entry là `not_ready` nhưng có `skill-rates` để mở hồ sơ kỹ năng (#111); `qa` là `not_ready` không có hồ sơ kỹ năng.
+1. **Given** dữ liệu giả, **When** liệt kê vai trò, **Then** `backend` entry sẵn sàng (n >= 30, ít nhất 3 chặng, 12–16 kỹ năng, có kỹ năng nền tảng, cốt lõi và thường gặp xen trong một chặng), `backend` intern sẵn sàng qua `vn.backend` (có số, nhãn ghi tỷ lệ Mid trở lên), `data_engineer` entry sẵn sàng nhưng mọi tỷ lệ `null_data`, mọi vai trò khác của `config/rules.toml` là `not_ready`. `ai_ml` entry là `not_ready` nhưng có `skill-rates` để mở hồ sơ kỹ năng (#111); `qa` là `not_ready` không có hồ sơ kỹ năng. *(2026-11-16, #149: mọi vai trò có `skill-rates` ở `entry` và `all`, nên `qa` · `entry` có hồ sơ kỹ năng; `qa` · `senior` vẫn không. `backend` · `all` có ô `vn.backend` nên lộ trình sẵn sàng, không còn 404.)*
 2. **Given** mọi mã kỹ năng trong `skill-rates` và `learning-path` giả, **When** so với `haido_core/vocab/skills_seed.json`, **Then** đều thuộc danh sách mồi, và đều là snake_case.
 3. **Given** lời dẫn và tên tài liệu (`resource.title`) của mọi kỹ năng trong fixture, **When** quét bằng `haido_core/vocab/prepared_text.py`, **Then** không có chữ số ngoài tên công nghệ (khớp nguyên từ), không có `%`; lời dẫn không nói bao nhiêu tin đòi kỹ năng. Số viết bằng chữ ngoài phạm vi. Cổng CI của #138 nên dùng lại hàm này.
 4. **Given** `web/tests/fixtures/learning-path-*.json` (backend, backend có `have`, backend intern, data_engineer, data_engineer có `have` theo ví dụ FR-24, ai_ml, qa), **When** so với response của API giả, **Then** giống hệt.
