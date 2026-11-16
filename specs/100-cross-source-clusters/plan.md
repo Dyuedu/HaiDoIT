@@ -67,3 +67,8 @@ tests/steps/test_fr33_aggregate_level_step.py   # #163: cụm đếm ở cấp c
 ## Complexity Tracking
 
 Không có vi phạm cần biện minh.
+
+
+## Cập nhật 2026-11-16 theo #101
+
+`haido_core/steps/aggregate.py`, `snapshot_store.py`, `tables.py` (và `domain/population.py` với #280) được sửa: bước `aggregate` thêm kỹ năng của tin đại diện và ghi `stat_skill_rates` (migration 0009), `replace_stats` nhận thêm hàng tỷ lệ kỹ năng. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.

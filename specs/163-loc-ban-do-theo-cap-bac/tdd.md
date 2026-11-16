@@ -209,3 +209,10 @@ Lý do: `fake_market.json` `skill_rates` đổi; `fake_market.py` giữ `city_sh
 
 - RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
 - GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr33_city_shares_level.py tests/api/test_ad17_routes.py tests/api/test_ad17_web_fixtures.py tests/api/test_dat20_stat_market.py tests/deploy/test_gh163_bo_loc_cap_bac_khop_config.py` → 131 passed; toàn bộ `uv run pytest -q` → 1113 passed, web `npm run test` → 221 passed.
+
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+
+Chạy lại thật sau thay đổi: `uv run pytest tests/domain/test_fr33_aggregate_level.py, tests/steps/test_fr33_aggregate_level_step.py, tests/db/test_fr33_stat_city_shares_level.py, tests/db/test_dat20_stat_tables.py -q` → **40 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.

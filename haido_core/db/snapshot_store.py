@@ -23,9 +23,11 @@ from haido_core.db.tables import (
     stat_cells,
     stat_city_shares,
     stat_job_lifecycle,
+    stat_skill_rates,
     stat_sources,
 )
 from haido_core.domain.aggregate import CellRow, ShareRow
+from haido_core.domain.skill_rates import SkillRateRow
 
 
 @dataclass(frozen=True, slots=True)
@@ -339,8 +341,11 @@ def replace_stats(
     cells: Sequence[CellRow],
     shares: Sequence[ShareRow],
     sources: Sequence[str],
+    skill_rates: Sequence[SkillRateRow] = (),
 ) -> None:
-    """Ghi lại `stat_cells`, `stat_city_shares` và `stat_sources` của S (bảng dẫn xuất, chỉ ghi khi S còn `open`)."""
+    """Ghi lại `stat_cells`, `stat_city_shares`, `stat_sources` và `stat_skill_rates` của S (bảng dẫn xuất, chỉ ghi
+    khi S còn `open`). `stat_skill_rates` có khóa ngoại tới `stat_cells`: xóa trước, ghi sau."""
+    conn.execute(sa.delete(stat_skill_rates).where(stat_skill_rates.c.snapshot_id == day))
     conn.execute(sa.delete(stat_cells).where(stat_cells.c.snapshot_id == day))
     conn.execute(sa.delete(stat_city_shares).where(stat_city_shares.c.snapshot_id == day))
     conn.execute(sa.delete(stat_sources).where(stat_sources.c.snapshot_id == day))
@@ -363,6 +368,25 @@ def replace_stats(
                     "config_version": config_version,
                 }
                 for c in cells
+            ],
+        )
+    if skill_rates:
+        conn.execute(
+            sa.insert(stat_skill_rates),
+            [
+                {
+                    "snapshot_id": day,
+                    "role": r.role,
+                    "branch": ALL,
+                    "seniority": r.seniority,
+                    "years": r.years,
+                    "scope": r.scope,
+                    "skill": r.skill,
+                    "n_with": r.n_with,
+                    "rate": r.rate,
+                    "vocab_version": r.vocab_version,
+                }
+                for r in skill_rates
             ],
         )
     if shares:

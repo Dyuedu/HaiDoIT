@@ -30,3 +30,8 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 ## Phase 3: Sau merge
 
 - [ ] T020 Lượt đêm đầu tiên sau deploy: log bước kho không lỗi, số dữ kiện được làm mới, tỷ lệ "không xác định cấp" và số AI/ML mới vào nghề của snapshot mới
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi `aggregate` và `replace_stats` ghi thêm `stat_skill_rates`; test kiểm head Alembic nay kiểm head 0009 (nếu có trong issue này)

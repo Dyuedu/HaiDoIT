@@ -70,3 +70,8 @@
 
 - [x] T018 đổi: `level-chips.tsx` thay bằng `web/app/components/map/filter-select.tsx` dùng trong `map-screen.tsx` (ô Cấp bậc, `<select>` gốc)
 - [x] T014, T015: test chuyển sang `<select>` (`selectOptions`, `selectedLabel`); test deploy đọc chú thích ở `map-screen.tsx`
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi `aggregate` và `replace_stats` ghi thêm `stat_skill_rates`; test kiểm head Alembic nay kiểm head 0009 (nếu có trong issue này)

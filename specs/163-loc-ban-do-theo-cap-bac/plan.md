@@ -129,3 +129,8 @@ Không có vi phạm cần biện minh.
 ## Ghi chú 2026-11-15 (gộp main vào #212)
 
 Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.
+
+
+## Cập nhật 2026-11-16 theo #101
+
+`haido_core/steps/aggregate.py`, `snapshot_store.py`, `tables.py` (và `domain/population.py` với #280) được sửa: bước `aggregate` thêm kỹ năng của tin đại diện và ghi `stat_skill_rates` (migration 0009), `replace_stats` nhận thêm hàng tỷ lệ kỹ năng. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.

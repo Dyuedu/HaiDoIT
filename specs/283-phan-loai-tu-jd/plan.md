@@ -85,3 +85,8 @@ Tìm bằng `git log -- <file>` và `specs/*/plan.md`:
 - `aggregate.py` (bước): #100, #163, #263, #280 — thêm đợt TDD.
 - `skills_seed.json`, `skills.py`: #205 — thêm đợt TDD, dòng Status.
 - Issue không có thư mục `specs/` mà test của chúng đổi: #3 (`test_ad2_registry.py`), #6 (`test_ad10_rules_config.py`, `test_ad4_ingest.py`, `test_ad4_snapshot_schema.py`), #93 (`test_dat20_aggregate_step.py`, `test_dat20_stat_tables.py`), #263 (`aggregate.py`) — ghi tên trong mô tả PR.
+
+
+## Cập nhật 2026-11-16 theo #101
+
+`haido_core/steps/aggregate.py`, `snapshot_store.py`, `tables.py` (và `domain/population.py` với #280) được sửa: bước `aggregate` thêm kỹ năng của tin đại diện và ghi `stat_skill_rates` (migration 0009), `replace_stats` nhận thêm hàng tỷ lệ kỹ năng. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.

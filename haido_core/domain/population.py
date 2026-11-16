@@ -37,6 +37,8 @@ class CountedPosting:
     years_min: float | None = None
     """Số năm kinh nghiệm tối thiểu tin yêu cầu (#280); `None` là tin không ghi. Phép đếm không đọc trường này:
     bước tổng hợp lọc tin theo mốc số năm trước khi dựng `ClusterPopulation`."""
+    skills: frozenset[str] = frozenset()
+    """Mã kỹ năng tin nhắc ít nhất một lần (#101). Phép đếm không đọc trường này; `skill_rates` đọc."""
 
 
 def window_start(day: date, window_days: int) -> date:

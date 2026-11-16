@@ -160,3 +160,10 @@ Lý do: nhánh #212 thêm khóa `"learning_path"` vào hai lời gọi `create_a
 
 - RED: không có. Hành vi của issue không đổi; test chỉ thêm nguồn `learning_path` vào lời dựng `create_app` (nếu có) hoặc chạy lại trên fixture mới.
 - GREEN (chạy lại thật, 2026-11-15): `uv run pytest -q tests/api/test_fr33_city_shares_years.py tests/api/test_ad17_web_fixtures.py` → 34 passed; toàn bộ `uv run pytest -q` → 1113 passed.
+
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+
+Chạy lại thật sau thay đổi: `uv run pytest tests/domain/test_fr33_aggregate_years.py, tests/steps/test_fr33_aggregate_years_step.py, tests/db/test_fr33_stat_years.py -q` → **17 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.

@@ -146,3 +146,10 @@ Lý do: #285 đổi mã nơi (`classify.toml` thay ba thành phố bằng 34 t�
 
 - RED: `test_gh283_migration_0007_noi_tiep_0006_va_la_head_duy_nhat` đỏ vì head là 0008.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+
+Chạy lại thật sau thay đổi: `uv run pytest tests/steps/test_gh283_ingest_classify.py, tests/db/test_gh283_facts_labels.py, tests/steps/test_gh284_aggregate_vai_tro_moi.py -q` → **12 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.

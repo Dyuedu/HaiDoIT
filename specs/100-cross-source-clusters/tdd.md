@@ -68,3 +68,10 @@ Lý do: #285 đổi mã nơi (nơi của cụm lấy từ `job_posting_facts.cit
 
 - RED: `test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro` đỏ vì dòng `other`.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+
+Chạy lại thật sau thay đổi: `uv run pytest tests/domain/test_dat28_cluster.py và tests/steps/test_dat20_aggregate_step.py -q` → **48 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.

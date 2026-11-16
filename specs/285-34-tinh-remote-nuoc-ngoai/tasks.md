@@ -26,3 +26,8 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 ## Phase 3: Sau merge
 
 - [ ] T020 Lượt đêm đầu sau deploy: không còn hàng `other`; có hàng tỉnh ngoài ba thành phố
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi `aggregate` và `replace_stats` ghi thêm `stat_skill_rates`; test kiểm head Alembic nay kiểm head 0009 (nếu có trong issue này)

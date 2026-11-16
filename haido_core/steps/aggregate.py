@@ -28,6 +28,9 @@ các nguồn có lượt chạy ở S. API đọc danh sách này theo khóa.
 Tin không có dòng vòng đời tại S (chỉ thấy ở lượt chạy lỗi, AD-4) không được đếm. Nếu `ingest`
 chạy lại cho S thì phải chạy lại `lifecycle` trước khi `aggregate`.
 
+Tỷ lệ kỹ năng (#101): mỗi ô toàn quốc, số năm `any` của `stat_cells` có một hàng cho mọi mã trong từ vựng ở
+`stat_skill_rates`, đếm trên đúng các cụm đã được đếm vào `n` (kỹ năng của tin đại diện). Nhóm theo θ không lưu.
+
 Mọi hàng của S ghi trong một transaction. Chạy lại cho S đang `open` ra cùng hàng; S đã
 `published` hoặc `partial` thì từ chối và không ghi gì.
 """
@@ -48,7 +51,9 @@ from haido_core.domain.classify import (
 from haido_core.domain.cluster import ClusterMember, collapse_clusters
 from haido_core.domain.population import CountedPosting
 from haido_core.domain.registry import Classification, PostingFacts
+from haido_core.domain.skill_rates import aggregate_skill_rates
 from haido_core.steps.common import SnapshotClosedError, StepError, parse_snapshot_id
+from haido_core.vocab.skills import load_seed_skills, seed_version
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +61,7 @@ class AggregateResult:
     snapshot_id: date
     cells: int
     shares: int
+    skill_rates: int
     sources: tuple[str, ...]
     config_version: str
 
@@ -141,7 +147,7 @@ def aggregate_snapshot(
         results = tuple(_stored_or_fresh(f, r, cfg) for f, r in zip(rep_facts, fresh, strict=True))
         counted = []
         source_rows: list[tuple[str, date]] = []
-        for cluster, result, years_min in zip(clusters, results, rep_years, strict=True):
+        for cluster, result, years_min, rep_fact in zip(clusters, results, rep_years, rep_facts, strict=True):
             if not counts_in_aggregate(result):
                 continue
             counted.append(
@@ -152,6 +158,7 @@ def aggregate_snapshot(
                     city=_code(rules.city_codes, "thành phố", "city", result.city),
                     seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
                     years_min=years_min,
+                    skills=frozenset(code for code, mentions in (rep_fact.skills or ()) if mentions > 0),
                 )
             )
             for member_id in cluster.member_ids:
@@ -171,6 +178,22 @@ def aggregate_snapshot(
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc
+        try:
+            skill_rates = aggregate_skill_rates(
+                day,
+                counted,
+                aggregate.cells,
+                skills=tuple(skill.code for skill in load_seed_skills()),
+                window_days=rules.window_days,
+                level_groups=rules.level_groups,
+                vocab_version=seed_version(),
+            )
+        except ValueError as exc:
+            raise StepError(f"Không tính được tỷ lệ kỹ năng của snapshot {day.isoformat()}: {exc}") from exc
         sources = sources_in_window(day, source_rows, window_days=rules.window_days)
-        snapshot_store.replace_stats(conn, day, rules.config_version, aggregate.cells, aggregate.shares, sources)
-    return AggregateResult(day, len(aggregate.cells), len(aggregate.shares), sources, rules.config_version)
+        snapshot_store.replace_stats(
+            conn, day, rules.config_version, aggregate.cells, aggregate.shares, sources, skill_rates
+        )
+    return AggregateResult(
+        day, len(aggregate.cells), len(aggregate.shares), len(skill_rates), sources, rules.config_version
+    )

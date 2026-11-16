@@ -18,6 +18,7 @@ TABLES = {
     "stat_cells",
     "stat_city_shares",
     "stat_sources",
+    "stat_skill_rates",  # #101
 }
 
 
