@@ -164,6 +164,6 @@ Lý do: nhánh #212 thêm khóa `"learning_path"` vào hai lời gọi `create_a
 
 ## Đợt 2026-11-16 (theo #101)
 
-Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+Lý do: #101 sửa `haido_core/domain/population.py` (cửa sổ và việc khớp ô tách thành `postings_in_window`, `matches_cell` dùng chung; `_matches` đổi tên; kết quả đếm không đổi), `haido_core/steps/ingest.py` (ghi `vocab_version`), `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`. `tests/db/test_fr33_stat_years.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Không thêm hành vi mới nào của issue này, không AC nào đổi.
 
-Chạy lại thật sau thay đổi: `uv run pytest tests/domain/test_fr33_aggregate_years.py, tests/steps/test_fr33_aggregate_years_step.py, tests/db/test_fr33_stat_years.py -q` → **17 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/domain/test_fr33_aggregate_years.py tests/steps/test_fr33_aggregate_years_step.py tests/db/test_fr33_stat_years.py tests/domain/test_dat20_population.py -q` → **30 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.

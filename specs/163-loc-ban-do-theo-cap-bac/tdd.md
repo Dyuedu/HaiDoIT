@@ -213,6 +213,6 @@ Lý do: `fake_market.json` `skill_rates` đổi; `fake_market.py` giữ `city_sh
 
 ## Đợt 2026-11-16 (theo #101)
 
-Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+Lý do: #101 sửa `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`replace_stats` bắt buộc nhận `skill_rates`), `haido_core/db/tables.py`; ô theo nhóm cấp được dùng lại để tính tỷ lệ kỹ năng nhưng cách lọc cấp không đổi. `tests/db/test_fr33_stat_city_shares_level.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Không thêm hành vi mới nào của issue này, không AC nào đổi.
 
-Chạy lại thật sau thay đổi: `uv run pytest tests/domain/test_fr33_aggregate_level.py, tests/steps/test_fr33_aggregate_level_step.py, tests/db/test_fr33_stat_city_shares_level.py, tests/db/test_dat20_stat_tables.py -q` → **40 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/domain/test_fr33_aggregate_level.py tests/steps/test_fr33_aggregate_level_step.py tests/db/test_fr33_stat_city_shares_level.py tests/db/test_dat20_stat_tables.py -q` → **40 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.

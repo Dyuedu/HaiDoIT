@@ -54,4 +54,4 @@
 
 ## Cập nhật 2026-11-16 theo #101
 
-- [x] T-101 Giữ test của issue này xanh sau khi `aggregate` và `replace_stats` ghi thêm `stat_skill_rates`; test kiểm head Alembic nay kiểm head 0009 (nếu có trong issue này)
+- [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; test của issue này không phải sửa. `tests/db/test_dat20_stat_tables.py` (kiểm head Alembic, thuộc #93) đổi sang head 0009.

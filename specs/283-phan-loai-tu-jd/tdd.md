@@ -150,6 +150,15 @@ Lý do: #285 đổi mã nơi (`classify.toml` thay ba thành phố bằng 34 t�
 
 ## Đợt 2026-11-16 (theo #101)
 
-Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+Lý do: #101 sửa `haido_core/steps/ingest.py` và `haido_core/db/snapshot_store.py` (xem đợt 2 bên dưới: `vocab_version` và quét lại khi từ vựng đổi), `haido_core/steps/aggregate.py`, `haido_core/db/tables.py`. `tests/db/test_gh283_facts_labels.py` đổi kỳ vọng head Alembic từ 0008 sang 0009; `tests/steps/test_gh283_ingest_classify.py` thêm hai test quét lại khi từ vựng đổi. Không thêm hành vi mới nào của issue này, không AC nào đổi. Hành vi mới (quét lại khi từ vựng đổi) có đợt riêng bên dưới.
 
-Chạy lại thật sau thay đổi: `uv run pytest tests/steps/test_gh283_ingest_classify.py, tests/db/test_gh283_facts_labels.py, tests/steps/test_gh284_aggregate_vai_tro_moi.py -q` → **12 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/steps/test_gh283_ingest_classify.py tests/db/test_gh283_facts_labels.py tests/steps/test_gh284_aggregate_vai_tro_moi.py -q` → **15 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.
+
+## Đợt 2026-11-16 — #101 D3: quét lại khi từ vựng đổi
+
+Lý do: người dùng quyết định (D3) rằng `ingest` quét lại kỹ năng của tin trong cửa sổ khi phiên bản từ vựng đổi, giống lệch `classify_version`. Dữ kiện có thêm cột `vocab_version`; không AC nào của #283 đổi.
+
+- Lệnh: `HAIDO_TEST_DATABASE_URL=... uv run pytest tests/steps/test_gh283_ingest_classify.py tests/db/test_gh283_facts_labels.py tests/steps/test_gh284_aggregate_vai_tro_moi.py -q`.
+- Hành vi: (a) từ vựng đổi phiên bản thì dữ kiện trong cửa sổ có phiên bản mới mang `vocab_version` mới; (b) dữ kiện cũ NULL cũng được quét lại; (c) chạy lại cùng từ vựng không thêm phiên bản.
+- RED: hai test (a) và (b) đã viết cùng đợt với code ở đợt làm trước; không chạy RED trên cây chưa sửa. Bằng chứng thay thế là đột biến: bỏ hai điều kiện `vocab_version` khỏi `stale_in_window` thì **2 test fail** (đúng hai test trên), khôi phục thì xanh.
+- GREEN: ba file trên → **15 passed** (chạy lại thật). Toàn bộ `uv run pytest -q` → **1194 passed**, không skip.

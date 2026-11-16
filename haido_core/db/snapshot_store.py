@@ -50,6 +50,8 @@ class FactVersion:
     classify_version: str | None = None
     city: str | None = None
     """Nhãn nơi làm việc của bộ phân loại (#285). `None` ở dữ kiện cũ."""
+    vocab_version: str | None = None
+    """Phiên bản từ vựng đã quét `skills` lúc ingest (#101). `None` ở dữ kiện cũ; `None` luôn được coi là khác."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -139,6 +141,7 @@ def facts_at(conn: Connection, day: date) -> dict[int, FactVersion]:
         sa.select(
             t.c.posting_id, t.c.title, t.c.company, t.c.location_text, t.c.experience_level, t.c.job_level,
             t.c.years_min, t.c.role, t.c.branch, t.c.seniority, t.c.skills, t.c.classify_version, t.c.city,
+            t.c.vocab_version,
         )
         .where(t.c.snapshot_id <= day)
         .ext(distinct_on(t.c.posting_id))
@@ -146,7 +149,7 @@ def facts_at(conn: Connection, day: date) -> dict[int, FactVersion]:
     )
     return {r.posting_id: FactVersion(r.title, r.company, r.location_text, r.experience_level, r.job_level,
                                       r.years_min, r.role, r.branch, r.seniority, _skills_tuple(r.skills),
-                                      r.classify_version, r.city)
+                                      r.classify_version, r.city, r.vocab_version)
             for r in conn.execute(stmt)}  # fmt: skip
 
 
@@ -158,12 +161,15 @@ def _skills_tuple(raw: object) -> tuple[tuple[str, int], ...] | None:
     return tuple(sorted((str(k), int(v)) for k, v in raw.items()))
 
 
-def stale_in_window(conn: Connection, day: date, window_days: int, classify_version: str) -> list[tuple[int, str, str]]:
+def stale_in_window(
+    conn: Connection, day: date, window_days: int, classify_version: str, vocab_version: str
+) -> list[tuple[int, str, str]]:
     """`(posting_id, source, source_url)` của tin có quan sát trong cửa sổ kết thúc ở S mà dữ kiện mới nhất tới S
-    không mang nhãn của `classify_version` (#283). Tin đã quan sát sau S không nằm ở đây."""
+    không mang nhãn của `classify_version` (#283) hoặc không mang `vocab_version` của từ vựng hiện hành (#101); `NULL`
+    là khác. Tin đã quan sát sau S không nằm ở đây."""
     t = job_posting_facts
     latest = (
-        sa.select(t.c.posting_id, t.c.classify_version)
+        sa.select(t.c.posting_id, t.c.classify_version, t.c.vocab_version)
         .where(t.c.snapshot_id <= day)
         .ext(distinct_on(t.c.posting_id))
         .order_by(t.c.posting_id, t.c.snapshot_id.desc())
@@ -180,7 +186,14 @@ def stale_in_window(conn: Connection, day: date, window_days: int, classify_vers
         sa.select(job_postings.c.id, job_postings.c.source, job_postings.c.source_url)
         .join(seen, seen.c.posting_id == job_postings.c.id)
         .join(latest, latest.c.posting_id == job_postings.c.id)
-        .where(sa.or_(latest.c.classify_version.is_(None), latest.c.classify_version != classify_version))
+        .where(
+            sa.or_(
+                latest.c.classify_version.is_(None),
+                latest.c.classify_version != classify_version,
+                latest.c.vocab_version.is_(None),
+                latest.c.vocab_version != vocab_version,
+            )
+        )
         .where(job_postings.c.id.not_in(later))
         .order_by(job_postings.c.id)
     )
@@ -221,6 +234,7 @@ def insert_facts(conn: Connection, day: date, rows: Sequence[tuple[int, FactVers
                 "skills": None if f.skills is None else dict(f.skills),
                 "classify_version": f.classify_version,
                 "city": f.city,
+                "vocab_version": f.vocab_version,
             }
             for posting_id, f in rows
         ],
@@ -341,10 +355,21 @@ def replace_stats(
     cells: Sequence[CellRow],
     shares: Sequence[ShareRow],
     sources: Sequence[str],
-    skill_rates: Sequence[SkillRateRow] = (),
+    skill_rates: Sequence[SkillRateRow],
 ) -> None:
     """Ghi lại `stat_cells`, `stat_city_shares`, `stat_sources` và `stat_skill_rates` của S (bảng dẫn xuất, chỉ ghi
-    khi S còn `open`). `stat_skill_rates` có khóa ngoại tới `stat_cells`: xóa trước, ghi sau."""
+    khi S còn `open`). `stat_skill_rates` có khóa ngoại tới `stat_cells`: xóa trước, ghi sau.
+
+    Raises:
+        ValueError: một hàng tỷ lệ có `n_scanned` lớn hơn `n` của ô (hoặc không có ô); mẫu không thể lớn hơn dân số.
+    """
+    cell_n = {(c.role, c.seniority, c.years, c.scope): c.n for c in cells}
+    for r in skill_rates:
+        n = cell_n.get((r.role, r.seniority, r.years, r.scope))
+        if n is None or r.n_scanned > n:
+            raise ValueError(
+                f"Tỷ lệ kỹ năng của ô ({r.role}, {r.seniority}): n_scanned {r.n_scanned} vượt n của ô ({n})."
+            )
     conn.execute(sa.delete(stat_skill_rates).where(stat_skill_rates.c.snapshot_id == day))
     conn.execute(sa.delete(stat_cells).where(stat_cells.c.snapshot_id == day))
     conn.execute(sa.delete(stat_city_shares).where(stat_city_shares.c.snapshot_id == day))
@@ -383,6 +408,7 @@ def replace_stats(
                     "scope": r.scope,
                     "skill": r.skill,
                     "n_with": r.n_with,
+                    "n_scanned": r.n_scanned,
                     "rate": r.rate,
                     "vocab_version": r.vocab_version,
                 }

@@ -4,6 +4,9 @@
 config, nên đổi θ thì nhóm đổi ở lần gọi kế tiếp mà không cần tính lại tỷ lệ. Nhóm không lưu trong bảng; #102 quyết
 định θ được ghi và đóng băng ra sao.
 
+Đầu vào sai là `ValueError`, không đoán: θ không hữu hạn hoặc ngoài [0, 1], `theta_common > theta_core`, tỷ lệ
+không hữu hạn hoặc ngoài [0, 1], `skill_id` trùng trong một yêu cầu.
+
 Kết quả giữ thứ tự đầu vào và gồm cả kỹ năng tỷ lệ 0 nếu người gọi đưa vào. Module chỉ import registry.
 """
 
@@ -29,12 +32,19 @@ class SkillGrouper:
 
     def _one(self, request: SkillGroupRequest) -> tuple[SkillGroup, ...]:
         core, common = request.theta_core, request.theta_common
+        for name, theta in (("theta_core", core), ("theta_common", common)):
+            if not math.isfinite(theta) or not 0.0 <= theta <= 1.0:
+                raise ValueError(f"{name} phải là số hữu hạn trong [0, 1], nhận {theta}.")
         if common > core:
             raise ValueError(f"theta_common ({common}) không được lớn hơn theta_core ({core}).")
+        ids = [item.skill_id for item in request.rates]
+        duplicated = sorted({i for i in ids if ids.count(i) > 1})
+        if duplicated:
+            raise ValueError(f"skill_id trùng trong một yêu cầu: {', '.join(map(repr, duplicated))}.")
         groups = []
         for item in request.rates:
             rate = item.rate
-            if math.isnan(rate) or not 0.0 <= rate <= 1.0:
+            if not math.isfinite(rate) or not 0.0 <= rate <= 1.0:
                 raise ValueError(f"Tỷ lệ của {item.skill_id!r} phải nằm trong [0, 1], nhận {rate}.")
             band = SkillBand.CORE if rate >= core else SkillBand.COMMON if rate >= common else SkillBand.RARE
             groups.append(SkillGroup(item.skill_id, band))

@@ -29,7 +29,11 @@ Tin không có dòng vòng đời tại S (chỉ thấy ở lượt chạy lỗi
 chạy lại cho S thì phải chạy lại `lifecycle` trước khi `aggregate`.
 
 Tỷ lệ kỹ năng (#101): mỗi ô toàn quốc, số năm `any` của `stat_cells` có một hàng cho mọi mã trong từ vựng ở
-`stat_skill_rates`, đếm trên đúng các cụm đã được đếm vào `n` (kỹ năng của tin đại diện). Nhóm theo θ không lưu.
+`stat_skill_rates`, đếm trên đúng các cụm đã được đếm vào `n`. Kỹ năng của cụm là HỢP kỹ năng của mọi thành viên thấy trong cửa sổ (nhãn vẫn
+của tin đại diện); mẫu số `n_scanned` chỉ gồm cụm có ít nhất một thành viên đã quét (`skills` khác NULL). Mọi dữ kiện
+đã quét của các cụm được đếm phải cùng một `vocab_version` và trùng từ vựng hiện hành, nếu không bước dừng và yêu cầu
+chạy lại `ingest` (khác nhãn luật: nhãn cũ thì phân loại lại ngay, còn kỹ năng cần văn bản JD nên không làm lại ở đây).
+Hàng được đóng dấu bằng phiên bản đó. Nhóm theo θ không lưu.
 
 Mọi hàng của S ghi trong một transaction. Chạy lại cho S đang `open` ra cùng hàng; S đã
 `published` hoặc `partial` thì từ chối và không ghi gì.
@@ -49,7 +53,7 @@ from haido_core.domain.classify import (
     counts_in_aggregate,
 )
 from haido_core.domain.cluster import ClusterMember, collapse_clusters
-from haido_core.domain.population import CountedPosting
+from haido_core.domain.population import CountedPosting, window_start
 from haido_core.domain.registry import Classification, PostingFacts
 from haido_core.domain.skill_rates import aggregate_skill_rates
 from haido_core.steps.common import SnapshotClosedError, StepError, parse_snapshot_id
@@ -146,10 +150,20 @@ def aggregate_snapshot(
         assert isinstance(fresh, tuple)
         results = tuple(_stored_or_fresh(f, r, cfg) for f, r in zip(rep_facts, fresh, strict=True))
         counted = []
+        scanned_versions: set[str | None] = set()
+        first_day = window_start(day, rules.window_days)
         source_rows: list[tuple[str, date]] = []
-        for cluster, result, years_min, rep_fact in zip(clusters, results, rep_years, rep_facts, strict=True):
+        for cluster, result, years_min in zip(clusters, results, rep_years, strict=True):
             if not counts_in_aggregate(result):
                 continue
+            member_skills = []
+            for member_id in cluster.member_ids:
+                if last_seen[member_id] < first_day:
+                    continue  # chưa thấy trong cửa sổ: ingest không quét lại, nên cũng không góp kỹ năng
+                member_fact = facts.get(int(member_id), empty)
+                if member_fact.skills is not None:
+                    member_skills.append(frozenset(code for code, mentions in member_fact.skills if mentions > 0))
+                    scanned_versions.add(member_fact.vocab_version)
             counted.append(
                 CountedPosting(
                     cluster_id=cluster.cluster_id,
@@ -158,7 +172,7 @@ def aggregate_snapshot(
                     city=_code(rules.city_codes, "thành phố", "city", result.city),
                     seniority=_code(rules.level_codes, "cấp bậc", "level", result.seniority),
                     years_min=years_min,
-                    skills=frozenset(code for code, mentions in (rep_fact.skills or ()) if mentions > 0),
+                    skills=frozenset().union(*member_skills) if member_skills else None,
                 )
             )
             for member_id in cluster.member_ids:
@@ -178,6 +192,13 @@ def aggregate_snapshot(
             )
         except ValueError as exc:
             raise StepError(f"Không tổng hợp được snapshot {day.isoformat()}: {exc}") from exc
+        current_vocab = seed_version()
+        if scanned_versions - {current_vocab}:
+            found = ", ".join(sorted(map(str, scanned_versions)))
+            raise StepError(
+                f"Dữ kiện đã quét kỹ năng bằng từ vựng khác phiên bản hiện hành {current_vocab} (có: {found}; None là "
+                "dữ kiện cũ chưa ghi phiên bản). Chạy lại `haido ingest` để quét lại rồi `haido lifecycle` và `aggregate`."
+            )
         try:
             skill_rates = aggregate_skill_rates(
                 day,
@@ -186,7 +207,7 @@ def aggregate_snapshot(
                 skills=tuple(skill.code for skill in load_seed_skills()),
                 window_days=rules.window_days,
                 level_groups=rules.level_groups,
-                vocab_version=seed_version(),
+                vocab_version=current_vocab,
             )
         except ValueError as exc:
             raise StepError(f"Không tính được tỷ lệ kỹ năng của snapshot {day.isoformat()}: {exc}") from exc

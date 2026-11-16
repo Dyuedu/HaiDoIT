@@ -72,6 +72,6 @@ Lý do: #285 đổi mã nơi (nơi của cụm lấy từ `job_posting_facts.cit
 
 ## Đợt 2026-11-16 (theo #101)
 
-Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+Lý do: #101 sửa `haido_core/steps/aggregate.py` (vòng gộp cụm đưa mỗi cụm một tin mang hợp kỹ năng của mọi thành viên trong cửa sổ; cách gộp cụm và chọn đại diện không đổi), `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`. Test của issue này không phải sửa. `tests/db/test_dat20_stat_tables.py` (kiểm head Alembic, thuộc #93) đổi sang head 0009. Không thêm hành vi mới nào của issue này, không AC nào đổi.
 
-Chạy lại thật sau thay đổi: `uv run pytest tests/domain/test_dat28_cluster.py và tests/steps/test_dat20_aggregate_step.py -q` → **48 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/domain/test_dat28_cluster.py tests/steps/test_dat20_aggregate_step.py -q` → **48 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.

@@ -49,3 +49,41 @@ Bản sao local (DB `haido`, snapshot 10/11/2026, 5636 dữ kiện, 6065 tin tro
 | Sau | 6,23 / 6,53 / 6,50 | thêm 36.450 hàng `stat_skill_rates` |
 
 36.450 = 162 ô (18 vai trò × 9 cấp) × 225 kỹ năng; dưới ngưỡng 200k. Tăng khoảng 2 giây mỗi lần `aggregate` (khoảng 1,5 lần); chưa tối ưu vì mỗi đêm chạy một lần.
+
+## Đợt 2 — 2026-11-16 — quyết định của người dùng và sửa theo review
+
+Lý do: người dùng chốt D1 (hợp kỹ năng của cụm), D2 (mẫu số chỉ cụm đã quét, cột `n_scanned`), D3 (`vocab_version` ở dữ kiện, quét lại khi từ vựng đổi, `aggregate` từ chối phiên bản lẫn hoặc cũ); review R1–R8. Không đụng lại các đợt cũ.
+
+Lệnh: `HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5433/<db>_test uv run pytest -q`.
+
+Hành vi mới: hợp kỹ năng (đại diện NULL vẫn tính kỹ năng tin kia; cả hai nhắc vẫn một cụm; nhãn vẫn của đại diện); `n_scanned` và `rate = n_with / n_scanned`, `{}` khác NULL, ô toàn cụm chưa quét ra 0 không lỗi; CHECK `n_with <= n_scanned`; `replace_stats` kiểm `n_scanned <= n` và bắt buộc `skill_rates`; chỉ mục `(snapshot_id, skill)`; `group_skills` từ chối θ NaN, vô hạn, ngoài [0, 1] và `skill_id` trùng; ingest quét lại khi `vocab_version` khác hoặc NULL; `aggregate` từ chối phiên bản lẫn, cũ, NULL và đóng dấu phiên bản.
+
+RED: các test của đợt này được viết cùng lúc với code ở lượt làm trước nên chưa có lượt chạy RED trên cây chưa sửa. Thay bằng đột biến (bên dưới): mỗi quyết định có test đỏ khi bỏ code tương ứng, nên các test không vô nghĩa.
+
+GREEN:
+- Bốn file test của #101 → **78 passed** (đợt 1: 43; thêm 35).
+- Toàn bộ `uv run pytest -q` → **1194 passed**, không skip (đợt 1: 1156).
+- `-m determinism`, `PYTHONHASHSEED=0` và `1` → 8 passed mỗi lần.
+- `ruff check .` sạch (đã sửa SIM117 ở `tests/db/test_dat29_stat_skill_rates.py`); `alembic heads` một head `0009_haido_skill_rates`; cổng `--require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11`: 8 pass, 2 skip (FR-22, FR-24 hoãn), 0 fail.
+- Số lượt chạy lại của #100 (48), #163 (40), #280 (30), #283 (15), #285 (8) ghi ở `tdd.md` của từng issue.
+
+Đột biến (sửa một chỗ, chạy `tests/domain tests/db tests/steps`, khôi phục file nguyên văn; mỗi lần số test fail):
+
+| Đột biến | Test fail |
+|---|---|
+| Chỉ lấy kỹ năng của tin đại diện thay vì hợp (`aggregate.py`) | 2 (`d1_ca_hai_nguon_cung_nhac_python...`, `d1_cum_hai_nguon_tin_dai_dien_khong_co_mo_ta...`) |
+| Cụm chưa quét vẫn vào mẫu số (`skill_rates.py`) | 6 (`d2_*`, `d1_ca_hai_nguon_chua_quet...`) |
+| Ingest không quét lại khi `vocab_version` khác hoặc NULL (`snapshot_store.stale_in_window`) | 2 (`d3_doi_tu_vung...`, `d3_du_kien_cu_chua_ghi_phien_ban...`) |
+| `aggregate` không từ chối phiên bản cũ hoặc lẫn | 3 (`d3_tu_choi_*`, `d3_du_kien_da_quet_ma_khong_ghi_phien_ban...`) |
+| `group_skills` nhận θ NaN (bỏ kiểm θ hữu hạn và khoảng) | 6 (`fr9_theta_khong_huu_han_hoac_ngoai_0_den_1_la_loi`, trong đó 2 ca NaN) |
+
+Không đột biến nào sống sót nên không thêm test. Lưu ý khi chạy: hai lần đầu `.pyc` cũ làm đột biến trước rò sang đột biến sau (cùng kích thước và cùng giây sửa); bảng trên là lượt chạy lại với `PYTHONDONTWRITEBYTECODE=1` và `.pyc` đã xóa.
+
+Thời gian (`tools/bench_skill_rates.py --runs 7`, 5.600 dữ kiện Zipf, seed 101, 36.450 hàng `stat_skill_rates`; giây, trung vị (nhỏ nhất–lớn nhất); tính và ghi đo riêng):
+
+| Chế độ | Tổng bước | Tính tỷ lệ kỹ năng | Ghi (`replace_stats`) |
+|---|---|---|---|
+| bật | 7,426 (7,289–9,323) | 0,416 (0,410–0,450) | 2,708 (2,442–4,921) |
+| tắt | 5,431 (5,216–11,327) | 0,000 | 1,139 (0,821–7,220) |
+
+Chênh trung vị tổng +1,995 s (1,37 lần); tính tỷ lệ chiếm 0,42 s, phần còn lại là ghi thêm 36.450 hàng (+1,57 s). Đã sửa SC-001 ở `spec.md` cho khớp. Số cũ của đợt 1 (3 lượt, bản sao dữ liệu thật, +2 s) cùng cỡ.

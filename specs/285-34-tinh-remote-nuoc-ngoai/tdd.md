@@ -112,6 +112,6 @@ Lý do: `fake_market.json` đổi `skill_rates` (phần `city_shares` của #285
 
 ## Đợt 2026-11-16 (theo #101)
 
-Lý do: `aggregate` và `replace_stats` ghi thêm `stat_skill_rates` (migration 0009, head mới); test kiểm head 0008 đổi sang 0009. Không thêm hành vi mới của issue này, không AC nào đổi.
+Lý do: #101 sửa `haido_core/steps/ingest.py` (dữ kiện mang thêm `vocab_version`; nhãn thành phố không đổi), `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`FactVersion` có trường mới ở cuối, sau `city`), `haido_core/db/tables.py`. `tests/db/test_gh285_fact_city.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Không thêm hành vi mới nào của issue này, không AC nào đổi.
 
-Chạy lại thật sau thay đổi: `uv run pytest tests/steps/test_gh285_ingest_city.py, tests/db/test_gh285_fact_city.py, tests/domain/test_gh285_aggregate_sparse.py -q` → **8 passed**. Toàn bộ `uv run pytest -q` → **1156 passed**.
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/steps/test_gh285_ingest_city.py tests/db/test_gh285_fact_city.py tests/domain/test_gh285_aggregate_sparse.py -q` → **8 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.

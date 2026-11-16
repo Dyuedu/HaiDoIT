@@ -3,10 +3,19 @@
 Hàm thuần. Nhận các tin đã phân loại cùng tập mã kỹ năng của chúng (`CountedPosting.skills`) và các ô của
 `aggregate_city_shares`, trả một hàng cho MỌI (ô, kỹ năng trong từ vựng), kể cả tỷ lệ 0.
 
-Dân số là dân số của ô: cùng cửa sổ (`window_start`), cùng cụm (`cluster_id`), cùng bộ lọc vai trò và cấp (`all`, một
-nhóm của `level_groups`, hoặc một cấp thô). Một cụm có kỹ năng khi tin nào của cụm khớp ô cũng nhắc nó; bước tổng hợp
-chỉ đưa tin đại diện của cụm nên là kỹ năng của tin đại diện. Số lượt nhắc không vào đây: một tập mã đã là "nhắc ít
-nhất một lần". `rate = n_with / n` với `n` là số của ô; hàm kiểm lại `n` bằng cách đếm cụm và từ chối nếu lệch.
+Dân số là dân số của ô: cùng cửa sổ (`postings_in_window`), cùng cụm (`cluster_id`), cùng cách khớp ô (`matches_cell`)
+của phép 3, với bộ lọc vai trò và cấp (`all`, một nhóm của `level_groups`, hoặc một cấp thô).
+
+Quy tắc hợp (D1): một cụm nhắc kỹ năng X khi BẤT KỲ tin nào của cụm khớp ô và đã quét mà nhắc X; cụm vẫn đếm một lần.
+Nhãn vai trò, cấp, thành phố, số năm của cụm vẫn là của tin đại diện (không đổi). Bước tổng hợp đưa mỗi cụm một tin
+mang hợp kỹ năng của mọi thành viên.
+
+Mẫu số (D2): chỉ các cụm đã quét. Cụm đã quét khi có ít nhất một tin khớp ô mà `skills` khác `None` (kể cả `frozenset()`,
+nghĩa là quét mà không thấy gì). Cụm chưa quét (mọi tin `None`) không vào tử số lẫn mẫu số. Số cụm đã quét của ô là
+`n_scanned`, cùng giá trị ở mọi hàng của ô; `rate = n_with / n_scanned`, 0 khi `n_scanned = 0`. `n_scanned` là cỡ mẫu của
+chính phép đo này (AD-17 `n_with_value`), không phải `n` của ô; `n_scanned <= n`. Số lượt nhắc không vào đây.
+
+Hàm kiểm lại `n` bằng cách đếm cụm và từ chối nếu lệch `n` của ô.
 
 Chỉ ô toàn quốc, số năm `any`; ô khác bị bỏ qua. Mã kỹ năng ngoài `skills` bị bỏ, không tạo hàng.
 """
@@ -17,7 +26,14 @@ from dataclasses import dataclass
 from datetime import date
 
 from haido_core.domain.aggregate import ALL_LEVELS, ANY_YEARS, CellRow
-from haido_core.domain.population import ALL, NATIONWIDE, CountedPosting, window_start
+from haido_core.domain.population import (
+    ALL,
+    NATIONWIDE,
+    CountedPosting,
+    matches_cell,
+    postings_in_window,
+)
+from haido_core.domain.registry import CellKey
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,6 +44,7 @@ class SkillRateRow:
     seniority: str
     skill: str
     n_with: int
+    n_scanned: int
     rate: float
     vocab_version: str
     years: str = ANY_YEARS
@@ -49,40 +66,36 @@ def aggregate_skill_rates(
     Raises:
         ValueError: `n` của một ô không bằng số cụm đếm lại; hai số phải từ cùng một dân số.
     """
-    groups = {name: frozenset(members) for name, members in (level_groups or {}).items()}
-    first = window_start(snapshot_id, window_days)
+    groups = {name: tuple(members) for name, members in (level_groups or {}).items()}
     clusters: dict[str, list[CountedPosting]] = {}
-    for posting in postings:
-        if first <= posting.last_seen <= snapshot_id:
-            clusters.setdefault(posting.cluster_id, []).append(posting)
+    for posting in postings_in_window(postings, snapshot_id, window_days):
+        clusters.setdefault(posting.cluster_id, []).append(posting)
     vocab = frozenset(skills)
     ordered = tuple(skills)
+    day = snapshot_id.isoformat()
     rows: list[SkillRateRow] = []
     for cell in cells:
         if cell.scope != NATIONWIDE or cell.years != ANY_YEARS:
             continue
-        members = groups.get(cell.seniority)
-
-        def matches(p: CountedPosting, cell: CellRow = cell, members: frozenset[str] | None = members) -> bool:
-            if cell.role != ALL and p.role != cell.role:
-                return False
-            if cell.seniority == ALL_LEVELS:
-                return True
-            return p.seniority in members if members is not None else p.seniority == cell.seniority
-
+        levels = (ALL,) if cell.seniority == ALL_LEVELS else groups.get(cell.seniority, (cell.seniority,))
+        keys = tuple(CellKey(day, cell.role, None, level, NATIONWIDE) for level in levels)
         n = 0
+        scanned = 0
         counts: Counter[str] = Counter()
         for group in clusters.values():
-            hit = [p for p in group if matches(p)]
+            hit = [p for p in group if any(matches_cell(p, key) for key in keys)]
             if not hit:
                 continue
             n += 1
-            counts.update(set().union(*(p.skills for p in hit)) & vocab)
+            known = [p.skills for p in hit if p.skills is not None]
+            if not known:
+                continue
+            scanned += 1
+            counts.update(frozenset().union(*known) & vocab)
         if n != cell.n:
             raise ValueError(f"n của ô ({cell.role}, {cell.seniority}) là {cell.n}, đếm lại được {n}: không khớp.")
         for skill in ordered:
             n_with = counts[skill]
-            rows.append(
-                SkillRateRow(cell.role, cell.seniority, skill, n_with, n_with / n if n else 0.0, vocab_version)
-            )
+            rate = n_with / scanned if scanned else 0.0
+            rows.append(SkillRateRow(cell.role, cell.seniority, skill, n_with, scanned, rate, vocab_version))
     return tuple(rows)

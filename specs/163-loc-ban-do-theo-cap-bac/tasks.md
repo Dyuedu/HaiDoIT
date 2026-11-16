@@ -74,4 +74,4 @@
 
 ## Cập nhật 2026-11-16 theo #101
 
-- [x] T-101 Giữ test của issue này xanh sau khi `aggregate` và `replace_stats` ghi thêm `stat_skill_rates`; test kiểm head Alembic nay kiểm head 0009 (nếu có trong issue này)
+- [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; `tests/db/test_fr33_stat_city_shares_level.py` đổi kỳ vọng head Alembic từ 0008 sang 0009.

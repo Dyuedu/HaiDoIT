@@ -58,6 +58,7 @@ job_posting_facts = sa.Table(
     sa.Column("skills", JSONB()),
     sa.Column("classify_version", sa.Text()),
     sa.Column("city", sa.Text()),  # #285: nơi làm việc của bộ phân loại
+    sa.Column("vocab_version", sa.Text()),  # #101: phiên bản từ vựng đã quét `skills`; NULL ở dữ kiện cũ
 )
 
 job_observations = sa.Table(
@@ -126,7 +127,9 @@ stat_skill_rates = sa.Table(
     sa.Column("scope", sa.Text(), primary_key=True),
     sa.Column("skill", sa.Text(), primary_key=True),
     sa.Column("n_with", sa.Integer(), nullable=False),
+    sa.Column("n_scanned", sa.Integer(), nullable=False),
     sa.Column("rate", sa.Float(precision=53), nullable=False),
     sa.Column("vocab_version", sa.Text(), nullable=False),
+    sa.Index("ix_stat_skill_rates_snapshot_skill", "snapshot_id", "skill"),
     # #101: khóa ô là khóa ngoại tới stat_cells (migration 0009); nhóm core/common/rare không lưu.
 )

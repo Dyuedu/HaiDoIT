@@ -89,4 +89,8 @@ Tìm bằng `git log -- <file>` và `specs/*/plan.md`:
 
 ## Cập nhật 2026-11-16 theo #101
 
-`haido_core/steps/aggregate.py`, `snapshot_store.py`, `tables.py` (và `domain/population.py` với #280) được sửa: bước `aggregate` thêm kỹ năng của tin đại diện và ghi `stat_skill_rates` (migration 0009), `replace_stats` nhận thêm hàng tỷ lệ kỹ năng. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.
+File của issue này bị sửa: `haido_core/steps/ingest.py` và `haido_core/db/snapshot_store.py` (xem đợt 2 bên dưới: `vocab_version` và quét lại khi từ vựng đổi), `haido_core/steps/aggregate.py`, `haido_core/db/tables.py`.
+
+`tests/db/test_gh283_facts_labels.py` đổi kỳ vọng head Alembic từ 0008 sang 0009; `tests/steps/test_gh283_ingest_classify.py` thêm hai test quét lại khi từ vựng đổi. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`. Đợt 2 (cùng ngày): xem `tdd.md` của #283.
+
+Đợt 2 (cùng ngày, #101 D3): `haido_core/db/snapshot_store.py` (`FactVersion.vocab_version`, `stale_in_window` nhận thêm phiên bản từ vựng, NULL là khác) và `haido_core/steps/ingest.py` (`PlannedFact.vocab_version`, `_refresh_labels` quét lại cả khi từ vựng đổi). Test: `tests/steps/test_gh283_ingest_classify.py` thêm hai test. Migration 0009 thêm cột `job_posting_facts.vocab_version` (nullable); xem `specs/101-ty-le-ky-nang/data-model.md`.

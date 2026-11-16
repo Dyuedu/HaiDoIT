@@ -72,3 +72,32 @@ def test_dat29_fr9_ty_le_ngoai_0_den_1_la_loi_khong_doan(bad: float) -> None:
 def test_dat29_fr9_theta_common_lon_hon_theta_core_la_loi() -> None:
     with pytest.raises(ValueError, match="theta_common"):
         group_skills(_request(("a", 0.5), core=0.1, common=0.3))
+
+
+@pytest.mark.parametrize("bad", [float("nan"), float("inf"), float("-inf"), -0.01, 1.01])
+@pytest.mark.parametrize("which", ["core", "common"])
+def test_dat29_fr9_theta_khong_huu_han_hoac_ngoai_0_den_1_la_loi(which: str, bad: float) -> None:
+    kwargs = {"core": 0.3, "common": 0.1} | {which: bad}
+    with pytest.raises(ValueError, match="theta_"):
+        group_skills(_request(("a", 0.5), **kwargs))
+
+
+@pytest.mark.parametrize("bad", [float("inf"), float("-inf")])
+def test_dat29_fr9_ty_le_vo_han_la_loi(bad: float) -> None:
+    with pytest.raises(ValueError, match="Tỷ lệ"):
+        group_skills(_request(("a", bad)))
+
+
+def test_dat29_fr9_theta_o_hai_dau_khoang_la_hop_le() -> None:
+    assert group_skills(_request(("a", 1.0), ("b", 0.0), core=1.0, common=0.0)) == (
+        SkillGroup("a", SkillBand.CORE),
+        SkillGroup("b", SkillBand.COMMON),
+    )
+    assert group_skills(_request(("a", 0.0), core=0.0, common=0.0))[0].band is SkillBand.CORE
+
+
+def test_dat29_fr9_skill_id_trung_trong_mot_yeu_cau_la_loi_nhung_khac_yeu_cau_thi_duoc() -> None:
+    with pytest.raises(ValueError, match="trùng"):
+        group_skills(_request(("a", 0.5), ("b", 0.2), ("a", 0.1)))
+    first, second = group_skills([_request(("a", 0.5)), _request(("a", 0.1))])
+    assert first[0].band is SkillBand.CORE and second[0].band is SkillBand.COMMON

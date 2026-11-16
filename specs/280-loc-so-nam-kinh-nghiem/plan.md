@@ -118,4 +118,6 @@ Không có vi phạm cần biện minh.
 
 ## Cập nhật 2026-11-16 theo #101
 
-`haido_core/steps/aggregate.py`, `snapshot_store.py`, `tables.py` (và `domain/population.py` với #280) được sửa: bước `aggregate` thêm kỹ năng của tin đại diện và ghi `stat_skill_rates` (migration 0009), `replace_stats` nhận thêm hàng tỷ lệ kỹ năng. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.
+File của issue này bị sửa: `haido_core/domain/population.py` (cửa sổ và việc khớp ô tách thành `postings_in_window`, `matches_cell` dùng chung; `_matches` đổi tên; kết quả đếm không đổi), `haido_core/steps/ingest.py` (ghi `vocab_version`), `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`.
+
+`tests/db/test_fr33_stat_years.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.
