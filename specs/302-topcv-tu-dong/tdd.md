@@ -70,3 +70,7 @@ Hành vi mới:
 ### GREEN (2026-11-16)
 
 - `python -m pytest tests -q -p no:cacheprovider` → 74 passed, 9 skipped.
+
+### Kiểm trên VPS (2026-11-16)
+
+Build lại `scraper-browser` với `topcv.py` mới, chạy `pipeline.py crawl --sources topcv --skip-details`: 47 trang, `seen: 2294 jobs, listing_complete=True`, `[topcv] OK in 645s`. Tiêu đề ghi 2.293 việc làm. Trang 47 lặp lại trang 46 nên lượt dừng ở đó; lượt này không trang nào phải tải lại. 108 tin mới vào hàng đợi ở trạng thái `PENDING`.

@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa, chờ chạy thử lại.
+**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa; lượt thử lại thấy 2.294/2.293 tin, `complete=True`. Chờ merge.
 
 **Input**: GitHub issue [#302](https://github.com/Dyuedu/HaiDoIT/issues/302) — Run TopCV in the nightly crawl on the VPS.
 

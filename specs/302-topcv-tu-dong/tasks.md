@@ -25,7 +25,7 @@
 
 - [x] T013 [US5] Test `listed_total`, tải lại trang rỗng, so với tổng trên tiêu đề, trong `scraper/tests/test_observations.py`
 - [x] T014 Thêm `EMPTY_PAGE_TRIES`, `MIN_COVERAGE`, `listed_total()` và tham số `problems` trong `scraper/crawlers/topcv.py`
-- [ ] T015 Chạy lại `--sources topcv --skip-details` trên VPS: `complete=True`, số tin gần tổng trên tiêu đề
+- [x] T015 Chạy lại `--sources topcv --skip-details` trên VPS: `complete=True`, số tin gần tổng trên tiêu đề
 
 ## Phase 3: Triển khai
 
