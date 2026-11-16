@@ -49,3 +49,10 @@ Lượt cron 02:00 trên VPS, snapshot `2026-11-12`, là lượt đêm đầu ti
 #302 sửa `deploy/daily.sh` (thêm `topcv` vào bước trình duyệt) và `deploy/compose.scraper.yml` (`shm_size` của `scraper-browser` lên `1g`). Không đụng image kho hay `.warehouse-tag`, không đổi scenario của #273.
 
 - `uv run pytest tests/deploy -q` → 62 passed.
+
+## Đợt 2026-11-17 (#166, đợt 2 theo review): file dùng chung đổi lần nữa, AC của issue này không đổi
+
+Lý do: #166 đợt 2 (cỡ mẫu `skill_count` của `skill_rate`, `mentioned` theo mọi cấp, `data.level`, prod chọn nguồn `stat`) sửa thêm `deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat`). Image kho không vào `compose.prod.yml`, `.warehouse-tag` và `vps-deploy.sh` không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi. RED của #166 đợt 2 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx166_test`, không skip) → 1538 passed; `cd web && npx vitest run` → 22 files, 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.

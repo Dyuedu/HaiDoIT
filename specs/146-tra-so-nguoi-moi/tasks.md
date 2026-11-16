@@ -27,3 +27,11 @@
 
 - [x] T011 Test ô hỏng entry > n (đỏ trước khi sửa) trong `tests/api/test_fr37_newcomer_roles_stat.py`
 - [x] T012 Bảo vệ entry > n trong `StatMarket.newcomer_roles`
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (`deploy/compose.prod.yml` vẫn đặt `stat` cho `newcomer_roles` như trước và không đặt gì cho `skill_roles`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`haido_core/domain/envelope.py` (cỡ mẫu của `skill_rate`, hook `check_against_meta`), `deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat`, giữ `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat`), `haido_api/fake_market.py`, `fixtures/fake_market.json`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

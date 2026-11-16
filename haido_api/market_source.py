@@ -10,7 +10,12 @@ from datetime import date
 from typing import Protocol
 
 from haido_api.schemas.learning_path import LearningPathData
-from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
+from haido_api.schemas.market import (
+    CitySharesData,
+    NewcomerRolesData,
+    SkillRatesData,
+    SkillRolesData,
+)
 from haido_core.domain.envelope import Envelope
 
 
@@ -21,6 +26,14 @@ class UnknownCell(LookupError):
         super().__init__(message)
         self.message = message
         self.snapshot_date = snapshot_date
+
+
+class UnknownSkill(LookupError):
+    """Mã kỹ năng đúng định dạng nhưng không có trong bộ từ vựng. Route trả 404 `unknown_skill` (#166)."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        self.message = message
 
 
 class MarketReadModel(Protocol):
@@ -68,5 +81,16 @@ class MarketReadModel(Protocol):
 
         Raises:
             UnknownCell: vai trò không có, hoặc không có ô cho `level`.
+        """
+        ...
+
+    def skill_roles(self, *, skill: str) -> Envelope[SkillRolesData]:
+        """Tỷ lệ tin entry-level của từng vai trò có nhắc `skill` (#166).
+
+        Cấp bậc cố định là nhóm `entry`. Mỗi vai trò của `config/rules.toml` một dòng, theo thứ tự hiển thị; dưới ngưỡng
+        mẫu là `null_data`. `data.mentioned` do nguồn tính. `skill` là mã đã có trong bộ từ vựng (route đã kiểm).
+
+        Raises:
+            UnknownCell: nguồn chưa có số cho `skill`, hoặc chưa có snapshot nào đọc được.
         """
         ...

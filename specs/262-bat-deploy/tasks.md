@@ -48,3 +48,7 @@
 ## Phase 8: Image kho (đợt 2026-11-11, #273)
 
 - [x] T019 `deploy.yml` build image kho, chép hai file lịch đêm, chạy khi đổi `config/**`; `vps-deploy.sh` kéo image kho và ghi `.warehouse-tag` khi khỏe. Test ở `tests/deploy/test_gh273_image_kho.py`
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat` vào môi trường dịch vụ `api`)). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

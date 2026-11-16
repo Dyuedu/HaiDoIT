@@ -45,3 +45,10 @@ Lý do: nhánh `gh-111-ho-so-ky-nang` sửa file mà issue này từng đụng: 
 
 - RED: không có, vì không có hành vi nào của issue này đổi.
 - GREEN: `uv run pytest -q` → 1018 passed, 217 skipped; `cd web && npx vitest run` → 21 files, 281 passed; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_api/stat_market.py` (thêm `StatMarket.skill_roles`, cập nhật docstring lớp) và `tests/api/test_fr37_newcomer_roles_stat.py` (lời dựng `create_app` thêm nguồn `skill_roles`). Thay đổi: `newcomer_roles` thật không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.

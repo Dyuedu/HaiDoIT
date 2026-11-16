@@ -48,3 +48,11 @@ Test trước, chạy đỏ, ghi `tdd.md` đợt 2.
 
 - [x] T026 Test trước (`tests/core/test_fr23_prepared_text.py`): `％`, `²`, `①`, chữ số toàn chiều; "phần trăm" viết hoa, NFD, nhiều dấu cách, NBSP, xuống dòng; "Java 17," và "(HTML5)" vẫn qua
 - [x] T027 `haido_core/vocab/prepared_text.py`: chuẩn hóa NFKC trước mọi kiểm tra, "phần trăm" bằng `phần\s+trăm` trên văn bản casefold; cập nhật docstring
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (thêm phép thứ năm `skill_roles`; `learning_path` và `skill_rates` giả không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`haido_core/domain/envelope.py` (cỡ mẫu của `skill_rate`, hook `check_against_meta`), `haido_api/fake_market.py`, `fixtures/fake_market.json`, `schemas/market.py`, `routes/market.py`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

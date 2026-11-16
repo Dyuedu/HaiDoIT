@@ -5,7 +5,8 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 - `HAIDO_MARKET_SOURCE_CITY_SHARES` cho `GET /api/v1/city-shares` (bản thật `stat`: #93, đọc `stat_*`);
 - `HAIDO_MARKET_SOURCE_SKILL_RATES` cho `GET /api/v1/skill-rates` (bản thật: #27);
 - `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` cho `GET /api/v1/newcomer-roles` (bản thật: #145, #146);
-- `HAIDO_MARKET_SOURCE_LEARNING_PATH` cho `GET /api/v1/learning-path` (bản thật: #216).
+- `HAIDO_MARKET_SOURCE_LEARNING_PATH` cho `GET /api/v1/learning-path` (bản thật: #216);
+- `HAIDO_MARKET_SOURCE_SKILL_ROLES` cho `GET /api/v1/skill-roles` (bản thật: #168).
 
 Thêm bản thật là thêm một mục vào `IMPLEMENTATIONS`; route và schema không đổi.
 """
@@ -18,14 +19,25 @@ from fastapi import APIRouter, Depends, Query, Request
 from fastapi.exceptions import RequestValidationError
 
 from haido_api.fake_market import FakeMarket
-from haido_api.market_source import MarketReadModel
+from haido_api.market_source import MarketReadModel, UnknownSkill
 from haido_api.schemas.error import ErrorEnvelope
 from haido_api.schemas.learning_path import LearningPathData
-from haido_api.schemas.market import CitySharesData, NewcomerRolesData, SkillRatesData
+from haido_api.schemas.market import (
+    CitySharesData,
+    NewcomerRolesData,
+    SkillRatesData,
+    SkillRolesData,
+)
 from haido_api.stat_market import StatMarket
 from haido_core.config import ALL_LEVELS, ANY_YEARS, load_rules
 from haido_core.domain.envelope import Envelope
-from haido_core.vocab.skills import MAX_PROFILE_SKILLS, is_skill_code
+from haido_core.vocab.skills import (
+    MAX_PROFILE_SKILLS,
+    MAX_SKILL_CODE_LEN,
+    SKILL_CODE_PATTERN,
+    find_seed_skill,
+    is_skill_code,
+)
 
 LEVEL_CODES: tuple[str, ...] = (ALL_LEVELS, *load_rules().level_options)
 """Cấp bậc lọc được: `all` cộng `level_options` của `config/rules.toml` (#163, #134). Đọc một lần lúc import."""
@@ -40,6 +52,7 @@ SOURCE_ENV: dict[str, str] = {
     "skill_rates": "HAIDO_MARKET_SOURCE_SKILL_RATES",
     "newcomer_roles": "HAIDO_MARKET_SOURCE_NEWCOMER_ROLES",
     "learning_path": "HAIDO_MARKET_SOURCE_LEARNING_PATH",
+    "skill_roles": "HAIDO_MARKET_SOURCE_SKILL_ROLES",
 }
 DEFAULT_SOURCE = "fake"
 IMPLEMENTATIONS: dict[str, Callable[[], MarketReadModel]] = {
@@ -114,7 +127,10 @@ router = APIRouter(
     responses={
         404: {
             "model": ErrorEnvelope,
-            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "description": (
+                "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng "
+                "(`unknown_skill`, chỉ ở `skill-roles`)."
+            ),
         },
         422: {
             "model": ErrorEnvelope,
@@ -243,3 +259,32 @@ def get_learning_path(
     trò là `meta.cells[data.entry_cell_id].n`, có cả khi `data.cell_id` đã quay về ô rộng hơn.
     """
     return source.learning_path(role=role, level=level, have=parse_have(have))
+
+
+@router.get(
+    "/skill-roles",
+    response_model=Envelope[SkillRolesData],
+    summary="Một kỹ năng qua các vai trò",
+)
+def get_skill_roles(
+    skill: Annotated[
+        str,
+        Query(
+            min_length=1,
+            max_length=MAX_SKILL_CODE_LEN,
+            pattern=SKILL_CODE_PATTERN,
+            description="Mã kỹ năng trong bộ từ vựng (`GET /api/v1/skills`), snake_case, tối đa 40 ký tự.",
+        ),
+    ],
+    source: Annotated[MarketReadModel, Depends(_source_for("skill_roles"))],
+) -> Envelope[SkillRolesData]:
+    """Mỗi vai trò một dòng: tỷ lệ tin entry-level (Intern/Fresher/Junior) của vai trò có nhắc kỹ năng (FR-9, #113).
+
+    Cấp bậc cố định là nhóm `entry` (`data.level`). Cỡ mẫu của tỷ lệ là
+    `meta.cells[row.share.cell_id].n_by_measure.skill_count` (số tin đã quét kỹ năng; `n` của ô là số tin của ô); dưới
+    ngưỡng mẫu thì `share.display = null_data` (ghi "not enough data (skill_count/min_sample)"). `data.mentioned = false`
+    khi không tin nào, ở cấp nào, nhắc kỹ năng. Dòng đã theo thứ tự hiển thị. Mã không có trong bộ từ vựng: 404 `unknown_skill`.
+    """
+    if find_seed_skill(skill) is None:
+        raise UnknownSkill("Kỹ năng đã chọn không có trong bộ từ vựng.")
+    return source.skill_roles(skill=skill)

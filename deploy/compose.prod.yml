@@ -13,6 +13,8 @@ services:
       HAIDO_MARKET_SOURCE_CITY_SHARES: stat
       # Màn người mới đọc ô `entry` của snapshot đã công bố (#146).
       HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat
+      # Màn kỹ năng theo vai trò (#166): `stat` trả 404 `unknown_cell` đến khi #168 có số thật, không bao giờ số giả.
+      HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
     ports:
       - "127.0.0.1:8000:8000"
     healthcheck:

@@ -102,6 +102,16 @@ def load_seed_skills() -> tuple[SeedSkill, ...]:
     return _seed()[1]
 
 
+@cache
+def _by_code() -> dict[str, SeedSkill]:
+    return {s.code: s for s in _seed()[1]}
+
+
+def find_seed_skill(code: str) -> SeedSkill | None:
+    """Kỹ năng của danh sách mồi theo mã, hoặc `None` khi mã không có trong bộ từ vựng (#166)."""
+    return _by_code().get(code)
+
+
 def seed_version() -> str:
     """Phiên bản của danh sách mồi, ví dụ `seed-2026-11-11`."""
     return _seed()[0]

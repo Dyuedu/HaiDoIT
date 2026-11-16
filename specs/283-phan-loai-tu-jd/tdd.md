@@ -162,3 +162,10 @@ Lý do: người dùng quyết định (D3) rằng `ingest` quét lại kỹ nă
 - Hành vi: (a) từ vựng đổi phiên bản thì dữ kiện trong cửa sổ có phiên bản mới mang `vocab_version` mới; (b) dữ kiện cũ NULL cũng được quét lại; (c) chạy lại cùng từ vựng không thêm phiên bản.
 - RED: hai test (a) và (b) đã viết cùng đợt với code ở đợt làm trước; không chạy RED trên cây chưa sửa. Bằng chứng thay thế là đột biến: bỏ hai điều kiện `vocab_version` khỏi `stale_in_window` thì **2 test fail** (đúng hai test trên), khôi phục thì xanh.
 - GREEN: ba file trên → **15 passed** (chạy lại thật). Toàn bộ `uv run pytest -q` → **1194 passed**, không skip.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_core/vocab/skills.py` (thêm `find_seed_skill`; `load_vocabulary`, quét JD không đổi). Thay đổi: từ vựng quét JD không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.

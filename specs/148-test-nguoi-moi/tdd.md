@@ -108,3 +108,10 @@ Lý do: nhánh #212 thêm `"learning_path": fake` vào lời dựng `create_app`
 Lý do: test trang giữ chỗ trong `web/tests/fr37-newcomer-list.test.tsx` (khối DEC-6 của đợt 2026-11-13) đổi theo trang hồ sơ kỹ năng thật của #152; xem `specs/147-man-nguoi-moi/tdd.md`. Các test thứ tự, `null_data`, `role=all` của #148 không đổi.
 
 - GREEN: `npx vitest run` → 21 files, 281 passed.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_api/stat_market.py` (thêm `StatMarket.skill_roles`) và `tests/api/test_fr37_newcomer_roles_stat.py` (lời dựng `create_app`). Thay đổi: bảo vệ entry > n của `newcomer_roles` không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.

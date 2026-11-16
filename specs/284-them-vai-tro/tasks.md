@@ -28,3 +28,11 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 ## Cập nhật 2026-11-13 theo #293
 
 - [x] T003 đổi: `web/tests/fr33-role-chips-new-roles.test.tsx` kiểm ô "Vai trò" có 18 option theo thứ tự, không `optgroup`, `min-h-target`, Tab giữa ba ô, chọn Fullstack gửi `role=fullstack`
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (17 vai trò của config không đổi; `skill-roles` dùng các ô `vn.<mã>.entry` mà #284 đã thêm). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`haido_api/fixtures/fake_market.json`, `web/tests/fixtures/newcomer-roles.json`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

@@ -63,3 +63,10 @@ Lý do: job `Python - ruff and pytest` đỏ ở `ruff check` (I001, thứ tự 
 
 - RED: `uv run ruff check .` → 1 error (I001, `haido_api/routes/roles.py`).
 - GREEN: `uv run ruff check --fix` rồi `uv run ruff check .` → All checks passed; `uv run pytest tests/api -q` → 385 passed, 74 skipped; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_api/fake_market.py`, `market_source.py`, `routes/market.py`, `schemas/market.py`, `fixtures/fake_market.json`, `docs/api/*`, `tests/api/test_ad17_routes.py`. Thay đổi: thêm phép `skill_roles`; `role-for-title` không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
