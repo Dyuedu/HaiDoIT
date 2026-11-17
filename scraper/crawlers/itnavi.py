@@ -7,7 +7,8 @@ and skips jobs already in the output file, but always walks the whole listing:
 that walk is what proves a known job is still open.
 
 The listing order drifts between requests, so a page can repeat only ids already
-seen without being the end (#296). The walk ends on a page with no cards, or after
+seen without being the end (#296). A page with no cards is fetched again up to
+EMPTY_PAGE_TRIES times. The walk ends on a page that stays without cards, or after
 STALE_PAGES pages in a row with no new id. It counts as complete only if it met
 MIN_COVERAGE of the job total the page prints ("485 Việc làm"), as topdev.py does.
 """
@@ -28,6 +29,8 @@ LIST_URL = f"{BASE}/job"
 DETAIL_URL = f"{BASE}/ajax/get-job-by-id/{{}}"
 STALE_PAGES = 3
 MIN_COVERAGE = 0.9
+# 17/11 trên VPS trang 42 trả về không có tin, sáng hôm sau listing đủ 49 trang: tải lại rồi mới coi là hết.
+EMPTY_PAGE_TRIES = 3
 
 
 def listed_total(soup: BeautifulSoup) -> int | None:
@@ -95,11 +98,15 @@ def main() -> None:
     total, stale = None, 0
     try:
         for page in range(1, args.pages + 1):
-            soup = BeautifulSoup(client.get(f"{LIST_URL}?page={page}").text, "lxml")
+            for attempt in range(1, EMPTY_PAGE_TRIES + 1):
+                soup = BeautifulSoup(client.get(f"{LIST_URL}?page={page}").text, "lxml")
+                ids = [int(c["data-id"]) for c in soup.select("div.jsl-item[data-id]")]
+                if ids or attempt == EMPTY_PAGE_TRIES:
+                    break
+                print(f"page {page}: empty, fetching again ({attempt + 1}/{EMPTY_PAGE_TRIES})", flush=True)
             page_total = listed_total(soup)
             if page_total is not None:
                 total = max(total or 0, page_total)
-            ids = [int(c["data-id"]) for c in soup.select("div.jsl-item[data-id]")]
             new_ids = [i for i in ids if i not in seen_ids]
             if not ids:
                 print(f"end: page {page} is empty", flush=True)

@@ -10,7 +10,7 @@ from haido_core.config import ConfigError, load_rules
 
 PDF = "application/pdf"
 DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-AUTO = ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec")
+AUTO = ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec", "topcv")  # #302 thêm topcv
 
 NOTE = '[[coverage_notes]]\ncode = "n_sources"\ntext = "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên {n} nguồn."\n'
 SOURCES = '[sources]\nauto = ["a", "b"]\nexcluded = ["x"]\npriority = ["a", "b"]\n'
@@ -50,12 +50,12 @@ def _base(tmp_path: Path, *, drop: str | None = None, **swap: str) -> Path:
     return _write(tmp_path, body)
 
 
-def test_ad10_rules_mac_dinh_co_phien_ban_cua_so_va_bay_nguon() -> None:
+def test_ad10_rules_mac_dinh_co_phien_ban_cua_so_va_tam_nguon() -> None:
     rules = load_rules()
     assert rules.config_version
     assert rules.window_days == 60
     assert rules.auto_sources == AUTO
-    assert "topcv" not in rules.auto_sources
+    assert "linkedin" not in rules.auto_sources  # #302: topcv vào lượt đêm, linkedin vẫn không
 
 
 def test_ad10_doc_tu_file_chi_dinh(tmp_path: Path) -> None:

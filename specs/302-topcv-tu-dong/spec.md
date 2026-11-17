@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa; lượt thử lại thấy 2.294/2.293 tin, `complete=True`. Chờ merge.
+**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa; lượt thử lại thấy 2.294/2.293 tin, `complete=True`. Merge ngày 16/11 (PR #303). Đêm 17/11 TopCV crawl đủ (2.399 tin) nhưng ingest bỏ qua: thiếu trong danh sách nguồn tự động (User Story 6), đang sửa.
 
 **Input**: GitHub issue [#302](https://github.com/Dyuedu/HaiDoIT/issues/302) — Run TopCV in the nightly crawl on the VPS.
 
@@ -75,6 +75,16 @@ Khi rà code có một lỗi độc lập: `main()` nạp toàn bộ URL trong `
 3. **Given** tiêu đề ghi 100 tin mà listing hết sau 2 tin, **When** `main()` chạy, **Then** `listing_complete = false`, `error` có "met 2 of 100".
 4. **Given** tiêu đề ghi 2 tin và listing thấy 2, **Then** `listing_complete = true`.
 
+### User Story 6 - Ingest ghi quan sát của TopCV (Priority: P1)
+
+**Why this priority**: đêm 17/11 crawler TopCV ghi `seen/2026-11-17/topcv.json` (2.399 tin, `complete=True`), nhưng ingest chỉ đọc 7 nguồn: `AUTO_SOURCES` trong `scraper/ingest.py` và `[sources].auto` trong `config/rules.toml` vẫn coi TopCV là nguồn chạy tay. 2.399 quan sát của ngày đó không vào `job_observations`. Thuộc AC thứ nhất của #302 (file seen là nguồn của quan sát hằng ngày).
+
+**Acceptance Scenarios**:
+
+1. **Given** lượt đêm có file seen của `topcv`, **When** `ingest.py` chạy với nguồn mặc định, **Then** TopCV nằm trong danh sách đọc.
+2. **Given** `config/rules.toml`, **Then** `auto_sources` có `topcv` và trùng `AUTO_SOURCES` của scraper; lượt chạy TopCV ghi `mode = "auto"`; đêm TopCV chưa đủ thì snapshot chốt `partial`.
+3. Nguồn ngoài danh sách (ví dụ `linkedin`) vẫn ghi `mode = "manual"`.
+
 ### Edge Cases
 
 - Container lần trước bị kill: file `Singleton*` trong profile bị xoá trước khi mở Chrome.
@@ -89,6 +99,7 @@ Khi rà code có một lỗi độc lập: `main()` nạp toàn bộ URL trong `
 - **FR-003**: `topcv.py` nhận `--skip-details` và `--limit N` (0 = không giới hạn).
 - **FR-004**: `pipeline.py` truyền hai cờ trên cho nguồn `nodriver`; bọc `xvfb-run` khi Linux không có `DISPLAY`; topcv timeout `6 * 3600`.
 - **FR-006**: Trang không có thẻ tin được tải lại tới `EMPTY_PAGE_TRIES` (3) lần. Hết listing với ít hơn `MIN_COVERAGE` (90%) tổng trên tiêu đề thì lượt chưa đủ, lý do ghi vào `error` của file seen.
+- **FR-007**: `topcv` có trong `AUTO_SOURCES` của `scraper/ingest.py` và `[sources].auto` của `config/rules.toml`; `config_version` tăng lên `2026-11-17.1`.
 - **FR-005**: Chrome mở với `--no-sandbox`, `--disable-setuid-sandbox`, `--disable-dev-shm-usage`, `--window-size=1920,1080`.
 
 ## Success Criteria *(mandatory)*

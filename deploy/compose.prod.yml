@@ -17,6 +17,9 @@ services:
       HAIDO_MARKET_SOURCE_SKILL_RATES: stat
       # Màn kỹ năng theo vai trò (#166): `stat` trả 404 `unknown_cell` đến khi #168 có số thật, không bao giờ số giả.
       HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
+      # Lộ trình (#309): `stat` trả 404 `unknown_cell` đến khi #216 có số thật. Mọi khóa của SOURCE_ENV phải có ở đây
+      # (tests/deploy/test_gh309_*), vì mã mặc định là `fake`.
+      HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
     ports:
       - "127.0.0.1:8000:8000"
     healthcheck:

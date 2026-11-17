@@ -48,12 +48,12 @@ def _data(
 
 def test_ad4_plan_nguon_ngoai_config_la_manual_va_success_theo_listing_complete() -> None:
     data = _data(
-        runs=(SourceRunRow("topcv", True, 1, None), SourceRunRow("itviec", False, 1, "bị chặn")),
-        urls=(("topcv", "t1"), ("itviec", "i1")),
+        runs=(SourceRunRow("linkedin", True, 1, None), SourceRunRow("itviec", False, 1, "bị chặn")),
+        urls=(("linkedin", "t1"), ("itviec", "i1")),
     )
     plan = plan_ingest(date(2026, 11, 3), data, RULES.auto_sources)
     runs = {r.source: r for r in plan.runs}
-    assert (runs["topcv"].mode, runs["topcv"].success) == ("manual", True)
+    assert (runs["linkedin"].mode, runs["linkedin"].success) == ("manual", True)
     assert (runs["itviec"].mode, runs["itviec"].success, runs["itviec"].error) == ("auto", False, "bị chặn")
 
 
@@ -118,12 +118,12 @@ def test_ad4_ingest_mo_snapshot_open_va_moi_quan_sat_co_luot_chay_dung_nguon(env
 
 
 def test_ad4_nguon_ngoai_danh_sach_tu_dong_ghi_mode_manual(env: Env, scraper_db) -> None:
-    scraper_db.day("topcv", S, ["t1"])
+    scraper_db.day("linkedin", S, ["t1"])  # #302: topcv giờ là nguồn tự động
     scraper_db.day("itviec", S, ["i1"])
     env.ingest()
     assert env.query("SELECT source, mode FROM haido.pipeline_runs ORDER BY source") == [
         ("itviec", "auto"),
-        ("topcv", "manual"),
+        ("linkedin", "manual"),
     ]
 
 

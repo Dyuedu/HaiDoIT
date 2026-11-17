@@ -68,6 +68,13 @@ Lý do: #166 đợt 2 (cỡ mẫu `skill_count` của `skill_rate`, `mentioned` 
 - RED: không có, vì không có hành vi nào của issue này đổi. RED của #166 đợt 2 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
 - GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx166_test`, không skip) → 1538 passed; `cd web && npx vitest run` → 22 files, 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
 
+## Đợt #309 (2026-11-17): compose.prod đặt `stat` cho mọi nguồn
+
+Lý do: `deploy/compose.prod.yml` thiếu `HAIDO_MARKET_SOURCE_SKILL_RATES` và `HAIDO_MARKET_SOURCE_LEARNING_PATH`, nên prod phục vụ số giả của hai phép này. #309 thêm hai dòng `stat` và test `tests/deploy/test_gh309_prod_khong_doc_du_lieu_gia.py` sinh từ `SOURCE_ENV`. Hành vi và AC của issue này không đổi; test cũ của nó vẫn xanh.
+
+- RED: test mới của #309, `3 failed, 8 passed` (thiếu `skill_rates`, `learning_path`).
+- GREEN: `tests/deploy` 75 passed.
+
 ## Đợt 2026-11-17 (#151, #106, #103): file dùng chung đổi, AC của issue này không đổi
 
 Lý do: tỷ lệ kỹ năng thật (#151), phép 2 `select_cell` (#106) và ràng buộc lớp đọc (#103) sửa file mà issue này từng đụng:

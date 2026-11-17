@@ -50,9 +50,10 @@ def workdir(tmp_path, monkeypatch):
     return tmp_path
 
 
-def fake_itnavi(pages, block_on_page=None, total=None, repeat_last=False):
+def fake_itnavi(pages, block_on_page=None, total=None, repeat_last=False, empty_first=None):
     """pages: {page: [ids]}. total: the "N Việc làm" the site prints, None = not shown.
-    repeat_last: past the last page the site serves the last page again, forever."""
+    repeat_last: past the last page the site serves the last page again, forever.
+    empty_first: {page: n}, the page comes back without cards the first n times."""
     class Client:
         requested = []
 
@@ -69,7 +70,9 @@ def fake_itnavi(pages, block_on_page=None, total=None, repeat_last=False):
             if page == block_on_page:
                 raise BlockedError("HTTP 403")
             ids = pages.get(page, [])
-            if not ids and repeat_last:
+            if Client.requested.count(page) <= (empty_first or {}).get(page, 0):
+                ids = []
+            elif not ids and repeat_last:
                 ids = pages[max(pages)]
             head = "" if total is None else (
                 f'<div class="js-tab__show"><h1 style="font-size: 17px">\n   {total}   \n   Việc làm</h1></div>')
@@ -149,6 +152,29 @@ def test_itnavi_empty_page_after_meeting_the_shown_total_is_complete(workdir, mo
     doc = seen_doc("itnavi")
     assert doc["listing_complete"] is True
     assert doc["error"] is None
+
+
+# 17/11 on the VPS: page 42 came back empty, a walk the next morning had 49 full pages.
+def test_itnavi_page_empty_once_is_fetched_again_and_the_walk_goes_on(workdir, monkeypatch):
+    client = fake_itnavi({1: [1, 2], 2: [3, 4], 3: [5]}, total=5, empty_first={2: 1})
+    monkeypatch.setattr(itnavi, "PoliteClient", client)
+    run_crawler(itnavi, monkeypatch)
+    doc = seen_doc("itnavi")
+    assert doc["listing_complete"] is True
+    assert {"https://x/4", "https://x/5"} <= set(doc["job_urls"])
+    assert client.requested.count(2) == 2
+
+
+def test_itnavi_page_that_stays_empty_ends_after_empty_page_tries(workdir, monkeypatch):
+    client = fake_itnavi({1: [1, 2], 2: [3]}, total=3)
+    monkeypatch.setattr(itnavi, "PoliteClient", client)
+    run_crawler(itnavi, monkeypatch)
+    assert seen_doc("itnavi")["listing_complete"] is True
+    assert client.requested.count(3) == itnavi.EMPTY_PAGE_TRIES
+
+
+def test_ingest_counts_topcv_as_an_automatic_source():
+    assert "topcv" in ingest.AUTO_SOURCES
 
 
 def test_itnavi_page_cap_is_still_an_incomplete_run(workdir, monkeypatch):

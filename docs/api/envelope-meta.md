@@ -408,15 +408,15 @@ uv sync
 uv run uvicorn haido_api.main:app        # http://localhost:8000/docs
 ```
 
-Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake`:
+Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake`. Production không bao giờ phục vụ bản giả: mọi biến dưới đây phải là `stat` trong `deploy/compose.prod.yml`, và `tests/deploy/test_gh309_prod_khong_doc_du_lieu_gia.py` đỏ khi thiếu một biến (#309). `compose.local.yml` giữ `fake`.
 
 | Biến | Route | Bản thật |
 |---|---|---|
 | `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
-| `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | #27 |
+| `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | `stat` (#151): `stat_skill_rates` của snapshot đọc được mới nhất, quay về qua phép 2 (#106); `deploy/compose.prod.yml` đặt `stat` |
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
-| `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell` |
-| `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | #168; `stat` hiện trả 404 `unknown_cell`, nên chưa compose nào đặt nó |
+| `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#309) |
+| `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | #168; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#166) |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.
 Thêm bản thật: cài `MarketReadModel` (`haido_api/market_source.py`), thêm một mục vào `IMPLEMENTATIONS`,

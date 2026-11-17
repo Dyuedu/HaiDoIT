@@ -18,6 +18,11 @@
 
 - [x] T006 Thêm `STALE_PAGES`, `MIN_COVERAGE`, `listed_total()` và sửa vòng lặp trong `scraper/crawlers/itnavi.py`
 
+## Phase 4: Trang rỗng tạm thời (2026-11-17)
+
+- [x] T008 [US5] Test trang trống một lần được tải lại; trang trống mãi tải đúng `EMPTY_PAGE_TRIES` lần
+- [x] T009 Thêm `EMPTY_PAGE_TRIES` và vòng tải lại trong `scraper/crawlers/itnavi.py`
+
 ## Phase 3: Sau merge
 
 - [ ] T007 Ba đêm liền trên VPS: số listed lệch ≤ 10%, gone < 10% listed; ghi số vào `tdd.md`

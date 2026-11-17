@@ -46,8 +46,8 @@ def test_dat20_nguon_tu_dong_khong_co_luot_chay_cung_la_khong_chay_thanh_cong(en
 
 
 def test_dat20_nguon_chay_tay_loi_khong_lam_snapshot_thanh_partial(env: Env, scraper_db) -> None:
-    _feed(env, scraper_db, failed=("topcv",), manual=("topcv",))
-    assert "topcv" not in env.rules.auto_sources
+    _feed(env, scraper_db, failed=("linkedin",), manual=("linkedin",))  # #302: topcv giờ là nguồn tự động
+    assert "linkedin" not in env.rules.auto_sources
     result = env.publish()
     assert (result.status, result.sources_failed) == ("published", ())
 
