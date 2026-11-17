@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented (PR #315). 2026-11-17: lối 3D được dựng lại bằng CSS 3D theo prototype ở #316; three.js bị gỡ. Điều kiện rơi về 2D đổi từ "không có WebGL" sang "không dựng được CSS 3D" (người dùng chốt 2026-11-17; FR-36 nên sửa câu chữ). Các scenario về canvas WebGL, OrbitControls và error boundary không còn áp dụng.
 
 **Input**: GitHub issue [#314](https://github.com/Dyuedu/HaiDoIT/issues/314) — Build the 3D map view. Phục vụ story #112 (US-A3). Quyết định DEC-5 (#131) ghi ngày 17/11/2026: giữ bản đồ 3D theo FR-33. FR-33, FR-36, NFR-12, UX-DR12, UX-DR39, UX-DR50.
 

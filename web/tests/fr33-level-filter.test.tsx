@@ -356,7 +356,8 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
 
     await pick(user, levelSelect(), "Mọi cấp bậc");
 
-    const daNang = await screen.findByText(/n = 21 < 30/);
+    // #316: panel bên phải nhắc lại câu cỡ mẫu nhỏ; tìm trong biểu đồ 2D.
+    const daNang = await within(screen.getByRole("figure")).findByText(/n = 21 < 30/);
     expect(daNang.closest("button")).toBe(cityButton("Đà Nẵng"));
     expect(fill(cityButton("Đà Nẵng")).getAttribute("data-low-sample")).toBe("true");
   });

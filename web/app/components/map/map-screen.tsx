@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { type CitySharesResult, fetchCityShares } from "@/lib/city-shares";
+import { getCss3dSnapshot, getServerCss3dSnapshot, subscribeCss3d } from "@/lib/css3d";
 import { buildCitySharesView } from "@/lib/city-shares-view";
 import {
   DEFAULT_LEVEL,
@@ -14,11 +15,11 @@ import {
   YEARS_OPTIONS,
 } from "@/lib/labels";
 import { getServerWideSnapshot, getWideSnapshot, subscribeWide } from "@/lib/viewport";
-import { getServerWebGLSnapshot, getWebGLSnapshot, subscribeWebGL } from "@/lib/webgl";
 
 import { FilterSelect } from "./filter-select";
 import { LoadError } from "./load-error";
-import { Map3DPanel } from "./map-3d-panel";
+import { Map3D } from "./map-3d";
+import { MapSummary } from "./map-summary";
 import { ShareBars } from "./share-bars";
 import { ShareTable } from "./share-table";
 import { SnapshotCaption } from "./snapshot-caption";
@@ -45,9 +46,9 @@ interface Loaded {
  * Màn Bản đồ, phía trình duyệt. Server chỉ render khung và "Đang tải số liệu…": số được gọi
  * qua proxy `/api/*` sau khi trang mở, nên `next build` không gọi API và không đóng băng số.
  *
- * Lối xem (#314): màn rộng có WebGL thì mở lối 3D (UX-DR39); điện thoại mở lối 2D (NFR-12) nhưng vẫn chọn được 3D;
- * không có WebGL, hoặc lối 3D lỗi, thì lối 2D và nút 3D nói vì sao (FR-36).
- * Server không có WebGL nên HTML tĩnh là lối 2D; trình duyệt chuyển sang 3D sau khi hydrate.
+ * Lối xem (#314, #316): màn rộng dựng được CSS 3D thì mở lối 3D (UX-DR39); điện thoại mở lối 2D (NFR-12) nhưng vẫn chọn
+ * được 3D; không dựng được CSS 3D thì lối 2D và nút 3D nói vì sao (FR-36). Server trả "không" nên HTML tĩnh là lối 2D;
+ * trình duyệt chuyển sang 3D sau khi hydrate. Panel bên phải (tóm tắt từng nơi, nguồn và lưu ý) có ở cả ba lối.
  */
 export function MapScreen() {
   const [request, setRequest] = useState<Request>({
@@ -58,10 +59,9 @@ export function MapScreen() {
   });
   // `null`: người dùng chưa chọn lối, dùng lối mặc định theo WebGL.
   const [chosenMode, setChosenMode] = useState<ViewMode | null>(null);
-  const [failed3d, setFailed3d] = useState(false);
-  const webgl = useSyncExternalStore(subscribeWebGL, getWebGLSnapshot, getServerWebGLSnapshot);
+  const css3d = useSyncExternalStore(subscribeCss3d, getCss3dSnapshot, getServerCss3dSnapshot);
   const wide = useSyncExternalStore(subscribeWide, getWideSnapshot, getServerWideSnapshot);
-  const can3d = webgl && !failed3d;
+  const can3d = css3d;
   const wanted = chosenMode ?? (can3d && wide ? "3d" : "2d");
   const mode: ViewMode = wanted === "3d" && !can3d ? "2d" : wanted;
   const [loaded, setLoaded] = useState<Loaded | null>(null);
@@ -107,17 +107,16 @@ export function MapScreen() {
   } else if (current?.kind === "ok") {
     const view = buildCitySharesView(current.envelope);
     content = (
-      <>
-        {mode === "3d" ? (
-          <Map3DPanel view={view} onFail={() => setFailed3d(true)} />
-        ) : mode === "2d" ? (
-          <ShareBars view={view} />
-        ) : (
-          <ShareTable view={view} />
-        )}
-        {view.unstatedNote && <p className="m-0 text-caption text-text-secondary">{view.unstatedNote}</p>}
-        <SnapshotCaption caption={view.caption} />
-      </>
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="flex min-w-0 flex-col gap-5">
+          {mode === "3d" ? <Map3D view={view} /> : mode === "2d" ? <ShareBars view={view} /> : <ShareTable view={view} />}
+          {view.unstatedNote && <p className="m-0 text-caption text-text-secondary">{view.unstatedNote}</p>}
+        </div>
+        <aside className="flex min-w-0 flex-col gap-4">
+          <MapSummary view={view} />
+          <SnapshotCaption caption={view.caption} />
+        </aside>
+      </div>
     );
   }
 
