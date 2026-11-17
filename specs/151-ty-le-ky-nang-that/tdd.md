@@ -83,3 +83,8 @@ GREEN (sau khi sửa code và web):
 - `uv run pytest tests/domain tests/api/test_fr19_skill_rates_stat.py tests/api/test_ad17_meta_nguon_stat.py -q` → 421 passed.
 - Web: `npx vitest run` → 22 files, 302 passed; `npx tsc --noEmit` và `npm run lint` sạch.
 - Toàn bộ: `uv run pytest -q` (Postgres thật, DB `fx151b_test`, không skip) → 1586 passed; `uv run ruff check` → All checks passed; `check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
+## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`.
+Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.

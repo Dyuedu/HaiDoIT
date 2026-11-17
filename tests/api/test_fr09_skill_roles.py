@@ -17,7 +17,7 @@ from pydantic import ValidationError
 
 from haido_api.fake_market import FIXTURE, FakeMarket
 from haido_api.main import app, create_app
-from haido_api.market_source import UnknownCell
+from haido_api.market_source import UnknownSkill
 from haido_api.routes.market import SOURCE_ENV, load_sources
 from haido_api.schemas.market import SkillRoleRow, SkillRolesData
 from haido_api.stat_market import StatMarket
@@ -522,20 +522,39 @@ def test_fr09_thieu_nguon_skill_roles_la_loi_khoi_dong() -> None:
         create_app(sources)
 
 
-def test_fr09_stat_chua_co_so_that_nen_la_unknown_cell_khong_co_ngay() -> None:
-    def no_db() -> Any:
-        raise AssertionError("StatMarket.skill_roles chưa được mở kết nối")
+def test_fr09_stat_khong_mo_ket_noi_luc_dung_nguon() -> None:
+    """Từ #168 `StatMarket.skill_roles` đọc số thật (`test_fr09_skill_roles_stat.py`); kết nối chỉ mở ở yêu cầu đầu.
 
-    stat = StatMarket(engine_factory=no_db)
-    with pytest.raises(UnknownCell) as err:
-        stat.skill_roles(skill="python")
-    assert err.value.snapshot_date is None
+    Chưa có snapshot đọc được thì 404 `unknown_cell` không ngày (kiểm trên Postgres ở file đó), không bao giờ số giả.
+    """
 
-    sources = {op: FakeMarket() for op in SOURCE_ENV} | {"skill_roles": stat}
-    resp = TestClient(create_app(sources)).get(PATH, params={"skill": "python"})
-    assert resp.status_code == 404
-    assert resp.json()["error"]["code"] == "unknown_cell"
-    assert resp.json()["error"]["snapshot_date"] is None
+    class Opened(Exception):
+        pass
+
+    calls: list[int] = []
+
+    def factory() -> Any:
+        calls.append(1)
+        raise Opened
+
+    market = StatMarket(engine_factory=factory)
+    assert calls == []  # dựng nguồn không mở kết nối
+    with pytest.raises(Opened):
+        market.skill_roles(skill="python")
+    assert calls == [1]  # yêu cầu đầu tiên mở đúng một lần
+
+
+def test_fr09_stat_ma_ngoai_bo_tu_vung_la_unknown_skill_truoc_khi_mo_ket_noi() -> None:
+    calls: list[int] = []
+
+    def factory() -> Any:
+        calls.append(1)
+        raise AssertionError("mã ngoài bộ từ vựng không được mở kết nối")
+
+    market = StatMarket(engine_factory=factory)
+    with pytest.raises(UnknownSkill):
+        market.skill_roles(skill="khong_co_ky_nang")
+    assert calls == []
 
 
 def test_fr09_nguon_tra_sai_hop_dong_thanh_500() -> None:

@@ -1,5 +1,5 @@
-"""#166 — production chọn nguồn `stat` cho skill-roles (404 `unknown_cell` đến khi #168 có số thật, không bao giờ số giả);
-compose local giữ bản giả cho smoke của CI. Cùng khuôn với #146 và #162."""
+"""#166 — production chọn nguồn `stat` cho skill-roles (số thật từ #168; chưa có snapshot thì 404 `unknown_cell`, không
+bao giờ số giả); compose local giữ bản giả cho smoke của CI. Cùng khuôn với #146 và #162."""
 
 from pathlib import Path
 

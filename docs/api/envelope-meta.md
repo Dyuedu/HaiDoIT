@@ -281,11 +281,13 @@ Junior) của vai trò có nhắc kỹ năng. Cấp bậc cố định là nhóm
 - `data.skill` gồm mã và tên song ngữ để màn ghi kỹ năng đã dùng. Tên công nghệ được có chữ số (DEC-6, AD-8 miễn tên
   công nghệ); mọi chuỗi khác của `data` không có chữ số nào: số chỉ nằm trong `Stat` và `meta`.
 - Lỗi: mã đúng định dạng nhưng không có trong bộ từ vựng là 404 `unknown_skill`; thiếu `skill` hoặc sai định dạng là 422
-  `invalid_query`; nguồn chưa có số cho một kỹ năng hợp lệ là 404 `unknown_cell` (nguồn `stat` đến #168 luôn như vậy,
-  không có ngày snapshot). Production đặt `HAIDO_MARKET_SOURCE_SKILL_ROLES=stat`, nên màn này là 404 ở production đến #168.
+  `invalid_query`; nguồn chưa có số cho một kỹ năng hợp lệ là 404 `unknown_cell`: nguồn `stat` trả 404 không có ngày khi
+  chưa có snapshot đọc được, và 404 kèm ngày snapshot khi snapshot không có hàng nào của kỹ năng đó. Production đặt
+  `HAIDO_MARKET_SOURCE_SKILL_ROLES=stat` (số thật từ #168, không bao giờ số giả).
 - Kiểu TypeScript, hàm gọi API và hàm tra cỡ mẫu `rowN`: `web/lib/skill-roles.ts`. Fixture cho test web:
   `web/tests/fixtures/skill-roles-{python,figma,abap,sap,machine_learning}.json`.
-- Số thật (#168): `share.value = n_with / n_scanned`; `n_scanned` thành `n_by_measure.skill_count` của
+- Số thật (#168), nguồn `stat`: snapshot là `published` hoặc `partial` mới nhất có nguồn và có hàng `stat_skill_rates`.
+  `share.value` là `rate` của hàng entry (`= n_with / n_scanned`); `n_scanned` thành `n_by_measure.skill_count` của
   `meta.cells[vn.<role>.entry]` (`n` giữ là số tin của ô, cũng là `n` mà `newcomer-roles` ghi) để `Envelope` kiểm được
   `display`. `mentioned = n_with > 0` của hàng ô mọi vai trò, mọi cấp của `stat_skill_rates` (`role = all`, `seniority = all`,
   `years = any`, `scope = vn`; `cell_id` `vn.all`), không cộng các ô entry.
@@ -416,7 +418,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | `stat` (#151): `stat_skill_rates` của snapshot đọc được mới nhất, quay về qua phép 2 (#106); `deploy/compose.prod.yml` đặt `stat` |
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#309) |
-| `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | #168; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#166) |
+| `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | `stat` (#168): `stat_skill_rates` hàng entry của kỹ năng và `stat_cells` ô `vn.<role>.entry` của snapshot đọc được mới nhất; `deploy/compose.prod.yml` đặt `stat` (#166) |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.
 Thêm bản thật: cài `MarketReadModel` (`haido_api/market_source.py`), thêm một mục vào `IMPLEMENTATIONS`,

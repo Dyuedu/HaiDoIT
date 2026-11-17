@@ -30,6 +30,13 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   `n` của ô `vn` ở nhóm cấp `entry` (Intern + Fresher + Junior, do `aggregate` ghi); n của vai trò là ô `vn` ở `all`.
   Mọi vai trò của `config/rules.toml` có một dòng; vai trò không có hàng ở snapshot đó là 0 tin. Tỷ lệ là `level_share`,
   dưới ngưỡng thì `null_data` theo `suppression_for`. Thứ tự dòng do máy chủ quyết như bản giả.
+- Kỹ năng theo vai trò (#168, #166): cùng snapshot đọc được như tỷ lệ kỹ năng. Mỗi vai trò của `config/rules.toml` một
+  dòng: tỷ lệ là `rate` của hàng entry (`n_with / n_scanned`, do `aggregate` ghi, #101). Cỡ mẫu của phép đo là
+  `n_scanned`, ở `meta.cells[vn.<role>.entry].n_by_measure.skill_count`; `n` của ô là `n` của `stat_cells`. Dưới ngưỡng
+  (theo `n_scanned`) thì `null_data`; vai trò không có ô entry có `n = 0`. `mentioned` là `n_with > 0` của hàng vai trò
+  `all` ở cấp `all` (mọi cấp, AC 4 của #113). Kỹ năng không có hàng nào ở snapshot là `UnknownCell` kèm ngày.
+  `n_scanned` lớn hơn `n` của ô, hoặc vai trò có `n_with > 0` ở cấp entry khi hàng `all` × `all` có `n_with = 0`, là dữ
+  liệu hỏng (`RuntimeError`). Mã kỹ năng ngoài bộ từ vựng là `UnknownSkill`, kiểm trước khi mở kết nối. Chỉ đọc `stat_*` theo khóa (AD-7).
 """
 
 import threading
@@ -40,15 +47,17 @@ from typing import Any
 import sqlalchemy as sa
 from sqlalchemy import Connection, Engine
 
-from haido_api.market_source import UnknownCell
+from haido_api.market_source import UnknownCell, UnknownSkill
 from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import (
     CityShareRow,
     CitySharesData,
     NewcomerRoleRow,
     NewcomerRolesData,
+    SkillLabel,
     SkillRateRow,
     SkillRatesData,
+    SkillRoleRow,
     SkillRolesData,
 )
 from haido_core.config import RulesConfig, load_rules
@@ -81,6 +90,7 @@ from haido_core.domain.registry import (
     SkillRate,
 )
 from haido_core.domain.skill_groups import SkillGrouper
+from haido_core.vocab.skills import find_seed_skill
 
 READABLE = ("published", "partial")
 NATIONWIDE = "vn"
@@ -92,7 +102,7 @@ UNKNOWN_LEVEL = "unknown"
 
 
 class StatMarket:
-    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#151) đọc `stat_skill_rates`; `learning_path` (#216) và `skill_roles` (#168) chưa có số thật."""
+    """Bản thật của `MarketReadModel` cho `city_shares`, `newcomer_roles` (#145, #146), `skill_rates` (#151) và `skill_roles` (#168). `learning_path` (#216) chưa có số thật."""
 
     def __init__(
         self, *, engine_factory: Callable[[], Engine] | None = None, rules: RulesConfig | None = None
@@ -332,7 +342,83 @@ class StatMarket:
         raise UnknownCell("Lộ trình học chưa có số liệu thật.", snapshot_date=None)
 
     def skill_roles(self, *, skill: str) -> Envelope[SkillRolesData]:
-        raise UnknownCell("Tỷ lệ kỹ năng theo vai trò chưa có số liệu thật.", snapshot_date=None)
+        rules = self._rules
+        levels = rules.level_groups.get(ENTRY)
+        if not levels:
+            raise RuntimeError(f"config/rules.toml thiếu nhóm cấp bậc {ENTRY!r} trong level_groups.")
+        label = find_seed_skill(skill)
+        if label is None:
+            raise UnknownSkill("Kỹ năng đã chọn không có trong bộ từ vựng.")
+        min_sample = rules.min_sample
+        with self._db().connect() as conn:
+            latest = _latest_with_skill_rates(conn)
+            if latest is None:
+                raise UnknownCell("Chưa có snapshot nào đã công bố có tỷ lệ kỹ năng.", snapshot_date=None)
+            day: date = latest.snapshot_id
+            mentioned_n, scanned_by_role, rate_by_role, with_by_role = _skill_role_rows(conn, day, skill)
+            if mentioned_n is None:
+                raise UnknownCell("Snapshot đã chọn không có số liệu nào của kỹ năng đã chọn.", snapshot_date=day)
+            entries = _national_cells(conn, day, ENTRY)
+            sources = _sources(conn, day)
+        if mentioned_n == 0:
+            stray = sorted(role for role, n_with in with_by_role.items() if n_with > 0)
+            if stray:
+                raise RuntimeError(
+                    f"stat_skill_rates của snapshot {day.isoformat()} sai: kỹ năng {skill} có n_with = 0 ở vai trò all "
+                    f"và cấp all nhưng vai trò {', '.join(stray)} có n_with > 0 ở cấp entry."
+                )
+
+        cells: dict[str, CellMeta] = {}
+        rows: list[SkillRoleRow] = []
+        for role in rules.roles:
+            n, mix = entries.get(role, (0, {}))
+            scanned = scanned_by_role.get(role, 0)
+            if scanned > n:
+                raise RuntimeError(
+                    f"stat_skill_rates của snapshot {day.isoformat()} sai: vai trò {role} có n_scanned = {scanned} "
+                    f"lớn hơn {n} tin entry-level của ô."
+                )
+            cell_id = f"{NATIONWIDE}.{role}.{ENTRY}"
+            display = suppression_for(MeasureKind.SKILL_RATE, scanned, min_sample=min_sample)
+            value = None if display is DisplayState.NULL_DATA else rate_by_role.get(role, 0.0)
+            cells[cell_id] = CellMeta(
+                n=n,
+                fallback_label=None,
+                seniority_mix=mix,
+                n_by_measure={SKILL_COUNT: scanned},
+                insufficient_by_measure={SKILL_COUNT: scanned < min_sample},
+            )
+            share = Stat(value=value, kind=MeasureKind.SKILL_RATE, display=display, cell_id=cell_id)
+            rows.append(SkillRoleRow(role=role, share=share))
+        # Thứ tự như bản giả (#166): dòng có tỷ lệ trước (giảm dần rồi mã); dòng `null_data` sau, cỡ mẫu của phép đo
+        # giảm dần rồi mã.
+        rows.sort(
+            key=lambda r: (
+                r.share.display is DisplayState.NULL_DATA,
+                -(r.share.value or 0.0),
+                -cells[r.share.cell_id].n_by_measure[SKILL_COUNT] if r.share.display is DisplayState.NULL_DATA else 0,
+                r.role,
+            )
+        )
+        meta = Meta(
+            snapshot_date=day,
+            snapshot_status=SnapshotStatus(latest.status),
+            sources=sources,
+            sources_failed=list(latest.sources_failed),
+            thresholds=Thresholds(min_sample=min_sample, theta_core=rules.theta_core, theta_common=rules.theta_common),
+            coverage_notes=[
+                CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources)))) for n in rules.coverage_notes
+            ],
+            cells=cells,
+        )
+        data = SkillRolesData(
+            skill=SkillLabel(code=label.code, name_en=label.name_en, name_vi=label.name_vi),
+            level=ENTRY,
+            levels=list(levels),
+            mentioned=mentioned_n > 0,
+            rows=rows,
+        )
+        return Envelope[SkillRolesData](data=data, meta=meta)
 
 
 def _latest_readable(conn: Connection, level: str, years: str = ANY) -> Any:
@@ -465,3 +551,35 @@ def _skill_rate_rows(conn: Connection, day: date, role: str, level: str) -> list
         r.c.scope == NATIONWIDE,
     )
     return [(row.skill, row.n_with, row.rate) for row in conn.execute(stmt)]
+
+
+def _skill_role_rows(
+    conn: Connection, day: date, skill: str
+) -> tuple[int | None, dict[str, int], dict[str, float], dict[str, int]]:
+    """Hàng `stat_skill_rates` của một kỹ năng (#168): `(n_with của vai trò all × cấp all, n_scanned, rate và n_with theo vai trò)`.
+
+    Một truy vấn theo khóa `(snapshot_id, skill)`, phạm vi `vn`, nhánh `all`, số năm `any`, cấp `entry` hoặc `all`. Hàng
+    `role = all`, `seniority = all` là mọi tin của mọi vai trò và cấp: nguồn của `mentioned` (`None` khi kỹ năng không có
+    hàng nào ở snapshot). `n_scanned` và `rate` theo vai trò lấy từ hàng cấp `entry`, như `aggregate` đã ghi.
+    """
+    r = stat_skill_rates
+    stmt = sa.select(r.c.role, r.c.seniority, r.c.n_with, r.c.n_scanned, r.c.rate).where(
+        r.c.snapshot_id == day,
+        r.c.skill == skill,
+        r.c.scope == NATIONWIDE,
+        r.c.branch == ALL,
+        r.c.years == ANY,
+        r.c.seniority.in_((ENTRY, ALL)),
+    )
+    mentioned: int | None = None
+    scanned: dict[str, int] = {}
+    rates: dict[str, float] = {}
+    with_: dict[str, int] = {}
+    for row in conn.execute(stmt):
+        if row.role == ALL and row.seniority == ALL:
+            mentioned = row.n_with
+        elif row.seniority == ENTRY and row.role != ALL:
+            scanned[row.role] = row.n_scanned
+            rates[row.role] = row.rate
+            with_[row.role] = row.n_with
+    return mentioned, scanned, rates, with_
