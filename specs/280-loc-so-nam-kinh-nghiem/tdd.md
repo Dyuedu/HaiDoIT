@@ -207,3 +207,10 @@ Hành vi và AC của issue này không đổi: thay đổi chỉ thêm (phươn
 - GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx151_test`, không skip) → 1580 passed; `cd web && npx vitest run` → 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
 
 Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
+
+## Đợt 2026-11-17 (#314): màn Bản đồ có lối 3D
+
+Lý do: #314 sửa `web/app/components/map/map-screen.tsx` (lối 3D mặc định trên màn rộng có WebGL) và `view-switch.tsx` (nút 3D bật được). Bộ lọc vai trò, cấp bậc, số năm và cách gọi `city-shares` không đổi; lối 3D dựng từ cùng `buildCitySharesView`. Không AC nào của issue này đổi.
+
+- RED: không có test nào của issue này đỏ.
+- GREEN: `npx vitest run` → 27 files, 342 passed (jsdom không có WebGL nên các test cũ vẫn chạy ở lối 2D).

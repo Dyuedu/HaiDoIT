@@ -123,3 +123,10 @@ Edge headless, API giả `uvicorn --port 8014`, `next dev -p 3014` với `API_BA
 Bằng chứng phím mũi tên: ArrowDown trên `<select>` đang focus đổi giá trị và phát đúng một lượt gọi mới. Dọn: tắt hai server, xóa `web/AGENTS.md`; DB tạm `fx293_test` đã xóa.
 
 Số đếm cuối đợt 2: `npm run lint` sạch; `npm run test` 14 file, 200 passed; `npm run build` thành công; `uv run pytest -q tests/deploy` 58 passed; `check_gates.py --require ...` 10 gates: 8 pass, 2 skipped, 0 failed.
+
+## Đợt 2026-11-17 (#314): màn Bản đồ có lối 3D
+
+Lý do: #314 sửa `web/app/components/map/map-screen.tsx` (lối 3D mặc định trên màn rộng có WebGL) và `view-switch.tsx` (nút 3D bật được). Bộ lọc vai trò, cấp bậc, số năm và cách gọi `city-shares` không đổi; lối 3D dựng từ cùng `buildCitySharesView`. Không AC nào của issue này đổi.
+
+- RED: không có test nào của issue này đỏ.
+- GREEN: `npx vitest run` → 27 files, 342 passed (jsdom không có WebGL nên các test cũ vẫn chạy ở lối 2D).
