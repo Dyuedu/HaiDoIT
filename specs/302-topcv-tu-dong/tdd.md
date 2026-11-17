@@ -78,3 +78,27 @@ Build lại `scraper-browser` với `topcv.py` mới, chạy `pipeline.py crawl 
 ### CI (2026-11-16)
 
 Job "Python - ruff and pytest" đỏ ở `tests/domain/test_perm08_emails.py` (#8, chưa có `specs/`): thư TopCV phải có cụm "một lượt mỗi ngày", bản sửa đã viết "một lượt tự động mỗi ngày". Đổi câu thành "một lượt mỗi ngày, chạy tự động, ...". `uv run pytest -q` → 752 passed, 217 skipped.
+
+## Đợt 3: ingest bỏ sót TopCV (2026-11-17)
+
+Lý do: `daily-2026-11-17.log` có `[topcv] OK in 6978s`, `seen: 2399 jobs, listing_complete=True`, nhưng phần ingest chỉ in 7 nguồn và `done: 2579 observations` (đúng tổng 7 nguồn); kho ghi "7 lượt chạy". `scraper/ingest.py` mặc định `--sources` là `AUTO_SOURCES`, danh sách này thiếu `topcv`; `config/rules.toml` `[sources].auto` cũng thiếu, và test AD-10 bắt hai danh sách trùng nhau.
+
+Lệnh thêm: `uv run pytest tests/core/test_ad10_rules_config.py tests/steps/test_ad4_ingest.py -q`.
+
+Hành vi mới:
+
+16. `ingest.AUTO_SOURCES` có `topcv`.
+17. `load_rules().auto_sources` là tám nguồn, có `topcv`; `linkedin` không có.
+18. Nguồn ngoài danh sách (`linkedin`) ghi `mode = "manual"` (hai test AD-4 đổi ví dụ từ `topcv`, vẫn xanh trước và sau).
+
+### RED (2026-11-17)
+
+- `python -m pytest tests -q -p no:cacheprovider` → 3 failed, 74 passed, 9 skipped. Hành vi 16 đỏ: `assert 'topcv' in ['zalo', 'itnavi', 'careerlink', 'vietnamworks', 'momo', 'topdev', ...]`. Hai fail còn lại thuộc #296.
+- `uv run pytest tests/core/test_ad10_rules_config.py tests/steps/test_ad4_ingest.py -q` → 1 failed, 117 passed, 15 skipped. Hành vi 17 đỏ: `rules.auto_sources == AUTO` khác nhau ở `topcv`.
+
+### GREEN (2026-11-17)
+
+- `python -m pytest tests -q -p no:cacheprovider` → 77 passed, 9 skipped.
+- `uv run pytest -q` → 1018 passed, 217 skipped. Lần chạy đầu sau khi sửa config còn 1 fail: `test_ad10_rules_mac_dinh_co_phien_ban_cua_so_va_bay_nguon` khẳng định `"topcv" not in rules.auto_sources`, tức quyết định 03/11 đã bỏ; đổi thành `linkedin` và đổi tên test sang `..._tam_nguon`.
+
+Quan sát TopCV của snapshot `2026-11-17` không bù được: snapshot đã chốt `partial`.

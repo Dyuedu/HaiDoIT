@@ -68,3 +68,9 @@ Lý do: #285 đổi mã nơi (nơi của cụm lấy từ `job_posting_facts.cit
 
 - RED: `test_dat20_ty_trong_thanh_pho_va_n_dung_cho_tung_vai_tro` đỏ vì dòng `other`.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Chạy lại (2026-11-17, #302)
+
+#302 sửa `config/rules.toml` (`[sources].auto` thêm `topcv`, `config_version` lên `2026-11-17.1`), `tests/core/test_ad10_rules_config.py` và `tests/steps/test_ad4_ingest.py` (ví dụ nguồn chạy tay đổi từ `topcv` sang `linkedin`). Không đổi scenario của issue này.
+
+- `uv run pytest -q` → 1018 passed, 217 skipped.

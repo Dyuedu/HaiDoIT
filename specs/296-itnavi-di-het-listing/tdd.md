@@ -36,4 +36,32 @@ Test nằm trong `scraper/tests/test_observations.py`. `fake_itnavi` nhận thê
 
 ## Kiểm sau merge
 
-Chưa chạy. Ghi số listed và "gone since last complete run" của ITnavi trong ba đêm liền ở đây.
+| Đêm | listed | complete | gone since last complete run | Ghi chú |
+|---|---|---|---|---|
+| 16/11 | 447 | true | 16 | so với lượt đủ 15/11 (346, lượt lỗi cũ) |
+| 17/11 | 372 | false | 0 | `met 380 of 485`, trang 42 rỗng; snapshot `partial` |
+
+Đêm 17/11 không đạt. Ba đêm liền tính lại từ đêm đầu sau khi bản tải lại trang rỗng (đợt 2) lên VPS.
+
+## Đợt 2: trang rỗng tạm thời (2026-11-17)
+
+Lý do: `daily-2026-11-17.log`, ITnavi trang 1–41 có tin, `end: page 42 is empty`, `seen: 372 jobs, listing_complete=False`, error `met 380 of 485 listed jobs`; snapshot `2026-11-17` chốt `partial`. Quét lại sáng 17/11 từ máy dev (chỉ listing, giãn 3 giây): trang 1–48 mỗi trang 10 tin, trang 49 có 5, trang 50–52 trống, 483 tin, tổng in trên trang 485. Trang 42 đêm qua rỗng tạm thời.
+
+Hành vi mới:
+
+6. Trang 2 trống ở lần tải đầu rồi có tin → tải trang 2 hai lần, file seen có tin trang 2 và 3, lượt đủ.
+7. Trang 3 trống mãi → tải trang 3 đúng `EMPTY_PAGE_TRIES` lần.
+
+`fake_itnavi` thêm `empty_first={page: n}`: trang đó trả trống ở n lần tải đầu.
+
+### RED (2026-11-17)
+
+`python -m pytest tests -q -p no:cacheprovider` → 3 failed, 74 passed, 9 skipped (gồm một test của #302).
+
+- Hành vi 6 đỏ: `assert False is True` (`listing_complete`): trang 2 trống lần đầu kết thúc listing, mới gặp 2/5 tin.
+- Hành vi 7 đỏ: `AttributeError: module 'crawlers.itnavi' has no attribute 'EMPTY_PAGE_TRIES'`.
+
+### GREEN (2026-11-17)
+
+- `python -m pytest tests -q -p no:cacheprovider` → 77 passed, 9 skipped.
+- `uv run pytest -q` → 1018 passed, 217 skipped.

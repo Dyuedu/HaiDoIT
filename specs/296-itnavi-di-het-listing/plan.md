@@ -31,7 +31,7 @@ Vòng lặp listing của `crawlers/itnavi.py` đổi điều kiện dừng: tra
 
 ```text
 specs/296-itnavi-di-het-listing/   spec, plan, tasks, research, data-model, tdd
-scraper/crawlers/itnavi.py         sửa vòng lặp listing, thêm listed_total()
+scraper/crawlers/itnavi.py         sửa vòng lặp listing, thêm listed_total(); EMPTY_PAGE_TRIES (17/11)
 scraper/tests/test_observations.py thêm test ITnavi
 ```
 

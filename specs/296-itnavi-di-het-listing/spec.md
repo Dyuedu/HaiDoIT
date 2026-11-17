@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-15
 
-**Status**: Code xong, test xanh. Còn chờ ba đêm trên VPS (AC cuối).
+**Status**: Code xong, test xanh. Đêm 16/11 đủ; đêm 17/11 trang rỗng tạm thời làm lượt chưa đủ, đã thêm tải lại (User Story 5). Còn chờ ba đêm liền trên VPS (AC cuối).
 
 **Input**: GitHub issue [#296](https://github.com/Dyuedu/HaiDoIT/issues/296) — Keep walking the ITnavi listing past a page with no new id.
 
@@ -61,6 +61,15 @@ Nguyên nhân ở `crawlers/itnavi.py`: trang đầu tiên không có id mới l
 
 1. **Given** bản sửa đã deploy, **When** ba lượt đêm liền nhau chạy, **Then** số listed của ITnavi lệch nhau không quá 10% và "gone since last complete run" dưới 10% số listed. Số liệu ghi vào `tdd.md`.
 
+### User Story 5 - Trang rỗng tạm thời được tải lại (Priority: P1)
+
+**Why this priority**: đêm 17/11 trang 42 trả về không có tin khi mới gặp 380/485 tin; lượt ghi `listing_complete=False` và snapshot chốt `partial`. Sáng 17/11 quét lại thấy 49 trang đủ, 483/485 tin. Thuộc AC thứ nhất: chỉ coi là hết listing khi trang thực sự trống.
+
+**Acceptance Scenarios**:
+
+1. **Given** trang 2 trống ở lần tải đầu rồi có tin, **When** crawler chạy, **Then** trang 2 được tải 2 lần, tin của trang 2 và 3 có trong file seen, `listing_complete` là `True`.
+2. **Given** trang 3 trống mãi, **When** crawler chạy, **Then** trang 3 được tải đúng `EMPTY_PAGE_TRIES` lần rồi mới kết thúc listing.
+
 ### Edge Cases
 
 - Trang trùng làm tốn thêm tối đa `STALE_PAGES - 1` request mỗi đêm (3 giây/request), chấp nhận được.
@@ -71,7 +80,7 @@ Nguyên nhân ở `crawlers/itnavi.py`: trang đầu tiên không có id mới l
 
 ### Functional Requirements
 
-- **FR-001**: Trang không có thẻ `div.jsl-item[data-id]` kết thúc listing.
+- **FR-001**: Trang không có thẻ `div.jsl-item[data-id]` được tải lại tới `EMPTY_PAGE_TRIES` (3) lần; vẫn trống thì kết thúc listing.
 - **FR-002**: Trang có thẻ nhưng không có id mới chỉ tăng bộ đếm; `STALE_PAGES` (hằng số đầu module, mặc định 3) trang liên tiếp như vậy thì kết thúc listing. Trang có id mới đặt lại bộ đếm.
 - **FR-003**: Khi listing kết thúc, đọc tổng từ `div.js-tab__show h1`; `complete` khi số id gặp ≥ `MIN_COVERAGE` (0,9) × tổng, ngược lại `error = "met X of Y listed jobs"`.
 - **FR-004**: Không đọc được tổng thì `complete` và in cảnh báo.

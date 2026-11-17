@@ -115,3 +115,9 @@ Lý do: nhánh `gh-111-ho-so-ky-nang` sửa file mà issue này từng đụng: 
 
 - RED: không có, vì không có hành vi nào của issue này đổi.
 - GREEN: `uv run pytest -q` → 1018 passed, 217 skipped; `cd web && npx vitest run` → 21 files, 281 passed; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Chạy lại (2026-11-17, #302)
+
+#302 sửa `config/rules.toml` (`[sources].auto` thêm `topcv`, `config_version` lên `2026-11-17.1`), `tests/core/test_ad10_rules_config.py` và `tests/steps/test_ad4_ingest.py` (ví dụ nguồn chạy tay đổi từ `topcv` sang `linkedin`). Không đổi scenario của issue này.
+
+- `uv run pytest -q` → 1018 passed, 217 skipped.

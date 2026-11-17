@@ -33,10 +33,9 @@ from pathlib import Path
 from crawlers.base import read_jsonl, today_snapshot
 from db import connect
 
-# TopCV is not here: it only opens to a Cloudflare-evading browser, so it stays manual
-# (ARCHITECTURE-SPINE.md, AD-16). A manual topcv run still writes a seen file, so if
-# you pass --sources topcv by hand, ingest records its observations.
-AUTO_SOURCES = ["zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec"]
+# Sources the nightly run crawls; ingest reads their seen files by default. TopCV joined
+# the nightly run in #302 (it used to be manual only, AD-16).
+AUTO_SOURCES = ["zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec", "topcv"]
 
 CRAWL_COLUMNS = [
     "job_url", "site", "job_id", "title", "company", "location", "salary",

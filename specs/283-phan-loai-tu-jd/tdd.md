@@ -146,3 +146,9 @@ Lý do: #285 đổi mã nơi (`classify.toml` thay ba thành phố bằng 34 t�
 
 - RED: `test_gh283_migration_0007_noi_tiep_0006_va_la_head_duy_nhat` đỏ vì head là 0008.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
+
+## Chạy lại (2026-11-17, #302)
+
+#302 sửa `config/rules.toml` (`[sources].auto` thêm `topcv`, `config_version` lên `2026-11-17.1`), `tests/core/test_ad10_rules_config.py` và `tests/steps/test_ad4_ingest.py` (ví dụ nguồn chạy tay đổi từ `topcv` sang `linkedin`). Không đổi scenario của issue này.
+
+- `uv run pytest -q` → 1018 passed, 217 skipped.
