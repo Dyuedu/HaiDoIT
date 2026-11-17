@@ -60,11 +60,14 @@ class CellQuery:
 
 @dataclass(frozen=True, slots=True)
 class CellChoice:
-    """Ô đã chọn, cỡ mẫu và nhãn. Ba thứ này không tách rời."""
+    """Ô đã chọn, cỡ mẫu và nhãn. Ba thứ này không tách rời; thứ tự quay về đi kèm (#106)."""
 
     cell: CellKey
     n: int
-    label: str
+    label: str | None
+    """`None` khi chính ô được yêu cầu đủ mẫu. Còn lại là câu giải thích tập đã dùng (#106)."""
+    order: tuple[CellKey, ...] = ()
+    """Thứ tự quay về đã xét, ô được yêu cầu đứng đầu (#106). Ô đã chọn là một phần tử của nó."""
 
 
 @dataclass(frozen=True, slots=True)

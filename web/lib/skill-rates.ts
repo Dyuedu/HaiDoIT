@@ -114,7 +114,10 @@ function isSkillRatesEnvelope(body: unknown): body is SkillRatesEnvelope {
   } else if (!counts.every(isCount) || (data.have_core as number) > (data.core_size as number)) {
     return false;
   }
-  if (!Array.isArray(data.rows) || data.rows.length === 0) return false;
+  if (!Array.isArray(data.rows)) return false;
+  // `rows` rỗng chỉ hợp lệ khi ô đủ mẫu mà mọi kỹ năng đều hiếm: API ghi `core_size = 0`. Rỗng mà chưa đủ dữ liệu
+  // (`core_size = null`) hay mà còn kỹ năng cốt lõi là response hỏng.
+  if (data.rows.length === 0 && data.core_size !== 0) return false;
   const seen = new Set<string>();
   for (const row of data.rows) {
     if (!isRecord(row) || typeof row.skill !== "string" || !isSkillCode(row.skill) || seen.has(row.skill)) return false;
