@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Chín cổng kiến trúc của AD-24 — chặn merge.
+"""Mười cổng kiến trúc của AD-24 — chặn merge.
 
 Mỗi cổng là một hàm có tên chứa mã AD hoặc FR, đúng yêu cầu của AD-24.
 
@@ -19,8 +19,11 @@ import argparse
 import ast
 import datetime
 import json
+import os
 import re
+import subprocess
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -338,65 +341,277 @@ def gate_fr_cau_chu_bi_cam():
     return (FAIL if hits else PASS), "%d files scanned" % len(files), hits
 
 
-def check_deferred(code: str) -> tuple[str, str, list[str]]:
+def _deferral(code: str) -> tuple[tuple[str, str, list[str]] | None, str, str]:
+    """Đọc mục `code` của sổ hoãn: (kết quả FAIL nếu sổ hỏng hoặc quá hạn, issue, hạn)."""
     ledger_path = ROOT / "tools" / "gates" / "deferred.json"
     if not ledger_path.is_file():
-        return FAIL, "tools/gates/deferred.json missing; cannot defer %s" % code, ["missing deferred.json"]
+        return (FAIL, "tools/gates/deferred.json missing; cannot defer %s" % code, ["missing deferred.json"]), "", ""
     try:
         data = json.loads(ledger_path.read_text(encoding="utf-8"))
     except Exception as exc:
-        return FAIL, "deferred.json unparsable: %s" % exc, [str(exc)]
+        return (FAIL, "deferred.json unparsable: %s" % exc, [str(exc)]), "", ""
 
     entry = data.get(code)
     if not isinstance(entry, dict):
-        return FAIL, "%s missing from deferred.json" % code, ["%s not found in deferred.json" % code]
+        return (FAIL, "%s missing from deferred.json" % code, ["%s not found in deferred.json" % code]), "", ""
 
     issue = entry.get("issue")
     if not isinstance(issue, str) or not (issue.startswith("http://") or issue.startswith("https://")):
-        return FAIL, "%s has invalid issue URL: %r" % (code, issue), ["invalid issue URL for %s" % code]
+        return (FAIL, "%s has invalid issue URL: %r" % (code, issue), ["invalid issue URL for %s" % code]), "", ""
 
     due = entry.get("due")
     if not isinstance(due, str):
-        return FAIL, "%s missing due date" % code, ["missing due date for %s" % code]
+        return (FAIL, "%s missing due date" % code, ["missing due date for %s" % code]), "", ""
 
     try:
         due_date = datetime.date.fromisoformat(due)
     except ValueError:
-        return FAIL, "%s has invalid due date format: %r" % (code, due), ["invalid due date"]
+        return (FAIL, "%s has invalid due date format: %r" % (code, due), ["invalid due date"]), "", ""
 
     today = datetime.date.today()
     if today > due_date:
-        return FAIL, "%s deferred deadline expired on %s" % (code, due), ["gate %s expired on %s" % (code, due)]
+        return (FAIL, "%s deferred deadline expired on %s" % (code, due), ["gate %s expired on %s" % (code, due)]), "", ""
 
+    return None, issue, due
+
+
+def check_deferred(code: str) -> tuple[str, str, list[str]]:
+    failure, issue, due = _deferral(code)
+    if failure is not None:
+        return failure
     return SKIP, "code not present yet; deferred until %s (%s)" % (due, issue), []
 
 
 # ---------------------------------------------------------------- FR-24
 @gate("FR-24", "Blurbs contain no numbers")
 def gate_fr24_loi_dan_khong_so():
+    # Một quy tắc duy nhất: haido_core/vocab/prepared_text.py (cùng quy tắc test FR-23 dùng). Module chỉ cần stdlib.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    try:
+        from haido_core.vocab.prepared_text import prepared_text_problems
+    finally:
+        sys.path.pop(0)
+
     blurbs = ROOT / "haido_core" / "vocab" / "blurbs"
-    if not blurbs.is_dir():
+    fixture = ROOT / "haido_api" / "fixtures" / "fake_learning_path.json"
+    if not blurbs.is_dir() and not fixture.is_file():
         return check_deferred("FR-24")
-    # cho phép số nằm trong tên công nghệ: Java 17, S3, EC2, OAuth2, Web3, HTML5, Vue 3
-    tech = re.compile(r"[A-Za-z][A-Za-z+#.]*\s?\d+")
-    hits = []
-    for f in blurbs.rglob("*"):
-        if not f.is_file():
+
+    hits: list[str] = []
+    where_scanned: list[str] = []
+    count = 0
+    if blurbs.is_dir():
+        where_scanned.append("haido_core/vocab/blurbs")
+        for f in sorted(blurbs.rglob("*")):
+            if not f.is_file():
+                continue
+            rel = f.relative_to(ROOT).as_posix()
+            try:
+                text = f.read_bytes().decode("utf-8")  # chặt: không dùng read() vì nó nuốt lỗi
+            except (OSError, UnicodeDecodeError) as exc:
+                hits.append("%s: cannot read as UTF-8: %r" % (rel, exc))
+                continue
+            count += 1
+            line_hit = False
+            for i, line in enumerate(text.splitlines(), 1):
+                problems = prepared_text_problems(line)
+                if problems:
+                    line_hit = True
+                    hits.append("%s:%d: %s: %s" % (rel, i, "; ".join(problems), line.strip()[:90]))
+            if not line_hit:
+                # Cụm chữ vắt qua nhiều dòng ("phần" / "trăm"): quét cả tệp, báo dòng bắt đầu cụm.
+                whole = prepared_text_problems(text)
+                if whole:
+                    norm = unicodedata.normalize("NFKC", text).casefold()
+                    m = re.search(r"phần\s+trăm", norm)
+                    line_no = norm.count("\n", 0, m.start()) + 1 if m else 1
+                    hits.append("%s:%d: %s" % (rel, line_no, "; ".join(whole)))
+    # Lời dẫn đang hiện ra hôm nay: blurb và resource.title của lộ trình giả (#138, quyết định 2026-11-16).
+    if fixture.is_file():
+        where_scanned.append("haido_api/fixtures/fake_learning_path.json")
+        fx_hits, fx_count = _fr24_scan_fixture(fixture, prepared_text_problems)
+        hits += fx_hits
+        count += fx_count
+    detail = "scanned %d texts in %s" % (count, ", ".join(where_scanned))
+    if count == 0:
+        hits.append("scanned 0 texts: an empty scan is not a pass")
+    return (FAIL if hits else PASS), detail, hits
+
+
+_FR24_KEYS = {
+    "top": {"_note", "roles"},
+    "role": {"skills"},
+    "node": {"skill", "requires", "foundation", "blurb", "resource"},
+    "resource": {"title", "url"},
+}
+
+
+def _fr24_scan_fixture(fixture: Path, prepared_text_problems) -> tuple[list[str], int]:
+    """Quét blurb và resource.title; khóa lạ hay kiểu sai là lỗi, để trường chữ mới không lọt qua cổng."""
+    name = "fake_learning_path.json"
+    try:
+        data = json.loads(fixture.read_bytes().decode("utf-8"))
+    except (OSError, ValueError) as exc:  # UnicodeDecodeError là ValueError
+        return ["%s: unreadable: %r" % (name, exc)], 0
+    hits: list[str] = []
+    count = 0
+
+    def unknown(obj: dict, kind: str, where: str) -> None:
+        for key in sorted(set(obj) - _FR24_KEYS[kind], key=str):
+            hits.append("%s: %s: unknown key %r (new prose field must be added to the gate)" % (name, where, key))
+
+    if not isinstance(data, dict) or not isinstance(data.get("roles"), dict):
+        return ["%s: top level must be an object with a 'roles' object" % name], 0
+    unknown(data, "top", "top level")
+    for role, entry in data["roles"].items():
+        if not isinstance(entry, dict) or not isinstance(entry.get("skills"), list):
+            hits.append("%s: %s: must be an object with a 'skills' list" % (name, role))
             continue
-        for i, line in enumerate(read(f).splitlines(), 1):
-            stripped = tech.sub("", line)
-            if re.search(r"\d|%", stripped):
-                hits.append("%s:%d: %s" % (f.relative_to(ROOT).as_posix(), i, line.strip()[:90]))
-    return (FAIL if hits else PASS), "scanned blurbs", hits
+        unknown(entry, "role", role)
+        for idx, node in enumerate(entry["skills"]):
+            if not isinstance(node, dict):
+                hits.append("%s: %s.skills[%d]: must be an object" % (name, role, idx))
+                continue
+            skill = node.get("skill")
+            label = "%s.%s" % (role, skill if isinstance(skill, str) else "skills[%d]" % idx)
+            unknown(node, "node", label)
+            resource = node.get("resource")
+            if resource is not None and not isinstance(resource, dict):
+                hits.append("%s: %s.resource: must be an object" % (name, label))
+                resource = None
+            if isinstance(resource, dict):
+                unknown(resource, "resource", label + ".resource")
+            for field, text in (
+                ("blurb", node.get("blurb")),
+                ("resource.title", (resource or {}).get("title")),
+            ):
+                if not isinstance(text, str):
+                    hits.append("%s: %s.%s: missing or not a string (%s)" % (name, label, field, type(text).__name__))
+                    continue
+                count += 1
+                problems = prepared_text_problems(text)
+                if problems:
+                    hits.append("%s: %s.%s: %s: %s" % (name, label, field, "; ".join(problems), text.strip()[:90]))
+    return hits, count
 
 
 # ---------------------------------------------------------------- FR-22
+# Đồ thị mẫu cho cổng: hòa chặng, nhóm, tỷ lệ để tầng 4 (mã A-Z) quyết định; `helm` khai báo chặng 1
+# nhưng cạnh kubernetes -> helm bắt nó đứng sau; `unused` không phải khoảng trống hay tổ tiên.
+# (mã, chặng, nhóm, tỷ lệ)
+FR22_SKILLS = [
+    ("git", 1, "core", 0.90), ("linux", 1, "core", 0.90), ("python", 1, "core", 0.95),
+    ("sql", 1, "common", 0.70), ("http", 2, "core", 0.80), ("rest", 2, "core", 0.80),
+    ("ci", 2, "common", 0.85), ("docker", 2, "common", 0.85), ("postgres", 3, "core", 0.75),
+    ("kubernetes", 3, "rare", 0.20), ("helm", 1, "rare", 0.10), ("unused", 1, "core", 0.99),
+]
+FR22_EDGES = [
+    ("git", "ci"), ("linux", "docker"), ("docker", "kubernetes"), ("ci", "kubernetes"),
+    ("sql", "postgres"), ("python", "http"), ("http", "rest"), ("kubernetes", "helm"),
+]
+FR22_GAPS = ["kubernetes", "postgres", "rest", "helm"]
+FR22_EXPECTED = ["python", "git", "linux", "sql", "http", "rest", "ci", "docker", "postgres", "kubernetes", "helm"]
+FR22_SHUFFLES = 20
+# Câu nhắc hoãn trong chi tiết của cổng PASS; `main()` in dòng chi tiết nào chứa nó.
+DEFERRED_NOTE = "still deferred"
+
+# Chạy trong tiến trình con (PYTHONHASHSEED khác nhau). Đọc đồ thị mẫu từ stdin, in JSON.
+FR22_PROBE = r"""
+import json, random, sys
+from haido_core.domain import path_order
+from haido_core.domain.registry import GraphEdge, PathRequest, PathSkill, SkillBand
+
+fx = json.load(sys.stdin)
+
+def build(gaps, edges, skills):
+    return PathRequest(
+        gaps=tuple(gaps),
+        edges=tuple(GraphEdge(a, b) for a, b in edges),
+        skills=tuple(PathSkill(s, st, SkillBand(b), r) for s, st, b, r in skills),
+    )
+
+# Phép 8 là class `PathOrderer`; chấp nhận thêm hàm `order_path` ở mức module.
+order_path = path_order.PathOrderer().order_path if hasattr(path_order, "PathOrderer") else path_order.order_path
+
+def run(gaps, edges, skills):
+    return list(order_path(build(gaps, edges, skills)))
+
+out = {"base": run(fx["gaps"], fx["edges"], fx["skills"]), "shuffled": []}
+variants = [(fx["gaps"][::-1], fx["edges"][::-1], fx["skills"][::-1])]
+for seed in range(fx["shuffles"]):
+    rng = random.Random(seed)
+    g, e, s = list(fx["gaps"]), list(fx["edges"]), list(fx["skills"])
+    rng.shuffle(g); rng.shuffle(e); rng.shuffle(s)
+    variants.append((g, e, s))
+for g, e, s in variants:
+    out["shuffled"].append(run(g, e, s))
+batch = order_path([build(fx["gaps"], fx["edges"], fx["skills"])] * 2)
+out["batch"] = [list(x) for x in batch]
+print(json.dumps(out))
+"""
+
+
+def _fr22_probe(hash_seed: str) -> tuple[dict | None, str]:
+    env = dict(os.environ)
+    env["PYTHONHASHSEED"] = hash_seed
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    # Tiến trình con trên Windows mặc định ghi stderr theo cp1252; ép UTF-8 để đọc lại được.
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONPATH"] = str(ROOT)
+    payload = json.dumps({"gaps": FR22_GAPS, "edges": FR22_EDGES, "skills": FR22_SKILLS, "shuffles": FR22_SHUFFLES})
+    try:
+        done = subprocess.run(
+            [sys.executable, "-c", FR22_PROBE], input=payload, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", env=env, cwd=str(ROOT), timeout=60, check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return None, "PYTHONHASHSEED=%s: order_path timed out" % hash_seed
+    if done.returncode != 0:
+        tail = ((done.stderr or "").strip().splitlines() or ["no stderr"])[-1]
+        return None, "PYTHONHASHSEED=%s: order_path crashed: %s" % (hash_seed, tail[:160])
+    try:
+        return json.loads(done.stdout or ""), ""
+    except ValueError:
+        return None, "PYTHONHASHSEED=%s: order_path printed unreadable output" % hash_seed
+
+
 @gate("FR-22", "Order path determinism")
 def gate_fr22_tat_dinh():
     path_order_file = ROOT / "haido_core" / "domain" / "path_order.py"
     if not path_order_file.is_file():
         return check_deferred("FR-22")
-    return PASS, "order_path implemented", []
+
+    hits: list[str] = []
+    runs: dict[str, dict] = {}
+    for seed in ("0", "1"):
+        result, problem = _fr22_probe(seed)
+        if result is None:
+            hits.append(problem)
+        else:
+            runs[seed] = result
+    for seed, result in runs.items():
+        if result.get("base") != FR22_EXPECTED:
+            hits.append("PYTHONHASHSEED=%s: order is %s, expected %s" % (seed, result.get("base"), FR22_EXPECTED))
+        bad = sum(1 for other in result.get("shuffled", []) if other != result.get("base"))
+        if bad or not result.get("shuffled"):
+            hits.append("PYTHONHASHSEED=%s: %d of %d shuffled requests gave a different order"
+                        % (seed, bad, len(result.get("shuffled", []))))
+        if result.get("batch") != [FR22_EXPECTED, FR22_EXPECTED]:
+            hits.append("PYTHONHASHSEED=%s: a batch of two requests did not give the same order twice" % seed)
+    if len(runs) == 2 and runs["0"] != runs["1"]:
+        hits.append("result differs between PYTHONHASHSEED=0 and PYTHONHASHSEED=1")
+    if hits:
+        return FAIL, "order_path is not deterministic or not in FR-22 order", hits
+
+    # AC2 của #139 (mức khớp, tín hiệu, câu Insights) còn hoãn tới hạn của mục FR-22 (2026-12-13).
+    # Câu nhắc bắt đầu bằng DEFERRED_NOTE để `main()` in nó ra cả khi cổng PASS.
+    failure, issue, due = _deferral("FR-22")
+    if failure is not None:
+        return failure
+    checked = "expected order, %d shuffles, PYTHONHASHSEED 0/1, batch" % FR22_SHUFFLES
+    return PASS, "order check passed (%s); %s: match level, signals, insight sentences until %s (%s)" % (
+        checked, DEFERRED_NOTE, due, issue), []
 
 
 # ---------------------------------------------------------------- AD-11
@@ -528,6 +743,10 @@ def main() -> int:
                     help="gate codes that must really run; SKIP counts as a failure")
     args = ap.parse_args()
 
+    # Chi tiết của cổng FAIL có thể chứa tiếng Việt; ống cp1252 không mã hóa được thì thay ký tự, không ném lỗi.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
+
     for g in GATES:
         g()
 
@@ -545,6 +764,8 @@ def main() -> int:
             if len(detail) > 10:
                 print("        ... and %d more lines" % (len(detail) - 10))
         elif status == SKIP and detail:
+            print("        %s" % detail[0])
+        elif status == PASS and DEFERRED_NOTE in detail[0]:
             print("        %s" % detail[0])
 
     n_dat = sum(1 for _, _, s, _ in RESULTS if s == PASS)

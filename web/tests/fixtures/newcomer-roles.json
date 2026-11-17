@@ -548,12 +548,12 @@
           "fresher": 12
         },
         "n_by_measure": {
-          "skill_count": 43,
+          "skill_count": 12,
           "experience_years": 30,
           "salary": 9
         },
         "insufficient_by_measure": {
-          "skill_count": false,
+          "skill_count": true,
           "experience_years": false,
           "salary": true
         }

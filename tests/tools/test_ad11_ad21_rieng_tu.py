@@ -91,7 +91,7 @@ def test_ad11_ad21_deferred_ledger_khong_con_muc_tam_cua_ad11():
     assert ledger_path.is_file(), "deferred.json must exist"
     data = json.loads(ledger_path.read_text(encoding="utf-8"))
     assert "AD-11-temp" not in data
-    assert set(data) == {"FR-24", "FR-22"}
+    assert set(data) == {"FR-22"}
 
 
 def test_ad11_ad21_test_cv_5mb_khong_file_tam_ton_tai():

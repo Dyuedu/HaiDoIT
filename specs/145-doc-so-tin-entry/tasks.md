@@ -21,3 +21,7 @@
 ## Ghi chú 2026-11-13 (#148)
 
 - [x] Không có task mới. `tests/api/test_fr37_newcomer_roles_stat.py` thêm test của #148; ba test của #145 vẫn xanh.
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (`newcomer_roles` thật không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

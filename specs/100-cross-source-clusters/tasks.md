@@ -50,3 +50,8 @@
 - [x] T015 `config/rules.toml` đổi `config_version` và thêm `level_options`, `level_groups`; `haido_core/config.py` kiểm khóa mới (`sources.priority` giữ nguyên)
 - [x] T016 `haido_core/steps/aggregate.py` và `haido_core/db/snapshot_store.py` ghi ô và tỷ trọng theo cấp bậc lọc được; thêm test cụm đếm ở cấp của đại diện trong `tests/steps/test_fr33_aggregate_level_step.py`
 - [x] T017 Sửa các số đếm hàng và truy vấn trong `tests/steps/test_dat20_aggregate_step.py` cho khớp cột `seniority` mới (lọc `seniority = 'all'` khi so số cũ)
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; test của issue này không phải sửa. `tests/db/test_dat20_stat_tables.py` (kiểm head Alembic, thuộc #93) đổi sang head 0009.

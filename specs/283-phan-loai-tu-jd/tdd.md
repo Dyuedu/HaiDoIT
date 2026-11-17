@@ -147,6 +147,29 @@ Lý do: #285 đổi mã nơi (`classify.toml` thay ba thành phố bằng 34 t�
 - RED: `test_gh283_migration_0007_noi_tiep_0006_va_la_head_duy_nhat` đỏ vì head là 0008.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
 
+
+## Đợt 2026-11-16 (theo #101)
+
+Lý do: #101 sửa `haido_core/steps/ingest.py` và `haido_core/db/snapshot_store.py` (xem đợt 2 bên dưới: `vocab_version` và quét lại khi từ vựng đổi), `haido_core/steps/aggregate.py`, `haido_core/db/tables.py`. `tests/db/test_gh283_facts_labels.py` đổi kỳ vọng head Alembic từ 0008 sang 0009; `tests/steps/test_gh283_ingest_classify.py` thêm hai test quét lại khi từ vựng đổi. Không thêm hành vi mới nào của issue này, không AC nào đổi. Hành vi mới (quét lại khi từ vựng đổi) có đợt riêng bên dưới.
+
+Chạy lại thật sau thay đổi (đợt 2 của #101): `uv run pytest tests/steps/test_gh283_ingest_classify.py tests/db/test_gh283_facts_labels.py tests/steps/test_gh284_aggregate_vai_tro_moi.py -q` → **15 passed**. Toàn bộ `uv run pytest -q` → **1194 passed**.
+
+## Đợt 2026-11-16 — #101 D3: quét lại khi từ vựng đổi
+
+Lý do: người dùng quyết định (D3) rằng `ingest` quét lại kỹ năng của tin trong cửa sổ khi phiên bản từ vựng đổi, giống lệch `classify_version`. Dữ kiện có thêm cột `vocab_version`; không AC nào của #283 đổi.
+
+- Lệnh: `HAIDO_TEST_DATABASE_URL=... uv run pytest tests/steps/test_gh283_ingest_classify.py tests/db/test_gh283_facts_labels.py tests/steps/test_gh284_aggregate_vai_tro_moi.py -q`.
+- Hành vi: (a) từ vựng đổi phiên bản thì dữ kiện trong cửa sổ có phiên bản mới mang `vocab_version` mới; (b) dữ kiện cũ NULL cũng được quét lại; (c) chạy lại cùng từ vựng không thêm phiên bản.
+- RED: hai test (a) và (b) đã viết cùng đợt với code ở đợt làm trước; không chạy RED trên cây chưa sửa. Bằng chứng thay thế là đột biến: bỏ hai điều kiện `vocab_version` khỏi `stale_in_window` thì **2 test fail** (đúng hai test trên), khôi phục thì xanh.
+- GREEN: ba file trên → **15 passed** (chạy lại thật). Toàn bộ `uv run pytest -q` → **1194 passed**, không skip.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_core/vocab/skills.py` (thêm `find_seed_skill`; `load_vocabulary`, quét JD không đổi). Thay đổi: từ vựng quét JD không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
 ## Chạy lại (2026-11-17, #302)
 
 #302 sửa `config/rules.toml` (`[sources].auto` thêm `topcv`, `config_version` lên `2026-11-17.1`), `tests/core/test_ad10_rules_config.py` và `tests/steps/test_ad4_ingest.py` (ví dụ nguồn chạy tay đổi từ `topcv` sang `linkedin`). Không đổi scenario của issue này.

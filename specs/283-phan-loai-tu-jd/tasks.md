@@ -30,3 +30,13 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 ## Phase 3: Sau merge
 
 - [ ] T020 Lượt đêm đầu tiên sau deploy: log bước kho không lỗi, số dữ kiện được làm mới, tỷ lệ "không xác định cấp" và số AI/ML mới vào nghề của snapshot mới
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; `tests/db/test_gh283_facts_labels.py` đổi kỳ vọng head Alembic từ 0008 sang 0009; `tests/steps/test_gh283_ingest_classify.py` thêm hai test quét lại khi từ vựng đổi.
+- [x] T-101b Đợt 2: dữ kiện ghi `vocab_version`; `ingest` quét lại tin trong cửa sổ có `vocab_version` khác hiện hành hoặc NULL (test trước: `test_dat29_d3_doi_tu_vung_thi_ingest_ke_tiep_quet_lai_tin_trong_cua_so`, `test_dat29_d3_du_kien_cu_chua_ghi_phien_ban_tu_vung_cung_bi_quet_lai`)
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (từ vựng quét JD không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

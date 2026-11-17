@@ -110,6 +110,7 @@
 2. **Given** tin trong cửa sổ có dữ kiện mới nhất với `classify_version` cũ và không được quan sát ở S, **When** `ingest` S, **Then** tin đó có phiên bản dữ kiện mới tại S với nhãn của luật hiện tại; tin đã có nhãn của luật hiện tại thì không thêm phiên bản.
 3. **Given** dữ kiện có nhãn của luật hiện tại, **When** `aggregate`, **Then** nhãn đã lưu được dùng, không phân loại lại. **Given** dữ kiện không có, **Then** phân loại từ trường đóng (chức danh, chữ cấp, địa điểm) như trước.
 4. **Given** luật, danh sách cụm hoặc từ vựng đổi, **Then** `classify_version` đổi và `config_version` đổi.
+5. **Given** tin trong cửa sổ có dữ kiện mới nhất mà `vocab_version` khác phiên bản từ vựng hiện hành, hoặc NULL (dữ kiện cũ), **When** `ingest` S, **Then** tin đó có phiên bản dữ kiện mới tại S, quét lại kỹ năng bằng từ vựng hiện hành và mang `vocab_version` hiện hành; chạy lại cùng từ vựng không thêm phiên bản (thêm theo #101, AC của #283 không đổi).
 
 ---
 

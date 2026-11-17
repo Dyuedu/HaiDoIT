@@ -1,4 +1,4 @@
-"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot`, `0003_haido_city_share`, `0004_haido_stat_sources`, `0005_haido_city_share_level` và `0006_haido_years_filter`.
+"""Bảng của schema `haido` (Story 1.4, #93). Phải khớp migration `0002_haido_snapshot`, `0003_haido_city_share`, `0004_haido_stat_sources`, `0005_haido_city_share_level` và `0006_haido_years_filter` và `0009_haido_skill_rates`.
 
 Chỉ `haido_core/steps/` ghi các bảng này. `haido_api` không đọc `job_*` (AD-5, AD-7).
 """
@@ -58,6 +58,7 @@ job_posting_facts = sa.Table(
     sa.Column("skills", JSONB()),
     sa.Column("classify_version", sa.Text()),
     sa.Column("city", sa.Text()),  # #285: nơi làm việc của bộ phân loại
+    sa.Column("vocab_version", sa.Text()),  # #101: phiên bản từ vựng đã quét `skills`; NULL ở dữ kiện cũ
 )
 
 job_observations = sa.Table(
@@ -113,4 +114,22 @@ stat_sources = sa.Table(
     metadata,
     sa.Column("snapshot_id", sa.Date(), sa.ForeignKey("haido.snapshots.snapshot_id"), primary_key=True),
     sa.Column("source", sa.Text(), primary_key=True),
+)
+
+stat_skill_rates = sa.Table(
+    "stat_skill_rates",
+    metadata,
+    sa.Column("snapshot_id", sa.Date(), primary_key=True),
+    sa.Column("role", sa.Text(), primary_key=True),
+    sa.Column("branch", sa.Text(), primary_key=True),
+    sa.Column("seniority", sa.Text(), primary_key=True),
+    sa.Column("years", sa.Text(), primary_key=True),
+    sa.Column("scope", sa.Text(), primary_key=True),
+    sa.Column("skill", sa.Text(), primary_key=True),
+    sa.Column("n_with", sa.Integer(), nullable=False),
+    sa.Column("n_scanned", sa.Integer(), nullable=False),
+    sa.Column("rate", sa.Float(precision=53), nullable=False),
+    sa.Column("vocab_version", sa.Text(), nullable=False),
+    sa.Index("ix_stat_skill_rates_snapshot_skill", "snapshot_id", "skill"),
+    # #101: khóa ô là khóa ngoại tới stat_cells (migration 0009); nhóm core/common/rare không lưu.
 )

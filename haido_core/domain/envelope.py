@@ -13,7 +13,10 @@ Ba quy tắc của hợp đồng:
   khác, list) vẫn bị kiểm như thường. Danh sách trường dùng dấu này bị khóa bằng test
   (`tests/api/test_ad17_ordinal_allowlist.py`);
 - `Stat.display` khớp với `value` và `kind` (`null_data` thì không có giá trị; chỉ tỷ trọng
-  cấu phần được `low_sample_shown`), và với `suppression_for` trên `n` của ô;
+  cấu phần được `low_sample_shown`), và với `suppression_for` trên cỡ mẫu của phép đo (`sample_n`): `n` của ô, trừ
+  `skill_rate` lấy `n_by_measure["skill_count"]` (số tin đã quét kỹ năng, `n_scanned` của #101) khi ô có khóa đó;
+- `data` có thể khai thêm `check_against_meta(meta) -> list[str]` cho luật cần cả `data` lẫn `meta` (ví dụ thứ tự dòng
+  theo cỡ mẫu, #166); lỗi trả về vào cùng thông báo "Hợp đồng envelope bị vỡ";
 - mọi `cell_id` trong `data` có mục tương ứng trong `meta.cells`.
 """
 
@@ -78,6 +81,10 @@ Fraction = Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)]
 _CONFIG = ConfigDict(
     extra="forbid", use_attribute_docstrings=True, revalidate_instances="always"
 )
+SKILL_COUNT = "skill_count"
+"""Khóa của `n_by_measure`: số tin đã được quét kỹ năng của ô. Là cỡ mẫu (`n_with_value`, AD-17) của `skill_rate`; ở
+bản thật là `n_scanned` của `stat_skill_rates` (#101), nhỏ hơn hoặc bằng `n` của ô."""
+
 _RATIO_KINDS = frozenset(
     {MeasureKind.COMPOSITION_SHARE, MeasureKind.SKILL_RATE, MeasureKind.LEVEL_SHARE}
 )
@@ -156,6 +163,17 @@ class CellMeta(BaseModel):
                 f"n_by_measure vượt n của ô ({self.n}) ở: {', '.join(vuot)}."
             )
         return self
+
+
+def sample_n(kind: MeasureKind, n: int, n_by_measure: Mapping[str, int]) -> int:
+    """Cỡ mẫu mà `suppression_for` dùng cho một con số `kind` của ô có `n` tin (#166).
+
+    `skill_rate` có mẫu số riêng là số tin đã quét kỹ năng (`n_by_measure[SKILL_COUNT]`); thiếu khóa thì dùng `n`. Mọi
+    loại khác (`composition_share`, `level_share`, `percentile`) dùng `n` của ô, đúng như trước.
+    """
+    if kind is MeasureKind.SKILL_RATE:
+        return n_by_measure.get(SKILL_COUNT, n)
+    return n
 
 
 class Thresholds(BaseModel):
@@ -260,11 +278,12 @@ class Envelope[T: BaseModel](BaseModel):
                 loi.append(f"{ref_path} = {cell_id!r} không có mục trong meta.cells")
             elif isinstance(found, Stat) and found.kind in _RATIO_KINDS:
                 # percentile chưa có tham chiếu tới thước đo của nó, nên chưa kiểm được ở đây.
-                expected = suppression_for(found.kind, cell.n, min_sample=min_sample)
+                n = sample_n(found.kind, cell.n, cell.n_by_measure)
+                expected = suppression_for(found.kind, n, min_sample=min_sample)
                 if found.display is not expected:
                     loi.append(
                         f"{path}.display = {found.display}, nhưng suppression_for cho "
-                        f"{expected} với n = {cell.n}"
+                        f"{expected} với n = {n}"
                     )
         for cell_id, cell in cells.items():
             for measure, n in cell.n_by_measure.items():
@@ -277,6 +296,9 @@ class Envelope[T: BaseModel](BaseModel):
                         f"meta.cells[{cell_id!r}].insufficient_by_measure[{measure!r}] phải là "
                         f"{str(expected).lower()} với n = {n}"
                     )
+        check = getattr(self.data, "check_against_meta", None)
+        if callable(check):
+            loi.extend(check(self.meta))
         if loi:
             raise ValueError("Hợp đồng envelope bị vỡ: " + "; ".join(loi) + ".")
         return self

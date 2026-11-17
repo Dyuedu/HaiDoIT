@@ -70,3 +70,16 @@
 
 - [x] T018 đổi: `level-chips.tsx` thay bằng `web/app/components/map/filter-select.tsx` dùng trong `map-screen.tsx` (ô Cấp bậc, `<select>` gốc)
 - [x] T014, T015: test chuyển sang `<select>` (`selectOptions`, `selectedLabel`); test deploy đọc chú thích ở `map-screen.tsx`
+
+
+## Cập nhật 2026-11-16 theo #101
+
+- [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; `tests/db/test_fr33_stat_city_shares_level.py` đổi kỳ vọng head Alembic từ 0008 sang 0009.
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (`city-shares` theo cấp không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`haido_api/fake_market.py`, `fixtures/fake_market.json`, `schemas/market.py`, `routes/market.py`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

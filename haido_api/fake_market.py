@@ -11,6 +11,12 @@ thị (`display`, `insufficient_by_measure`) do `suppression_for` tính từ `n`
 `city_shares[vai trò][cấp]`. Mốc số năm (#280) chỉ có `any` ở các khóa đó, cộng khóa `"<cấp>.y<N>"` (bản giả có
 `all` / `entry.y1`) mang thêm `years_unstated_cell_id`; mốc khác là `unknown_cell`.
 
+`skill_roles` (#166) đọc `skill_roles[mã kỹ năng]`: `entry[vai trò]` = số tin entry-level của vai trò có nhắc kỹ năng, và
+`mentions_all_levels` = số tin ở mọi cấp nhắc kỹ năng (`mentioned` là `mentions_all_levels > 0`, AC 4 của #113). Ô
+`vn.<vai trò>.entry` trong `cells` cho `n` (số tin của ô) và `n_by_measure.skill_count` (số tin đã quét kỹ năng, mẫu số
+của tỷ lệ); tỷ lệ là số nhắc chia `skill_count`. Mã kỹ năng không có trong mục đó là `unknown_cell`. Fixture lệch `config/rules.toml`
+(thiếu hay thừa vai trò, thiếu ô entry) là lỗi khởi tạo `ValueError` nói rõ chỗ lệch, không phải `KeyError`.
+
 Bản giả không chọn ô và không quay về (phép 2 của registry, #3/#17): fixture ánh xạ thẳng
 tham số sang ô đã dùng, và `fallback_label` lấy nguyên văn.
 """
@@ -31,12 +37,16 @@ from haido_api.schemas.learning_path import (
     order_key,
 )
 from haido_api.schemas.market import (
+    SKILL_ROLES_LEVEL_GROUP,
     CityShareRow,
     CitySharesData,
     NewcomerRoleRow,
     NewcomerRolesData,
+    SkillLabel,
     SkillRateRow,
     SkillRatesData,
+    SkillRoleRow,
+    SkillRolesData,
 )
 from haido_core.config import load_rules
 from haido_core.domain.display_policy import DisplayState, MeasureKind, suppression_for
@@ -48,7 +58,9 @@ from haido_core.domain.envelope import (
     SnapshotStatus,
     Stat,
     Thresholds,
+    sample_n,
 )
+from haido_core.vocab.skills import find_seed_skill
 
 FIXTURE = Path(__file__).parent / "fixtures" / "fake_market.json"
 LEARNING_PATH_FIXTURE = Path(__file__).parent / "fixtures" / "fake_learning_path.json"
@@ -77,6 +89,7 @@ class FakeMarket:
         self._city_shares: dict[str, dict[str, dict[str, Any]]] = raw["city_shares"]
         self._skill_rates: dict[str, dict[str, dict[str, Any]]] = raw["skill_rates"]
         self._newcomer_roles: dict[str, Any] = raw["newcomer_roles"]
+        self._skill_roles: dict[str, dict[str, Any]] = raw["skill_roles"]
         # Lộ trình học (#212): đồ thị, lời dẫn, tài nguyên. Tỷ lệ lấy từ `skill_rates` ở trên, không chép số.
         path_raw: dict[str, Any] = json.loads(
             learning_path_fixture.read_text(encoding="utf-8")
@@ -85,6 +98,31 @@ class FakeMarket:
             role: entry["skills"] for role, entry in path_raw["roles"].items()
         }
         self._roles: tuple[str, ...] = tuple(load_rules().roles)
+        self._check_skill_roles()
+
+    def _check_skill_roles(self) -> None:
+        """Fixture `skill_roles` phải đủ và chỉ đủ vai trò của `config/rules.toml`, mỗi vai trò có ô entry (#166).
+
+        Lệch là lỗi khởi tạo nói rõ chỗ lệch, để đổi config mà quên fixture không thành `KeyError` ở một request.
+        """
+        roles = set(self._roles)
+        missing_cells = sorted(
+            f"vn.{role}.{SKILL_ROLES_LEVEL_GROUP}"
+            for role in roles
+            if f"vn.{role}.{SKILL_ROLES_LEVEL_GROUP}" not in self._cells
+        )
+        if missing_cells:
+            raise ValueError(
+                f"fake_market.json: thiếu ô entry cho vai trò của config/rules.toml: {', '.join(missing_cells)}."
+            )
+        for skill, entry in self._skill_roles.items():
+            counts = entry.get("entry", {})
+            missing, extra = sorted(roles - set(counts)), sorted(set(counts) - roles)
+            if missing or extra or "mentions_all_levels" not in entry:
+                raise ValueError(
+                    f"fake_market.json: skill_roles[{skill}] lệch config/rules.toml: thiếu vai trò {missing}, "
+                    f"thừa vai trò {extra}, cần có mentions_all_levels."
+                )
 
     def city_shares(self, *, role: str, level: str = "all", years: str = "any") -> Envelope[CitySharesData]:
         key = level if years == "any" else f"{level}.y{years}"
@@ -256,9 +294,49 @@ class FakeMarket:
         meta = self._meta(cells, {cell_id: rates["fallback_label"]})
         return Envelope[LearningPathData](data=data, meta=meta)
 
+    def skill_roles(self, *, skill: str) -> Envelope[SkillRolesData]:
+        entry = self._skill_roles.get(skill)
+        seed = find_seed_skill(skill)
+        if entry is None or seed is None:
+            raise UnknownCell(
+                "Không có ô thống kê nào cho kỹ năng đã chọn.", snapshot_date=self._snapshot_date
+            )
+        counts: dict[str, int] = entry["entry"]
+        group = SKILL_ROLES_LEVEL_GROUP
+        rows = []
+        for role in self._roles:
+            cell_id = f"vn.{role}.{group}"
+            scanned = self._sample(cell_id)
+            share = self._stat(counts[role] / scanned if scanned else 0.0, MeasureKind.SKILL_RATE, cell_id)
+            rows.append(SkillRoleRow(role=role, share=share))
+        # Thứ tự hiển thị do máy chủ quyết (#166): dòng có tỷ lệ trước, tỷ lệ giảm dần rồi mã vai trò; dòng `null_data`
+        # sau, cỡ mẫu của phép đo giảm dần rồi mã. Bản thật (#168) theo cùng quy tắc.
+        rows.sort(
+            key=lambda r: (
+                r.share.display is DisplayState.NULL_DATA,
+                -(r.share.value or 0.0),
+                -self._sample(r.share.cell_id) if r.share.value is None else 0,
+                r.role,
+            )
+        )
+        data = SkillRolesData(
+            skill=SkillLabel(code=seed.code, name_en=seed.name_en, name_vi=seed.name_vi),
+            level=group,
+            levels=list(load_rules().level_groups[group]),
+            mentioned=entry["mentions_all_levels"] > 0,  # mọi cấp, không chỉ entry-level (AC 4 của #113)
+            rows=rows,
+        )
+        return Envelope[SkillRolesData](data=data, meta=self._meta([r.share.cell_id for r in rows], {}))
+
+    def _sample(self, cell_id: str) -> int:
+        """Cỡ mẫu của tỷ lệ kỹ năng của ô: `n_by_measure.skill_count`, thiếu thì `n`."""
+        cell = self._cells[cell_id]
+        return sample_n(MeasureKind.SKILL_RATE, cell["n"], cell["n_by_measure"])
+
     def _stat(self, value: float | None, kind: MeasureKind, cell_id: str) -> Stat:
+        cell = self._cells[cell_id]
         display = suppression_for(
-            kind, self._cells[cell_id]["n"], min_sample=self._thresholds.min_sample
+            kind, sample_n(kind, cell["n"], cell["n_by_measure"]), min_sample=self._thresholds.min_sample
         )
         return Stat(
             value=None if display is DisplayState.NULL_DATA else value,

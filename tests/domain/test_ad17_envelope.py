@@ -328,3 +328,65 @@ def test_ad17_envelope_chi_import_thu_vien_chuan_pydantic_va_display_policy() ->
     }
     assert other == set()
     assert modules & display_policy
+
+
+# ---------------------------------------------------------------- cỡ mẫu của phép đo skill_rate (#166, 2026-11-17)
+
+
+def _skill_rate_body(value: float | None, display: str, *, n: int, skill_count: int | None) -> dict[str, Any]:
+    cell = _cell(n)
+    if skill_count is None:
+        cell["n_by_measure"] = {"salary": 0}
+        cell["insufficient_by_measure"] = {"salary": True}
+    else:
+        cell["n_by_measure"] = {"skill_count": skill_count, "salary": 0}
+        cell["insufficient_by_measure"] = {"skill_count": skill_count < 30, "salary": True}
+    body = _hop_le()
+    body["data"] = {
+        "total_cell_id": "o",
+        "rows": [{"city": "x", "share": _stat(value, display, "o", kind="skill_rate")}],
+    }
+    body["meta"]["cells"] = {"o": cell}
+    return body
+
+
+def test_ad17_skill_rate_display_theo_skill_count_khong_theo_n_cua_o() -> None:
+    """n của ô là 43 nhưng chỉ 12 tin được quét kỹ năng: tỷ lệ phải bị ẩn (D2 của #101: mẫu số là n_scanned)."""
+    _validate(_skill_rate_body(None, "null_data", n=43, skill_count=12))
+    with pytest.raises(ValidationError, match="suppression_for"):
+        _validate(_skill_rate_body(0.5, "shown", n=43, skill_count=12))
+
+
+def test_ad17_skill_rate_khong_co_skill_count_thi_dung_n_cua_o() -> None:
+    _validate(_skill_rate_body(0.5, "shown", n=43, skill_count=None))
+    with pytest.raises(ValidationError, match="suppression_for"):
+        _validate(_skill_rate_body(0.5, "shown", n=12, skill_count=None))
+
+
+def test_ad17_skill_rate_skill_count_lon_hon_n_dung_voi_o_du_mau() -> None:
+    _validate(_skill_rate_body(0.5, "shown", n=43, skill_count=43))
+    with pytest.raises(ValidationError, match="suppression_for"):
+        _validate(_skill_rate_body(None, "null_data", n=43, skill_count=43))
+
+
+@pytest.mark.parametrize("kind", ["level_share", "composition_share"])
+def test_ad17_loai_khac_van_theo_n_cua_o_du_skill_count_nho(kind: str) -> None:
+    """Chỉ `skill_rate` đổi cỡ mẫu. `level_share` và `composition_share` vẫn xét `n` của ô (newcomer-roles, city-shares)."""
+    body = _skill_rate_body(0.5, "shown", n=43, skill_count=12)
+    body["data"]["rows"][0]["share"]["kind"] = kind
+    _validate(body)
+
+
+class _DataKiemMeta(BaseModel):
+    total_cell_id: CellId
+    rows: list[_Row]
+
+    def check_against_meta(self, meta: Meta) -> list[str]:
+        return [f"bị từ chối với {len(meta.cells)} ô"]
+
+
+def test_ad17_data_co_check_against_meta_duoc_goi_va_loi_vao_hop_dong() -> None:
+    body = _hop_le()
+    with pytest.raises(ValidationError, match="bị từ chối với 3 ô"):
+        Envelope[_DataKiemMeta].model_validate(body)
+    _validate(body)  # data không có hook thì không bị đổi hành vi

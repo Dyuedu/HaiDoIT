@@ -17,3 +17,11 @@
 - [x] T006 `FakeMarket.skill_rates`: sắp dòng, `have`, đếm core
 - [x] T007 Fixture: `entry` + `all` cho mọi vai trò
 - [x] T008 Sinh lại `docs/api/openapi.json` và fixture web `skill-rates-*.json`
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (thêm phép `skill_roles`, route `skill-roles`, mã lỗi `unknown_skill`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`haido_core/domain/envelope.py`, `haido_api/fake_market.py`, `fixtures/fake_market.json`, `schemas/market.py`, `routes/market.py`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

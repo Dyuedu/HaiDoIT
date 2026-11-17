@@ -51,3 +51,7 @@ Không đổi cột. Số trong `stat_cells` và `stat_city_shares` đổi theo 
 
 - `version` `seed-2026-11-11` → `seed-2026-11-13` (giữ tiền tố `seed-` mà `skills.py` kiểm).
 - Giữ 100 mã cũ (hồ sơ người dùng dùng các mã này), thêm bí danh tiếng Việt và cách viết khác; thêm 125 mã mới (tổng 225). Khóa mới `composites` (`c/c++` → `c`, `c++`) và `scan_skip` (từ không quét khi đứng riêng: `c`, `r`, `go`, `ai`, `bi`, `sap`…). Bí danh mơ hồ khi bỏ dấu (`sap` = "sắp", `lan` = "lần", `san` = "sàn", `pic`, `soc`, `solid`, `less`, `word`) không có trong danh sách.
+
+## Đợt 2026-11-16 (#101)
+
+`job_posting_facts.vocab_version` (text, nullable) thêm ở migration 0009: phiên bản từ vựng đã quét `skills`; NULL ở dữ kiện cũ. Không đổi gì khác của bảng.

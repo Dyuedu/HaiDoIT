@@ -10,8 +10,9 @@ from typing import Annotated, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from haido_api.schemas.skills import SkillCode
 from haido_core.domain.display_policy import DisplayState, MeasureKind
-from haido_core.domain.envelope import CellId, Ordinal, Stat
+from haido_core.domain.envelope import CellId, Meta, Ordinal, Stat, sample_n
 
 _CONFIG = ConfigDict(extra="forbid", use_attribute_docstrings=True, revalidate_instances="always")
 
@@ -195,3 +196,105 @@ class NewcomerRolesData(BaseModel):
         if trung:
             raise ValueError(f"Mã vai trò bị trùng: {', '.join(trung)}.")
         return self
+
+
+SKILL_ROLES_LEVEL_GROUP = "entry"
+"""Nhóm cấp bậc cố định của `skill-roles` (DEC-8, #134): Intern, Fresher, Junior gộp một."""
+
+
+class SkillLabel(BaseModel):
+    """Kỹ năng đã dùng, để màn ghi rõ nó khớp kỹ năng nào (AC 1 của #113)."""
+
+    model_config = _CONFIG
+
+    code: SkillCode
+    """Mã kỹ năng trong bộ từ vựng, snake_case."""
+
+    name_en: Annotated[str, Field(min_length=1)]
+    """Tên tiếng Anh. Tên công nghệ, nên được có chữ số (`Python3`, `ISO 27001`) ngoài quy tắc DEC-6."""
+
+    name_vi: Annotated[str, Field(min_length=1)]
+    """Tên tiếng Việt, cùng quy tắc."""
+
+
+class SkillRoleRow(BaseModel):
+    """Tỷ lệ tin entry-level của một vai trò có nhắc kỹ năng (#166). Cỡ mẫu của tỷ lệ là
+    `meta.cells[share.cell_id].n_by_measure["skill_count"]` (số tin đã quét kỹ năng, `n_scanned` của #101); `meta.cells[..].n`
+    vẫn là số tin của ô, cùng số với `newcomer-roles`."""
+
+    model_config = _CONFIG
+
+    role: str
+    """Mã vai trò."""
+
+    share: Stat
+    """Tỷ lệ, `kind = skill_rate`, `cell_id = vn.<role>.entry`. Dưới ngưỡng mẫu (theo `skill_count`, không theo `n` của
+    ô) là `null_data`, không có giá trị; cỡ mẫu đó vẫn có ở `meta.cells` để màn ghi "not enough data (n/min_sample)".
+    Đủ mẫu mà không tin nào nhắc là 0, không phải null."""
+
+    @model_validator(mode="after")
+    def _ty_le_cua_o_entry(self) -> Self:
+        if self.share.kind is not MeasureKind.SKILL_RATE:
+            raise ValueError(f"share phải là skill_rate, nhận {self.share.kind}.")
+        expected = f"vn.{self.role}.{SKILL_ROLES_LEVEL_GROUP}"
+        if self.share.cell_id != expected:
+            raise ValueError(f"share.cell_id phải là {expected!r}, nhận {self.share.cell_id!r}.")
+        return self
+
+
+class SkillRolesData(BaseModel):
+    """`data` của `GET /api/v1/skill-roles`."""
+
+    model_config = _CONFIG
+
+    skill: SkillLabel
+    """Kỹ năng đã chọn, kèm tên."""
+
+    level: str
+    """Mã nhóm cấp bậc của mọi dòng (`entry`), cùng mã với tham số `level` của `skill-rates` và của `/ho-so-ky-nang`, để
+    màn mở hồ sơ kỹ năng của một vai trò đúng cấp (#169, #111)."""
+
+    levels: Annotated[list[str], Field(min_length=1)]
+    """Các cấp bậc được tính là entry-level, ví dụ `["intern", "fresher", "junior"]`."""
+
+    mentioned: bool
+    """`false` khi không tin tuyển dụng hiện tại nào, ở cấp bậc nào, nhắc kỹ năng (AC 4 của #113): không chỉ entry-level,
+    và kể cả khi mọi ô entry-level bị ẩn. Máy chủ tính từ ô mọi cấp; web không suy từ các dòng (AD-22). `true` mà mọi
+    dòng hiện đều 0 là hợp lệ: tin nhắc nằm ở cấp khác hoặc ở ô dưới ngưỡng bị ẩn."""
+
+    rows: Annotated[list[SkillRoleRow], Field(min_length=1)]
+    """Mỗi vai trò một dòng, theo thứ tự hiển thị: dòng có tỷ lệ trước, tỷ lệ giảm dần rồi theo mã vai trò; sau đó dòng
+    `null_data`, cỡ mẫu của phép đo giảm dần rồi theo mã vai trò. Web không sắp xếp lại."""
+
+    @model_validator(mode="after")
+    def _dong_nhat_quan(self) -> Self:
+        if self.level != SKILL_ROLES_LEVEL_GROUP:
+            raise ValueError(f"level phải là {SKILL_ROLES_LEVEL_GROUP!r}, nhận {self.level!r}.")
+        trung = sorted(role for role, k in Counter(r.role for r in self.rows).items() if k > 1)
+        if trung:
+            raise ValueError(f"Mã vai trò bị trùng: {', '.join(trung)}.")
+        shown = [r for r in self.rows if r.share.value is not None]
+        hidden_from = next((i for i, r in enumerate(self.rows) if r.share.value is None), len(self.rows))
+        if len(shown) != hidden_from:
+            raise ValueError("Sai thứ tự: dòng null_data phải đứng sau mọi dòng có tỷ lệ.")
+        keys = [(-(r.share.value or 0.0), r.role) for r in shown]
+        if keys != sorted(keys):
+            raise ValueError("Sai thứ tự: dòng có tỷ lệ phải theo tỷ lệ giảm dần rồi theo mã vai trò.")
+        if not self.mentioned and any(r.share.value for r in shown):
+            raise ValueError("mentioned = false nhưng có dòng hiện tỷ lệ lớn hơn 0.")
+        return self
+
+    def check_against_meta(self, meta: Meta) -> list[str]:
+        """Thứ tự dòng `null_data` cần cỡ mẫu nên chỉ kiểm được cùng `meta` (gọi bởi `Envelope`): cỡ mẫu của phép đo giảm
+        dần rồi mã vai trò, cả với nguồn thật (#168)."""
+        hidden = [r for r in self.rows if r.share.value is None]
+        sizes: dict[str, int] = {}
+        for row in hidden:
+            cell = meta.cells.get(row.share.cell_id)
+            if cell is None:
+                return []  # thiếu ô là lỗi của Envelope, không báo thêm ở đây
+            sizes[row.role] = sample_n(row.share.kind, cell.n, cell.n_by_measure)
+        keys = [(-sizes[r.role], r.role) for r in hidden]
+        if keys != sorted(keys):
+            return ["data.rows: dòng null_data phải theo cỡ mẫu của phép đo giảm dần rồi theo mã vai trò"]
+        return []

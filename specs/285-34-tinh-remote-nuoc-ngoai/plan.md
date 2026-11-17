@@ -53,3 +53,10 @@ tests/deploy/test_gh285_noi_khop_config.py, web/tests/fr33-provinces.test.tsx   
 ## Ghi chú 2026-11-15 (gộp main vào #212)
 
 Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.
+
+
+## Cập nhật 2026-11-16 theo #101
+
+File của issue này bị sửa: `haido_core/steps/ingest.py` (dữ kiện mang thêm `vocab_version`; nhãn thành phố không đổi), `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`FactVersion` có trường mới ở cuối, sau `city`), `haido_core/db/tables.py`.
+
+`tests/db/test_gh285_fact_city.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.

@@ -53,3 +53,17 @@ Lý do: nhánh `gh-111-ho-so-ky-nang` sửa file mà issue này từng đụng: 
 
 - RED: không có, vì không có hành vi nào của issue này đổi.
 - GREEN: `uv run pytest -q` → 1018 passed, 217 skipped; `cd web && npx vitest run` → 21 files, 281 passed; `tools/gates/check_gates.py` → 8 pass, 2 skip, 0 fail.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_api/stat_market.py` (thêm `StatMarket.skill_roles`), `docs/api/envelope-meta.md` (thêm mục `skill-roles` và dòng `HAIDO_MARKET_SOURCE_SKILL_ROLES`), `tests/api/test_fr37_newcomer_roles_stat.py` (lời dựng `create_app`). Thay đổi: `deploy/compose.prod.yml` vẫn đặt `stat` cho `newcomer_roles` như trước và không đặt gì cho `skill_roles`.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
+## Đợt 2026-11-17 (#166, đợt 2 theo review): file dùng chung đổi lần nữa, AC của issue này không đổi
+
+Lý do: #166 đợt 2 (cỡ mẫu `skill_count` của `skill_rate`, `mentioned` theo mọi cấp, `data.level`, prod chọn nguồn `stat`) sửa thêm `haido_core/domain/envelope.py` (cỡ mẫu của `skill_rate`, hook `check_against_meta`), `deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat`, giữ `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat`), `haido_api/fake_market.py`, `fixtures/fake_market.json`. `newcomer-roles` ở production vẫn đọc `stat`, không đổi; `test_gh146_*` không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi. RED của #166 đợt 2 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx166_test`, không skip) → 1538 passed; `cd web && npx vitest run` → 22 files, 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
