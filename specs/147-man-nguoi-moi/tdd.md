@@ -55,3 +55,11 @@ Lý do: #152 thay `web/app/ho-so-ky-nang/page.tsx` bằng hồ sơ kỹ năng th
 - Test của khối "trang giữ chỗ hồ sơ kỹ năng" trong `web/tests/fr37-newcomer-list.test.tsx` viết lại thành "trang đích của một dòng": mở đúng vai trò ở cấp mới vào nghề, mã lạ và `role=all` không in như tên. Bỏ kiểm câu "sprint sau" và nút quay lại `/insights` (không còn trên trang). Test DEC-6 của trang đó kiểm khung trang trước khi có số, với `fetch` giả treo.
 - RED: sau khi thay trang, `npx vitest run` → 1 failed ("gọi tên vai trò, cấp mới vào nghề, và nói hồ sơ kỹ năng có ở sprint sau"), đúng chỗ đã đổi chủ ý.
 - GREEN: `npx vitest run` → 21 files, 281 passed.
+
+## Đợt 2026-11-17 (#113, #169): `/insights` có thêm mục kỹ năng
+
+Lý do: #169 thêm mục "Kỹ năng của bạn dùng ở vai trò nào" dưới "Cửa vào cho người mới" trên `web/app/insights/page.tsx`. Mục mới gọi thêm `/api/v1/skills` và có vùng `role="status"` riêng. Hành vi của danh sách người mới không đổi; không AC nào của #147 đổi.
+
+- RED: `npx vitest run` → 2 failed trong `web/tests/fr37-newcomer-list.test.tsx`: "mạng hỏng thì báo không đọc được và thử lại được" (`fetch` được gọi 3 lần thay vì 2, lần thêm là `/api/v1/skills`) và test DEC-6 "lúc đang tải…" (`Found multiple elements with the role "status"`).
+- Sửa test: đếm lần gọi của `/api/v1/newcomer-roles`, và đọc vùng `status` trong region "Cửa vào cho người mới".
+- GREEN: `npx vitest run` → 25 files, 328 passed.
