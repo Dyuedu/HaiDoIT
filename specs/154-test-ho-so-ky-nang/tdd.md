@@ -37,3 +37,10 @@ cd web && npx vitest run tests/fr19-skill-profile.test.tsx tests/fr18-role-for-t
   - Tick Java rồi tải lại: Java vẫn tick, dòng đếm "1/6 kỹ năng cốt lõi bạn đã có" (số của API).
   - Chạm Spring Boot: `/co-van?role=backend&level=entry&skill=spring_boot`, tiêu đề "Lộ trình học: Backend".
   - Chức danh "Lập trình viên Java" qua phép 6 thật: "Hải Đồ dùng vai trò Backend cho chức danh này.", URL `?role=backend&level=entry`.
+
+## Đợt 2 (2026-11-17, #151): ô đủ mẫu mà mọi kỹ năng hiếm
+
+Lý do: API thật trả `rows = []`, `core_size = 0`, `have_core = 0` khi ô đủ mẫu mà mọi kỹ năng dưới θ_common; `isSkillRatesEnvelope` từng coi `rows` rỗng là hỏng. Sửa `web/lib/skill-rates.ts` (rỗng hợp lệ chỉ khi `core_size === 0`), `web/lib/skill-profile-view.ts` (`emptyText`, không dòng đếm "0/0"), `web/app/components/skill-profile/skill-profile-screen.tsx` (câu thay danh sách). Các AC đang có của issue này không đổi; thêm một trường hợp biên.
+
+- RED: `npx vitest run tests/fr19-skill-profile.test.tsx` → 2 failed, 23 passed (rỗng với `core_size = 0` bị từ chối; màn hiện lỗi thay câu giải thích). Chi tiết ở `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
+- GREEN (chạy thật): `npx vitest run` → 22 files, 302 passed; `npx tsc --noEmit`, `npm run lint` sạch.

@@ -165,3 +165,24 @@ Lý do: #166 đợt 2 (cỡ mẫu `skill_count` của `skill_rate`, `mentioned` 
 
 - RED: không có, vì không có hành vi nào của issue này đổi. RED của #166 đợt 2 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
 - GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx166_test`, không skip) → 1538 passed; `cd web && npx vitest run` → 22 files, 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
+## Đợt 2026-11-17 (#151, #106, #103): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: tỷ lệ kỹ năng thật (#151), phép 2 `select_cell` (#106) và ràng buộc lớp đọc (#103) sửa file mà issue này từng đụng:
+
+  - `haido_api/stat_market.py` (thêm `skill_rates` thật, đọc `stat_skill_rates`);
+  - `docs/api/envelope-meta.md` (mô tả bản thật của `skill-rates`);
+
+AC của issue này không đổi, nói cụ thể như sau:
+
+- Bản giả: `learning-path` giả và `skill-rates` giả vẫn khớp nhau (test của #212 dùng `FakeMarket` cho cả hai); #151 không sửa `fake_market.py`.
+- `StatMarket`: `learning_path` và `skill_roles` giữ nguyên (`UnknownCell`); thay đổi ở `StatMarket` chỉ là phương thức `skill_rates` thật, trường `order` có mặc định, một biến môi trường `skill_rates` ở prod và một đoạn tài liệu.
+- Production: `learning-path` được đặt sang `stat` bởi #309 (PR #310, nhánh `gh-309-prod-khong-doc-du-lieu-gia`) và trả 404 cho tới khi có #216, nên prod không bao giờ hiện số lộ trình lệch với `skill-rates` thật. Nhánh này không sửa dòng `learning_path` của `deploy/compose.prod.yml` (#309 làm; hai nhánh sẽ xung đột chỗ đó khi hợp nhất).
+- Ràng buộc cho #216: lộ trình thật phải đọc tỷ lệ kỹ năng qua cùng đường `StatMarket` (ô do phép 2 chọn theo `n_scanned`, nhóm bằng phép 4), không dựng đường tính riêng.
+
+Chi tiết: `specs/151-ty-le-ky-nang-that/plan.md`.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #151, #106, #103 nằm ở `specs/151-ty-le-ky-nang-that/tdd.md`, `specs/106-chon-o-quay-ve/tdd.md`, `specs/103-api-doc-ty-le-that/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx151_test`, không skip) → 1580 passed; `cd web && npx vitest run` → 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
+Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.

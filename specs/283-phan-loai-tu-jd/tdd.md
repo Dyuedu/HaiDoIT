@@ -147,7 +147,6 @@ Lý do: #285 đổi mã nơi (`classify.toml` thay ba thành phố bằng 34 t�
 - RED: `test_gh283_migration_0007_noi_tiep_0006_va_la_head_duy_nhat` đỏ vì head là 0008.
 - GREEN: sửa kỳ vọng theo mã nơi mới; `uv run pytest -q` → 947 passed; `npx vitest run` → 166 passed.
 
-
 ## Đợt 2026-11-16 (theo #101)
 
 Lý do: #101 sửa `haido_core/steps/ingest.py` và `haido_core/db/snapshot_store.py` (xem đợt 2 bên dưới: `vocab_version` và quét lại khi từ vựng đổi), `haido_core/steps/aggregate.py`, `haido_core/db/tables.py`. `tests/db/test_gh283_facts_labels.py` đổi kỳ vọng head Alembic từ 0008 sang 0009; `tests/steps/test_gh283_ingest_classify.py` thêm hai test quét lại khi từ vựng đổi. Không thêm hành vi mới nào của issue này, không AC nào đổi. Hành vi mới (quét lại khi từ vựng đổi) có đợt riêng bên dưới.
@@ -175,3 +174,17 @@ Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đ�
 #302 sửa `config/rules.toml` (`[sources].auto` thêm `topcv`, `config_version` lên `2026-11-17.1`), `tests/core/test_ad10_rules_config.py` và `tests/steps/test_ad4_ingest.py` (ví dụ nguồn chạy tay đổi từ `topcv` sang `linkedin`). Không đổi scenario của issue này.
 
 - `uv run pytest -q` → 1018 passed, 217 skipped.
+
+## Đợt 2026-11-17 (#151, #106, #103): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: tỷ lệ kỹ năng thật (#151), phép 2 `select_cell` (#106) và ràng buộc lớp đọc (#103) sửa file mà issue này từng đụng:
+
+  - `haido_core/domain/REGISTRY.md` (ghi thân hàm phép 2);
+  - `haido_core/domain/registry.py` (`CellChoice.label` nới thành `str | None`, thêm `CellChoice.order` có mặc định);
+
+Hành vi và AC của issue này không đổi: thay đổi chỉ thêm (phương thức `skill_rates` thật, trường `order` có mặc định, một biến môi trường ở prod, một đoạn tài liệu); `city_shares`, `newcomer_roles`, `learning_path`, `skill_roles` của `StatMarket` giữ nguyên. Chi tiết: `specs/151-ty-le-ky-nang-that/plan.md`.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #151, #106, #103 nằm ở `specs/151-ty-le-ky-nang-that/tdd.md`, `specs/106-chon-o-quay-ve/tdd.md`, `specs/103-api-doc-ty-le-that/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx151_test`, không skip) → 1580 passed; `cd web && npx vitest run` → 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
+Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.

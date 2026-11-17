@@ -19,6 +19,13 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   `years` khác `any`. Ở một mốc, `data.years_unstated_cell_id` trỏ tới ô `vn.<role>[.<level>].ynone` có `n` là
   `years_unstated` của ô toàn quốc (do `aggregate` ghi, không đếm ở đây).
   Snapshot công bố trước migration 0006 chỉ có hàng `any`, nên mốc khác lùi về snapshot có hàng của mốc đó.
+- Tỷ lệ kỹ năng (#151, #103, #106): `stat_skill_rates` của snapshot đọc được mới nhất (`published` hoặc `partial`, có
+  nguồn, có hàng tỷ lệ). Chỉ ô toàn quốc, nhánh `all`, số năm `any`. Ô được chọn bằng phép 2 (`CellSelector`, thân hàm ở
+  `haido_core/domain/cells.py`) theo `n_scanned` (AD-17), không theo `n` của ô: `meta.cells[...].n` là `n` của
+  `stat_cells`, `n_by_measure.skill_count` là `n_scanned`, `fallback_label` là nhãn của phép 2. Nhóm bằng phép 4 với θ của
+  `config/rules.toml` (#102 sẽ đóng băng θ). Dòng chỉ gồm `core` và `common`, tỷ lệ giảm dần rồi mã. Không tập nào đủ
+  ngưỡng thì dòng là kỹ năng có `n_with > 0` của ô cuối, theo mã, mọi tỷ lệ `null_data` và `group = null`. Chỉ đọc bảng
+  `stat_*` theo khóa; không cộng lại từ bảng tin (AD-7).
 - Màn người mới (#145, #146): snapshot đọc được mới nhất có hàng cấp `entry`. Số tin entry-level của một vai trò là
   `n` của ô `vn` ở nhóm cấp `entry` (Intern + Fresher + Junior, do `aggregate` ghi); n của vai trò là ô `vn` ở `all`.
   Mọi vai trò của `config/rules.toml` có một dòng; vai trò không có hàng ở snapshot đó là 0 tin. Tỷ lệ là `level_share`,
@@ -40,14 +47,23 @@ from haido_api.schemas.market import (
     CitySharesData,
     NewcomerRoleRow,
     NewcomerRolesData,
+    SkillRateRow,
     SkillRatesData,
     SkillRolesData,
 )
 from haido_core.config import RulesConfig, load_rules
 from haido_core.db.engine import make_read_engine
-from haido_core.db.tables import snapshots, stat_cells, stat_city_shares, stat_sources
+from haido_core.db.tables import (
+    snapshots,
+    stat_cells,
+    stat_city_shares,
+    stat_skill_rates,
+    stat_sources,
+)
+from haido_core.domain.cells import CellSelector, CellStats
 from haido_core.domain.display_policy import DisplayState, MeasureKind, suppression_for
 from haido_core.domain.envelope import (
+    SKILL_COUNT,
     CellMeta,
     CoverageNote,
     Envelope,
@@ -56,16 +72,27 @@ from haido_core.domain.envelope import (
     Stat,
     Thresholds,
 )
+from haido_core.domain.registry import (
+    CellChoice,
+    CellKey,
+    CellQuery,
+    SkillBand,
+    SkillGroupRequest,
+    SkillRate,
+)
+from haido_core.domain.skill_groups import SkillGrouper
 
 READABLE = ("published", "partial")
 NATIONWIDE = "vn"
 ALL = "all"
 ANY = "any"
 ENTRY = "entry"
+SKILL_SAMPLE_NOUN = "tin đọc được kỹ năng"  # `n_scanned` không phải `n` của ô: nhãn phải nói đúng con số nào
+UNKNOWN_LEVEL = "unknown"
 
 
 class StatMarket:
-    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#101), `learning_path` (#216) và `skill_roles` (#168) chưa có số thật."""
+    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#151) đọc `stat_skill_rates`; `learning_path` (#216) và `skill_roles` (#168) chưa có số thật."""
 
     def __init__(
         self, *, engine_factory: Callable[[], Engine] | None = None, rules: RulesConfig | None = None
@@ -74,6 +101,8 @@ class StatMarket:
         self._rules = rules if rules is not None else load_rules()
         self._engine: Engine | None = None
         self._lock = threading.Lock()
+        self._names = _display_names(self._rules)
+        self._mid_and_above = _mid_and_above(self._rules)
 
     def _db(self) -> Engine:
         with self._lock:
@@ -154,7 +183,98 @@ class StatMarket:
     def skill_rates(
         self, *, role: str, level: str, have: Collection[str] = ()
     ) -> Envelope[SkillRatesData]:
-        raise UnknownCell("Tỷ lệ kỹ năng chưa có số liệu thật.", snapshot_date=None)
+        rules = self._rules
+        min_sample = rules.min_sample
+        with self._db().connect() as conn:
+            latest = _latest_with_skill_rates(conn)
+            if latest is None:
+                raise UnknownCell("Chưa có snapshot nào đã công bố có tỷ lệ kỹ năng.", snapshot_date=None)
+            day: date = latest.snapshot_id
+            if role not in rules.roles:
+                raise UnknownCell("Không có ô thống kê nào cho vai trò đã chọn.", snapshot_date=day)
+            stats = _skill_cell_stats(conn, day, role)
+            sources = _sources(conn, day)
+
+            def lookup(cell: CellKey) -> CellStats | None:
+                if cell.scope != NATIONWIDE or cell.branch not in (None, ALL):
+                    return None
+                return stats.get(cell.seniority or ALL)
+
+            selector = CellSelector(
+                lookup,
+                level_groups=rules.level_groups,
+                names=self._names,
+                mid_and_above=self._mid_and_above,
+                sample_noun=SKILL_SAMPLE_NOUN,
+            )
+            query = CellQuery(CellKey(day.isoformat(), role, ALL, level, NATIONWIDE), min_sample)
+            choice = selector.select_cell(query)
+            assert isinstance(choice, CellChoice)
+            chosen_level = choice.cell.seniority or ALL
+            chosen = stats.get(chosen_level)
+            if chosen is None or chosen.n == 0:
+                raise UnknownCell("Vai trò đã chọn không có tin nào ở cấp bậc này của snapshot này.", snapshot_date=day)
+            rate_rows = _skill_rate_rows(conn, day, role, chosen_level)
+            if not rate_rows:
+                raise UnknownCell(
+                    f"Snapshot {day.isoformat()} có ô thống kê của vai trò đã chọn nhưng chưa có tỷ lệ kỹ năng nào.",
+                    snapshot_date=day,
+                )
+
+        cell_id = f"{NATIONWIDE}.{role}" + ("" if chosen_level == ALL else f".{chosen_level}")
+        scanned = choice.n
+        enough = scanned >= min_sample
+        display = suppression_for(MeasureKind.SKILL_RATE, scanned, min_sample=min_sample)
+        owned = set(have)
+        rows: list[SkillRateRow] = []
+        if enough:
+            grouped = SkillGrouper().group_skills(
+                SkillGroupRequest(
+                    tuple(SkillRate(skill, rate) for skill, _, rate in rate_rows), rules.theta_core, rules.theta_common
+                )
+            )
+            assert isinstance(grouped, tuple)
+            bands = {g.skill_id: g.band for g in grouped}
+            shown = [(skill, rate) for skill, _, rate in rate_rows if bands[skill] is not SkillBand.RARE]
+            shown.sort(key=lambda item: (-item[1], item[0]))
+            for skill, rate in shown:
+                stat = Stat(value=rate, kind=MeasureKind.SKILL_RATE, display=display, cell_id=cell_id)
+                rows.append(SkillRateRow(skill=skill, rate=stat, group=bands[skill].value, have=skill in owned))
+        else:
+            # Không tập nào đủ ngưỡng: kỹ năng có nhắc, theo mã. Thứ tự không mang xếp hạng.
+            # Không kỹ năng nào được nhắc thì liệt kê mọi mã của ô: web coi `rows` rỗng là response hỏng.
+            mentioned = [row for row in rate_rows if row[1] > 0] or rate_rows
+            for skill, _, _ in sorted(mentioned):
+                stat = Stat(value=None, kind=MeasureKind.SKILL_RATE, display=display, cell_id=cell_id)
+                rows.append(SkillRateRow(skill=skill, rate=stat, group=None, have=skill in owned))
+        core = [r for r in rows if r.group == SkillBand.CORE.value]
+        data = SkillRatesData(
+            role=role,
+            level=level,
+            cell_id=cell_id,
+            rows=rows,
+            core_size=len(core) if enough else None,
+            have_core=sum(r.have for r in core) if enough else None,
+        )
+        cell = CellMeta(
+            n=chosen.n,
+            fallback_label=choice.label,
+            seniority_mix=dict(chosen.seniority_mix),
+            n_by_measure={SKILL_COUNT: scanned},
+            insufficient_by_measure={SKILL_COUNT: not enough},
+        )
+        meta = Meta(
+            snapshot_date=day,
+            snapshot_status=SnapshotStatus(latest.status),
+            sources=sources,
+            sources_failed=list(latest.sources_failed),
+            thresholds=Thresholds(min_sample=min_sample, theta_core=rules.theta_core, theta_common=rules.theta_common),
+            coverage_notes=[
+                CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources)))) for n in rules.coverage_notes
+            ],
+            cells={cell_id: cell},
+        )
+        return Envelope[SkillRatesData](data=data, meta=meta)
 
     def newcomer_roles(self) -> Envelope[NewcomerRolesData]:
         levels = self._rules.level_groups.get(ENTRY)
@@ -273,3 +393,75 @@ def _cell_meta(n: int, mix: dict[str, int]) -> CellMeta:
 def _sources(conn: Connection, day: date) -> list[str]:
     stmt = sa.select(stat_sources.c.source).where(stat_sources.c.snapshot_id == day).order_by(stat_sources.c.source)
     return list(conn.execute(stmt).scalars())
+
+
+def _display_names(rules: RulesConfig) -> dict[str, str]:
+    """Tên hiển thị của vai trò và cấp bậc cho nhãn của phép 2: nhãn của `[labels.*]`, nhóm cấp viết hoa chữ đầu."""
+    names = {code: label for label, code in rules.role_codes.items()}
+    names.update({code: label for label, code in rules.level_codes.items()})
+    names.update({group: group.capitalize() for group in rules.level_groups})
+    names[ALL] = "mọi cấp"
+    return names
+
+
+def _mid_and_above(rules: RulesConfig) -> tuple[str, ...]:
+    """Cấp thô không thuộc nhóm nào và không phải `unknown`: Mid, Senior, Lead (FR-19)."""
+    grouped = {level for members in rules.level_groups.values() for level in members}
+    return tuple(code for code in rules.level_codes.values() if code not in grouped and code != UNKNOWN_LEVEL)
+
+
+def _latest_with_skill_rates(conn: Connection) -> Any:
+    has_rates = sa.exists().where(stat_skill_rates.c.snapshot_id == snapshots.c.snapshot_id)
+    has_sources = sa.exists().where(stat_sources.c.snapshot_id == snapshots.c.snapshot_id)
+    stmt = (
+        sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed)
+        .where(snapshots.c.status.in_(READABLE), has_rates, has_sources)
+        .order_by(snapshots.c.snapshot_id.desc())
+        .limit(1)
+    )
+    return conn.execute(stmt).one_or_none()
+
+
+def _skill_cell_stats(conn: Connection, day: date, role: str) -> dict[str, CellStats]:
+    """Mọi ô toàn quốc của một vai trò (nhánh `all`, số năm `any`): `n`, cơ cấu cấp và `n_scanned`, theo cấp lọc."""
+    c, r = stat_cells, stat_skill_rates
+    cells = sa.select(c.c.seniority, c.c.n, c.c.seniority_mix).where(
+        c.c.snapshot_id == day, c.c.role == role, c.c.branch == ALL, c.c.years == ANY, c.c.scope == NATIONWIDE
+    )
+    # `n_scanned` ghi cùng giá trị ở mọi hàng của ô (#101): đọc giá trị đã ghi, không tính lại, và không chọn ngầm
+    # một giá trị khi các hàng khác nhau (dữ liệu hỏng).
+    scanned_stmt = (
+        sa.select(r.c.seniority, r.c.n_scanned)
+        .where(r.c.snapshot_id == day, r.c.role == role, r.c.branch == ALL, r.c.years == ANY, r.c.scope == NATIONWIDE)
+        .distinct()
+        .order_by(r.c.seniority, r.c.n_scanned)
+    )
+    scanned: dict[str, list[int]] = {}
+    for row in conn.execute(scanned_stmt):
+        scanned.setdefault(row.seniority, []).append(row.n_scanned)
+    for seniority, values in scanned.items():
+        if len(values) > 1:
+            raise RuntimeError(
+                f"n_scanned không thống nhất ở ô {role}/{seniority} của snapshot {day.isoformat()}: "
+                f"{', '.join(map(str, values))} (mọi hàng của một ô phải cùng n_scanned, #101)."
+            )
+    return {
+        row.seniority: CellStats(
+            n=row.n, seniority_mix=dict(row.seniority_mix), sample_n=scanned[row.seniority][0] if row.seniority in scanned else 0
+        )
+        for row in conn.execute(cells)
+    }
+
+
+def _skill_rate_rows(conn: Connection, day: date, role: str, level: str) -> list[tuple[str, int, float]]:
+    """`(kỹ năng, n_with, rate)` của một ô, như `aggregate` đã ghi."""
+    r = stat_skill_rates
+    stmt = sa.select(r.c.skill, r.c.n_with, r.c.rate).where(
+        r.c.snapshot_id == day,
+        r.c.role == role,
+        r.c.branch == ALL,
+        r.c.seniority == level,
+        r.c.years == ANY,
+        r.c.scope == NATIONWIDE,
+    )
+    return [(row.skill, row.n_with, row.rate) for row in conn.execute(stmt)]

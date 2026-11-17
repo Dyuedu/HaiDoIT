@@ -50,5 +50,5 @@ Màn hồ sơ kỹ năng (#152) gọi `GET /api/v1/skill-rates?role=&level=&have
 
 ## Assumptions
 
-- Bản thật (#151) theo cùng hình. `StatMarket.skill_rates` hiện vẫn ném `UnknownCell`; chỉ đổi chữ ký để nhận `have`.
-- Câu `fallback_label` của bản giả viết tay; phép 2 (#106) sẽ sinh câu thật.
+- Bản thật (#151) theo cùng hình. `StatMarket.skill_rates` hiện vẫn ném `UnknownCell`; chỉ đổi chữ ký để nhận `have`. *(2026-11-17, #151: `StatMarket.skill_rates` đã đọc `stat_skill_rates`; bản thật chỉ trả dòng `core` và `common`, xem `specs/151-ty-le-ky-nang-that/spec.md`. Bản giả và các scenario ở trên không đổi.)*
+- Câu `fallback_label` của bản giả viết tay; phép 2 (#106) sinh câu thật cho bản `stat` (2026-11-17).

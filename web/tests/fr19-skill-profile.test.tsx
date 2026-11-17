@@ -115,6 +115,50 @@ describe("fr19 #152 — ô quay về và chưa đủ dữ liệu", () => {
   });
 });
 
+describe("fr19 #152 #151 — ô đủ mẫu mà mọi kỹ năng đều hiếm", () => {
+  const EMPTY_TEXT = "Không kỹ năng nào được nhắc đủ thường xuyên để xếp vào nhóm cốt lõi hay phổ biến.";
+
+  function allRare(): SkillRatesEnvelope {
+    const env = clone("backend|entry");
+    env.data.rows = [];
+    env.data.core_size = 0;
+    env.data.have_core = 0;
+    return env;
+  }
+
+  it("fr19: rows rỗng với core_size = 0 là response đọc được (API trả đúng thế khi mọi kỹ năng dưới θ_common)", async () => {
+    routeSkillProfile({ skillRates: () => jsonResponse(200, allRare()) });
+    const result = await fetchSkillRates({ role: "backend", level: "entry", have: [] });
+    expect(result.kind).toBe("ok");
+  });
+
+  it("fr19: rows rỗng mà core_size null vẫn là response hỏng", async () => {
+    const env = allRare();
+    env.data.core_size = null;
+    env.data.have_core = null;
+    routeSkillProfile({ skillRates: () => jsonResponse(200, env) });
+    expect((await fetchSkillRates({ role: "backend", level: "entry", have: [] })).kind).toBe("unreadable");
+  });
+
+  it("fr19: rows rỗng mà core_size khác 0 vẫn là response hỏng", async () => {
+    const env = allRare();
+    env.data.core_size = 2;
+    env.data.have_core = 0;
+    routeSkillProfile({ skillRates: () => jsonResponse(200, env) });
+    expect((await fetchSkillRates({ role: "backend", level: "entry", have: [] })).kind).toBe("unreadable");
+  });
+
+  it("fr19: màn hiện câu giải thích, không danh sách, không dòng đếm core, không báo lỗi", async () => {
+    routeSkillProfile({ skillRates: () => jsonResponse(200, allRare()) });
+    await openProfile({ role: "backend", level: "entry" });
+    const text = await screen.findByText(EMPTY_TEXT);
+    expect(text.textContent).not.toMatch(/\d/);
+    expect(screen.queryByRole("list", { name: /Kỹ năng theo tỷ lệ tin yêu cầu/ })).toBeNull();
+    expect(screen.queryByTestId("core-count")).toBeNull();
+    expect(screen.queryByText(/không đọc được/i)).toBeNull();
+  });
+});
+
 describe("fr19 fr14 ad22 #152 — kỹ năng đã có", () => {
   it("fr19 ad22: hồ sơ java, sql, git thì ba ô được tick và dòng đếm lấy từ API", async () => {
     writeProfile({ v: 1, role: null, level: null, skills: ["java", "sql", "git"] });

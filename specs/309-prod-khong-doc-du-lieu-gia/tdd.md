@@ -23,3 +23,9 @@ uv run pytest -q -p no:cacheprovider tests/deploy/test_gh309_prod_khong_doc_du_l
 ### GREEN
 
 Thêm hai dòng `stat` vào `deploy/compose.prod.yml`: `tests/deploy` 75 passed.
+
+## Đợt #151 (2026-11-17): skill-rates có số thật
+
+Lý do: #151 cài `StatMarket.skill_rates`, nên `skill-rates` trên prod không còn trả 404 mà trả số thật của `stat_skill_rates`. Lúc gộp main, dòng `HAIDO_MARKET_SOURCE_SKILL_RATES` của #309 và của #151 bị lặp trong `deploy/compose.prod.yml`; giữ một dòng (ghi chú của #151), ghi chú của #309 giờ chỉ nói về `learning-path`. AC của #309 vẫn đúng: mọi khóa của `SOURCE_ENV` là `stat`.
+
+- Không có test mới; `tests/deploy/test_gh309_prod_khong_doc_du_lieu_gia.py` vẫn xanh sau khi gộp (xem GREEN của #151).

@@ -28,6 +28,9 @@ export const GROUP_LABELS: Readonly<Record<SkillGroup, string>> = {
 export const GROUP_NOTE =
   "Cốt lõi: kỹ năng tin của vai trò này đòi nhiều nhất. Thường gặp: nên học sau khi đã nắm các kỹ năng cốt lõi. Riêng của công ty: chỉ một phần nhỏ tin nhắc tới.";
 
+/** Ô đủ mẫu mà mọi kỹ năng dưới ngưỡng "thường gặp": không có dòng nào. Câu không chứa số (DEC-6). */
+export const NO_COMMON_SKILLS = "Không kỹ năng nào được nhắc đủ thường xuyên để xếp vào nhóm cốt lõi hay phổ biến.";
+
 export interface SkillProfileLine {
   skill: string;
   name: string;
@@ -42,6 +45,8 @@ export interface SkillProfileLine {
 
 export interface SkillProfileView {
   lines: SkillProfileLine[];
+  /** Câu thay danh sách khi `lines` rỗng (ô đủ mẫu, mọi kỹ năng hiếm); `null` khi có dòng. */
+  emptyText: string | null;
   /** Câu quay về của API, nguyên văn; `null` khi chọn thẳng ô. */
   fallbackText: string | null;
   /** "n = 157": n của ô đã dùng. */
@@ -70,10 +75,13 @@ export function buildSkillProfileView(
   });
   return {
     lines,
+    emptyText: lines.length === 0 ? NO_COMMON_SKILLS : null,
     fallbackText: cell.fallback_label,
     nText: `n = ${formatCount(cell.n)}`,
     coreCountText:
-      data.core_size !== null && data.have_core !== null ? `${data.have_core}/${data.core_size}` : null,
+      data.core_size !== null && data.have_core !== null && data.core_size > 0
+        ? `${data.have_core}/${data.core_size}`
+        : null,
     caption: {
       sources: meta.sources,
       snapshotDate: formatDate(meta.snapshot_date),

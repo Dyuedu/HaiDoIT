@@ -13,11 +13,12 @@ services:
       HAIDO_MARKET_SOURCE_CITY_SHARES: stat
       # Màn người mới đọc ô `entry` của snapshot đã công bố (#146).
       HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat
+      # Tỷ lệ kỹ năng theo vai trò và cấp đọc `stat_skill_rates` của snapshot đã công bố (#151); không còn số giả.
+      HAIDO_MARKET_SOURCE_SKILL_RATES: stat
       # Màn kỹ năng theo vai trò (#166): `stat` trả 404 `unknown_cell` đến khi #168 có số thật, không bao giờ số giả.
       HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
-      # Hồ sơ kỹ năng và lộ trình (#309): `stat` trả 404 `unknown_cell` đến khi #151 và #216 có số thật. Mọi khóa của
-      # SOURCE_ENV phải có ở đây (tests/deploy/test_gh309_*), vì mã mặc định là `fake`.
-      HAIDO_MARKET_SOURCE_SKILL_RATES: stat
+      # Lộ trình (#309): `stat` trả 404 `unknown_cell` đến khi #216 có số thật. Mọi khóa của SOURCE_ENV phải có ở đây
+      # (tests/deploy/test_gh309_*), vì mã mặc định là `fake`.
       HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
     ports:
       - "127.0.0.1:8000:8000"

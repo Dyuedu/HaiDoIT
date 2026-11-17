@@ -31,6 +31,8 @@ Một sinh viên chạm Backend trên danh sách người mới (#147), mở `/h
 
 ### Edge Cases
 
+- Ô đủ 30 tin mà mọi kỹ năng dưới ngưỡng "thường gặp" (API: `rows = []`, `core_size = 0`): màn hiện câu "Không kỹ năng nào được nhắc đủ thường xuyên để xếp vào nhóm cốt lõi hay phổ biến." (không số), không danh sách, không dòng đếm core, không báo lỗi. `rows` rỗng mà `core_size` là `null` hoặc khác 0 vẫn là response hỏng. (#151, 2026-11-17)
+
 - Điện thoại 360px: không cuộn ngang; tên kỹ năng và ô số xếp chồng.
 - Mã vai trò lạ trong URL: không in mã như tên; màn coi như chưa chọn vai trò.
 - URL không có `role` mà hồ sơ trình duyệt có vai trò mục tiêu (#206): dùng vai trò đó.

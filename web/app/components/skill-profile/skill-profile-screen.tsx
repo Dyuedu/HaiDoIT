@@ -167,8 +167,14 @@ export function SkillProfileScreen({ initialRole, initialLevel, unknownRole }: S
             <span className="font-mono text-mono text-text">{view.coreCountText}</span> kỹ năng cốt lõi bạn đã có
           </p>
         )}
-        <SkillList lines={view.lines} owned={owned} onToggle={toggle} />
-        <p className="m-0 max-w-[68ch] text-caption text-text-quiet">{GROUP_NOTE}</p>
+        {view.emptyText ? (
+          <p className="m-0 text-body-md text-text-secondary">{view.emptyText}</p>
+        ) : (
+          <>
+            <SkillList lines={view.lines} owned={owned} onToggle={toggle} />
+            <p className="m-0 max-w-[68ch] text-caption text-text-quiet">{GROUP_NOTE}</p>
+          </>
+        )}
         <SnapshotCaption caption={view.caption} />
       </>
     );

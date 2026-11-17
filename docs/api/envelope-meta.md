@@ -153,7 +153,7 @@ của `level_options` (#149). `have` tùy chọn, cùng luật với `learning-p
   "meta": { "…": "…",
     "cells": {
       "vn.backend.entry": { "n": 52,
-        "fallback_label": "Java Backend · Entry chỉ có 26 tin, chưa đủ để tính riêng, nên số dưới đây lấy từ ô rộng hơn Backend · Entry.",
+        "fallback_label": "Backend · Fresher chỉ có 26 tin đọc được kỹ năng (dưới 30), chưa đủ để tính riêng, nên số dưới đây lấy từ Backend · Entry (52 tin đọc được kỹ năng).",
         "seniority_mix": { "intern": 13, "fresher": 7, "junior": 32 },
         "n_by_measure": { "skill_count": 52, "experience_years": 37, "salary": 13 },
         "insufficient_by_measure": { "skill_count": false, "experience_years": false, "salary": true } } } }
@@ -169,6 +169,17 @@ của `level_options` (#149). `have` tùy chọn, cùng luật với `learning-p
 - `have` của dòng: mã kỹ năng có trong `have=`. `core_size` là số dòng `core`, `have_core` là số dòng `core` có
   `have`; cả hai `null` khi mọi `rate` là `null_data`. Hai số này là `Ordinal` (quy tắc 1), như `path_size` và
   `have_on_path` của `learning-path`: số đếm trên mã kỹ năng của ô và của người dùng, không phải số tin.
+- Bản thật (`HAIDO_MARKET_SOURCE_SKILL_RATES=stat`, #151) đọc `stat_skill_rates` của snapshot đọc được mới nhất, chỉ ô
+  toàn quốc. Ô do phép 2 (`select_cell`, #106) chọn theo thứ tự `(vai trò, cấp)` → `(vai trò, nhóm cấp)` → `(vai trò,
+  all)`, không đổi phạm vi và vai trò; đủ mẫu là `n_scanned >= min_sample`. `meta.cells[data.cell_id].n` là `n` của ô,
+  `n_by_measure.skill_count` là `n_scanned`, `fallback_label` là nhãn của phép 2: `null` khi ô đã chọn đủ mẫu; còn lại
+  gọi tên ô được chọn và n của nó, tên ô đã dùng và n của nó (n là số tin đọc được kỹ năng, tức `n_scanned`, nên có thể
+  nhỏ hơn `meta.cells[...].n`), và ở bước `all` với cấp mới vào nghề thì thêm tỷ lệ tin Mid trở lên của ô đó (FR-19;
+  làm tròn nửa lên, mẫu số là mọi tin của ô kể cả `unknown`). Dòng chỉ gồm `core` và `common` (nhóm theo θ của `meta.thresholds`). Khi không tập nào
+  đủ `min_sample`, `data.cell_id` là ô `all`, dòng là kỹ năng có nhắc ít nhất một lần, xếp theo mã, mọi `rate` là
+  `null_data`, `group = null`, `core_size` và `have_core` là `null`. Vai trò ngoài `config/rules.toml` hoặc không có tin
+  nào ở snapshot là 404 `unknown_cell`, cũng như ô có trong `stat_cells` mà không có hàng tỷ lệ nào. Ô đủ mẫu mà mọi
+  kỹ năng dưới θ_common cho `rows = []`, `core_size = 0`, `have_core = 0` (hợp lệ; web hiện câu giải thích).
 
 ## `GET /api/v1/role-for-title?title=<chức danh>`
 
@@ -402,7 +413,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 | Biến | Route | Bản thật |
 |---|---|---|
 | `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
-| `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | #151; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#309) |
+| `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | `stat` (#151): `stat_skill_rates` của snapshot đọc được mới nhất, quay về qua phép 2 (#106); `deploy/compose.prod.yml` đặt `stat` |
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#309) |
 | `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | #168; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#166) |

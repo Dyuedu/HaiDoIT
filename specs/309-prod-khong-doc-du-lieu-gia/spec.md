@@ -46,3 +46,5 @@ Người dùng prod không bao giờ thấy số của fixture giả. Phép chư
 ## Success Criteria *(mandatory)*
 
 - **SC-001**: Sau deploy, `GET /api/v1/skill-rates?role=ai_ml&level=entry` và `GET /api/v1/learning-path?role=backend&level=entry` trên prod trả 404 `unknown_cell`, `snapshot_date = null`.
+
+  Cập nhật 2026-11-17 (#151): `skill-rates` giờ trả số thật của `stat_skill_rates`; riêng `learning-path` vẫn 404 tới #216.
