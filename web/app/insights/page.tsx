@@ -1,8 +1,11 @@
 import { NewcomerScreen } from "../components/insights/newcomer-screen";
+import { SkillRolesScreen } from "../components/insights/skill-roles-screen";
 
 /**
  * Trang `/insights`. Mục đầu tiên là "Cửa vào cho người mới" (#110, #147): vai trò nào còn tuyển Intern, Fresher,
- * Junior. Câu trên trang không chứa số (DEC-6, #132); số nằm ở từng dòng, kèm n, ngày snapshot và nguồn.
+ * Junior. Mục thứ hai là "Kỹ năng của bạn dùng ở vai trò nào" (#113, #167, #169): chọn một kỹ năng, xem tỷ lệ tin
+ * entry-level của từng vai trò nhắc tới nó; `?skill=` giữ kỹ năng đã chọn. Câu trên trang không chứa số (DEC-6, #132);
+ * số nằm ở từng dòng, kèm n, ngày snapshot và nguồn.
  */
 export default function InsightsPage() {
   const headingId = "nguoi-moi";
@@ -18,6 +21,16 @@ export default function InsightsPage() {
           đó yêu cầu ở cấp mới vào nghề.
         </p>
         <NewcomerScreen />
+      </section>
+      <section aria-labelledby="ky-nang-cua-ban" className="mt-10">
+        <h2 id="ky-nang-cua-ban" className="m-0 text-section text-text">
+          Kỹ năng của bạn dùng ở vai trò nào
+        </h2>
+        <p className="mt-2 mb-0 max-w-[68ch] text-body-md text-text-quiet">
+          Chọn một kỹ năng bạn đã có để xem tin tuyển Intern, Fresher hoặc Junior của từng vai trò nhắc tới nó nhiều hay
+          ít. Chọn một vai trò để mở hồ sơ kỹ năng của vai trò đó.
+        </p>
+        <SkillRolesScreen />
       </section>
     </section>
   );

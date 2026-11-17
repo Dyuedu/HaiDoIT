@@ -128,3 +128,9 @@ Hành vi và AC của issue này không đổi: thay đổi chỉ thêm (phươn
 - GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx151_test`, không skip) → 1580 passed; `cd web && npx vitest run` → 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
 
 Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
+
+## Đợt 2026-11-17 (#113, #169)
+
+Lý do: test DEC-6 "lúc đang tải…" của #148 trong `web/tests/fr37-newcomer-list.test.tsx` đọc `getByRole("status")` trên cả trang; từ #169 trang có hai vùng trạng thái. Test đọc vùng của mục người mới; điều nó kiểm không đổi. Xem `specs/147-man-nguoi-moi/tdd.md`.
+
+- GREEN: `npx vitest run` → 25 files, 328 passed.

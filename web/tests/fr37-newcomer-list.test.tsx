@@ -197,7 +197,8 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     expect((await screen.findByRole("alert")).textContent).toContain("Không đọc được số liệu");
     await userEvent.click(screen.getByRole("button", { name: "Thử lại" }));
     expect(await screen.findByRole("list", { name: /Vai trò theo số tin/ })).toBeTruthy();
-    expect(mock).toHaveBeenCalledTimes(2);
+    // Từ #169 trang còn gọi /api/v1/skills cho mục kỹ năng; chỉ đếm lần gọi của danh sách người mới.
+    expect(mock.mock.calls.filter(([input]) => String(input).includes(PATH))).toHaveLength(2);
   });
 });
 
@@ -322,7 +323,8 @@ describe("fr37 ad8 DEC-6 (#132) — câu trên màn người mới không chứa
     const pending = deferred<Response>();
     routeNewcomer(() => pending.promise);
     const loading = render(<InsightsPage />);
-    expect(screen.getByRole("status").textContent).toContain("Đang tải");
+    // Từ #169 trang có thêm vùng trạng thái của mục kỹ năng; đọc vùng của mục người mới.
+    expect(within(screen.getByRole("region", { name: "Cửa vào cho người mới" })).getByRole("status").textContent).toContain("Đang tải");
     expectNoDigits(loading.container, 4);
     loading.unmount();
 
