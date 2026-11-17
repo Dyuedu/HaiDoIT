@@ -85,7 +85,7 @@
             }
           },
           "404": {
-            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -193,7 +193,7 @@
             }
           },
           "404": {
-            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -245,7 +245,7 @@
             }
           },
           "404": {
-            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -354,7 +354,75 @@
             }
           },
           "404": {
-            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`).",
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skill-roles": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Một kỹ năng qua các vai trò",
+        "description": "Mỗi vai trò một dòng: tỷ lệ tin entry-level (Intern/Fresher/Junior) của vai trò có nhắc kỹ năng (FR-9, #113).\n\nCấp bậc cố định là nhóm `entry` (`data.level`). Cỡ mẫu của tỷ lệ là\n`meta.cells[row.share.cell_id].n_by_measure.skill_count` (số tin đã quét kỹ năng; `n` của ô là số tin của ô); dưới\nngưỡng mẫu thì `share.display = null_data` (ghi \"not enough data (skill_count/min_sample)\"). `data.mentioned = false`\nkhi không tin nào, ở cấp nào, nhắc kỹ năng. Dòng đã theo thứ tự hiển thị. Mã không có trong bộ từ vựng: 404 `unknown_skill`.",
+        "operationId": "get_skill_roles_api_v1_skill_roles_get",
+        "parameters": [
+          {
+            "name": "skill",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+              "description": "Mã kỹ năng trong bộ từ vựng (`GET /api/v1/skills`), snake_case, tối đa 40 ký tự.",
+              "title": "Skill"
+            },
+            "description": "Mã kỹ năng trong bộ từ vựng (`GET /api/v1/skills`), snake_case, tối đa 40 ký tự."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_SkillRolesData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -724,6 +792,25 @@
           "meta"
         ],
         "title": "Envelope[SkillRatesData]"
+      },
+      "Envelope_SkillRolesData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SkillRolesData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[SkillRolesData]"
       },
       "ErrorBody": {
         "properties": {
@@ -1184,6 +1271,38 @@
         "title": "RoleForTitleResponse",
         "description": "`{data}`. Không có `meta` vì không có con số nào."
       },
+      "SkillLabel": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 40,
+            "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+            "title": "Code",
+            "description": "Mã kỹ năng trong bộ từ vựng, snake_case."
+          },
+          "name_en": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Name En",
+            "description": "Tên tiếng Anh. Tên công nghệ, nên được có chữ số (`Python3`, `ISO 27001`) ngoài quy tắc DEC-6."
+          },
+          "name_vi": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Name Vi",
+            "description": "Tên tiếng Việt, cùng quy tắc."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "name_en",
+          "name_vi"
+        ],
+        "title": "SkillLabel",
+        "description": "Kỹ năng đã dùng, để màn ghi rõ nó khớp kỹ năng nào (AC 1 của #113)."
+      },
       "SkillRateRow": {
         "properties": {
           "skill": {
@@ -1287,6 +1406,74 @@
         ],
         "title": "SkillRatesData",
         "description": "`data` của `GET /api/v1/skill-rates`."
+      },
+      "SkillRoleRow": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Mã vai trò."
+          },
+          "share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ, `kind = skill_rate`, `cell_id = vn.<role>.entry`. Dưới ngưỡng mẫu (theo `skill_count`, không theo `n` của\nô) là `null_data`, không có giá trị; cỡ mẫu đó vẫn có ở `meta.cells` để màn ghi \"not enough data (n/min_sample)\".\nĐủ mẫu mà không tin nào nhắc là 0, không phải null."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "share"
+        ],
+        "title": "SkillRoleRow",
+        "description": "Tỷ lệ tin entry-level của một vai trò có nhắc kỹ năng (#166). Cỡ mẫu của tỷ lệ là\n`meta.cells[share.cell_id].n_by_measure[\"skill_count\"]` (số tin đã quét kỹ năng, `n_scanned` của #101); `meta.cells[..].n`\nvẫn là số tin của ô, cùng số với `newcomer-roles`."
+      },
+      "SkillRolesData": {
+        "properties": {
+          "skill": {
+            "$ref": "#/components/schemas/SkillLabel",
+            "description": "Kỹ năng đã chọn, kèm tên."
+          },
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "description": "Mã nhóm cấp bậc của mọi dòng (`entry`), cùng mã với tham số `level` của `skill-rates` và của `/ho-so-ky-nang`, để\nmàn mở hồ sơ kỹ năng của một vai trò đúng cấp (#169, #111)."
+          },
+          "levels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Levels",
+            "description": "Các cấp bậc được tính là entry-level, ví dụ `[\"intern\", \"fresher\", \"junior\"]`."
+          },
+          "mentioned": {
+            "type": "boolean",
+            "title": "Mentioned",
+            "description": "`false` khi không tin tuyển dụng hiện tại nào, ở cấp bậc nào, nhắc kỹ năng (AC 4 của #113): không chỉ entry-level,\nvà kể cả khi mọi ô entry-level bị ẩn. Máy chủ tính từ ô mọi cấp; web không suy từ các dòng (AD-22). `true` mà mọi\ndòng hiện đều 0 là hợp lệ: tin nhắc nằm ở cấp khác hoặc ở ô dưới ngưỡng bị ẩn."
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/SkillRoleRow"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Rows",
+            "description": "Mỗi vai trò một dòng, theo thứ tự hiển thị: dòng có tỷ lệ trước, tỷ lệ giảm dần rồi theo mã vai trò; sau đó dòng\n`null_data`, cỡ mẫu của phép đo giảm dần rồi theo mã vai trò. Web không sắp xếp lại."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skill",
+          "level",
+          "levels",
+          "mentioned",
+          "rows"
+        ],
+        "title": "SkillRolesData",
+        "description": "`data` của `GET /api/v1/skill-roles`."
       },
       "SkillRow": {
         "properties": {

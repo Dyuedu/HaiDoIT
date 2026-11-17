@@ -40,7 +40,7 @@ def statements(pg_engine: Engine) -> Iterator[list[str]]:
 def _client(engine: Engine, rules=RULES) -> TestClient:
     fake = FakeMarket()
     stat = StatMarket(engine_factory=lambda: engine, rules=rules)
-    app = create_app({"city_shares": fake, "skill_rates": fake, "newcomer_roles": stat, "learning_path": fake})
+    app = create_app({"city_shares": fake, "skill_rates": fake, "newcomer_roles": stat, "learning_path": fake, "skill_roles": fake})
     return TestClient(app, raise_server_exceptions=False)
 
 

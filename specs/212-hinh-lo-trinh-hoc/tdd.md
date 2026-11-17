@@ -151,3 +151,17 @@ Lý do: review #138 chỉ ra `prepared_text_problems` bỏ lọt `％` toàn chi
 - RED (chạy thật trước khi sửa code): 10 failed, 26 passed trong file này. Hai ca `％`; hai ca `²` và `①` (không phải `\d` nên không tính); sáu ca "phần trăm" (hai dấu cách, NBSP, xuống dòng, tab và CRLF, hai ca NFD). Ca viết hoa, chữ số toàn chiều `１２` và "Java 17," / "(HTML5)" đã xanh sẵn.
 - Sửa: `unicodedata.normalize("NFKC", ...)` trong `prepared_text_problems` và `digits_outside_tech`; `phần\s+trăm` trên `casefold()`.
 - GREEN: 37 passed trong file (một ca thêm sau kiểm đột biến: `digits_outside_tech` tự chuẩn hóa, mất chuẩn hóa ở đó thì xanh oan nên thêm `test_fr23_digits_outside_tech_cung_chuan_hoa_nfkc`, đỏ khi bỏ NFKC trong hàm đó). Chi tiết đột biến và toàn bộ test xem `specs/138-cong-loi-dan-khong-so/tdd.md` đợt 2.
+
+## Đợt 2026-11-17 (#166): file dùng chung đổi, hành vi của issue này không đổi
+
+Lý do: #166 (hình response `skill-roles`) sửa file mà issue này từng đụng: `haido_api/market_source.py`, `fake_market.py`, `stat_market.py`, `routes/market.py`, `schemas/market.py`, `fixtures/fake_market.json` (chỉ thêm mục `skill_roles`), `docs/api/*`, `tests/api/test_ad17_routes.py`, `test_ad17_web_fixtures.py`, `test_dat20_stat_market.py`, `tests/steps/test_dat20_api_end_to_end.py`. Thay đổi: thêm phép thứ năm `skill_roles`; `learning_path` và `skill_rates` giả không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi; không test nào của issue này đổi kỳ vọng. RED của #166 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `t166_test`) → 1510 passed, không skip; `cd web && npx vitest run` → 22 files, 293 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
+
+## Đợt 2026-11-17 (#166, đợt 2 theo review): file dùng chung đổi lần nữa, AC của issue này không đổi
+
+Lý do: #166 đợt 2 (cỡ mẫu `skill_count` của `skill_rate`, `mentioned` theo mọi cấp, `data.level`, prod chọn nguồn `stat`) sửa thêm `haido_core/domain/envelope.py` (cỡ mẫu của `skill_rate`, hook `check_against_meta`), `haido_api/fake_market.py`, `fixtures/fake_market.json`, `schemas/market.py`, `routes/market.py`. `learning-path` kiểm `display` của `skill_rate` theo `skill_count`; ô `vn.game.entry` không nằm trong lộ trình giả nào, nên response không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi. RED của #166 đợt 2 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx166_test`, không skip) → 1538 passed; `cd web && npx vitest run` → 22 files, 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.

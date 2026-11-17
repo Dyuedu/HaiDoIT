@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from haido_api.market_source import UnknownCell
+from haido_api.market_source import UnknownCell, UnknownSkill
 from haido_api.schemas.error import ErrorBody, ErrorEnvelope
 from haido_api.uploads import UploadRejected
 
@@ -58,6 +58,10 @@ async def _unknown_cell(_: Request, exc: UnknownCell) -> JSONResponse:
     return error_response(404, "unknown_cell", exc.message, snapshot_date=exc.snapshot_date)
 
 
+async def _unknown_skill(_: Request, exc: UnknownSkill) -> JSONResponse:
+    return error_response(404, "unknown_skill", exc.message)
+
+
 async def _upload_rejected(_: Request, exc: UploadRejected) -> JSONResponse:
     # Đóng kết nối: để trình duyệt thấy lỗi thay vì bị reset khi ta từ chối trước khi đọc hết thân.
     return error_response(exc.status_code, exc.code, exc.message, headers={"Connection": "close"})
@@ -90,6 +94,7 @@ async def _internal_error(request: Request, exc: Exception) -> JSONResponse:
 
 def install_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(UnknownCell, _unknown_cell)
+    app.add_exception_handler(UnknownSkill, _unknown_skill)
     app.add_exception_handler(UploadRejected, _upload_rejected)
     app.add_exception_handler(RequestValidationError, _invalid_query)
     app.add_exception_handler(StarletteHTTPException, _http_error)

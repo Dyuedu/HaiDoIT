@@ -65,7 +65,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 | `n` | Số tin của ô |
 | `fallback_label` | Câu giải thích khi số lấy từ ô rộng hơn ô người dùng chọn; `null` nếu không quay về |
 | `seniority_mix` | Số tin theo cấp bậc chi tiết, ví dụ `{"intern": 13, "fresher": 7, "junior": 32}` |
-| `n_by_measure` | Số tin có giá trị của từng thước đo: `skill_count`, `experience_years`, `salary` |
+| `n_by_measure` | Số tin có giá trị của từng thước đo: `skill_count`, `experience_years`, `salary`. `skill_count` (số tin đã quét kỹ năng, `n_scanned` của #101) là cỡ mẫu của mọi `Stat` `kind = skill_rate`: `display` của chúng khớp `suppression_for` trên `skill_count`, thiếu khóa thì trên `n`. Loại khác xét `n` |
 | `insufficient_by_measure` | `true` khi thước đo đó dưới ngưỡng. Phân vị lương xét `n_by_measure.salary`, không xét `n` |
 
 Mã vai trò, cấp bậc, thành phố, nhóm kỹ năng hiện là chuỗi tạm (`ai_ml`, `entry`, `ha_noi`, `core`…);
@@ -222,6 +222,63 @@ trong số tin của vai trò, và n. Không có tham số.
 - Kiểu TypeScript và hàm tra số: `web/lib/newcomer-roles.ts`. Fixture cho test web:
   `web/tests/fixtures/newcomer-roles.json`.
 
+## `GET /api/v1/skill-roles?skill=<mã>`
+
+Màn "kỹ năng này dùng ở vai trò nào" (#113, #166): mỗi vai trò một dòng, tỷ lệ tin entry-level (Intern, Fresher,
+Junior) của vai trò có nhắc kỹ năng. Cấp bậc cố định là nhóm `entry`, không có tham số cấp. `skill` là mã trong
+`GET /api/v1/skills` (snake_case, tối đa 40 ký tự).
+
+```json
+{
+  "data": {
+    "skill": { "code": "python", "name_en": "Python", "name_vi": "Python" },
+    "level": "entry",
+    "levels": ["intern", "fresher", "junior"],
+    "mentioned": true,
+    "rows": [
+      { "role": "ai_ml",
+        "share": { "value": 0.7764471057884231, "kind": "skill_rate", "display": "shown", "cell_id": "vn.ai_ml.entry" } },
+      { "role": "game",
+        "share": { "value": null, "kind": "skill_rate", "display": "null_data", "cell_id": "vn.game.entry" } }
+    ]
+  },
+  "meta": { "…": "…",
+    "cells": {
+      "vn.ai_ml.entry": { "n": 501, "n_by_measure": { "skill_count": 501, "…": "…" }, "…": "…" },
+      "vn.game.entry": { "n": 43, "n_by_measure": { "skill_count": 12, "…": "…" }, "…": "…" } } }
+}
+```
+
+| Con số | Đọc ở |
+|---|---|
+| Tỷ lệ tin entry-level của vai trò có nhắc kỹ năng | `share.value`, chỉ khi `share.display = shown` |
+| Cỡ mẫu của tỷ lệ (X trong "not enough data (X/30)") | `meta.cells[share.cell_id].n_by_measure.skill_count` |
+| Số tin của ô entry-level (cùng số với `newcomer-roles`) | `meta.cells[share.cell_id].n` |
+| Ngưỡng | `meta.thresholds.min_sample` |
+
+- `share.kind = skill_rate`, `share.cell_id = vn.<role>.entry`. Vai trò có `skill_count` dưới `min_sample` thì
+  `share.display = null_data`: ghi "not enough data (skill_count/min_sample)", kể cả khi `n` của ô từ `min_sample` trở lên
+  (ví dụ `game`: n = 43, `skill_count` = 12). Số tin của ô và số tin đã quét kỹ năng là hai số khác nhau; một ô chỉ có một `n`.
+- Vai trò đủ mẫu mà không tin nào nhắc kỹ năng có `share.value = 0`: hiện 0 và giữ trong danh sách.
+- Mọi vai trò của `config/rules.toml` có mặt, kể cả vai trò không có tin nào (n = 0, `null_data`).
+- `rows` đã theo thứ tự hiển thị: dòng có tỷ lệ trước, tỷ lệ giảm dần rồi theo mã vai trò; sau đó dòng `null_data`,
+  `skill_count` giảm dần rồi theo mã vai trò (`Envelope` kiểm, nguồn thật cũng phải khớp). Web không sắp xếp lại.
+- `data.level = entry` là mã nhóm cấp: dùng làm `level` khi mở `/ho-so-ky-nang?role=&level=` hay gọi `skill-rates`.
+- `data.mentioned = false` khi không tin tuyển dụng hiện tại nào, ở cấp bậc nào, nhắc kỹ năng (AC 4 của #113), không
+  chỉ entry-level: màn ghi rằng chưa tin nào nhắc kỹ năng này. Web không suy cờ này từ các dòng. `mentioned = true` mà
+  mọi dòng hiện đều 0 là hợp lệ khi tin nhắc nằm ở cấp khác hoặc ở ô entry-level bị ẩn.
+- `data.skill` gồm mã và tên song ngữ để màn ghi kỹ năng đã dùng. Tên công nghệ được có chữ số (DEC-6, AD-8 miễn tên
+  công nghệ); mọi chuỗi khác của `data` không có chữ số nào: số chỉ nằm trong `Stat` và `meta`.
+- Lỗi: mã đúng định dạng nhưng không có trong bộ từ vựng là 404 `unknown_skill`; thiếu `skill` hoặc sai định dạng là 422
+  `invalid_query`; nguồn chưa có số cho một kỹ năng hợp lệ là 404 `unknown_cell` (nguồn `stat` đến #168 luôn như vậy,
+  không có ngày snapshot). Production đặt `HAIDO_MARKET_SOURCE_SKILL_ROLES=stat`, nên màn này là 404 ở production đến #168.
+- Kiểu TypeScript, hàm gọi API và hàm tra cỡ mẫu `rowN`: `web/lib/skill-roles.ts`. Fixture cho test web:
+  `web/tests/fixtures/skill-roles-{python,figma,abap,sap,machine_learning}.json`.
+- Số thật (#168): `share.value = n_with / n_scanned`; `n_scanned` thành `n_by_measure.skill_count` của
+  `meta.cells[vn.<role>.entry]` (`n` giữ là số tin của ô, cũng là `n` mà `newcomer-roles` ghi) để `Envelope` kiểm được
+  `display`. `mentioned = n_with > 0` của hàng ô mọi vai trò, mọi cấp của `stat_skill_rates` (`role = all`, `seniority = all`,
+  `years = any`, `scope = vn`; `cell_id` `vn.all`), không cộng các ô entry.
+
 ## `GET /api/v1/learning-path?role=<mã>&level=<cấp>&have=<mã,mã,...>`
 
 Lộ trình học đã xếp theo chặng (#121, #122). `level` như `city-shares`, mặc định `entry`. `have` tùy chọn: mã kỹ năng
@@ -287,6 +344,7 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 | HTTP | `code` | Khi nào |
 |---|---|---|
 | 404 | `unknown_cell` | Không có ô cho tham số đã chọn. `snapshot_date` là snapshot đã tìm |
+| 404 | `unknown_skill` | `skill-roles`: mã kỹ năng đúng định dạng nhưng không có trong bộ từ vựng. `snapshot_date` luôn `null` |
 | 422 | `invalid_query` | Thiếu tham số, hoặc mã sai định dạng (chỉ `a-z`, `0-9`, `_`, tối đa 64 ký tự) |
 | 404 | `not_found` | Sai đường dẫn |
 | 405 | `method_not_allowed` | Sai phương thức; các route số liệu chỉ nhận `GET` |
@@ -301,7 +359,7 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 `message` là tiếng Việt, hiện được cho người dùng, và không lặp lại giá trị người dùng gửi lên.
 Rẽ nhánh theo `code`, không theo `message`.
 
-`snapshot_date` chỉ có giá trị ở `unknown_cell`. Mọi mã còn lại (`invalid_query`, `not_found`,
+`snapshot_date` chỉ có giá trị ở `unknown_cell`. Mọi mã còn lại (`unknown_skill`, `invalid_query`, `not_found`,
 `method_not_allowed`, `length_required`, `cv_too_large`, `cv_unsupported_type`, `cv_invalid_upload`, `http_error`, `invalid_response`, `internal_error`) luôn trả `snapshot_date = null`.
 
 ## Dữ liệu giả hiện có
@@ -326,6 +384,10 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `learning-path?role=data_engineer&level=entry` | Sẵn sàng nhưng mọi `rate` là `null_data`, `group = null`: ô entry n = 4 và `vn.data_engineer` n = 22 đều dưới 30; `cell_id = vn.data_engineer`, `fallback_label` giải thích |
 | `learning-path?role=qa` | 200 `not_ready` (mọi vai trò khác của config); `ai_ml&level=entry` cũng `not_ready` nhưng có `skill-rates` để mở hồ sơ |
 | `learning-path?role=backend&level=senior` | 404 `unknown_cell` (bản giả chỉ có ô `entry` và `intern` của backend, như `skill-rates`); `data_engineer&level=senior` cũng 404 vì ô đó không phủ hết kỹ năng của lộ trình |
+| `skill-roles?skill=python` | 17 vai trò: 11 đủ mẫu, trong đó `mobile` đủ mẫu (n = 30) và 0 tin nhắc; `embedded`, `data_scientist`, `data_engineer`, `devops`, `ui_ux`, `other` dưới 30 (`null_data`); `ai_ml` dẫn đầu |
+| `skill-roles?skill=figma` | Xếp hạng khác `python` (`frontend` dẫn đầu); `ui_ux` có tỷ lệ thật cao nhất nhưng n = 21 nên `null_data`; nhiều vai trò đủ mẫu bằng 0 (xếp theo mã) |
+| `skill-roles?skill=abap` | Mã hợp lệ mà không tin nào nhắc: `mentioned = false`, mọi dòng đủ mẫu bằng 0 |
+| `skill-roles?skill=java` | 404 `unknown_cell` (mã trong bộ từ vựng nhưng bản giả chưa có số); `skill=khong_co_ky_nang` là 404 `unknown_skill` |
 | `newcomer-roles` | 17 vai trò: 12 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_scientist`, `data_engineer` dưới 30; `other` không có tin |
 
 ## Chạy và chọn nguồn
@@ -343,6 +405,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | #27 |
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell` |
+| `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | #168; `stat` hiện trả 404 `unknown_cell`, nên chưa compose nào đặt nó |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.
 Thêm bản thật: cài `MarketReadModel` (`haido_api/market_source.py`), thêm một mục vào `IMPLEMENTATIONS`,

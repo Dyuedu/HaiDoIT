@@ -26,3 +26,7 @@
 - [x] T010 Run deploy xanh; trên VPS có image kho `sha-<commit>` và `.warehouse-tag`
 - [x] T011 Chạy bước kho qua đường của `daily.sh` trên VPS với snapshot đã chốt: image GHCR khởi động, migration chạy, bước `ingest` dừng ở `SnapshotClosedError` mà không ghi gì
 - [x] T012 Sáng 12/11: log lượt đêm ghi `image kho: sha-...`, `stat_sources` có hàng của `2026-11-12`, `/api/v1/city-shares` trả 200
+
+## Thay đổi đợt 2 (2026-11-17, #166)
+
+#166 đợt 2 sửa thêm file dùng chung với issue này (`deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat`)). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

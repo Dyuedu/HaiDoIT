@@ -63,3 +63,10 @@ Lý do: bản đồ production trống vì image kho build tay trên VPS từ co
 Test mới ở `tests/deploy/test_gh273_image_kho.py`; nhật ký RED/GREEN đầy đủ ở `specs/273-image-kho-trong-deploy/tdd.md`. Các test cũ của #262 (`test_gh262_bat_deploy.py`, `test_gh262_vps_script.py`, `test_proxy_npm.py`) không phải sửa và vẫn xanh: thứ tự Alembic → tạo mạng → `up` → kiểm hai cổng giữ nguyên, lệnh `docker pull` image kho chen trước `docker logout`.
 
 GREEN: `uv run pytest tests/deploy -q` → 38 passed.
+
+## Đợt 2026-11-17 (#166, đợt 2 theo review): file dùng chung đổi lần nữa, AC của issue này không đổi
+
+Lý do: #166 đợt 2 (cỡ mẫu `skill_count` của `skill_rate`, `mentioned` theo mọi cấp, `data.level`, prod chọn nguồn `stat`) sửa thêm `deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat` vào môi trường dịch vụ `api`). Workflow, `vps-deploy.sh`, mạng, cổng và kiểm sức khỏe không đổi; test `test_gh262_*` không đổi.
+
+- RED: không có, vì không có hành vi nào của issue này đổi. RED của #166 đợt 2 nằm ở `specs/166-hinh-ky-nang-theo-vai-tro/tdd.md`.
+- GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx166_test`, không skip) → 1538 passed; `cd web && npx vitest run` → 22 files, 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.

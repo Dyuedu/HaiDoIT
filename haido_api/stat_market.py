@@ -41,6 +41,7 @@ from haido_api.schemas.market import (
     NewcomerRoleRow,
     NewcomerRolesData,
     SkillRatesData,
+    SkillRolesData,
 )
 from haido_core.config import RulesConfig, load_rules
 from haido_core.db.engine import make_read_engine
@@ -64,7 +65,7 @@ ENTRY = "entry"
 
 
 class StatMarket:
-    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#101) và `learning_path` (#216) chưa có số thật."""
+    """Bản thật của `MarketReadModel` cho `city_shares` và `newcomer_roles` (#145, #146). `skill_rates` (#101), `learning_path` (#216) và `skill_roles` (#168) chưa có số thật."""
 
     def __init__(
         self, *, engine_factory: Callable[[], Engine] | None = None, rules: RulesConfig | None = None
@@ -209,6 +210,9 @@ class StatMarket:
 
     def learning_path(self, *, role: str, level: str, have: Collection[str]) -> Envelope[LearningPathData]:
         raise UnknownCell("Lộ trình học chưa có số liệu thật.", snapshot_date=None)
+
+    def skill_roles(self, *, skill: str) -> Envelope[SkillRolesData]:
+        raise UnknownCell("Tỷ lệ kỹ năng theo vai trò chưa có số liệu thật.", snapshot_date=None)
 
 
 def _latest_readable(conn: Connection, level: str, years: str = ANY) -> Any:

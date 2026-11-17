@@ -108,3 +108,16 @@ def test_ad17_fixture_web_khop_response_skills() -> None:
     assert resp.status_code == 200, resp.text
     fixture = json.loads((WEB_FIXTURES / "skills.json").read_text(encoding="utf-8"))
     assert resp.json() == fixture
+
+
+@pytest.mark.parametrize("skill", ["python", "figma", "abap", "sap", "machine_learning"])
+def test_ad17_fixture_web_khop_response_skill_roles(skill: str) -> None:
+    """#166: `skill-roles-<mã>.json` là response của `GET /api/v1/skill-roles?skill=<mã>`.
+
+    `python`: đủ trường hợp; `figma`: xếp hạng khác, vai trò cao nhất bị ẩn; `abap`: không tin nào nhắc (`mentioned = false`);
+    `sap`: không tin entry-level nào nhắc nhưng có tin ở cấp khác (`mentioned = true`); `machine_learning`: tên tiếng Việt khác tiếng Anh.
+    """
+    resp = TestClient(app).get("/api/v1/skill-roles", params={"skill": skill})
+    assert resp.status_code == 200, resp.text
+    fixture = json.loads((WEB_FIXTURES / f"skill-roles-{skill}.json").read_text(encoding="utf-8"))
+    assert resp.json() == fixture

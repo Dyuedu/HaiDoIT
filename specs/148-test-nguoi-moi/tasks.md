@@ -33,3 +33,7 @@
 - [x] T016 F5: `_set_entry_n` kiểm `rowcount == 1`
 - [x] T017 F6: sửa `plan.md` (issue cũ #93, #162, #259, #263), ghi điểm mở ngoài phạm vi
 - [x] T018 Kiểm: pytest đầy đủ trên DB riêng, determinism hai seed, ruff, cổng, lint, vitest, build
+
+## Thay đổi sau merge (2026-11-17, #166)
+
+#166 sửa file dùng chung với issue này (bảo vệ entry > n của `newcomer_roles` không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
