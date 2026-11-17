@@ -27,8 +27,15 @@
 - [x] T014 Thêm `EMPTY_PAGE_TRIES`, `MIN_COVERAGE`, `listed_total()` và tham số `problems` trong `scraper/crawlers/topcv.py`
 - [x] T015 Chạy lại `--sources topcv --skip-details` trên VPS: `complete=True`, số tin gần tổng trên tiêu đề
 
+## Phase 5: Ingest bỏ sót TopCV (2026-11-17)
+
+- [x] T016 [US6] Test `topcv` trong `ingest.AUTO_SOURCES` (`scraper/tests/test_observations.py`) và trong `auto_sources` (`tests/core/test_ad10_rules_config.py`)
+- [x] T017 Đổi ví dụ nguồn chạy tay trong `tests/steps/test_ad4_ingest.py` từ `topcv` sang `linkedin`
+- [x] T018 Thêm `topcv` vào `scraper/ingest.py` và `config/rules.toml`, tăng `config_version`
+- [ ] T019 Đêm đầu sau merge: ingest có dòng `topcv listed=… complete=True`, kho ghi 8 lượt chạy
+
 ## Phase 3: Triển khai
 
 - [x] T010 Chép `scraper/` lên `/opt/haidoit/scraper` (không phải git repo), build `scraper-browser`, chạy thử `pipeline.py crawl --sources topcv --limit 5`
-- [ ] T011 Merge sau khi image đã build, vì merge đẩy `daily.sh` mới lên VPS
-- [ ] T012 Đêm đầu: log có `[topcv] OK`, `topcv listed=… complete=True`
+- [x] T011 Merge sau khi image đã build, vì merge đẩy `daily.sh` mới lên VPS
+- [x] T012 Đêm đầu (17/11): log có `[topcv] OK in 6978s`, `seen: 2399 jobs, listing_complete=True`; nhưng ingest bỏ qua TopCV, xem Phase 5
