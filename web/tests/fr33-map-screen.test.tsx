@@ -394,7 +394,8 @@ describe("fr33 — trạng thái tải sau lỗi và khi quay lại vai trò cũ
 });
 
 describe("fr33 — nút 3D", () => {
-  it("fr33: nút 3D aria-disabled, không dùng disabled, nối với 'Bản đồ 3D sắp có'", async () => {
+  // #314: lối 3D đã có; jsdom không có WebGL nên nút 3D tắt và nói vì sao (thay câu "Bản đồ 3D sắp có" của #160).
+  it("fr33: không có WebGL thì nút 3D aria-disabled, không dùng disabled, nối với câu giải thích", async () => {
     routeCityShares({ all: [ok("all")] });
     await openScreen();
     const button3d = modeButton("3D");
@@ -403,7 +404,9 @@ describe("fr33 — nút 3D", () => {
     expect(button3d.hasAttribute("disabled")).toBe(false);
     const describedBy = button3d.getAttribute("aria-describedby");
     expect(describedBy).toBeTruthy();
-    expect(document.getElementById(describedBy!)?.textContent).toBe("Bản đồ 3D sắp có");
+    expect(document.getElementById(describedBy!)?.textContent).toBe(
+      "Trình duyệt này không chạy được bản đồ 3D, nên đang hiện biểu đồ 2D.",
+    );
   });
 
   it("fr33: bấm hoặc Enter trên nút 3D không đổi lối", async () => {
