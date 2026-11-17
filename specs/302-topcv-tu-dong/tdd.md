@@ -102,3 +102,7 @@ Hành vi mới:
 - `uv run pytest -q` → 1018 passed, 217 skipped. Lần chạy đầu sau khi sửa config còn 1 fail: `test_ad10_rules_mac_dinh_co_phien_ban_cua_so_va_bay_nguon` khẳng định `"topcv" not in rules.auto_sources`, tức quyết định 03/11 đã bỏ; đổi thành `linkedin` và đổi tên test sang `..._tam_nguon`.
 
 Quan sát TopCV của snapshot `2026-11-17` không bù được: snapshot đã chốt `partial`.
+
+### CI đợt 3 (2026-11-17)
+
+Job "Python - ruff and pytest" (có Postgres, máy dev skip các test này) đỏ 3 test của #93 (chưa có `specs/`): `tests/steps/test_dat20_publish_step.py::test_dat20_nguon_chay_tay_loi_khong_lam_snapshot_thanh_partial` khẳng định `"topcv" not in auto_sources`; `tests/test_dat20_cli.py` cho lượt chạy của đúng bảy nguồn nên publish ra `partial; nguồn lỗi: topcv`. Đổi ví dụ nguồn chạy tay sang `linkedin`, thêm `topcv` vào danh sách nguồn của test CLI.

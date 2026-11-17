@@ -26,7 +26,7 @@ def _scalar(engine: Engine, sql: str) -> object:
 
 def _feed(scraper_db, *, failed: tuple[str, ...] = ()) -> None:
     scraper_db.job("a", "itviec", title="Backend Developer", location="Hà Nội")
-    for source in ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec"):
+    for source in ("zalo", "itnavi", "careerlink", "vietnamworks", "momo", "topdev", "itviec", "topcv"):  # #302 thêm topcv
         scraper_db.day(source, S, ["a"] if source == "itviec" else [], complete=source not in failed)
 
 
