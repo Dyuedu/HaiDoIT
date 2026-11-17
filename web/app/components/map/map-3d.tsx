@@ -1,187 +1,258 @@
 "use client";
 
-import { Canvas, type ThreeEvent, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { useEffect, useRef, useState } from "react";
 
-import type { MapColumn } from "@/lib/map-3d-view";
-import { ARCHIPELAGOS, OUTLINE, project } from "@/lib/vietnam-geo";
+import type { CitySharesView } from "@/lib/city-shares-view";
+import { buildColumns } from "@/lib/map-3d-view";
+import { ARCHIPELAGOS, OUTLINE, OUTLINE_PATH, STAGE, toStage } from "@/lib/vietnam-geo";
+
+import css from "./map-3d.module.css";
+
+/** Góc nhìn mặc định và giới hạn, như prototype màn 01 (#316). */
+const TILT = 56;
+const SPIN = -16;
+const MAX_TILT = 72;
+const STEP = 30;
+const DRAG_START = 6;
+
+/** Lớp nền của hình đất: độ sâu, màu nền, màu nét (prototype vẽ năm lớp để có bề dày). */
+const LAYERS: { z: number; fill: string; stroke?: string; opacity?: number }[] = [
+  { z: -36, fill: "#04090D", opacity: 0.85 },
+  { z: -12, fill: "#0A1E28", stroke: "#163A48" },
+  { z: -8, fill: "#0C2532", stroke: "#1A4555" },
+  { z: -4, fill: "#0E2C3A", stroke: "#1F5163" },
+];
+
+interface Drag {
+  x: number;
+  y: number;
+  rx: number;
+  rz: number;
+  active: boolean;
+  id: number;
+  el: HTMLElement;
+}
+
+function RotateIcon({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {dir === "left" ? (
+        <>
+          <path d="M3 12a9 9 0 1 0 3-6.7" />
+          <path d="M3 4v5h5" />
+        </>
+      ) : (
+        <>
+          <path d="M21 12a9 9 0 1 1-3-6.7" />
+          <path d="M21 4v5h-5" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+const ICON_BUTTON =
+  "inline-flex size-11 items-center justify-center rounded-lg border border-border-strong bg-inset p-0 text-text-secondary transition-colors hover:border-selected hover:text-text";
 
 /**
- * Cảnh 3D của màn Bản đồ (#314, FR-33): Việt Nam là mặt phẳng đùn từ viền geoBoundaries, Hoàng Sa và Trường Sa vẽ bằng
- * điểm đảo kèm nhãn, ba cột cao theo tỷ trọng. Kéo để xoay và nghiêng (OrbitControls, không lật xuống dưới mặt đất,
- * không kéo ngang). Trỏ hay chạm một cột thì báo lên `onSelect`; khung thông tin nằm ngoài canvas.
- *
- * Màu lấy từ token của `globals.css` (canvas WebGL không đọc biến CSS). File này chỉ được tải khi mở lối 3D.
+ * Lối 3D của màn Bản đồ (#316), dựng bằng CSS 3D theo prototype màn 01: sân khấu 460×560 nghiêng `rotateX` và xoay
+ * `rotateZ`, tấm lưới, hình Việt Nam (viền geoBoundaries) cùng Hoàng Sa, Trường Sa, ba cột vuông cao `share.value × 400` px,
+ * mỗi cột một thẻ nhãn đứng thẳng. Ba nút xoay trái, xoay phải, đặt lại; kéo ngang để xoay, kéo dọc để nghiêng. Mở màn:
+ * 250ms sau sân khấu nghiêng lên và cột mọc. Thẻ là nút DOM nên bàn phím và trình đọc màn hình dùng được.
  */
+export function Map3D({ view }: { view: CitySharesView }) {
+  const columns = buildColumns(view);
+  const [rx, setRx] = useState(0);
+  const [rz, setRz] = useState(SPIN);
+  const [grown, setGrown] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
+  const drag = useRef<Drag | null>(null);
 
-const LAND_DEPTH = 0.3;
-/** Tâm nhìn lệch về phía nam một chút để Trường Sa không sát mép dưới. */
-const TARGET = { x: 0.6, z: 1.2 };
-const COLOR = {
-  land: "#1c2a36",
-  landEdge: "#2e4456",
-  island: "#62d9ee",
-  column: "#62d9ee",
-  columnSelected: "#e6edf3",
-  label: "#e6edf3",
-  labelMuted: "#9fb0c2",
-};
-
-interface Map3DProps {
-  columns: MapColumn[];
-  selected: string | null;
-  onSelect: (city: string) => void;
-  /** Mất context WebGL sau khi đã vẽ: màn chuyển sang 2D. */
-  onContextLost: () => void;
-}
-
-function Controls() {
-  const { camera, gl } = useThree();
-  const controls = useMemo(() => {
-    const c = new OrbitControls(camera, gl.domElement);
-    c.enablePan = false;
-    c.enableDamping = true;
-    c.minPolarAngle = 0.15;
-    c.maxPolarAngle = Math.PI * 0.42;
-    // Xoay ngang tối đa 60° mỗi phía: bắc luôn ở nửa trên, người xem không mất phương hướng.
-    c.minAzimuthAngle = -Math.PI / 3;
-    c.maxAzimuthAngle = Math.PI / 3;
-    c.minDistance = 10;
-    c.maxDistance = 45;
-    c.target.set(TARGET.x, 0, TARGET.z);
-    return c;
-  }, [camera, gl]);
-  useEffect(() => () => controls.dispose(), [controls]);
-  useFrame(() => controls.update());
-  return null;
-}
-
-/** Mặt đất: mỗi vòng viền là một Shape trong mặt XY (y = bắc), đùn lên rồi xoay nằm xuống mặt XZ. */
-function Land() {
-  const geometry = useMemo(() => {
-    const shapes = OUTLINE.rings.map((ring) => {
-      const shape = new THREE.Shape();
-      ring.forEach(([lon, lat], i) => {
-        const { x, z } = project({ lon, lat });
-        if (i === 0) shape.moveTo(x, -z);
-        else shape.lineTo(x, -z);
-      });
-      return shape;
-    });
-    return new THREE.ExtrudeGeometry(shapes, { depth: LAND_DEPTH, bevelEnabled: false });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRx(TILT);
+      setGrown(true);
+    }, 250);
+    return () => clearTimeout(timer);
   }, []);
-  useEffect(() => () => geometry.dispose(), [geometry]);
-  return (
-    <mesh geometry={geometry} rotation={[-Math.PI / 2, 0, 0]}>
-      <meshStandardMaterial color={COLOR.land} emissive={COLOR.landEdge} emissiveIntensity={0.35} />
-    </mesh>
-  );
-}
 
-/** Nhãn chữ là sprite từ canvas 2D: luôn quay về phía máy quay, không cần gói font. */
-function Label({ text, position, color = COLOR.label, size = 1 }: {
-  text: string;
-  position: [number, number, number];
-  color?: string;
-  size?: number;
-}) {
-  const texture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const font = 48;
-    canvas.width = 1024;
-    canvas.height = 96;
-    if (ctx) {
-      ctx.font = `600 ${font}px "Be Vietnam Pro", system-ui, sans-serif`;
-      ctx.fillStyle = color;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+  const down = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    drag.current = { x: event.clientX, y: event.clientY, rx, rz, active: false, id: event.pointerId, el: event.currentTarget };
+  };
+  const move = (event: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = event.clientX - d.x;
+    const dy = event.clientY - d.y;
+    if (!d.active) {
+      if (Math.abs(dx) + Math.abs(dy) < DRAG_START) return;
+      d.active = true;
+      try {
+        d.el.setPointerCapture(d.id);
+      } catch {
+        // jsdom và vài trình duyệt cũ không có pointer capture: vẫn kéo được trong khung.
+      }
+      setDragging(true);
     }
-    const t = new THREE.CanvasTexture(canvas);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }, [text, color]);
-  useEffect(() => () => texture.dispose(), [texture]);
-  return (
-    <sprite position={position} scale={[10.6 * size, 1 * size, 1]}>
-      <spriteMaterial map={texture} transparent depthWrite={false} />
-    </sprite>
-  );
-}
+    setRz(d.rz + dx * 0.35);
+    setRx(Math.max(0, Math.min(MAX_TILT, d.rx - dy * 0.3)));
+  };
+  const up = () => {
+    const d = drag.current;
+    drag.current = null;
+    if (d?.active) setDragging(false);
+  };
 
-function Archipelagos() {
+  const deg = (n: number) => `${Number(n.toFixed(1))}deg`;
+  const total = view.table.total.nText;
+
   return (
-    <>
-      {ARCHIPELAGOS.map((group) => {
-        const at = project(group.labelAt);
-        return (
-          <group key={group.id}>
-            {group.islands.map((island) => {
-              const { x, z } = project(island);
+    <section aria-label="Bản đồ 3D" className="m-0 flex flex-col gap-3 rounded-xl border border-border bg-panel p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="font-mono text-kicker uppercase text-text-muted">
+          Tin {view.roleLabel} nằm ở đâu · {view.levelLabel} · {view.yearsLabel} · n = {total}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button type="button" aria-label="Xoay trái 30 độ" className={ICON_BUTTON} onClick={() => setRz((z) => z - STEP)}>
+            <RotateIcon dir="left" />
+          </button>
+          <button type="button" aria-label="Xoay phải 30 độ" className={ICON_BUTTON} onClick={() => setRz((z) => z + STEP)}>
+            <RotateIcon dir="right" />
+          </button>
+          <button
+            type="button"
+            aria-label="Đặt lại góc nhìn"
+            className={ICON_BUTTON}
+            onClick={() => {
+              setRx(TILT);
+              setRz(SPIN);
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div
+        role="group"
+        aria-label="Bản đồ 3D. Kéo để xoay, kéo dọc để nghiêng. Chọn nhãn của một nơi để xem tỷ trọng."
+        className={`${css.viewport} ${dragging ? css.dragging : ""}`}
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        onPointerCancel={up}
+        onPointerLeave={up}
+      >
+        <div className={css.scaler}>
+          <div
+            data-testid="map-3d-stage"
+            className={css.stage}
+            style={{ transform: `translateY(40px) rotateX(${deg(rx)}) rotateZ(${deg(rz)})` }}
+          >
+            <div className={css.plate} />
+            {LAYERS.map((layer) => (
+              <svg
+                key={layer.z}
+                className={css.slab}
+                viewBox={`0 0 ${STAGE.width} ${STAGE.height}`}
+                style={{ transform: `translateZ(${layer.z}px)` }}
+                aria-hidden="true"
+              >
+                <path d={OUTLINE_PATH} fill={layer.fill} stroke={layer.stroke} strokeWidth={1} opacity={layer.opacity} />
+              </svg>
+            ))}
+            <svg data-testid="map-3d-land" className={css.slab} viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} aria-hidden="true">
+              <defs>
+                <pattern id="bd-dots" width="7" height="7" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="1.1" fill="#62D9EE" opacity=".5" />
+                </pattern>
+              </defs>
+              <path d={OUTLINE_PATH} fill="#0D2836" />
+              <path d={OUTLINE_PATH} fill="url(#bd-dots)" />
+              <path d={OUTLINE_PATH} fill="none" stroke="#62D9EE" strokeWidth={1.6} strokeLinejoin="round" />
+              {ARCHIPELAGOS.map((group) => {
+                const at = toStage(group.labelAt);
+                return (
+                  <g key={group.id}>
+                    <g fill="#62D9EE" opacity=".85">
+                      {group.islands.map((island) => {
+                        const p = toStage(island);
+                        return <circle key={island.name} cx={p.px} cy={p.py} r={2.2} />;
+                      })}
+                    </g>
+                    <text x={at.px - 40} y={at.py - 6} fill="#9FB0C2" fontSize={12} fontFamily="JetBrains Mono, monospace">
+                      {group.shortLabel}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+            {columns.map((column) => {
+              const h = grown ? column.height : 0;
+              const opacity = column.faded ? 0.4 : 1;
+              const isSelected = selected === column.city;
               return (
-                <mesh key={island.name} position={[x, 0.08, z]}>
-                  <cylinderGeometry args={[0.12, 0.12, 0.16, 12]} />
-                  <meshStandardMaterial color={COLOR.island} emissive={COLOR.island} emissiveIntensity={0.4} />
-                </mesh>
+                <div
+                  key={column.city}
+                  data-testid={`map-3d-column-${column.city}`}
+                  data-height={column.height}
+                  data-faded={column.faded}
+                  data-selected={isSelected}
+                  className={css.col}
+                  style={{ left: column.stage.px, top: column.stage.py }}
+                >
+                  <span className={css.glow} style={{ opacity }} />
+                  <span
+                    className={`${css.face} ${css.top}`}
+                    style={{ transform: `translateZ(${h}px)`, background: isSelected ? "#E6EDF3" : "#62D9EE", opacity }}
+                  />
+                  <span className={`${css.face} ${css.front}`} style={{ height: h, opacity }} />
+                  <span className={`${css.face} ${css.back}`} style={{ height: h, opacity }} />
+                  <span className={`${css.face} ${css.left}`} style={{ width: h, opacity }} />
+                  <span className={`${css.face} ${css.right}`} style={{ width: h, opacity }} />
+                  <button
+                    type="button"
+                    aria-label={column.info}
+                    aria-pressed={isSelected}
+                    onClick={() => setSelected((s) => (s === column.city ? null : column.city))}
+                    onPointerDown={(event) => event.stopPropagation()}
+                    className={`${css.card} ${column.faded ? css.small : ""}`}
+                    style={{
+                      transform: `translateZ(${h + 12}px) rotateZ(${deg(-rz)}) rotateX(${deg(-rx)}) translate(-50%, -100%)`,
+                    }}
+                  >
+                    <span className="text-[12px] font-semibold">{column.label}</span>
+                    {column.faded ? (
+                      <>
+                        <span data-reveal className={`${css.reveal} font-mono text-[11px] text-selected`}>
+                          {column.valueText}
+                        </span>
+                        <span className="max-w-[200px] whitespace-normal text-center font-mono text-[11px] leading-snug text-amber">
+                          {column.smallLabel}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="font-mono text-[11px] text-selected">{column.valueText}</span>
+                    )}
+                  </button>
+                </div>
               );
             })}
-            <Label text={group.label} position={[at.x, 0.9, at.z]} color={COLOR.labelMuted} size={0.75} />
-          </group>
-        );
-      })}
-    </>
-  );
-}
+          </div>
+        </div>
+      </div>
 
-function Column({ column, selected, onSelect }: { column: MapColumn; selected: boolean; onSelect: (city: string) => void }) {
-  const height = Math.max(column.height, 0.02);
-  const pick = (event: ThreeEvent<PointerEvent | MouseEvent>) => {
-    event.stopPropagation();
-    onSelect(column.city);
-  };
-  const color = selected ? COLOR.columnSelected : COLOR.column;
-  return (
-    <group position={[column.position.x, LAND_DEPTH, column.position.z]}>
-      <mesh position={[0, height / 2, 0]} onPointerOver={pick} onClick={pick}>
-        <cylinderGeometry args={[0.38, 0.38, height, 24]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={selected ? 0.5 : 0.25}
-          transparent={column.faded}
-          opacity={column.faded ? 0.4 : 1}
-        />
-      </mesh>
-      <Label text={column.label} position={[0, height + 0.8, 0]} size={0.8} />
-    </group>
-  );
-}
-
-export default function Map3D({ columns, selected, onSelect, onContextLost }: Map3DProps) {
-  const lostRef = useRef(onContextLost);
-  useEffect(() => {
-    lostRef.current = onContextLost;
-  }, [onContextLost]);
-  return (
-    <Canvas
-      dpr={[1, 2]}
-      camera={{ position: [TARGET.x, 23, TARGET.z + 19], fov: 40, near: 0.1, far: 200 }}
-      onCreated={({ gl }) => {
-        gl.domElement.addEventListener("webglcontextlost", () => lostRef.current(), { once: true });
-      }}
-      aria-hidden="true"
-    >
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[8, 20, 10]} intensity={1.1} />
-      <Land />
-      <Archipelagos />
-      {columns.map((column) => (
-        <Column key={column.city} column={column} selected={selected === column.city} onSelect={onSelect} />
-      ))}
-      <Controls />
-    </Canvas>
+      <span className="font-mono text-[11px] text-text-muted">
+        Kéo để xoay · kéo dọc để nghiêng · cột mờ = cỡ mẫu nhỏ, trỏ hoặc chạm nhãn để xem tỷ trọng
+      </span>
+      <span className="text-caption text-text-muted">
+        Viền đất liền: {OUTLINE.attribution}. Quần đảo Hoàng Sa và Trường Sa vẽ theo các đảo đại diện.
+      </span>
+    </section>
   );
 }

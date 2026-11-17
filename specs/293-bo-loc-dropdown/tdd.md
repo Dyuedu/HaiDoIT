@@ -130,3 +130,9 @@ Lý do: #314 sửa `web/app/components/map/map-screen.tsx` (lối 3D mặc đị
 
 - RED: không có test nào của issue này đỏ.
 - GREEN: `npx vitest run` → 27 files, 342 passed (jsdom không có WebGL nên các test cũ vẫn chạy ở lối 2D).
+
+## Đợt 2026-11-17 (#316): màn Bản đồ có panel bên phải và lối 3D CSS
+
+Lý do: #316 sửa `web/app/components/map/map-screen.tsx`: bố cục hai cột (panel "Tin <vai trò> nằm ở đâu" và "Nguồn và lưu ý" bên phải), lối 3D dựng bằng CSS 3D. Bộ lọc và cách gọi `city-shares` không đổi. Không AC nào của issue này đổi.
+
+- GREEN: `npx vitest run` → 27 files, 347 passed.
