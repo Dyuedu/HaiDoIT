@@ -48,6 +48,7 @@ scraper/ingest.py                            AUTO_SOURCES thêm topcv (17/11)
 config/rules.toml                            [sources].auto thêm topcv, config_version 2026-11-17.1 (17/11)
 tests/core/test_ad10_rules_config.py         AUTO có topcv; linkedin thay topcv làm nguồn ngoài danh sách (17/11)
 tests/steps/test_ad4_ingest.py               ví dụ nguồn chạy tay đổi sang linkedin (17/11)
+scraper/crawlers/topcv.py                    trang rỗng để lại thử sau, không dừng listing (18/11, #318)
 ```
 
 ## Complexity Tracking

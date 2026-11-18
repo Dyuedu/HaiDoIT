@@ -809,6 +809,142 @@ def test_topcv_listing_that_meets_the_total_is_complete(topcv, monkeypatch):
     assert seen_doc("topcv")["listing_complete"] is True
 
 
+# ------------------------------------------------- TopCV empty page later (#318)
+
+def counted_topcv_client(pages, log):
+    """pages: {page: [(ids, total), ...]}; the last answer repeats. Missing pages are empty."""
+    calls = collections.Counter()
+
+    class Client:
+        async def fetch(self, url, is_listing=False):
+            n = int(url.split("page=")[1])
+            calls[n] += 1
+            log.append(n)
+            answers = pages.get(n, [([], None)])
+            ids, total = answers[min(calls[n], len(answers)) - 1]
+            return topcv_page(ids, total=total)
+
+    return Client(), calls
+
+
+def walk_counted(module, monkeypatch, pages, problems=None):
+    import asyncio
+
+    monkeypatch.setattr(module, "DEFERRED_PAUSE", (0, 0), raising=False)
+    log = []
+    client, calls = counted_topcv_client(pages, log)
+    seen, complete = asyncio.run(module.crawl_listing_pages(module.init_db(), client, problems=problems))
+    return seen, complete, calls, log
+
+
+def empty_then(ids, total=None, tries=3):
+    return [([], total)] * tries + [(ids, total)]
+
+
+# 18/11 on the VPS: pages 18-45 came back empty more and more often; the walk stopped at 45 with 2169/2502.
+def test_topcv_empty_page_in_the_middle_is_fetched_again_later(topcv, monkeypatch):
+    pages = {1: [([1], 4)], 2: empty_then([2], 4), 3: [([3], 4)], 4: [([4], 4)]}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert len(seen) == 4 and complete is True
+    page_two = [i for i, n in enumerate(log) if n == 2]
+    assert log.index(3) < page_two[topcv.EMPTY_PAGE_TRIES]  # page 3 was walked before page 2 came back
+
+
+def test_topcv_empty_tail_short_of_the_total_is_fetched_again_later(topcv, monkeypatch):
+    pages = {1: [([1], 4)], 2: [([2], 4)], 3: empty_then([3], 4), 4: empty_then([4], 4)}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert len(seen) == 4 and complete is True
+
+
+def test_topcv_page_empty_in_every_round_makes_the_run_incomplete(topcv, monkeypatch):
+    monkeypatch.setattr(topcv, "DEFERRED_PAUSE", (0, 0), raising=False)
+    pages = {1: topcv_page([1], total=3), 2: topcv_page([], total=3), 3: topcv_page([3], total=3)}
+    run_topcv_main(topcv, monkeypatch, pages, ["--skip-details"])
+    doc = seen_doc("topcv")
+    assert doc["listing_complete"] is False
+    assert "pages still empty: 2" in doc["error"]
+
+
+def test_topcv_page_empty_in_every_round_is_fetched_again_each_round(topcv, monkeypatch):
+    pages = {1: [([1], 3)], 2: [([], 3)], 3: [([3], 3)]}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert complete is False
+    assert calls[2] == topcv.EMPTY_PAGE_TRIES * (1 + topcv.DEFERRED_ROUNDS)
+
+
+def test_topcv_without_a_total_ends_after_empty_pages_in_a_row(topcv, monkeypatch):
+    pages = {1: [([1], None)], 2: empty_then([2]), 3: [([3], None)]}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert len(seen) == 3 and complete is True
+    assert max(log) == 3 + topcv.EMPTY_PAGES_IN_A_ROW
+
+
+# 18/11: page 24 gave 22 of 50 cards; fetch() read the page as soon as the first card showed up.
+def test_topcv_short_page_is_fetched_again(topcv, monkeypatch):
+    pages = {1: [([1, 2], 6)], 2: [([3], 6), ([3, 4], 6)], 3: [([5, 6], 6)]}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert len(seen) == 6 and complete is True
+    assert calls[2] == 2
+
+
+def test_topcv_short_last_page_is_not_fetched_again(topcv, monkeypatch):
+    pages = {1: [([1, 2], 3)], 2: [([3], 3)]}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert len(seen) == 3 and complete is True
+    assert calls[2] == 1
+
+
+def test_topcv_short_page_keeps_its_cards_when_it_stays_short(topcv, monkeypatch):
+    pages = {1: [([1, 2], 6)], 2: [([3], 6)], 3: [([5, 6], 6)]}
+    seen, complete, calls, log = walk_counted(topcv, monkeypatch, pages)
+    assert len(seen) == 5
+    assert calls[2] == topcv.EMPTY_PAGE_TRIES * (1 + topcv.DEFERRED_ROUNDS)
+
+
+class FakeTopCVPage:
+    """evaluate() answers "count|readyState" from a script; the clock moves by each sleep."""
+
+    def __init__(self, answers):
+        self.answers = list(answers)
+        self.now = 0.0
+
+    async def evaluate(self, js):
+        answer = self.answers.pop(0) if len(self.answers) > 1 else self.answers[0]
+        return answer
+
+    async def sleep(self, seconds):
+        self.now += seconds
+
+    def clock(self):
+        return self.now
+
+
+def test_topcv_waits_until_the_cards_stop_growing(topcv):
+    import asyncio
+
+    page = FakeTopCVPage(["0|loading", "10|loading", "30|interactive", "50|interactive", "50|complete", "50|complete"])
+    count, state = asyncio.run(topcv.wait_for_cards(page, sleep=page.sleep, clock=page.clock))
+    assert count == 50 and state == "complete"
+
+
+def test_topcv_wait_for_cards_gives_up_after_the_timeout(topcv):
+    import asyncio
+
+    page = FakeTopCVPage(["0|loading"])
+    count, state = asyncio.run(topcv.wait_for_cards(page, sleep=page.sleep, clock=page.clock))
+    assert count == 0
+    assert topcv.LISTING_WAIT <= page.now <= topcv.LISTING_WAIT + topcv.CARD_POLL
+
+
+def test_topcv_odd_page_is_saved_for_diagnosis(topcv, monkeypatch, capsys):
+    pages = {1: [([1], 2)], 2: [([], 2), ([2], 2)]}
+    walk_counted(topcv, monkeypatch, pages)
+    saved = list(Path(topcv.DEBUG_DIR).rglob("page-2-try-1.html"))
+    assert len(saved) == 1
+    assert saved[0].read_text(encoding="utf-8") == topcv_page([], total=2)
+    assert "Trang 2 lần 1: 0 thẻ" in capsys.readouterr().out
+
+
 def run_pipeline_crawl(monkeypatch, argv):
     calls = []
     monkeypatch.setattr(pipeline, "run_crawler", lambda name, cfg, extra: calls.append((name, extra)) or True)

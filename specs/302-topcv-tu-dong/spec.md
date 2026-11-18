@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa; lượt thử lại thấy 2.294/2.293 tin, `complete=True`. Merge ngày 16/11 (PR #303). Đêm 17/11 TopCV crawl đủ (2.399 tin) nhưng ingest bỏ qua: thiếu trong danh sách nguồn tự động (User Story 6), đang sửa.
+**Status**: Code xong, test xanh. Image đã build trên VPS ngày 16/11; lượt thử đầu dừng sớm ở trang 15 (User Story 5), đã sửa; lượt thử lại thấy 2.294/2.293 tin, `complete=True`. Merge ngày 16/11 (PR #303). Đêm 17/11 TopCV crawl đủ (2.399 tin) nhưng ingest bỏ qua: thiếu trong danh sách nguồn tự động (User Story 6), đã sửa. Đêm 18/11 ingest có TopCV (8 lượt chạy) nhưng listing dừng ở trang rỗng 45 với 2.169/2.502 tin, snapshot chốt `partial`; hành vi trang rỗng của User Story 5 đổi trong #318.
 
 **Input**: GitHub issue [#302](https://github.com/Dyuedu/HaiDoIT/issues/302) — Run TopCV in the nightly crawl on the VPS.
 
@@ -71,7 +71,7 @@ Khi rà code có một lỗi độc lập: `main()` nạp toàn bộ URL trong `
 **Acceptance Scenarios**:
 
 1. **Given** tiêu đề "Tuyển dụng 2.293 việc làm ...", **When** đọc tổng, **Then** được 2293; không có tiêu đề thì không có tổng.
-2. **Given** trang 2 rỗng lần đầu rồi có tin, **When** crawler chạy, **Then** trang 2 được tải lại và tin của nó có trong file seen; trang rỗng `EMPTY_PAGE_TRIES` lần liền mới là hết listing.
+2. **Given** trang 2 rỗng lần đầu rồi có tin, **When** crawler chạy, **Then** trang 2 được tải lại và tin của nó có trong file seen. *(Đổi 18/11, #318)* Trang rỗng `EMPTY_PAGE_TRIES` lần liền không còn là hết listing: nó được để lại và thử lại sau, xem `specs/318-topcv-thu-lai-trang-trong/spec.md`. Không có tổng trên tiêu đề thì `EMPTY_PAGES_IN_A_ROW` trang rỗng liền là hết listing.
 3. **Given** tiêu đề ghi 100 tin mà listing hết sau 2 tin, **When** `main()` chạy, **Then** `listing_complete = false`, `error` có "met 2 of 100".
 4. **Given** tiêu đề ghi 2 tin và listing thấy 2, **Then** `listing_complete = true`.
 
@@ -98,7 +98,7 @@ Khi rà code có một lỗi độc lập: `main()` nạp toàn bộ URL trong `
 - **FR-002**: `TOPCV_PROFILE_DIR` mặc định `data/state/chrome_topcv_profile`, tuyệt đối theo thư mục chạy.
 - **FR-003**: `topcv.py` nhận `--skip-details` và `--limit N` (0 = không giới hạn).
 - **FR-004**: `pipeline.py` truyền hai cờ trên cho nguồn `nodriver`; bọc `xvfb-run` khi Linux không có `DISPLAY`; topcv timeout `6 * 3600`.
-- **FR-006**: Trang không có thẻ tin được tải lại tới `EMPTY_PAGE_TRIES` (3) lần. Hết listing với ít hơn `MIN_COVERAGE` (90%) tổng trên tiêu đề thì lượt chưa đủ, lý do ghi vào `error` của file seen.
+- **FR-006**: Trang không có thẻ tin được tải lại tới `EMPTY_PAGE_TRIES` (3) lần; vẫn rỗng thì để lại thử sau (#318, từ 18/11). Hết listing với ít hơn `MIN_COVERAGE` (90%) tổng trên tiêu đề thì lượt chưa đủ, lý do ghi vào `error` của file seen.
 - **FR-007**: `topcv` có trong `AUTO_SOURCES` của `scraper/ingest.py` và `[sources].auto` của `config/rules.toml`; `config_version` tăng lên `2026-11-17.1`.
 - **FR-005**: Chrome mở với `--no-sandbox`, `--disable-setuid-sandbox`, `--disable-dev-shm-usage`, `--window-size=1920,1080`.
 

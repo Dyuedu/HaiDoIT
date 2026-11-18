@@ -32,7 +32,11 @@
 - [x] T016 [US6] Test `topcv` trong `ingest.AUTO_SOURCES` (`scraper/tests/test_observations.py`) và trong `auto_sources` (`tests/core/test_ad10_rules_config.py`)
 - [x] T017 Đổi ví dụ nguồn chạy tay trong `tests/steps/test_ad4_ingest.py` từ `topcv` sang `linkedin`
 - [x] T018 Thêm `topcv` vào `scraper/ingest.py` và `config/rules.toml`, tăng `config_version`
-- [ ] T019 Đêm đầu sau merge: ingest có dòng `topcv listed=… complete=True`, kho ghi 8 lượt chạy
+- [x] T019 Đêm đầu sau merge (18/11): ingest có dòng `topcv listed=2169 complete=False`, kho ghi 8 lượt chạy, snapshot chốt `partial; nguồn lỗi: topcv`. Listing dừng ở trang rỗng 45: xem Phase 6
+
+## Phase 6: Trang rỗng giữa listing (2026-11-18, #318)
+
+- [x] T020 Trang vẫn rỗng sau `EMPTY_PAGE_TRIES` lần không còn kết thúc listing; làm trong `specs/318-topcv-thu-lai-trang-trong/`. User Story 5 scenario 2 và FR-006 đổi theo
 
 ## Phase 3: Triển khai
 
