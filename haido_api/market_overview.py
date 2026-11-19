@@ -10,7 +10,12 @@ import itertools
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
-from haido_api.schemas.market import MarketOverviewData, OverviewRole, OverviewShare
+from haido_api.schemas.market import (
+    MarketOverviewData,
+    OverviewRanking,
+    OverviewRole,
+    OverviewShare,
+)
 from haido_core.config import RulesConfig
 from haido_core.domain.display_policy import DisplayState, MeasureKind, suppression_for
 from haido_core.domain.envelope import CellMeta, Stat
@@ -25,6 +30,7 @@ TAIL_PLACES = ("remote", "abroad", "unknown")
 OTHER_PROVINCES = "other_provinces"
 BIG_CITIES_CELL = "big_cities.all"
 OTHER_ROLE = "other"
+UNKNOWN_LEVEL = "unknown"
 
 
 @dataclass(frozen=True)
@@ -169,6 +175,23 @@ def build_market_overview(counts: OverviewCounts, rules: RulesConfig) -> tuple[M
             OverviewShare(code=code, share=_stat(MeasureKind.COMPOSITION_SHARE, n, total, cell_id, n, min_sample))
         )
 
+    def ranked(level: str) -> list[str]:
+        return [
+            r.role
+            for r in sorted(
+                rows, key=lambda r: (r.role == OTHER_ROLE, -cells[r.cell_id].seniority_mix.get(level, 0), r.role)
+            )
+        ]
+
+    level_index = {lv: i for i, lv in enumerate(levels)}
+    levels_by_size = sorted(
+        (lv for lv in levels if lv != UNKNOWN_LEVEL), key=lambda lv: (-counts.total_mix.get(lv, 0), level_index[lv])
+    )
+    entry_ranked = sorted(
+        (r for r in rows if r.role != OTHER_ROLE and r.entry_share.value is not None),
+        key=lambda r: (-(r.entry_share.value or 0.0), r.role),
+    )
+
     data = MarketOverviewData(
         total_cell_id=total_id,
         entry_cell_id=entry_id,
@@ -179,6 +202,9 @@ def build_market_overview(counts: OverviewCounts, rules: RulesConfig) -> tuple[M
         big_cities_share=_stat(MeasureKind.COMPOSITION_SHARE, big_n, total, BIG_CITIES_CELL, big_n, min_sample),
         roles=rows,
         places=places,
+        levels_by_size=levels_by_size,
+        roles_by_level=[OverviewRanking(level=lv, roles=ranked(lv)) for lv in levels],
+        roles_by_entry_share=[r.role for r in entry_ranked],
         years=years,
     )
     return data, cells

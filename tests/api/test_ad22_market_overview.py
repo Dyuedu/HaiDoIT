@@ -139,3 +139,19 @@ def test_ad17_fixture_web_khop_response_market_overview() -> None:
     resp = TestClient(app).get(PATH)
     assert resp.status_code == 200, resp.text
     assert resp.json() == json.loads(WEB_FIXTURE.read_text(encoding="utf-8"))
+
+
+def test_ad22_thu_hang_do_may_chu_xep() -> None:
+    counts = _counts()
+    roles = dict(counts.roles) | {"other": (70, {"mid": 70})}
+    data, _ = build_market_overview(_counts(roles=roles), RULES)
+    # cấp có nhiều tin trước, không gồm "chưa ghi cấp"
+    assert data.levels_by_size == ["mid", "junior", "intern", "senior", "fresher", "lead"]
+    by_level = {r.level: r.roles for r in data.roles_by_level}
+    assert list(by_level) == LEVELS
+    assert by_level["intern"][0] == "game"
+    assert by_level["mid"][0] == "backend"
+    assert by_level["mid"][-1] == "other"
+    assert all(set(v) == set(RULES.roles) for v in by_level.values())
+    # chỉ vai trò có tỷ lệ người mới hiện được, tỷ lệ cao trước; không gồm "Vai trò khác"
+    assert data.roles_by_entry_share == ["backend"]

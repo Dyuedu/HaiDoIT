@@ -32,3 +32,11 @@ uv run pytest -q -p no:cacheprovider tests/api/test_ad22_market_overview.py
 - `tests/api/test_ad22_market_overview.py`: 9 passed.
 - Cả repo lần đầu: 4 failed. `test_ad17_routes` (2 test) đỏ vì route mới chưa có trong `SAMPLE_QUERY` và `openapi.json` chưa sinh lại; cổng FR-25/31/47 đỏ vì cụm "số tin giảm dần" chứa chuỗi bị cấm "tin giả" (cổng so chuỗi con). Thêm route vào `SAMPLE_QUERY`, sinh lại OpenAPI (`HAIDO_UPDATE_OPENAPI=1`), viết lại thành "nhiều tin trước, cùng số tin thì theo mã".
 - `uv run pytest -q` → 1336 passed, 304 skipped (test Postgres skip trên máy không đặt `HAIDO_TEST_DATABASE_URL`). `uv run ruff check .` sạch.
+
+## Đợt 2 (2026-11-19): thứ hạng do máy chủ xếp
+
+Lý do: màn #329 cần xếp vai trò theo cấp người dùng chọn trên biểu đồ tròn, và câu tóm tắt cần thứ hạng cấp, thứ hạng tỷ lệ người mới. AD-22 không cho web sắp xếp, nên `data` thêm `levels_by_size`, `roles_by_level`, `roles_by_entry_share`.
+
+- Hành vi thêm: (10) cấp nhiều tin trước, không gồm `unknown`; mỗi cấp một thứ tự vai trò đủ mọi vai trò, `other` cuối; vai trò có tỷ lệ người mới hiện được, tỷ lệ cao trước.
+- RED: `1 failed, 9 passed` — `AttributeError` vì `MarketOverviewData` chưa có `levels_by_size`. Kỳ vọng đầu của test viết sai (cho rằng `backend` đứng thứ hai ở cấp Intern, trong khi các vai trò cùng 0 tin xếp theo mã nên `ai_ml` đứng trước); sửa kỳ vọng thành chỉ kiểm vai trò đứng đầu.
+- GREEN: sau khi sinh lại `web/tests/fixtures/market-overview.json` và `docs/api/openapi.json`: `uv run pytest -q` → 1337 passed, 304 skipped; `ruff check .` sạch.

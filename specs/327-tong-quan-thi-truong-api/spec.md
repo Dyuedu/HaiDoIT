@@ -36,6 +36,7 @@ Mockup Insights (2026-11-19) cần tỷ trọng theo cấp bậc, vai trò, nơi
 - **FR-001**: Hàm thuần `build_market_overview` (`haido_api/market_overview.py`) là chỗ duy nhất chia số; nguồn giả và nguồn thật cùng gọi.
 - **FR-002**: Mỗi `Stat` trỏ tới ô mà `Envelope` dùng để kiểm hiển thị: tỷ trọng cấu phần trỏ tới ô của phần, tỷ lệ cấp bậc trỏ tới ô của cả nhóm.
 - **FR-003**: Route đọc nguồn của `newcomer_roles`, không thêm biến môi trường mới.
+- **FR-004** (đợt 2): Thứ hạng cấp, thứ hạng vai trò theo từng cấp và theo tỷ lệ người mới do máy chủ xếp (`levels_by_size`, `roles_by_level`, `roles_by_entry_share`).
 
 ## Ngoài phạm vi
 

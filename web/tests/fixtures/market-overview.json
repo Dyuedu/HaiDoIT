@@ -1894,6 +1894,185 @@
         }
       }
     ],
+    "levels_by_size": [
+      "junior",
+      "mid",
+      "senior",
+      "fresher",
+      "intern",
+      "lead"
+    ],
+    "roles_by_level": [
+      {
+        "level": "intern",
+        "roles": [
+          "ai_ml",
+          "frontend",
+          "ba_po_pm",
+          "it_infra",
+          "backend",
+          "qa",
+          "data_analyst",
+          "game",
+          "fullstack",
+          "security",
+          "data_scientist",
+          "mobile",
+          "embedded",
+          "ui_ux",
+          "data_engineer",
+          "devops",
+          "other"
+        ]
+      },
+      {
+        "level": "fresher",
+        "roles": [
+          "ai_ml",
+          "frontend",
+          "it_infra",
+          "ba_po_pm",
+          "qa",
+          "data_analyst",
+          "game",
+          "security",
+          "backend",
+          "mobile",
+          "fullstack",
+          "ui_ux",
+          "embedded",
+          "data_engineer",
+          "data_scientist",
+          "devops",
+          "other"
+        ]
+      },
+      {
+        "level": "junior",
+        "roles": [
+          "ai_ml",
+          "ba_po_pm",
+          "frontend",
+          "it_infra",
+          "qa",
+          "backend",
+          "data_analyst",
+          "fullstack",
+          "security",
+          "game",
+          "mobile",
+          "ui_ux",
+          "data_engineer",
+          "embedded",
+          "data_scientist",
+          "devops",
+          "other"
+        ]
+      },
+      {
+        "level": "mid",
+        "roles": [
+          "ba_po_pm",
+          "ai_ml",
+          "it_infra",
+          "fullstack",
+          "frontend",
+          "backend",
+          "security",
+          "qa",
+          "ui_ux",
+          "data_analyst",
+          "devops",
+          "mobile",
+          "game",
+          "data_scientist",
+          "embedded",
+          "data_engineer",
+          "other"
+        ]
+      },
+      {
+        "level": "senior",
+        "roles": [
+          "ba_po_pm",
+          "ai_ml",
+          "it_infra",
+          "fullstack",
+          "security",
+          "backend",
+          "frontend",
+          "data_engineer",
+          "devops",
+          "mobile",
+          "ui_ux",
+          "qa",
+          "data_analyst",
+          "data_scientist",
+          "game",
+          "embedded",
+          "other"
+        ]
+      },
+      {
+        "level": "lead",
+        "roles": [
+          "ba_po_pm",
+          "it_infra",
+          "security",
+          "fullstack",
+          "data_scientist",
+          "game",
+          "ui_ux",
+          "ai_ml",
+          "backend",
+          "data_analyst",
+          "data_engineer",
+          "devops",
+          "embedded",
+          "frontend",
+          "mobile",
+          "qa",
+          "other"
+        ]
+      },
+      {
+        "level": "unknown",
+        "roles": [
+          "ba_po_pm",
+          "it_infra",
+          "security",
+          "game",
+          "fullstack",
+          "ui_ux",
+          "data_scientist",
+          "ai_ml",
+          "backend",
+          "data_analyst",
+          "data_engineer",
+          "devops",
+          "embedded",
+          "frontend",
+          "mobile",
+          "qa",
+          "other"
+        ]
+      }
+    ],
+    "roles_by_entry_share": [
+      "qa",
+      "frontend",
+      "ai_ml",
+      "data_analyst",
+      "game",
+      "mobile",
+      "backend",
+      "ui_ux",
+      "it_infra",
+      "security",
+      "fullstack",
+      "ba_po_pm",
+      "devops"
+    ],
     "years": [
       {
         "code": "0",
