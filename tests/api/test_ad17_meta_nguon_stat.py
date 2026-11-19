@@ -16,7 +16,13 @@ from tests.api.test_fr19_skill_rates_stat import _cell, _snapshot
 from tests.steps.conftest import S
 
 RULES = load_rules()
-REAL = {"/api/v1/city-shares", "/api/v1/skill-rates", "/api/v1/newcomer-roles", "/api/v1/skill-roles"}
+REAL = {
+    "/api/v1/city-shares",
+    "/api/v1/skill-rates",
+    "/api/v1/newcomer-roles",
+    "/api/v1/skill-roles",
+    "/api/v1/market-overview",  # #328: đọc cùng nguồn với newcomer-roles
+}
 
 
 def _stat_client(engine: Engine) -> TestClient:
