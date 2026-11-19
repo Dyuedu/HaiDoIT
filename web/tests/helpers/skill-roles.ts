@@ -19,6 +19,8 @@ export const UNKNOWN_SKILL_CELL = {
 };
 
 export interface InsightsRouteOptions {
+  /** Thay reply của `market-overview` (#329). Mặc định: không bao giờ trả, phần toàn cảnh đứng ở trạng thái đang tải. */
+  marketOverview?: () => Reply;
   /** Thay reply của `skill-roles`. Mặc định: fixture theo `skill`, không có thì 404 `unknown_cell`. */
   skillRoles?: (skill: string) => Reply;
   /** Thay reply của `skills`. Mặc định: `fixtures/skills.json`. */
@@ -38,6 +40,9 @@ export function routeInsights(options: InsightsRouteOptions = {}) {
     switch (url.pathname) {
       case "/api/v1/newcomer-roles":
         return jsonResponse(200, newcomerRoles);
+      case "/api/v1/market-overview":
+        // Từ #329 /insights mở đầu bằng toàn cảnh; mặc định giữ nó ở trạng thái đang tải.
+        return options.marketOverview ? options.marketOverview() : new Promise<Response>(() => {});
       case "/api/v1/skills":
         return options.skills ? options.skills() : jsonResponse(200, skills);
       case "/api/v1/skill-roles": {

@@ -150,3 +150,9 @@ Giá trị θ không đổi nên số, nhóm và hành vi của issue này khôn
 Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
 
 - RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #329 (2026-11-19): /insights thêm toàn cảnh ở đầu trang, AC của issue này không đổi
+
+Lý do: #329 thêm mục toàn cảnh thị trường lên đầu `/insights` (`web/app/insights/page.tsx`). Mock `fetch` trong test của mục này (`web/tests/fr37-newcomer-list.test.tsx`, `web/tests/helpers/skill-roles.ts`) trả "đang tải" mãi cho `/api/v1/market-overview`, để test vẫn chỉ kiểm mục của issue này. Hành vi và AC không đổi.
+
+- RED và GREEN: `specs/329-man-tong-quan/tdd.md` (`npx vitest run` → 366 passed).

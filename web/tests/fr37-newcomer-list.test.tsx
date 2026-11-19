@@ -24,6 +24,8 @@ function routeNewcomer(...replies: (() => Response | Promise<Response>)[]) {
   const queue = [...replies];
   const mock = vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(String(input), "http://localhost");
+    // Từ #329 /insights còn gọi toàn cảnh thị trường; giữ nó ở trạng thái đang tải để test chỉ kiểm mục người mới.
+    if (url.pathname === "/api/v1/market-overview") return new Promise<Response>(() => {});
     if (url.pathname !== PATH) throw new Error(`URL lạ: ${String(input)}`);
     const next = queue.length > 1 ? queue.shift()! : queue[0];
     return next();
