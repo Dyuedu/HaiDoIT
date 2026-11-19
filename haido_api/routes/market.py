@@ -24,6 +24,7 @@ from haido_api.schemas.error import ErrorEnvelope
 from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import (
     CitySharesData,
+    MarketOverviewData,
     NewcomerRolesData,
     SkillRatesData,
     SkillRolesData,
@@ -224,6 +225,22 @@ def get_newcomer_roles(
     Vai trò dưới ngưỡng mẫu có `share.display = null_data`. Dòng đã theo thứ tự hiển thị.
     """
     return source.newcomer_roles()
+
+
+@router.get(
+    "/market-overview",
+    response_model=Envelope[MarketOverviewData],
+    summary="Toàn cảnh thị trường: cấp bậc, vai trò, nơi làm việc, số năm kinh nghiệm",
+)
+def get_market_overview(
+    source: Annotated[MarketReadModel, Depends(_source_for("newcomer_roles"))],
+) -> Envelope[MarketOverviewData]:
+    """Toàn cảnh của snapshot mới nhất (#327, #326). Mọi tỷ trọng đã tính và đã ẩn theo ngưỡng ở máy chủ; web chỉ in
+    (AD-22). Số tin của từng phần ở `meta.cells[share.cell_id].n`. Dòng đã theo thứ tự hiển thị.
+
+    Đọc cùng nguồn với `newcomer-roles` (biến `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES`): hai phép cùng đọc ô toàn quốc.
+    """
+    return source.market_overview()
 
 
 @router.get(

@@ -277,6 +277,58 @@
         }
       }
     },
+    "/api/v1/market-overview": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Toàn cảnh thị trường: cấp bậc, vai trò, nơi làm việc, số năm kinh nghiệm",
+        "description": "Toàn cảnh của snapshot mới nhất (#327, #326). Mọi tỷ trọng đã tính và đã ẩn theo ngưỡng ở máy chủ; web chỉ in\n(AD-22). Số tin của từng phần ở `meta.cells[share.cell_id].n`. Dòng đã theo thứ tự hiển thị.\n\nĐọc cùng nguồn với `newcomer-roles` (biến `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES`): hai phép cùng đọc ô toàn quốc.",
+        "operationId": "get_market_overview_api_v1_market_overview_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MarketOverviewData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/learning-path": {
       "get": {
         "tags": [
@@ -755,6 +807,25 @@
         ],
         "title": "Envelope[LearningPathData]"
       },
+      "Envelope_MarketOverviewData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MarketOverviewData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[MarketOverviewData]"
+      },
       "Envelope_NewcomerRolesData_": {
         "properties": {
           "data": {
@@ -958,6 +1029,126 @@
         "title": "LearningPathData",
         "description": "`data` của `GET /api/v1/learning-path`."
       },
+      "MarketOverviewData": {
+        "properties": {
+          "total_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Total Cell Id",
+            "description": "Ô toàn quốc mọi vai trò (`vn.all`); `n` là số tin IT đang mở, `seniority_mix` là số tin theo cấp."
+          },
+          "entry_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Entry Cell Id",
+            "description": "Ô entry-level toàn quốc (`vn.all.entry`)."
+          },
+          "levels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Levels",
+            "description": "Cấp bậc theo thứ tự hiển thị: từng cấp chi tiết của `config/rules.toml`, `unknown` ở cuối."
+          },
+          "entry_levels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Entry Levels",
+            "description": "Các cấp tính là mới vào nghề, ví dụ `[\"intern\", \"fresher\", \"junior\"]`."
+          },
+          "level_mix": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewShare"
+            },
+            "type": "array",
+            "title": "Level Mix",
+            "description": "Tỷ lệ từng cấp trong mọi tin IT, `level_share`, ô `total_cell_id`, theo thứ tự `levels`."
+          },
+          "entry_share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ tin entry-level trong mọi tin IT, `level_share`, ô `total_cell_id`."
+          },
+          "big_cities_share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ trọng tin ở Hà Nội hoặc TP.HCM, `composition_share`, ô `big_cities.all`."
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewRole"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Roles",
+            "description": "Mỗi vai trò một dòng: nhiều tin trước, cùng số tin thì theo mã; `other` luôn ở cuối. Web không sắp xếp lại."
+          },
+          "places": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewShare"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Places",
+            "description": "Nơi làm việc theo thứ tự hiển thị: Hà Nội, TP.HCM, Đà Nẵng, các tỉnh khác gộp (`other_provinces`), làm từ xa,\nnước ngoài, không xác định. `composition_share`, ô `<city>.all`."
+          },
+          "levels_by_size": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Levels By Size",
+            "description": "Các cấp (trừ `unknown`), nhiều tin trước, cùng số tin thì theo thứ tự `levels`. Câu tóm tắt đọc từ đây."
+          },
+          "roles_by_level": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewRanking"
+            },
+            "type": "array",
+            "title": "Roles By Level",
+            "description": "Mỗi cấp của `levels` một thứ tự vai trò, theo đúng thứ tự `levels`."
+          },
+          "roles_by_entry_share": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles By Entry Share",
+            "description": "Vai trò có tỷ lệ người mới hiện được (trừ `other`), tỷ lệ cao trước, cùng tỷ lệ thì theo mã."
+          },
+          "years": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewShare"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Years",
+            "description": "Số năm kinh nghiệm tối thiểu tin yêu cầu, theo mốc của `config/rules.toml`: `0`, `1`, …, `over_<mốc cuối>`,\nrồi `none` (tin không ghi). `composition_share`, ô `vn.all.years_<mã>`; các phần cộng lại bằng `n` toàn quốc."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "total_cell_id",
+          "entry_cell_id",
+          "levels",
+          "entry_levels",
+          "level_mix",
+          "entry_share",
+          "big_cities_share",
+          "roles",
+          "places",
+          "levels_by_size",
+          "roles_by_level",
+          "roles_by_entry_share",
+          "years"
+        ],
+        "title": "MarketOverviewData",
+        "description": "`data` của `GET /api/v1/market-overview` (#327): toàn cảnh thị trường của một snapshot, mọi tỷ trọng đã tính."
+      },
       "MeasureKind": {
         "type": "string",
         "enum": [
@@ -1097,6 +1288,110 @@
         ],
         "title": "NewcomerRolesData",
         "description": "`data` của `GET /api/v1/newcomer-roles`."
+      },
+      "OverviewRanking": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "description": "Mã cấp."
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "Mọi vai trò: nhiều tin ở cấp này trước, cùng số tin thì theo mã; `other` luôn ở cuối."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "roles"
+        ],
+        "title": "OverviewRanking",
+        "description": "Thứ tự vai trò theo số tin ở một cấp (#329): biểu đồ vai trò cạnh biểu đồ tròn đổi theo cấp đã chọn."
+      },
+      "OverviewRole": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Mã vai trò."
+          },
+          "cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Cell Id",
+            "description": "Ô toàn quốc của vai trò (`vn.<role>`); `n` là số tin của vai trò, `seniority_mix` là số tin theo cấp."
+          },
+          "entry_cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Entry Cell Id",
+            "description": "Ô entry-level của vai trò (`vn.<role>.entry`); `n` là số tin Intern, Fresher, Junior."
+          },
+          "share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ trọng của vai trò trong mọi tin IT, `composition_share`, `cell_id = cell_id`."
+          },
+          "entry_share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ tin entry-level trong số tin của vai trò, `level_share`, `cell_id = cell_id`."
+          },
+          "level_mix": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewShare"
+            },
+            "type": "array",
+            "title": "Level Mix",
+            "description": "Tỷ lệ từng cấp trong số tin của vai trò, `level_share`, theo thứ tự `MarketOverviewData.levels`."
+          },
+          "places": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewShare"
+            },
+            "type": "array",
+            "title": "Places",
+            "description": "Tỷ trọng Hà Nội và TP.HCM trong số tin của vai trò, `composition_share`, ô `<city>.<role>`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "cell_id",
+          "entry_cell_id",
+          "share",
+          "entry_share",
+          "level_mix",
+          "places"
+        ],
+        "title": "OverviewRole",
+        "description": "Một vai trò trên màn toàn cảnh (#327)."
+      },
+      "OverviewShare": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "Mã cấp bậc (`intern`…`lead`, `unknown`), mã nơi (`ha_noi`, `other_provinces`, `remote`…) hay mốc số năm\n(`0`, `1`, `4-5`, `over_5`, `none`)."
+          },
+          "share": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ trọng đã tính và đã qua `suppression_for` ở máy chủ. `n` của ô là số tin đếm được của phần này\n(tỷ trọng cấu phần) hoặc của cả nhóm (tỷ lệ cấp bậc)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "share"
+        ],
+        "title": "OverviewShare",
+        "description": "Một tỷ trọng có mã trên màn toàn cảnh (#327): một cấp bậc, một nơi làm việc, hay một mốc số năm."
       },
       "PathResource": {
         "properties": {

@@ -1,0 +1,2947 @@
+{
+  "data": {
+    "total_cell_id": "vn.all",
+    "entry_cell_id": "vn.all.entry",
+    "levels": [
+      "intern",
+      "fresher",
+      "junior",
+      "mid",
+      "senior",
+      "lead",
+      "unknown"
+    ],
+    "entry_levels": [
+      "intern",
+      "fresher",
+      "junior"
+    ],
+    "level_mix": [
+      {
+        "code": "intern",
+        "share": {
+          "value": 0.07947573898494144,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      },
+      {
+        "code": "fresher",
+        "share": {
+          "value": 0.1388733965421082,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      },
+      {
+        "code": "junior",
+        "share": {
+          "value": 0.3494143892916899,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      },
+      {
+        "code": "mid",
+        "share": {
+          "value": 0.2894590072504183,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      },
+      {
+        "code": "senior",
+        "share": {
+          "value": 0.14277746793084217,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      },
+      {
+        "code": "lead",
+        "share": {
+          "value": 0.0,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      },
+      {
+        "code": "unknown",
+        "share": {
+          "value": 0.0,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.all"
+        }
+      }
+    ],
+    "entry_share": {
+      "value": 0.5677635248187396,
+      "kind": "level_share",
+      "display": "shown",
+      "cell_id": "vn.all"
+    },
+    "big_cities_share": {
+      "value": 0.8929168990518683,
+      "kind": "composition_share",
+      "display": "shown",
+      "cell_id": "big_cities.all"
+    },
+    "roles": [
+      {
+        "role": "ai_ml",
+        "cell_id": "vn.ai_ml",
+        "entry_cell_id": "vn.ai_ml.entry",
+        "share": {
+          "value": 0.2445621862799777,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.ai_ml"
+        },
+        "entry_share": {
+          "value": 0.5712656784492588,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.ai_ml"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.08323831242873432,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.1402508551881414,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.34777651083238315,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.29304446978335236,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.13568985176738882,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ai_ml"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.4697833523375142,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.ai_ml"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.37970353477765106,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.ai_ml"
+            }
+          }
+        ]
+      },
+      {
+        "role": "ba_po_pm",
+        "cell_id": "vn.ba_po_pm",
+        "entry_cell_id": "vn.ba_po_pm.entry",
+        "share": {
+          "value": 0.22058003346346905,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.ba_po_pm"
+        },
+        "entry_share": {
+          "value": 0.16182048040455121,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.ba_po_pm"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.017699115044247787,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.03286978508217446,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.11125158027812895,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.3906447534766119,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.21491782553729458,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.12010113780025285,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.1125158027812895,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ba_po_pm"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.5423514538558787,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.ba_po_pm"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.37168141592920356,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.ba_po_pm"
+            }
+          }
+        ]
+      },
+      {
+        "role": "it_infra",
+        "cell_id": "vn.it_infra",
+        "entry_cell_id": "vn.it_infra.entry",
+        "share": {
+          "value": 0.13524818739542666,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.it_infra"
+        },
+        "entry_share": {
+          "value": 0.2721649484536082,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.it_infra"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.0288659793814433,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.06804123711340206,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.17525773195876287,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.31958762886597936,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.12577319587628866,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.1154639175257732,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.1670103092783505,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.it_infra"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.38969072164948454,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.it_infra"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.36907216494845363,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.it_infra"
+            }
+          }
+        ]
+      },
+      {
+        "role": "frontend",
+        "cell_id": "vn.frontend",
+        "entry_cell_id": "vn.frontend.entry",
+        "share": {
+          "value": 0.06692693809258227,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.frontend"
+        },
+        "entry_share": {
+          "value": 0.5833333333333334,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.frontend"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.08333333333333333,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.14166666666666666,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.35833333333333334,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.2916666666666667,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.125,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.frontend"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.4583333333333333,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.frontend"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4083333333333333,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.frontend"
+            }
+          }
+        ]
+      },
+      {
+        "role": "security",
+        "cell_id": "vn.security",
+        "entry_cell_id": "vn.security.entry",
+        "share": {
+          "value": 0.051868377021751254,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.security"
+        },
+        "entry_share": {
+          "value": 0.1935483870967742,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.security"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.03225806451612903,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.043010752688172046,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.11827956989247312,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.25806451612903225,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.25268817204301075,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.13978494623655913,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.15591397849462366,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.security"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.6290322580645161,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.security"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.3118279569892473,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.security"
+            }
+          }
+        ]
+      },
+      {
+        "role": "fullstack",
+        "cell_id": "vn.fullstack",
+        "entry_cell_id": "vn.fullstack.entry",
+        "share": {
+          "value": 0.049916341327384275,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.fullstack"
+        },
+        "entry_share": {
+          "value": 0.18994413407821228,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.fullstack"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.0335195530726257,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.0223463687150838,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.1340782122905028,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.39664804469273746,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.2849162011173184,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0446927374301676,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.08379888268156424,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.fullstack"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.5418994413407822,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.fullstack"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.39106145251396646,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.fullstack"
+            }
+          }
+        ]
+      },
+      {
+        "role": "backend",
+        "cell_id": "vn.backend",
+        "entry_cell_id": "vn.backend.entry",
+        "share": {
+          "value": 0.043781372002230895,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        },
+        "entry_share": {
+          "value": 0.33121019108280253,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.08280254777070063,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.044585987261146494,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.20382165605095542,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.4140127388535032,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.25477707006369427,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.3885350318471338,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.backend"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4713375796178344,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.backend"
+            }
+          }
+        ]
+      },
+      {
+        "role": "qa",
+        "cell_id": "vn.qa",
+        "entry_cell_id": "vn.qa.entry",
+        "share": {
+          "value": 0.03625209146681539,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.qa"
+        },
+        "entry_share": {
+          "value": 0.6307692307692307,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.qa"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.09230769230769231,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.19230769230769232,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.34615384615384615,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.2692307692307692,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.1,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.qa"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.46153846153846156,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.qa"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4076923076923077,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.qa"
+            }
+          }
+        ]
+      },
+      {
+        "role": "game",
+        "cell_id": "vn.game",
+        "entry_cell_id": "vn.game.entry",
+        "share": {
+          "value": 0.027607361963190184,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.game"
+        },
+        "entry_share": {
+          "value": 0.43434343434343436,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.game"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.10101010101010101,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.12121212121212122,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.21212121212121213,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.23232323232323232,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.10101010101010101,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.020202020202020204,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.21212121212121213,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.game"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.7171717171717171,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.game"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.23232323232323232,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ho_chi_minh.game"
+            }
+          }
+        ]
+      },
+      {
+        "role": "data_analyst",
+        "cell_id": "vn.data_analyst",
+        "entry_cell_id": "vn.data_analyst.entry",
+        "share": {
+          "value": 0.026770775237032907,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.data_analyst"
+        },
+        "entry_share": {
+          "value": 0.5625,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.data_analyst"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.10416666666666667,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.14583333333333334,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.3125,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.3125,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.125,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.data_analyst"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.4583333333333333,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.data_analyst"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.40625,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.data_analyst"
+            }
+          }
+        ]
+      },
+      {
+        "role": "ui_ux",
+        "cell_id": "vn.ui_ux",
+        "entry_cell_id": "vn.ui_ux.entry",
+        "share": {
+          "value": 0.02147239263803681,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.ui_ux"
+        },
+        "entry_share": {
+          "value": 0.2727272727272727,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.ui_ux"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.012987012987012988,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.05194805194805195,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.2077922077922078,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.44155844155844154,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.18181818181818182,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.025974025974025976,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.07792207792207792,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.ui_ux"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.5584415584415584,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.ui_ux"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4025974025974026,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.ui_ux"
+            }
+          }
+        ]
+      },
+      {
+        "role": "mobile",
+        "cell_id": "vn.mobile",
+        "entry_cell_id": "vn.mobile.entry",
+        "share": {
+          "value": 0.02091466815393196,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.mobile"
+        },
+        "entry_share": {
+          "value": 0.4,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.mobile"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.05333333333333334,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.08,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.26666666666666666,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.4,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.2,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.mobile"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.4533333333333333,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ha_noi.mobile"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.41333333333333333,
+              "kind": "composition_share",
+              "display": "shown",
+              "cell_id": "ho_chi_minh.mobile"
+            }
+          }
+        ]
+      },
+      {
+        "role": "devops",
+        "cell_id": "vn.devops",
+        "entry_cell_id": "vn.devops.entry",
+        "share": {
+          "value": 0.013385387618516454,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.devops"
+        },
+        "entry_share": {
+          "value": 0.0,
+          "kind": "level_share",
+          "display": "shown",
+          "cell_id": "vn.devops"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": 0.625,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": 0.375,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": 0.0,
+              "kind": "level_share",
+              "display": "shown",
+              "cell_id": "vn.devops"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.4583333333333333,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ha_noi.devops"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4166666666666667,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ho_chi_minh.devops"
+            }
+          }
+        ]
+      },
+      {
+        "role": "data_scientist",
+        "cell_id": "vn.data_scientist",
+        "entry_cell_id": "vn.data_scientist.entry",
+        "share": {
+          "value": 0.007808142777467931,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "vn.data_scientist"
+        },
+        "entry_share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.data_scientist"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_scientist"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.42857142857142855,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ha_noi.data_scientist"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.5357142857142857,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ho_chi_minh.data_scientist"
+            }
+          }
+        ]
+      },
+      {
+        "role": "data_engineer",
+        "cell_id": "vn.data_engineer",
+        "entry_cell_id": "vn.data_engineer.entry",
+        "share": {
+          "value": 0.006134969325153374,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "vn.data_engineer"
+        },
+        "entry_share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.data_engineer"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.45454545454545453,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ha_noi.data_engineer"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4090909090909091,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ho_chi_minh.data_engineer"
+            }
+          }
+        ]
+      },
+      {
+        "role": "embedded",
+        "cell_id": "vn.embedded",
+        "entry_cell_id": "vn.embedded.entry",
+        "share": {
+          "value": 0.0033463469046291134,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "vn.embedded"
+        },
+        "entry_share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.embedded"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.embedded"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.5,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ha_noi.embedded"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.4166666666666667,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ho_chi_minh.embedded"
+            }
+          }
+        ]
+      },
+      {
+        "role": "other",
+        "cell_id": "vn.other",
+        "entry_cell_id": "vn.other.entry",
+        "share": {
+          "value": 0.0,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "vn.other"
+        },
+        "entry_share": {
+          "value": null,
+          "kind": "level_share",
+          "display": "null_data",
+          "cell_id": "vn.other"
+        },
+        "level_mix": [
+          {
+            "code": "intern",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          },
+          {
+            "code": "fresher",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          },
+          {
+            "code": "junior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          },
+          {
+            "code": "mid",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          },
+          {
+            "code": "senior",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          },
+          {
+            "code": "lead",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          },
+          {
+            "code": "unknown",
+            "share": {
+              "value": null,
+              "kind": "level_share",
+              "display": "null_data",
+              "cell_id": "vn.other"
+            }
+          }
+        ],
+        "places": [
+          {
+            "code": "ha_noi",
+            "share": {
+              "value": 0.0,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ha_noi.other"
+            }
+          },
+          {
+            "code": "ho_chi_minh",
+            "share": {
+              "value": 0.0,
+              "kind": "composition_share",
+              "display": "low_sample_shown",
+              "cell_id": "ho_chi_minh.other"
+            }
+          }
+        ]
+      }
+    ],
+    "places": [
+      {
+        "code": "ha_noi",
+        "share": {
+          "value": 0.4155047406581149,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "ha_noi.all"
+        }
+      },
+      {
+        "code": "ho_chi_minh",
+        "share": {
+          "value": 0.4774121583937535,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "ho_chi_minh.all"
+        }
+      },
+      {
+        "code": "da_nang",
+        "share": {
+          "value": 0.01784718349135527,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "da_nang.all"
+        }
+      },
+      {
+        "code": "other_provinces",
+        "share": {
+          "value": 0.03151143335192415,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "other_provinces.all"
+        }
+      },
+      {
+        "code": "remote",
+        "share": {
+          "value": 0.0,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "remote.all"
+        }
+      },
+      {
+        "code": "abroad",
+        "share": {
+          "value": 0.0,
+          "kind": "composition_share",
+          "display": "low_sample_shown",
+          "cell_id": "abroad.all"
+        }
+      },
+      {
+        "code": "unknown",
+        "share": {
+          "value": 0.0577244841048522,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "unknown.all"
+        }
+      }
+    ],
+    "levels_by_size": [
+      "junior",
+      "mid",
+      "senior",
+      "fresher",
+      "intern",
+      "lead"
+    ],
+    "roles_by_level": [
+      {
+        "level": "intern",
+        "roles": [
+          "ai_ml",
+          "frontend",
+          "ba_po_pm",
+          "it_infra",
+          "backend",
+          "qa",
+          "data_analyst",
+          "game",
+          "fullstack",
+          "security",
+          "data_scientist",
+          "mobile",
+          "embedded",
+          "ui_ux",
+          "data_engineer",
+          "devops",
+          "other"
+        ]
+      },
+      {
+        "level": "fresher",
+        "roles": [
+          "ai_ml",
+          "frontend",
+          "it_infra",
+          "ba_po_pm",
+          "qa",
+          "data_analyst",
+          "game",
+          "security",
+          "backend",
+          "mobile",
+          "fullstack",
+          "ui_ux",
+          "embedded",
+          "data_engineer",
+          "data_scientist",
+          "devops",
+          "other"
+        ]
+      },
+      {
+        "level": "junior",
+        "roles": [
+          "ai_ml",
+          "ba_po_pm",
+          "frontend",
+          "it_infra",
+          "qa",
+          "backend",
+          "data_analyst",
+          "fullstack",
+          "security",
+          "game",
+          "mobile",
+          "ui_ux",
+          "data_engineer",
+          "embedded",
+          "data_scientist",
+          "devops",
+          "other"
+        ]
+      },
+      {
+        "level": "mid",
+        "roles": [
+          "ba_po_pm",
+          "ai_ml",
+          "it_infra",
+          "fullstack",
+          "frontend",
+          "backend",
+          "security",
+          "qa",
+          "ui_ux",
+          "data_analyst",
+          "devops",
+          "mobile",
+          "game",
+          "data_scientist",
+          "embedded",
+          "data_engineer",
+          "other"
+        ]
+      },
+      {
+        "level": "senior",
+        "roles": [
+          "ba_po_pm",
+          "ai_ml",
+          "it_infra",
+          "fullstack",
+          "security",
+          "backend",
+          "frontend",
+          "data_engineer",
+          "devops",
+          "mobile",
+          "ui_ux",
+          "qa",
+          "data_analyst",
+          "data_scientist",
+          "game",
+          "embedded",
+          "other"
+        ]
+      },
+      {
+        "level": "lead",
+        "roles": [
+          "ba_po_pm",
+          "it_infra",
+          "security",
+          "fullstack",
+          "data_scientist",
+          "game",
+          "ui_ux",
+          "ai_ml",
+          "backend",
+          "data_analyst",
+          "data_engineer",
+          "devops",
+          "embedded",
+          "frontend",
+          "mobile",
+          "qa",
+          "other"
+        ]
+      },
+      {
+        "level": "unknown",
+        "roles": [
+          "ba_po_pm",
+          "it_infra",
+          "security",
+          "game",
+          "fullstack",
+          "ui_ux",
+          "data_scientist",
+          "ai_ml",
+          "backend",
+          "data_analyst",
+          "data_engineer",
+          "devops",
+          "embedded",
+          "frontend",
+          "mobile",
+          "qa",
+          "other"
+        ]
+      }
+    ],
+    "roles_by_entry_share": [
+      "qa",
+      "frontend",
+      "ai_ml",
+      "data_analyst",
+      "game",
+      "mobile",
+      "backend",
+      "ui_ux",
+      "it_infra",
+      "security",
+      "fullstack",
+      "ba_po_pm",
+      "devops"
+    ],
+    "years": [
+      {
+        "code": "0",
+        "share": {
+          "value": 0.02091466815393196,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_0"
+        }
+      },
+      {
+        "code": "1",
+        "share": {
+          "value": 0.13524818739542666,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_1"
+        }
+      },
+      {
+        "code": "2",
+        "share": {
+          "value": 0.18962632459564974,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_2"
+        }
+      },
+      {
+        "code": "3",
+        "share": {
+          "value": 0.2007808142777468,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_3"
+        }
+      },
+      {
+        "code": "4-5",
+        "share": {
+          "value": 0.14221974344673732,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_4-5"
+        }
+      },
+      {
+        "code": "over_5",
+        "share": {
+          "value": 0.03067484662576687,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_over_5"
+        }
+      },
+      {
+        "code": "none",
+        "share": {
+          "value": 0.28053541550474065,
+          "kind": "composition_share",
+          "display": "shown",
+          "cell_id": "vn.all.years_none"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1,
+      "theta_version": "theta-1"
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.all": {
+        "n": 3586,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 285,
+          "fresher": 498,
+          "junior": 1253,
+          "mid": 1038,
+          "senior": 512
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.entry": {
+        "n": 2036,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 285,
+          "fresher": 498,
+          "junior": 1253
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.embedded": {
+        "n": 12,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 2,
+          "fresher": 1,
+          "junior": 3,
+          "mid": 4,
+          "senior": 2
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.embedded.entry": {
+        "n": 6,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 2,
+          "fresher": 1,
+          "junior": 3
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.embedded": {
+        "n": 6,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.embedded": {
+        "n": 5,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.ai_ml": {
+        "n": 877,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 73,
+          "fresher": 123,
+          "junior": 305,
+          "mid": 257,
+          "senior": 119
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.ai_ml.entry": {
+        "n": 501,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 73,
+          "fresher": 123,
+          "junior": 305
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.ai_ml": {
+        "n": 412,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.ai_ml": {
+        "n": 333,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.data_scientist": {
+        "n": 28,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 6,
+          "lead": 4,
+          "intern": 4,
+          "junior": 1,
+          "senior": 11,
+          "unknown": 2
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.data_scientist.entry": {
+        "n": 5,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "junior": 1
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.data_scientist": {
+        "n": 12,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.data_scientist": {
+        "n": 15,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.data_engineer": {
+        "n": 22,
+        "fallback_label": null,
+        "seniority_mix": {
+          "junior": 4,
+          "senior": 18
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.data_engineer.entry": {
+        "n": 4,
+        "fallback_label": null,
+        "seniority_mix": {
+          "junior": 4
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.data_engineer": {
+        "n": 10,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.data_engineer": {
+        "n": 9,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.data_analyst": {
+        "n": 96,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 10,
+          "fresher": 14,
+          "junior": 30,
+          "mid": 30,
+          "senior": 12
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.data_analyst.entry": {
+        "n": 54,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 10,
+          "fresher": 14,
+          "junior": 30
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.data_analyst": {
+        "n": 44,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.data_analyst": {
+        "n": 39,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.qa": {
+        "n": 130,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 12,
+          "fresher": 25,
+          "junior": 45,
+          "mid": 35,
+          "senior": 13
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.qa.entry": {
+        "n": 82,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 12,
+          "fresher": 25,
+          "junior": 45
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.qa": {
+        "n": 60,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.qa": {
+        "n": 53,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.devops": {
+        "n": 48,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 30,
+          "senior": 18
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.devops.entry": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.devops": {
+        "n": 22,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.devops": {
+        "n": 20,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.security": {
+        "n": 186,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 48,
+          "lead": 26,
+          "intern": 6,
+          "junior": 22,
+          "senior": 47,
+          "fresher": 8,
+          "unknown": 29
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.security.entry": {
+        "n": 36,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 6,
+          "junior": 22,
+          "fresher": 8
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.security": {
+        "n": 117,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.security": {
+        "n": 58,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.it_infra": {
+        "n": 485,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 155,
+          "lead": 56,
+          "intern": 14,
+          "junior": 85,
+          "senior": 61,
+          "fresher": 33,
+          "unknown": 81
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.it_infra.entry": {
+        "n": 132,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 14,
+          "junior": 85,
+          "fresher": 33
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.it_infra": {
+        "n": 189,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.it_infra": {
+        "n": 179,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.mobile": {
+        "n": 75,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "fresher": 6,
+          "junior": 20,
+          "mid": 30,
+          "senior": 15
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.mobile.entry": {
+        "n": 30,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 4,
+          "fresher": 6,
+          "junior": 20
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.mobile": {
+        "n": 34,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.mobile": {
+        "n": 31,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.frontend": {
+        "n": 240,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 20,
+          "fresher": 34,
+          "junior": 86,
+          "mid": 70,
+          "senior": 30
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.frontend.entry": {
+        "n": 140,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 20,
+          "fresher": 34,
+          "junior": 86
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.frontend": {
+        "n": 110,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.frontend": {
+        "n": 98,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.backend": {
+        "n": 157,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32,
+          "mid": 65,
+          "senior": 40
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.backend.entry": {
+        "n": 52,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.backend": {
+        "n": 61,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.backend": {
+        "n": 74,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.fullstack": {
+        "n": 179,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 71,
+          "lead": 8,
+          "intern": 6,
+          "junior": 24,
+          "senior": 51,
+          "fresher": 4,
+          "unknown": 15
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.fullstack.entry": {
+        "n": 34,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 6,
+          "junior": 24,
+          "fresher": 4
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.fullstack": {
+        "n": 97,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.fullstack": {
+        "n": 70,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.ba_po_pm": {
+        "n": 791,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 309,
+          "lead": 95,
+          "intern": 14,
+          "junior": 88,
+          "senior": 170,
+          "fresher": 26,
+          "unknown": 89
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.ba_po_pm.entry": {
+        "n": 128,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 14,
+          "junior": 88,
+          "fresher": 26
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.ba_po_pm": {
+        "n": 429,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.ba_po_pm": {
+        "n": 294,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.ui_ux": {
+        "n": 77,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 34,
+          "lead": 2,
+          "intern": 1,
+          "junior": 16,
+          "senior": 14,
+          "fresher": 4,
+          "unknown": 6
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.ui_ux.entry": {
+        "n": 21,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 1,
+          "junior": 16,
+          "fresher": 4
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.ui_ux": {
+        "n": 43,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.ui_ux": {
+        "n": 31,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.game": {
+        "n": 99,
+        "fallback_label": null,
+        "seniority_mix": {
+          "mid": 23,
+          "lead": 2,
+          "intern": 10,
+          "junior": 21,
+          "senior": 10,
+          "fresher": 12,
+          "unknown": 21
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.game.entry": {
+        "n": 43,
+        "fallback_label": null,
+        "seniority_mix": {
+          "intern": 10,
+          "junior": 21,
+          "fresher": 12
+        },
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.game": {
+        "n": 71,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.game": {
+        "n": 23,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.other": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.other.entry": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.other": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.other": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ha_noi.all": {
+        "n": 1490,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "ho_chi_minh.all": {
+        "n": 1712,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "da_nang.all": {
+        "n": 64,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "other_provinces.all": {
+        "n": 113,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "remote.all": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "abroad.all": {
+        "n": 0,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "unknown.all": {
+        "n": 207,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "big_cities.all": {
+        "n": 3202,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_0": {
+        "n": 75,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_1": {
+        "n": 485,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_2": {
+        "n": 680,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_3": {
+        "n": 720,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_4-5": {
+        "n": 510,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_over_5": {
+        "n": 110,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      },
+      "vn.all.years_none": {
+        "n": 1006,
+        "fallback_label": null,
+        "seniority_mix": {},
+        "n_by_measure": {},
+        "insufficient_by_measure": {}
+      }
+    }
+  }
+}

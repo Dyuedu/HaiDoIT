@@ -48,11 +48,13 @@ from typing import Any
 import sqlalchemy as sa
 from sqlalchemy import Connection, Engine
 
+from haido_api.market_overview import OverviewCounts, build_market_overview
 from haido_api.market_source import UnknownCell, UnknownSkill
 from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import (
     CityShareRow,
     CitySharesData,
+    MarketOverviewData,
     NewcomerRoleRow,
     NewcomerRolesData,
     SkillLabel,
@@ -360,6 +362,55 @@ class StatMarket:
         )
         return Envelope[NewcomerRolesData](data=NewcomerRolesData(levels=list(levels), rows=rows), meta=meta)
 
+    def market_overview(self) -> Envelope[MarketOverviewData]:
+        rules = self._rules
+        with self._db().connect() as conn:
+            latest = _latest_readable(conn, ALL)
+            if latest is None:
+                raise UnknownCell("Chưa có snapshot nào đã công bố để dựng toàn cảnh thị trường.", snapshot_date=None)
+            day: date = latest.snapshot_id
+            rows = _overview_rows(conn, day)
+            sources = _sources(conn, day)
+        national = {(r.role, r.seniority): r for r in rows if r.scope == NATIONWIDE and r.years == ANY}
+        total = national.get((ALL, ALL))
+        if total is None or total.n == 0:
+            raise UnknownCell("Snapshot đã chọn không có tin nào để dựng toàn cảnh.", snapshot_date=day)
+        entry = national.get((ALL, ENTRY))
+        by_years = {r.years: r for r in rows if r.scope == NATIONWIDE and r.role == ALL and r.seniority == ALL}
+        counts = OverviewCounts(
+            total_n=total.n,
+            total_mix=dict(total.seniority_mix),
+            entry_n=entry.n if entry is not None else 0,
+            roles={
+                role: (national[(role, ALL)].n, dict(national[(role, ALL)].seniority_mix))
+                for role in rules.roles
+                if (role, ALL) in national
+            },
+            role_entry={role: national[(role, ENTRY)].n for role in rules.roles if (role, ENTRY) in national},
+            places={
+                r.scope: r.n
+                for r in rows
+                if r.role == ALL and r.seniority == ALL and r.years == ANY and r.scope != NATIONWIDE
+            },
+            role_places=_role_places(rows),
+            years_upto={int(y): by_years[str(y)].n for y in rules.years_options if str(y) in by_years},
+            # mọi ô mốc số năm của vn.all ghi cùng một số tin không ghi số năm (#280)
+            years_unstated=next((r.years_unstated for y, r in by_years.items() if y != ANY), 0),
+        )
+        data, cells = build_market_overview(counts, rules)
+        meta = Meta(
+            snapshot_date=day,
+            snapshot_status=SnapshotStatus(latest.status),
+            sources=sources,
+            sources_failed=list(latest.sources_failed),
+            thresholds=self._thresholds(latest),
+            coverage_notes=[
+                CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources)))) for n in rules.coverage_notes
+            ],
+            cells=cells,
+        )
+        return Envelope[MarketOverviewData](data=data, meta=meta)
+
     def learning_path(self, *, role: str, level: str, have: Collection[str]) -> Envelope[LearningPathData]:
         raise UnknownCell("Lộ trình học chưa có số liệu thật.", snapshot_date=None)
 
@@ -493,6 +544,29 @@ def _national_cells(conn: Connection, day: date, level: str) -> dict[str, tuple[
         t.c.role != ALL,
     )
     return {r.role: (r.n, dict(r.seniority_mix)) for r in conn.execute(stmt)}
+
+
+def _overview_rows(conn: Connection, day: date) -> list[Any]:
+    """Các ô mà toàn cảnh (#328) dùng, mọi ngành (`branch = all`): ô mọi số năm ở cấp `all` và `entry` của mọi vai trò
+    và mọi nơi, cộng các ô mốc số năm của `vn.all`. Chỉ đọc `n`, không đếm lại."""
+    t = stat_cells
+    stmt = sa.select(t.c.role, t.c.scope, t.c.seniority, t.c.years, t.c.n, t.c.seniority_mix, t.c.years_unstated).where(
+        t.c.snapshot_id == day,
+        t.c.branch == ALL,
+        sa.or_(
+            sa.and_(t.c.years == ANY, t.c.seniority.in_((ALL, ENTRY))),
+            sa.and_(t.c.role == ALL, t.c.seniority == ALL, t.c.scope == NATIONWIDE),
+        ),
+    )
+    return list(conn.execute(stmt))
+
+
+def _role_places(rows: list[Any]) -> dict[str, dict[str, int]]:
+    places: dict[str, dict[str, int]] = {}
+    for r in rows:
+        if r.role != ALL and r.seniority == ALL and r.years == ANY and r.scope != NATIONWIDE:
+            places.setdefault(r.role, {})[r.scope] = r.n
+    return places
 
 
 def _cell_meta(n: int, mix: dict[str, int]) -> CellMeta:

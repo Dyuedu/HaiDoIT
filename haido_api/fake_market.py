@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any
 
 from haido_api.learning_path import apply_have, foundation_targets, stage_numbers
+from haido_api.market_overview import BIG_CITIES, OverviewCounts, build_market_overview
 from haido_api.market_source import UnknownCell
 from haido_api.schemas.learning_path import (
     LearningPathData,
@@ -40,6 +41,7 @@ from haido_api.schemas.market import (
     SKILL_ROLES_LEVEL_GROUP,
     CityShareRow,
     CitySharesData,
+    MarketOverviewData,
     NewcomerRoleRow,
     NewcomerRolesData,
     SkillLabel,
@@ -90,6 +92,8 @@ class FakeMarket:
         self._skill_rates: dict[str, dict[str, dict[str, Any]]] = raw["skill_rates"]
         self._newcomer_roles: dict[str, Any] = raw["newcomer_roles"]
         self._skill_roles: dict[str, dict[str, Any]] = raw["skill_roles"]
+        # Toàn cảnh (#327): số đếm bổ sung mà `cells` chưa có (Hà Nội/TP.HCM của vài vai trò, mốc số năm).
+        self._overview: dict[str, Any] = raw["market_overview"]
         # Lộ trình học (#212): đồ thị, lời dẫn, tài nguyên. Tỷ lệ lấy từ `skill_rates` ở trên, không chép số.
         path_raw: dict[str, Any] = json.loads(
             learning_path_fixture.read_text(encoding="utf-8")
@@ -211,6 +215,40 @@ class FakeMarket:
         data = NewcomerRolesData(levels=self._newcomer_roles["levels"], rows=rows)
         cell_ids = [cid for r in rows for cid in (r.total_cell_id, r.entry_cell_id)]
         return Envelope[NewcomerRolesData](data=data, meta=self._meta(cell_ids, {}))
+
+    def market_overview(self) -> Envelope[MarketOverviewData]:
+        cells = self._cells
+        extra = self._overview
+        role_places: dict[str, dict[str, int]] = {}
+        for role in self._roles:
+            found = {city: cells[f"{city}.{role}"]["n"] for city in BIG_CITIES if f"{city}.{role}" in cells}
+            role_places[role] = found if len(found) == len(BIG_CITIES) else dict(extra["role_places"][role])
+        counts = OverviewCounts(
+            total_n=cells["vn.all"]["n"],
+            total_mix=cells["vn.all"]["seniority_mix"],
+            entry_n=cells["vn.all.entry"]["n"],
+            roles={r: (cells[f"vn.{r}"]["n"], cells[f"vn.{r}"]["seniority_mix"]) for r in self._roles},
+            role_entry={r: cells[f"vn.{r}.entry"]["n"] for r in self._roles if f"vn.{r}.entry" in cells},
+            places={
+                cid.split(".")[0]: cell["n"]
+                for cid, cell in cells.items()
+                if cid.endswith(".all") and not cid.startswith("vn.")
+            },
+            role_places=role_places,
+            years_upto={int(k): v for k, v in extra["years_upto"].items()},
+            years_unstated=extra["years_unstated"],
+        )
+        data, overview_cells = build_market_overview(counts, load_rules())
+        meta = Meta(
+            snapshot_date=self._snapshot_date,
+            snapshot_status=self._snapshot_status,
+            sources=self._sources,
+            sources_failed=self._sources_failed,
+            thresholds=self._thresholds,
+            coverage_notes=self._coverage_notes,
+            cells=overview_cells,
+        )
+        return Envelope[MarketOverviewData](data=data, meta=meta)
 
     def learning_path(
         self, *, role: str, level: str, have: Collection[str]

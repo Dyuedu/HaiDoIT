@@ -50,3 +50,15 @@ Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (
 
 Lý do: #102 đóng băng θ (`config/theta.toml`, `theta-1` = 0,3/0,1), thêm `snapshots.theta_version` (migration 0010) và `meta.thresholds.theta_version`, sửa file mà issue này từng đụng: `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_fr19_skill_rates_stat.py`.
 Giá trị θ không đổi nên số, nhóm và hành vi của issue này không đổi; test chỉ thêm `theta_version` vào ngưỡng hoặc đổi head migration mong đợi sang 0010. RED, GREEN và đột biến: `specs/102-dong-bang-theta/tdd.md`.
+
+## Đợt #327, #328 (2026-11-19): thêm route toàn cảnh thị trường, AC của issue này không đổi
+
+Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
+
+- RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #328 (2026-11-19): market-overview có số thật
+
+Lý do: #328 cài `StatMarket.market_overview`, nên `/api/v1/market-overview` đọc nguồn `stat` trả 200. `tests/api/test_ad17_meta_nguon_stat.py` thêm route này vào `REAL`. Hành vi và AC của issue này không đổi: route có số thật trả `data` và `meta`, route chưa có trả `unknown_cell`.
+
+- RED: CI của PR #331, `test_ad17_103_route_chua_co_so_that_tra_loi_chuan_khong_co_data` đỏ vì route mới trả 200. GREEN: xem `specs/328-tong-quan-thi-truong-that/tdd.md`.

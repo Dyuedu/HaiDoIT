@@ -38,6 +38,7 @@ SAMPLE_QUERY: dict[str, dict[str, str]] = {
     "/api/v1/city-shares": {"role": "ai_ml"},
     "/api/v1/skill-rates": {"role": "ai_ml", "level": "entry"},
     "/api/v1/newcomer-roles": {},
+    "/api/v1/market-overview": {},
     "/api/v1/learning-path": {"role": "backend", "level": "entry"},
     "/api/v1/skill-roles": {"skill": "python"},
 }

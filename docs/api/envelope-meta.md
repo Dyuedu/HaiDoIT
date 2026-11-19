@@ -233,6 +233,50 @@ trong số tin của vai trò, và n. Không có tham số.
 - Kiểu TypeScript và hàm tra số: `web/lib/newcomer-roles.ts`. Fixture cho test web:
   `web/tests/fixtures/newcomer-roles.json`.
 
+## `GET /api/v1/market-overview`
+
+Toàn cảnh thị trường trên Insights (#326, #327, #328): cấp bậc, vai trò, nơi làm việc, số năm kinh nghiệm của snapshot
+mới nhất, trong một envelope. Không có tham số. Mọi tỷ trọng đã tính và đã qua `suppression_for` ở máy chủ
+(`haido_api/market_overview.py`); web chỉ in, không cộng, không chia, không sắp xếp (AD-22). Đọc cùng nguồn với
+`newcomer-roles` (biến `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES`), vì hai phép cùng đọc ô toàn quốc của `stat_cells`.
+
+```json
+{
+  "data": {
+    "total_cell_id": "vn.all", "entry_cell_id": "vn.all.entry",
+    "levels": ["intern", "fresher", "junior", "mid", "senior", "lead", "unknown"],
+    "entry_levels": ["intern", "fresher", "junior"],
+    "level_mix": [{ "code": "mid", "share": { "value": 0.2894, "kind": "level_share", "display": "shown", "cell_id": "vn.all" } }],
+    "entry_share": { "value": 0.5678, "kind": "level_share", "display": "shown", "cell_id": "vn.all" },
+    "big_cities_share": { "value": 0.86, "kind": "composition_share", "display": "shown", "cell_id": "big_cities.all" },
+    "roles": [{ "role": "ai_ml", "cell_id": "vn.ai_ml", "entry_cell_id": "vn.ai_ml.entry",
+                "share": { "…": "composition_share, ô vn.ai_ml" }, "entry_share": { "…": "level_share, ô vn.ai_ml" },
+                "level_mix": ["…"], "places": [{ "code": "ha_noi", "share": { "…": "ô ha_noi.ai_ml" } }] }],
+    "places": [{ "code": "other_provinces", "share": { "…": "ô other_provinces.all" } }],
+    "years": [{ "code": "4-5", "share": { "…": "ô vn.all.years_4-5" } }]
+  },
+  "meta": { "…": "…", "cells": { "vn.all": { "n": 3586, "seniority_mix": { "…": "…" } }, "big_cities.all": { "n": 3083 } } }
+}
+```
+
+| Con số | Đọc ở |
+|---|---|
+| Số tin IT đang mở, số tin theo cấp | `meta.cells[total_cell_id].n`, `.seniority_mix` |
+| Tỷ lệ một cấp, tỷ lệ người mới (toàn thị trường hay của một vai trò) | `level_mix[].share`, `entry_share` |
+| Tỷ trọng một vai trò, một nơi, một mốc số năm | `share.value`; số tin của phần đó ở `meta.cells[share.cell_id].n` |
+
+- Tỷ trọng cấu phần (`composition_share`) trỏ tới ô của chính phần đó (tử số): dưới `min_sample` thì
+  `low_sample_shown`, vẫn có giá trị. Tỷ lệ cấp bậc (`level_share`) trỏ tới ô của cả nhóm (mẫu số): dưới ngưỡng là
+  `null_data`.
+- `roles`: mọi vai trò của `config/rules.toml`; nhiều tin trước, cùng số tin thì theo mã; `other` luôn ở cuối.
+  `places` của mỗi vai trò chỉ có Hà Nội và TP.HCM.
+- `places`: Hà Nội, TP.HCM, Đà Nẵng, `other_provinces` (các tỉnh còn lại gộp), `remote`, `abroad`, `unknown`.
+- `years`: mốc của `years_options` (`0`, `1`, `2`, `3`, `4-5`), `over_5`, `none` (tin không ghi). Các phần cộng
+  lại bằng `n` toàn quốc.
+- Ô `big_cities.all`, `other_provinces.all`, `vn.all.years_<mã>` là ô gộp của phép này, không có hàng riêng trong
+  `stat_cells`.
+- Fixture cho test web: `web/tests/fixtures/market-overview.json` (`tests/api/test_ad22_market_overview.py` kiểm khớp).
+
 ## `GET /api/v1/skill-roles?skill=<mã>`
 
 Màn "kỹ năng này dùng ở vai trò nào" (#113, #166): mỗi vai trò một dòng, tỷ lệ tin entry-level (Intern, Fresher,
@@ -402,6 +446,7 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `skill-roles?skill=abap` | Mã hợp lệ mà không tin nào nhắc: `mentioned = false`, mọi dòng đủ mẫu bằng 0 |
 | `skill-roles?skill=java` | 404 `unknown_cell` (mã trong bộ từ vựng nhưng bản giả chưa có số); `skill=khong_co_ky_nang` là 404 `unknown_skill` |
 | `newcomer-roles` | 17 vai trò: 12 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_scientist`, `data_engineer` dưới 30; `other` không có tin |
+| `market-overview` | Cùng ô `vn.<role>` với `newcomer-roles`; Hà Nội/TP.HCM của tám vai trò chưa có ô thành phố và các mốc số năm lấy từ mục `market_overview` của fixture |
 
 ## Chạy và chọn nguồn
 
@@ -416,7 +461,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 |---|---|---|
 | `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | `stat` (#151): `stat_skill_rates` của snapshot đọc được mới nhất, quay về qua phép 2 (#106); `deploy/compose.prod.yml` đặt `stat` |
-| `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles` | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
+| `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles`, `/api/v1/market-overview` (#327) | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#309) |
 | `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | `stat` (#168): `stat_skill_rates` hàng entry của kỹ năng và `stat_cells` ô `vn.<role>.entry` của snapshot đọc được mới nhất; `deploy/compose.prod.yml` đặt `stat` (#166) |
 

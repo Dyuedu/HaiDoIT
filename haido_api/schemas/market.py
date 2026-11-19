@@ -298,3 +298,140 @@ class SkillRolesData(BaseModel):
         if keys != sorted(keys):
             return ["data.rows: dòng null_data phải theo cỡ mẫu của phép đo giảm dần rồi theo mã vai trò"]
         return []
+
+
+class OverviewShare(BaseModel):
+    """Một tỷ trọng có mã trên màn toàn cảnh (#327): một cấp bậc, một nơi làm việc, hay một mốc số năm."""
+
+    model_config = _CONFIG
+
+    code: str
+    """Mã cấp bậc (`intern`…`lead`, `unknown`), mã nơi (`ha_noi`, `other_provinces`, `remote`…) hay mốc số năm
+    (`0`, `1`, `4-5`, `over_5`, `none`)."""
+
+    share: Stat
+    """Tỷ trọng đã tính và đã qua `suppression_for` ở máy chủ. `n` của ô là số tin đếm được của phần này
+    (tỷ trọng cấu phần) hoặc của cả nhóm (tỷ lệ cấp bậc)."""
+
+
+class OverviewRole(BaseModel):
+    """Một vai trò trên màn toàn cảnh (#327)."""
+
+    model_config = _CONFIG
+
+    role: str
+    """Mã vai trò."""
+
+    cell_id: CellId
+    """Ô toàn quốc của vai trò (`vn.<role>`); `n` là số tin của vai trò, `seniority_mix` là số tin theo cấp."""
+
+    entry_cell_id: CellId
+    """Ô entry-level của vai trò (`vn.<role>.entry`); `n` là số tin Intern, Fresher, Junior."""
+
+    share: Stat
+    """Tỷ trọng của vai trò trong mọi tin IT, `composition_share`, `cell_id = cell_id`."""
+
+    entry_share: Stat
+    """Tỷ lệ tin entry-level trong số tin của vai trò, `level_share`, `cell_id = cell_id`."""
+
+    level_mix: list[OverviewShare]
+    """Tỷ lệ từng cấp trong số tin của vai trò, `level_share`, theo thứ tự `MarketOverviewData.levels`."""
+
+    places: list[OverviewShare]
+    """Tỷ trọng Hà Nội và TP.HCM trong số tin của vai trò, `composition_share`, ô `<city>.<role>`."""
+
+
+class OverviewRanking(BaseModel):
+    """Thứ tự vai trò theo số tin ở một cấp (#329): biểu đồ vai trò cạnh biểu đồ tròn đổi theo cấp đã chọn."""
+
+    model_config = _CONFIG
+
+    level: str
+    """Mã cấp."""
+
+    roles: list[str]
+    """Mọi vai trò: nhiều tin ở cấp này trước, cùng số tin thì theo mã; `other` luôn ở cuối."""
+
+
+class MarketOverviewData(BaseModel):
+    """`data` của `GET /api/v1/market-overview` (#327): toàn cảnh thị trường của một snapshot, mọi tỷ trọng đã tính."""
+
+    model_config = _CONFIG
+
+    total_cell_id: CellId
+    """Ô toàn quốc mọi vai trò (`vn.all`); `n` là số tin IT đang mở, `seniority_mix` là số tin theo cấp."""
+
+    entry_cell_id: CellId
+    """Ô entry-level toàn quốc (`vn.all.entry`)."""
+
+    levels: Annotated[list[str], Field(min_length=1)]
+    """Cấp bậc theo thứ tự hiển thị: từng cấp chi tiết của `config/rules.toml`, `unknown` ở cuối."""
+
+    entry_levels: Annotated[list[str], Field(min_length=1)]
+    """Các cấp tính là mới vào nghề, ví dụ `["intern", "fresher", "junior"]`."""
+
+    level_mix: list[OverviewShare]
+    """Tỷ lệ từng cấp trong mọi tin IT, `level_share`, ô `total_cell_id`, theo thứ tự `levels`."""
+
+    entry_share: Stat
+    """Tỷ lệ tin entry-level trong mọi tin IT, `level_share`, ô `total_cell_id`."""
+
+    big_cities_share: Stat
+    """Tỷ trọng tin ở Hà Nội hoặc TP.HCM, `composition_share`, ô `big_cities.all`."""
+
+    roles: Annotated[list[OverviewRole], Field(min_length=1)]
+    """Mỗi vai trò một dòng: nhiều tin trước, cùng số tin thì theo mã; `other` luôn ở cuối. Web không sắp xếp lại."""
+
+    places: Annotated[list[OverviewShare], Field(min_length=1)]
+    """Nơi làm việc theo thứ tự hiển thị: Hà Nội, TP.HCM, Đà Nẵng, các tỉnh khác gộp (`other_provinces`), làm từ xa,
+    nước ngoài, không xác định. `composition_share`, ô `<city>.all`."""
+
+    levels_by_size: list[str]
+    """Các cấp (trừ `unknown`), nhiều tin trước, cùng số tin thì theo thứ tự `levels`. Câu tóm tắt đọc từ đây."""
+
+    roles_by_level: list[OverviewRanking]
+    """Mỗi cấp của `levels` một thứ tự vai trò, theo đúng thứ tự `levels`."""
+
+    roles_by_entry_share: list[str]
+    """Vai trò có tỷ lệ người mới hiện được (trừ `other`), tỷ lệ cao trước, cùng tỷ lệ thì theo mã."""
+
+    years: Annotated[list[OverviewShare], Field(min_length=1)]
+    """Số năm kinh nghiệm tối thiểu tin yêu cầu, theo mốc của `config/rules.toml`: `0`, `1`, …, `over_<mốc cuối>`,
+    rồi `none` (tin không ghi). `composition_share`, ô `vn.all.years_<mã>`; các phần cộng lại bằng `n` toàn quốc."""
+
+    @model_validator(mode="after")
+    def _nhat_quan(self) -> Self:
+        if [s.code for s in self.level_mix] != self.levels:
+            raise ValueError("level_mix phải theo đúng thứ tự levels.")
+        if not set(self.entry_levels) <= set(self.levels):
+            raise ValueError("entry_levels phải nằm trong levels.")
+        kinds = (
+            [(f"level_mix[{s.code}]", s.share, MeasureKind.LEVEL_SHARE) for s in self.level_mix]
+            + [("entry_share", self.entry_share, MeasureKind.LEVEL_SHARE)]
+            + [("big_cities_share", self.big_cities_share, MeasureKind.COMPOSITION_SHARE)]
+            + [(f"places[{s.code}]", s.share, MeasureKind.COMPOSITION_SHARE) for s in self.places]
+            + [(f"years[{s.code}]", s.share, MeasureKind.COMPOSITION_SHARE) for s in self.years]
+        )
+        for row in self.roles:
+            kinds += [(f"roles[{row.role}].share", row.share, MeasureKind.COMPOSITION_SHARE)]
+            kinds += [(f"roles[{row.role}].entry_share", row.entry_share, MeasureKind.LEVEL_SHARE)]
+            kinds += [(f"roles[{row.role}].level_mix", s.share, MeasureKind.LEVEL_SHARE) for s in row.level_mix]
+            kinds += [(f"roles[{row.role}].places", s.share, MeasureKind.COMPOSITION_SHARE) for s in row.places]
+            if [s.code for s in row.level_mix] != self.levels:
+                raise ValueError(f"roles[{row.role}].level_mix phải theo đúng thứ tự levels.")
+        sai = [path for path, stat, kind in kinds if stat.kind is not kind]
+        if sai:
+            raise ValueError(f"Sai loại thước đo ở: {', '.join(sai)}.")
+        trung = sorted(role for role, k in Counter(r.role for r in self.roles).items() if k > 1)
+        if trung:
+            raise ValueError(f"Mã vai trò bị trùng: {', '.join(trung)}.")
+        role_set = {r.role for r in self.roles}
+        if [r.level for r in self.roles_by_level] != self.levels:
+            raise ValueError("roles_by_level phải theo đúng thứ tự levels.")
+        if any(sorted(r.roles) != sorted(role_set) for r in self.roles_by_level):
+            raise ValueError("Mỗi thứ tự trong roles_by_level phải gồm đúng các vai trò của roles.")
+        if sorted(self.levels_by_size) != sorted(lv for lv in self.levels if lv != "unknown"):
+            raise ValueError("levels_by_size phải gồm đúng các cấp của levels trừ unknown.")
+        if not set(self.roles_by_entry_share) <= role_set:
+            raise ValueError("roles_by_entry_share có vai trò lạ.")
+        return self
