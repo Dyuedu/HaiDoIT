@@ -88,8 +88,10 @@ def _deploy(tmp_path: Path, *, healthy: bool, rmi_fails: bool = False) -> tuple[
         [
             BASH,
             "-c",
-            'export PATH="$(pwd)/bin:$PATH" LOG="$(pwd)/log" TAGS="$(pwd)/tags" VPS_PATH="$(pwd)/vps";'
-            " bash ./vps-deploy.sh",
+            (
+                'export PATH="$(pwd)/bin:$PATH" LOG="$(pwd)/log" TAGS="$(pwd)/tags" VPS_PATH="$(pwd)/vps";'
+                " bash ./vps-deploy.sh"
+            ),
         ],
         cwd=tmp_path,
         env={
