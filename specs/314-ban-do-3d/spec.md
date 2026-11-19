@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented (PR #315). 2026-11-17: lối 3D được dựng lại bằng CSS 3D theo prototype ở #316; three.js bị gỡ. Điều kiện rơi về 2D đổi từ "không có WebGL" sang "không dựng được CSS 3D" (người dùng chốt 2026-11-17; FR-36 nên sửa câu chữ). Các scenario về canvas WebGL, OrbitControls và error boundary không còn áp dụng.
+**Status**: Implemented (PR #315). 2026-11-17: lối 3D được dựng lại bằng CSS 3D theo prototype ở #316; three.js bị gỡ. Điều kiện rơi về 2D đổi từ "không có WebGL" sang "không dựng được CSS 3D" (người dùng chốt 2026-11-17; FR-36 nên sửa câu chữ). Các scenario về canvas WebGL, OrbitControls và error boundary không còn áp dụng. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#314](https://github.com/Dyuedu/HaiDoIT/issues/314) — Build the 3D map view. Phục vụ story #112 (US-A3). Quyết định DEC-5 (#131) ghi ngày 17/11/2026: giữ bản đồ 3D theo FR-33. FR-33, FR-36, NFR-12, UX-DR12, UX-DR39, UX-DR50.
 
@@ -23,7 +23,7 @@ Một sinh viên mở trang chủ trên máy tính có WebGL. Bản đồ mở �
 1. **Given** dữ liệu viền, **When** dựng bản đồ, **Then** có đất liền Việt Nam (geoBoundaries, CC BY 4.0) và hai quần đảo Hoàng Sa, Trường Sa, mỗi quần đảo có nhãn; các điểm đảo nằm trong vùng tọa độ của quần đảo đó. (AC 1)
 2. **Given** envelope `city-shares`, **When** dựng cột, **Then** có đúng ba cột Hà Nội, TP.HCM, Đà Nẵng, theo `view.bars`; Đà Nẵng luôn có. (AC 1)
 3. **Given** một cột, **When** tính chiều cao, **Then** chiều cao tỷ lệ thuận với `share.value` của chính dòng mà biểu đồ 2D vẽ (một chiều cao một nghĩa); hai cột có tỷ trọng gấp đôi nhau thì cao gấp đôi. (AC 2)
-4. **Given** cột `low_sample_shown`, **When** dựng, **Then** cột vẫn cao theo tỷ trọng thật, mờ, và nhãn của nó có "Cỡ mẫu nhỏ (n = X < 30): số liệu chỉ để tham khảo"; cột vẫn chọn được. (AC 3)
+4. **Given** cột `low_sample_shown`, **When** dựng, **Then** cột vẫn cao theo tỷ trọng thật, mờ, và nhãn của nó có "Mới có X tin, chưa đủ 30 để so sánh chắc chắn" (câu chữ theo #324); cột vẫn chọn được. (AC 3)
 5. **Given** lối 3D, **When** chọn một cột (trỏ, chạm, hoặc nút của cột đó bằng bàn phím), **Then** khung thông tin ghi tên thành phố, tỷ trọng và số tin, đọc qua `role="status"`. (AC 4)
 6. **Given** lối 3D, **When** kéo chuột hay vuốt, **Then** bản đồ xoay và nghiêng (OrbitControls, góc nghiêng giới hạn để không lật xuống dưới mặt đất). (AC 4, kiểm tay)
 

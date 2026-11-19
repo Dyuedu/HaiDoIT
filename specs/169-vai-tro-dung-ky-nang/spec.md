@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#169](https://github.com/Dyuedu/HaiDoIT/issues/169) — Show which roles use a skill. Phục vụ story #113 (US-A4), AC 2, 3, 5. Hình dữ liệu và fixture của #166 (`GET /api/v1/skill-roles?skill=`, `web/lib/skill-roles.ts`); số thật là #168. Chỗ đặt màn: mục mới trên `/insights` (người dùng chọn 17/11/2026).
 
@@ -21,8 +21,8 @@ Một sinh viên biết Python mở `/insights`, chọn Python ở mục "Kỹ n
 **Acceptance Scenarios**:
 
 1. **Given** `skill=python`, **When** mở `/insights?skill=python`, **Then** danh sách có một dòng mỗi vai trò, đúng thứ tự `data.rows`; web không sắp lại (AD-22).
-2. **Given** dòng có tỷ lệ, **When** xem, **Then** dòng ghi tỷ lệ ("77,6%") ở ô số riêng, liền với câu "tin AI/ML mới vào nghề nhắc tới Python", và "n = 501" là cỡ mẫu của phép đo (`n_by_measure.skill_count`). (AC 1 của #169)
-3. **Given** dòng `null_data`, **When** xem, **Then** ghi "chưa đủ dữ liệu (4/30)" với 4 là `skill_count` và 30 là `meta.thresholds.min_sample`, không có dấu %. (AC 3 của #113)
+2. **Given** dòng có tỷ lệ, **When** xem, **Then** dòng ghi tỷ lệ ("77,6%") ở ô số riêng, liền với câu "tin AI/ML cho người mới có nhắc tới Python", và "tính trên 501 tin" (câu chữ theo #324) là cỡ mẫu của phép đo (`n_by_measure.skill_count`). (AC 1 của #169)
+3. **Given** dòng `null_data`, **When** xem, **Then** ghi "Mới có 4 tin, cần ít nhất 30" (câu chữ theo #324) với 4 là `skill_count` và 30 là `meta.thresholds.min_sample`, không có dấu %. (AC 3 của #113)
 4. **Given** một dòng, **When** chạm, **Then** đi tới `/ho-so-ky-nang?role=<vai trò>&level=<data.level>` (#111). (AC 2 của #169)
 5. **Given** API trả 404 `unknown_cell` (kỹ năng chưa có số, hoặc production trước #168), **When** chọn kỹ năng, **Then** thông báo lỗi, không có "Thử lại", không có danh sách. Mạng hỏng thì có "Thử lại".
 6. **Given** danh sách, **When** đọc khung "Nguồn và lưu ý", **Then** có ngày snapshot, nguồn, lưu ý độ phủ, và bộ lọc ghi "Mới vào nghề".

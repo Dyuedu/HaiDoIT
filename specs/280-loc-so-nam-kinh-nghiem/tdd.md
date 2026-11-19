@@ -225,3 +225,9 @@ Lý do: #316 sửa `web/app/components/map/map-screen.tsx`: bố cục hai cột
 
 Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `docs/api/envelope-meta.md`, `haido_api/stat_market.py`.
 Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.
+
+## Đợt #324 (2026-11-19): câu chữ trên màn viết lại
+
+Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot", "entry-level"; câu thiếu mẫu "Mới có X tin, cần ít nhất 30"; khung nguồn "Đang xem", "Cập nhật", tên nguồn). File của issue này bị đụng: `web/lib/city-shares-view.ts`, `web/app/components/map/snapshot-caption.tsx`. Số, thứ tự và ẩn số theo ngưỡng không đổi. Câu trong scenario của `spec.md` đã sửa theo câu mới; ý của AC giữ nguyên (người dùng đồng ý 2026-11-19).
+
+- RED và GREEN: `specs/324-cau-chu-de-hieu/tdd.md` (RED 42 failed / 299 passed; GREEN 357 passed, chạy `npx vitest run` từ PowerShell).

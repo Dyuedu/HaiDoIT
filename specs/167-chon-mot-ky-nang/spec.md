@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#167](https://github.com/Dyuedu/HaiDoIT/issues/167) — Search skills in English and Vietnamese. Phục vụ story #113 (US-A4), AC 1 và 4. Hàm tìm song ngữ đã có ở #207 (`searchSkills` của `web/lib/vocab.ts`); cờ `mentioned` của #166.
 
@@ -30,7 +30,7 @@ Một sinh viên gõ "học máy" vào ô tìm của mục "Kỹ năng của b�
 
 **Acceptance Scenarios**:
 
-1. **Given** `data.mentioned = false` (ABAP), **When** chọn, **Then** màn ghi "Chưa tin tuyển dụng hiện tại nào nhắc tới ABAP." và không hiện danh sách vai trò hay tỷ lệ 0%. (AC 2)
+1. **Given** `data.mentioned = false` (ABAP), **When** chọn, **Then** màn ghi "Hiện chưa tin tuyển dụng nào nhắc tới ABAP." (câu chữ theo #324) và không hiện danh sách vai trò hay tỷ lệ 0%. (AC 2)
 2. **Given** `mentioned = true` mà mọi dòng hiện bằng 0 (SAP: có tin ở cấp khác), **When** chọn, **Then** màn vẫn hiện danh sách, không ghi "chưa tin nào nhắc". Web không suy cờ này từ các dòng (AD-22).
 3. **Given** `unknown_skill` (mã hợp lệ nhưng không có trong bộ từ vựng, ví dụ từ URL), **When** mở, **Then** thông báo của API, không "Thử lại".
 

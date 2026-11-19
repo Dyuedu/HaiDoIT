@@ -9,7 +9,7 @@ import { deferred, jsonResponse, routeCityShares } from "./helpers/fetch";
 import { pick, roleSelect, selectedLabel } from "./helpers/filters";
 
 const LOADING = "Đang tải số liệu…";
-const LOW_SAMPLE_21 = "Cỡ mẫu nhỏ (n = 21 < 30): số liệu chỉ để tham khảo";
+const LOW_SAMPLE_21 = "Mới có 21 tin, chưa đủ 30 để so sánh chắc chắn";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
 
 const ok = (role: "all" | "ai_ml" | "backend") => () => jsonResponse(200, fakeEnvelope(role));
@@ -81,7 +81,7 @@ describe("fr33 — mở trang", () => {
     const unknown = cityButton("Không xác định nơi làm việc");
     expect(remote.querySelector('[data-part="track"]')).toBeNull();
     expect(unknown.querySelector('[data-part="track"]')).toBeNull();
-    expect(remote.textContent).toContain("n = 0");
+    expect(remote.textContent).toContain("Chưa có tin nào");
     expect(unknown.textContent).toContain("207 tin");
     expect(screen.queryByRole("button", { name: /^Hải Phòng:/ })).toBeNull();
   });
@@ -205,8 +205,8 @@ describe("fr33 — mẫu nhỏ", () => {
     const remote = await screen.findByRole("button", { name: /^Làm từ xa \(Remote\):/ });
     const unknown = cityButton("Không xác định nơi làm việc");
 
-    expect(remote.textContent).toContain("Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo");
-    expect(unknown.textContent).toContain("Cỡ mẫu nhỏ (n = 8 < 30): số liệu chỉ để tham khảo");
+    expect(remote.textContent).toContain("Chưa có tin nào");
+    expect(unknown.textContent).toContain("Mới có 8 tin, chưa đủ 30 để so sánh chắc chắn");
     expect(unknown.textContent).not.toContain("%");
 
     await user.hover(unknown);
@@ -221,7 +221,7 @@ describe("fr33 — mẫu nhỏ", () => {
 
     expect(daNang.querySelector('[data-part="track"]')).not.toBeNull();
     expect(fill(daNang).style.width).toBe("0%");
-    expect(daNang.textContent).toContain("Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo");
+    expect(daNang.textContent).toContain("Chưa có tin nào");
     act(() => daNang.focus());
     expect(document.activeElement).toBe(daNang);
   });
@@ -230,11 +230,11 @@ describe("fr33 — mẫu nhỏ", () => {
     routeCityShares({ all: [ok("all")], backend: [() => jsonResponse(200, allLowSampleEnvelope())] });
     const { user } = await openScreen();
     await pickRole(user, "Backend");
-    await screen.findByRole("button", { name: /^Hà Nội:.*Cỡ mẫu nhỏ/ });
+    await screen.findByRole("button", { name: /^Hà Nội:.*chưa đủ 30/ });
 
     for (const label of ["Hà Nội", "TP.HCM", "Đà Nẵng", "Không xác định nơi làm việc"]) {
       const button = cityButton(label);
-      expect(button.textContent).toContain("Cỡ mẫu nhỏ");
+      expect(button.textContent).toMatch(/chưa đủ 30|Chưa có tin nào/);
       expect(button.textContent).not.toContain("%");
     }
   });
@@ -257,7 +257,7 @@ describe("fr33 — lối Bảng", () => {
 
     const daNang = within(table).getByRole("row", { name: /Đà Nẵng/ });
     const cells = within(daNang).getAllByRole("cell").map((cell) => cell.textContent);
-    expect(cells).toEqual(["chưa đủ dữ liệu", "21", "Cỡ mẫu nhỏ (n = 21 < 30)"]);
+    expect(cells).toEqual(["chưa đủ dữ liệu", "21", "Mới có 21 tin, chưa đủ 30"]);
     const haNoi = within(table).getByRole("row", { name: /Hà Nội/ });
     expect(within(haNoi).getAllByRole("cell")[0].textContent).toBe("47,0%");
   });
@@ -323,11 +323,11 @@ describe("fr33 — đổi vai trò", () => {
     await pickRole(user, "AI/ML");
     await pickRole(user, "Backend");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
-    expect(daNang.textContent).toContain("n = 9 < 30");
+    expect(daNang.textContent).toContain("Mới có 9 tin, chưa đủ 30");
 
     await act(async () => slowAiMl.resolve(jsonResponse(200, fakeEnvelope("ai_ml"))));
 
-    expect(cityButton("Đà Nẵng").textContent).toContain("n = 9 < 30");
+    expect(cityButton("Đà Nẵng").textContent).toContain("Mới có 9 tin, chưa đủ 30");
     expect(screen.queryByText(LOW_SAMPLE_21)).toBeNull();
     expect(selectedLabel(roleSelect())).toBe("Backend");
   });

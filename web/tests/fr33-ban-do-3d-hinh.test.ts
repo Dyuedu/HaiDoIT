@@ -82,7 +82,7 @@ describe("fr33 #316 — cột", () => {
     for (const [i, column] of buildColumns(view).entries()) {
       expect(column.faded).toBe(true);
       expect(column.height).toBeCloseTo(view.bars[i].value * 400, 10);
-      expect(column.smallLabel).toMatch(/^Cỡ mẫu nhỏ \(n = [\d.]+ < 30\): số liệu chỉ để tham khảo$/);
+      expect(column.smallLabel).toMatch(/^(Mới có [\d.]+ tin, chưa đủ 30 để so sánh chắc chắn|Chưa có tin nào)$/);
     }
   });
 });

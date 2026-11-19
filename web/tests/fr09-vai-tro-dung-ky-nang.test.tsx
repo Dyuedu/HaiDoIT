@@ -64,15 +64,15 @@ describe("fr09 #169 — vai trò nào dùng một kỹ năng", () => {
     openWithSkill("python");
     const row = rowOf(await screen.findByRole("list", { name: LIST }), "AI/ML");
     expect(row.textContent).toContain("77,6%");
-    expect(row.textContent).toContain("tin AI/ML mới vào nghề nhắc tới Python");
-    expect(row.textContent).toContain("n = 501");
+    expect(row.textContent).toContain("tin AI/ML cho người mới có nhắc tới Python");
+    expect(row.textContent).toContain("tính trên 501 tin");
   });
 
   it("fr09: vai trò dưới ngưỡng ghi chưa đủ dữ liệu (X/30), X là skill_count, không có %", async () => {
     routeInsights();
     openWithSkill("python");
     const row = rowOf(await screen.findByRole("list", { name: LIST }), "Kỹ sư dữ liệu");
-    expect(row.textContent).toContain("chưa đủ dữ liệu (4/30)");
+    expect(row.textContent).toContain("Mới có 4 tin, cần ít nhất 30");
     expect(row.textContent).not.toContain("%");
   });
 
@@ -82,7 +82,7 @@ describe("fr09 #169 — vai trò nào dùng một kỹ năng", () => {
     routeInsights({ skillRoles: () => jsonResponse(200, env) });
     openWithSkill("python");
     const row = rowOf(await screen.findByRole("list", { name: LIST }), "Kỹ sư dữ liệu");
-    expect(row.textContent).toContain("chưa đủ dữ liệu (4/50)");
+    expect(row.textContent).toContain("Mới có 4 tin, cần ít nhất 50");
   });
 
   it("fr18: chạm một vai trò mở hồ sơ kỹ năng của vai trò đó ở cấp data.level", async () => {
@@ -99,7 +99,7 @@ describe("fr09 #169 — vai trò nào dùng một kỹ năng", () => {
     const regions = screen.getAllByRole("region", { name: "Nguồn và lưu ý" });
     const caption = regions[regions.length - 1];
     expect(caption.textContent).toContain("03/11/2026");
-    expect(caption.textContent).toContain("Mới vào nghề");
+    expect(caption.textContent).toContain("Mọi vai trò, mới vào nghề (Intern, Fresher, Junior), mọi số năm kinh nghiệm");
     for (const note of SKILL_ROLES.python.meta.coverage_notes) expect(caption.textContent).toContain(note.text);
   });
 

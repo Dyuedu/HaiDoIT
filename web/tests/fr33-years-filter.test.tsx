@@ -117,7 +117,7 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     expect(screen.queryByText(/không ghi số năm kinh nghiệm/)).toBeNull();
     await pick(user, yearsSelect(), "Tối đa 1 năm");
     const note = await screen.findByText(/không ghi số năm kinh nghiệm/);
-    expect(note.textContent).toBe("1.234 tin của Tất cả · Mới vào nghề không ghi số năm kinh nghiệm nên không được tính.");
+    expect(note.textContent).toBe("1.234 tin không ghi số năm kinh nghiệm nên không được tính (mọi vai trò, mới vào nghề).");
   });
 
   it("fr33: khung chú thích nêu bộ lọc (vai trò · cấp · số năm) cạnh ngày snapshot; tiêu đề biểu đồ nêu số năm", async () => {
@@ -127,9 +127,9 @@ describe("fr33 #280 — bộ chọn số năm kinh nghiệm", () => {
     await pick(user, yearsSelect(), "Tối đa 2 năm");
     await screen.findByText(/37 tin/);
     const caption = screen.getByRole("region", { name: "Nguồn và lưu ý" });
-    expect(within(caption).getByText("Bộ lọc")).toBeTruthy();
-    expect(within(caption).getByText("Tất cả · Mới vào nghề · Tối đa 2 năm")).toBeTruthy();
-    expect(within(caption).getByText("Ngày snapshot")).toBeTruthy();
+    expect(within(caption).getByText("Đang xem")).toBeTruthy();
+    expect(within(caption).getByText("Mọi vai trò, mới vào nghề, tối đa 2 năm")).toBeTruthy();
+    expect(within(caption).getByText("Cập nhật")).toBeTruthy();
     expect(screen.getByText(/Tỷ trọng tin theo thành phố · Tất cả · Mới vào nghề · Tối đa 2 năm/)).toBeTruthy();
   });
 
@@ -181,10 +181,10 @@ describe("fr33 #280 — hợp đồng years của client", () => {
   it("fr33: view có nhãn số năm và câu tin bị bỏ chỉ khi years khác any", () => {
     const view = buildCitySharesView(upTo("2", { unstated: 5 }));
     expect(view.yearsLabel).toBe("Tối đa 2 năm");
-    expect(view.unstatedNote).toBe("5 tin của Tất cả · Mới vào nghề không ghi số năm kinh nghiệm nên không được tính.");
-    expect(view.caption.filters).toBe("Tất cả · Mới vào nghề · Tối đa 2 năm");
+    expect(view.unstatedNote).toBe("5 tin không ghi số năm kinh nghiệm nên không được tính (mọi vai trò, mới vào nghề).");
+    expect(view.caption.filters).toBe("Mọi vai trò, mới vào nghề, tối đa 2 năm");
     const any = buildCitySharesView(upTo("any"));
     expect(any.unstatedNote).toBeNull();
-    expect(any.caption.filters).toBe("Tất cả · Mới vào nghề · Mọi số năm");
+    expect(any.caption.filters).toBe("Mọi vai trò, mới vào nghề, mọi số năm kinh nghiệm");
   });
 });

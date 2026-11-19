@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#170](https://github.com/Dyuedu/HaiDoIT/issues/170) — Test which roles use a skill. Phục vụ story #113 (US-A4).
 
@@ -27,7 +27,7 @@ Người review mở một file và thấy năm test, mỗi test một AC của 
 |---|---|---|
 | 1. Gõ kỹ năng tiếng Anh hoặc tiếng Việt khớp một kỹ năng, màn ghi kỹ năng đó | `AC1 FR-13 …` | FR-13 |
 | 2. Mỗi vai trò có tỷ lệ tin entry-level nhắc kỹ năng, theo tỷ lệ, bằng một câu thường | `AC2 FR-09 …` | FR-09, AD-22 |
-| 3. Vai trò dưới 30 tin entry-level đọc được kỹ năng ghi "chưa đủ dữ liệu (X/30)" (AC sửa câu chữ 2026-11-19, X là `skill_count`) | `AC3 FR-09 …` | FR-09 |
+| 3. Vai trò dưới 30 tin entry-level đọc được kỹ năng ghi "Mới có X tin, cần ít nhất 30" (câu chữ theo #324, X là `skill_count`) | `AC3 FR-09 …` | FR-09 |
 | 4. Kỹ năng không tin nào nhắc thì nói như vậy | `AC4 FR-09 …` | FR-09 |
 | 5. Chạm vai trò mở hồ sơ kỹ năng (#111) | `AC5 FR-18 …` | FR-18 |
 

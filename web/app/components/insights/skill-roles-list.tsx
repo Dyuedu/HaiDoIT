@@ -27,7 +27,7 @@ export function SkillRolesList({ lines }: { lines: SkillRoleLine[] }) {
               ) : (
                 <span className="text-amber">{line.shareText}</span>
               )}
-              <span className="font-mono text-footer text-text-muted">{line.nText}</span>
+              {line.nText && <span className="text-footer text-text-muted">{line.nText}</span>}
             </span>
           </Link>
         </li>
