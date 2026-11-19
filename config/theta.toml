@@ -1,0 +1,16 @@
+# Sổ đăng ký θ (#102, DAT.30): ngưỡng tỷ lệ chia kỹ năng thành core, common, rare.
+#
+# CHỈ THÊM, KHÔNG SỬA. Một phiên bản đã đóng băng thì giữ nguyên giá trị mãi mãi, vì snapshot đã tính bằng nó lưu id của
+# nó (haido.snapshots.theta_version) và đọc lại bằng đúng giá trị đó. Muốn đổi θ: thêm một mục [[versions]] mới ở cuối,
+# thêm nó vào PINNED trong tests/core/test_gh102_theta_dong_bang.py, đổi theta_version trong config/rules.toml, tăng
+# config_version, và cập nhật docs/data/theta.md. Snapshot đã tính trước đó vẫn đọc theo θ của nó.
+#
+# rate >= theta_core là core, rate >= theta_common là common, còn lại là rare (haido_core/domain/skill_groups.py).
+# 0 <= theta_common <= theta_core <= 1.
+
+[[versions]]
+id = "theta-1"
+theta_core = 0.3
+theta_common = 0.1
+calibrated_on = "2026-11-19"
+note = "Bản đóng băng đầu tiên, giữ nguyên giá trị đang chạy nên không màn hình nào đổi. Bằng chứng ở docs/data/theta.md."

@@ -28,7 +28,7 @@ def _meta() -> dict[str, Any]:
         "snapshot_status": "published",
         "sources": ["careerlink"],
         "sources_failed": [],
-        "thresholds": {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1},
+        "thresholds": {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1, "theta_version": "theta-1"},
         "coverage_notes": [{"code": "n_sources", "text": "Chỉ gồm tin đăng online."}],
         "cells": {"vn.x": _cell(100)},
     }

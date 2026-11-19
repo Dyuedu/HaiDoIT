@@ -66,7 +66,7 @@ def _rate(
 
 def test_dat29_migration_0009_noi_tiep_0008_va_la_head_duy_nhat() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0009_haido_skill_rates"]
+    assert script.get_heads() == ["0010_haido_snapshot_theta"]  # #102 nối 0010
     revision = script.get_revision("0009_haido_skill_rates")
     assert revision is not None and revision.down_revision == "0008_haido_fact_city"
 
@@ -169,7 +169,7 @@ def test_dat29_d2_replace_stats_tu_choi_hang_co_n_scanned_vuot_n_cua_o(pg_engine
     with pg_engine.begin() as conn:
         snapshot_store.insert_open(conn, day)
     with pytest.raises(ValueError, match="n_scanned"), pg_engine.begin() as conn:
-        snapshot_store.replace_stats(conn, day, "v", [cell], [], [], [too_big])
+        snapshot_store.replace_stats(conn, day, "v", [cell], [], [], [too_big], theta_version="theta-1")
     with pg_engine.begin() as conn:
-        snapshot_store.replace_stats(conn, day, "v", [cell], [], [], [ok])
+        snapshot_store.replace_stats(conn, day, "v", [cell], [], [], [ok], theta_version="theta-1")
         assert conn.execute(text("SELECT count(*) FROM haido.stat_skill_rates")).scalar_one() == 1

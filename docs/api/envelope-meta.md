@@ -54,7 +54,7 @@ kỹ năng). Giao diện dựng trên dữ liệu giả hôm nay chạy được
 | `snapshot_status` | `published` · `partial` | `partial` khi có nguồn lỗi; vẫn đọc được |
 | `sources` | chuỗi[] | Nguồn có ít nhất một tin được đếm trong cửa sổ 60 ngày của snapshot, A–Z (#259); `linkedin` không bao giờ có mặt (#263) |
 | `sources_failed` | chuỗi[] | Nguồn lỗi; rỗng khi `published` |
-| `thresholds` | `{min_sample, theta_core, theta_common}` | Ngưỡng đã dùng cho response này |
+| `thresholds` | `{min_sample, theta_core, theta_common, theta_version}` | Ngưỡng đã dùng cho response này. `theta_version` là phiên bản θ (`config/theta.toml`, [docs/data/theta.md](../data/theta.md)) của snapshot; `theta_core` và `theta_common` là giá trị của phiên bản đó, không phải θ hiện hành của cấu hình (#102) |
 | `coverage_notes` | `{code, text}[]` | Lưu ý độ phủ, ít nhất một; hiện `text` trên mọi màn hình có số |
 | `cells` | `{cell_id: CellMeta}` | Một mục cho mỗi ô mà response dùng |
 
@@ -175,7 +175,7 @@ của `level_options` (#149). `have` tùy chọn, cùng luật với `learning-p
   `n_by_measure.skill_count` là `n_scanned`, `fallback_label` là nhãn của phép 2: `null` khi ô đã chọn đủ mẫu; còn lại
   gọi tên ô được chọn và n của nó, tên ô đã dùng và n của nó (n là số tin đọc được kỹ năng, tức `n_scanned`, nên có thể
   nhỏ hơn `meta.cells[...].n`), và ở bước `all` với cấp mới vào nghề thì thêm tỷ lệ tin Mid trở lên của ô đó (FR-19;
-  làm tròn nửa lên, mẫu số là mọi tin của ô kể cả `unknown`). Dòng chỉ gồm `core` và `common` (nhóm theo θ của `meta.thresholds`). Khi không tập nào
+  làm tròn nửa lên, mẫu số là mọi tin của ô kể cả `unknown`). Dòng chỉ gồm `core` và `common` (nhóm theo θ của `meta.thresholds`, tức θ của phiên bản đã ghi trong snapshot). Khi không tập nào
   đủ `min_sample`, `data.cell_id` là ô `all`, dòng là kỹ năng có nhắc ít nhất một lần, xếp theo mã, mọi `rate` là
   `null_data`, `group = null`, `core_size` và `have_core` là `null`. Vai trò ngoài `config/rules.toml` hoặc không có tin
   nào ở snapshot là 404 `unknown_cell`, cũng như ô có trong `stat_cells` mà không có hàng tỷ lệ nào. Ô đủ mẫu mà mọi

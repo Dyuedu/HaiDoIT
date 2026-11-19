@@ -20,3 +20,9 @@ Chưa chạy được trên máy làm việc: không có Postgres (Docker Deskto
 ### GREEN
 
 CI của PR #331 (job "Python - ruff and pytest", Postgres thật): hai test của `tests/api/test_ad22_market_overview_stat.py` qua. Cùng lượt chạy, `tests/api/test_ad17_meta_nguon_stat.py::test_ad17_103_route_chua_co_so_that_tra_loi_chuan_khong_co_data` đỏ: test này liệt kê route đã có số thật (`REAL`) và chờ 404 `unknown_cell` ở route còn lại; `market-overview` đọc nguồn thật nên trả 200. Thêm route vào `REAL` (ý của test #103 không đổi: route có số thật trả `data` và `meta`, route chưa có trả lỗi chuẩn). Kết quả CI sau sửa ghi ở mô tả PR.
+
+## Đợt 2 (2026-11-19): gộp main sau #102
+
+Lý do: #102 (θ có phiên bản) vào main trước PR này, thêm `theta_version` bắt buộc vào `meta.thresholds` và hàm `StatMarket._thresholds(latest)`. `market_overview` chuyển sang dùng hàm đó thay vì tự dựng `Thresholds`; fixture web `market-overview.json` và `docs/api/openapi.json` sinh lại. Xung đột khi gộp chỉ ở các `tdd.md` (hai đợt cùng thêm cuối file); giữ cả hai, đợt #102 trước.
+
+- GREEN ở máy: `uv run pytest -q` → 1403 passed, 339 skipped; `ruff check .` sạch. Test Postgres chạy trên CI.

@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. #102 (2026-11-19) đổi nguồn θ của FR-003: từ `config/rules.toml` sang `snapshots.theta_version` và `config/theta.toml`.
 
 **Input**: GitHub issue [#151](https://github.com/Dyuedu/HaiDoIT/issues/151) — Return real skill rates for a role and level. Phục vụ story #111 (US-A2). Đọc #101 (bảng), #103 (ràng buộc lớp đọc), #106 (phép 2).
 
@@ -44,7 +44,7 @@
 
 - **FR-001**: `StatMarket.skill_rates` đọc `stat_skill_rates` và `stat_cells` (phạm vi `vn`, nhánh `all`, số năm `any`) của snapshot đọc được mới nhất; chỉ bảng `stat_*` (AD-7).
 - **FR-002**: Ô chọn bằng phép 2 (`CellSelector`) với `CellStats.sample_n = n_scanned`; ngưỡng là `rules.min_sample`.
-- **FR-003**: Nhóm bằng phép 4 (`SkillGrouper`) với `theta_core`, `theta_common` của `config/rules.toml`. **#102 sẽ đóng băng θ** (ghi θ theo snapshot); khi đó nguồn θ đổi, phần còn lại không đổi.
+- **FR-003**: Nhóm bằng phép 4 (`SkillGrouper`) với θ của phiên bản ghi trong snapshot đã chọn (`snapshots.theta_version`, giá trị trong `config/theta.toml`; NULL đọc là `theta-1`), không phải θ hiện hành của `config/rules.toml`. Lúc viết spec này (trước #102) θ lấy từ `config/rules.toml`; phần còn lại không đổi.
 - **FR-004**: Mọi `display` do `suppression_for` qua `Envelope` quyết, không có so sánh `n < 30` rời rạc trong `stat_market.py`.
 - **FR-005**: Production đặt `HAIDO_MARKET_SOURCE_SKILL_RATES: stat`; bản giả không còn được phục vụ ở prod.
 

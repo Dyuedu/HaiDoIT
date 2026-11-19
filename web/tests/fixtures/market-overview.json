@@ -2155,7 +2155,8 @@
     "thresholds": {
       "min_sample": 30,
       "theta_core": 0.3,
-      "theta_common": 0.1
+      "theta_common": 0.1,
+      "theta_version": "theta-1"
     },
     "coverage_notes": [
       {

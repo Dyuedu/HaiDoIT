@@ -71,7 +71,7 @@ def test_ad4_upgrade_downgrade_mot_head_va_xoa_sach_schema(pg_engine: Engine) ->
 
 
 def test_ad4_cot_dung_thiet_ke_va_khong_co_cot_van_ban_jd(pg_engine: Engine) -> None:
-    assert _columns(pg_engine, "snapshots") == {"snapshot_id", "status", "opened_at", "closed_at", "sources_failed"}
+    assert _columns(pg_engine, "snapshots") == {"snapshot_id", "status", "opened_at", "closed_at", "sources_failed", "theta_version"}  # #102
     assert _columns(pg_engine, "pipeline_runs") == {
         "id", "snapshot_id", "source", "mode", "success", "seen_count", "error",
     }  # fmt: skip

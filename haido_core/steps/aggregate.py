@@ -93,6 +93,13 @@ def aggregate_snapshot(
     snapshot_id: str, *, engine: Engine, rules: RulesConfig, classify: ClassifyConfig | None = None
 ) -> AggregateResult:
     day = parse_snapshot_id(snapshot_id)
+    try:
+        rules.theta(rules.theta_version)
+    except KeyError:
+        raise StepError(
+            f"θ hiện hành {rules.theta_version!r} không có trong sổ đăng ký θ (config/theta.toml); "
+            "snapshot ghi phiên bản đó sẽ không đọc lại được."
+        ) from None
     cfg = classify or load_classify_config()
     classifier = RuleClassifier(cfg)
     with engine.begin() as conn:
@@ -213,7 +220,14 @@ def aggregate_snapshot(
             raise StepError(f"Không tính được tỷ lệ kỹ năng của snapshot {day.isoformat()}: {exc}") from exc
         sources = sources_in_window(day, source_rows, window_days=rules.window_days)
         snapshot_store.replace_stats(
-            conn, day, rules.config_version, aggregate.cells, aggregate.shares, sources, skill_rates
+            conn,
+            day,
+            rules.config_version,
+            aggregate.cells,
+            aggregate.shares,
+            sources,
+            skill_rates,
+            theta_version=rules.theta_version,
         )
     return AggregateResult(
         day, len(aggregate.cells), len(aggregate.shares), len(skill_rates), sources, rules.config_version
