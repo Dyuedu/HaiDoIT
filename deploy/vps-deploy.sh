@@ -8,6 +8,40 @@ set -euo pipefail
 WAREHOUSE_IMAGE=ghcr.io/dyuedu/haidoit-warehouse
 # daily.sh đọc tag image kho đã deploy từ file này, cùng thư mục VPS_PATH.
 WAREHOUSE_TAG_FILE=.warehouse-tag
+APP_IMAGES="ghcr.io/dyuedu/haidoit-api ghcr.io/dyuedu/haidoit-web $WAREHOUSE_IMAGE"
+# Số tag sha giữ lại mỗi image: bản vừa deploy và một bản trước để rollback.
+# Mỗi bộ ba image khoảng 1,5 GB; đĩa 33 GB lên 94% ngày 2026-11-19.
+KEEP_TAGS=2
+
+# Đọc tag từ stdin, mới trước (thứ tự của `docker images`). In các tag sha-* ngoài $1 tag
+# mới nhất, trừ các tag nêu ở $2... Tag không phải sha-* thì bỏ qua, không đếm.
+stale_tags() {
+  local keep=$1 tag p n=0 protected
+  shift
+  while IFS= read -r tag; do
+    tag=${tag%$'\r'}
+    case "$tag" in sha-*) ;; *) continue ;; esac
+    n=$((n + 1))
+    [ "$n" -le "$keep" ] && continue
+    protected=0
+    for p in "$@"; do
+      [ "$tag" = "$p" ] && protected=1
+    done
+    [ "$protected" = 1 ] || printf '%s\n' "$tag"
+  done
+}
+
+# Xóa tag sha cũ của api, web, kho. Image đang được container dùng thì rmi từ chối: bỏ qua.
+prune_old_tags() {
+  local repo tag
+  for repo in $APP_IMAGES; do
+    docker images "$repo" --format '{{.Tag}}' | stale_tags "$KEEP_TAGS" "$IMAGE_TAG" |
+      while IFS= read -r tag; do
+        docker rmi "$repo:$tag" >/dev/null || echo "không xóa được $repo:$tag"
+      done
+  done
+  docker image prune -f
+}
 
 # Giá trị khóa $1 trong .env: bỏ CR cuối dòng và một cặp nháy bao ngoài.
 env_value() {
@@ -63,8 +97,6 @@ main() {
   docker network inspect haido-edge >/dev/null 2>&1 || docker network create haido-edge
   docker compose -f compose.prod.yml up -d --remove-orphans
   docker compose -f compose.prod.yml ps
-  # 35 GB đĩa: không dọn thì image cũ ăn hết trong vài tuần
-  docker image prune -f --filter "until=168h"
 
   local i
   for i in $(seq 1 20); do
@@ -76,6 +108,8 @@ main() {
       printf '%s\n' "$IMAGE_TAG" > "$WAREHOUSE_TAG_FILE.tmp"
       mv "$WAREHOUSE_TAG_FILE.tmp" "$WAREHOUSE_TAG_FILE"
       echo "lịch đêm dùng $WAREHOUSE_IMAGE:$IMAGE_TAG"
+      # Dọn chỉ khi bản mới đã khỏe: deploy hỏng thì còn nguyên các tag để rollback.
+      prune_old_tags || echo "dọn image cũ lỗi, deploy vẫn xong"
       return 0
     fi
     sleep 6

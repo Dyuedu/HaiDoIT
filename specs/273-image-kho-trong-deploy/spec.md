@@ -67,7 +67,7 @@ Mỗi lần deploy, workflow build image kho từ `deploy/warehouse.Dockerfile` 
 - `compose.scraper.yml` dùng `${HAIDO_WAREHOUSE_TAG:-none}`, không dùng `:?`. Compose kiểm nội suy của cả file, nên `:?` sẽ làm hỏng cả lệnh chạy `scraper` khi thiếu tag, trái với nguyên tắc nhịp một không phụ thuộc gì.
 - `pull_policy: never`: cron không có token GHCR, và image phải có sẵn từ lúc deploy.
 - Rollback bằng `workflow_dispatch` với `sha` cũ: image kho của commit cũ cũng được kéo về, và `.warehouse-tag` trỏ về commit đó.
-- `docker image prune -f` chỉ xóa image dangling, nên image kho có tag không bị xóa giữa hai lần deploy.
+- `docker image prune -f` chỉ xóa image dangling, nên image kho có tag không bị xóa giữa hai lần deploy. Từ 2026-11-19 (#262 đợt 5), deploy khỏe thì xóa tag `sha-*` cũ, giữ 2 bản mới nhất và bản vừa deploy, tức luôn giữ tag mà `.warehouse-tag` trỏ tới.
 
 ## Requirements *(mandatory)*
 
