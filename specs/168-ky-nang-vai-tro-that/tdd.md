@@ -101,3 +101,9 @@ Chưa chạy mutant cho hành vi 3 (factory gọi trong `__init__`) và 7; hành
 Lý do: AC 2 của #168 và AC 3 của #113 ghi "under 30 entry-level postings", còn code (theo #166) dùng số tin đọc được kỹ năng (`n_scanned`, `skill_count`). Người dùng chọn sửa câu chữ AC theo code. Code và test không đổi, nên không có RED mới; GREEN chạy lại sau khi merge `origin/main` (ghi bên dưới).
 
 - GREEN sau merge `origin/main` (66c8087): `uv run pytest -q` → 1627 passed; `ruff check .` sạch; `tools/gates/check_gates.py` → 10 pass. PR này không đổi file web.
+
+## Đợt #327, #328 (2026-11-19): thêm route toàn cảnh thị trường, AC của issue này không đổi
+
+Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
+
+- RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.

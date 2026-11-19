@@ -12,6 +12,7 @@ from typing import Protocol
 from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import (
     CitySharesData,
+    MarketOverviewData,
     NewcomerRolesData,
     SkillRatesData,
     SkillRolesData,
@@ -66,6 +67,17 @@ class MarketReadModel(Protocol):
         """Mỗi vai trò: số tin entry-level, tỷ lệ trong số tin của vai trò, và n (#144).
 
         Dòng theo thứ tự của `NewcomerRolesData.rows`.
+
+        Raises:
+            UnknownCell: chưa có snapshot nào đọc được.
+        """
+        ...
+
+    def market_overview(self) -> Envelope[MarketOverviewData]:
+        """Toàn cảnh thị trường của snapshot mới nhất (#327): cấp bậc, vai trò, nơi làm việc, số năm kinh nghiệm.
+
+        Mọi tỷ trọng tính ở máy chủ bằng `haido_api.market_overview.build_market_overview`. Route đọc nguồn của
+        `newcomer_roles`, vì hai phép cùng đọc ô toàn quốc của `stat_cells`.
 
         Raises:
             UnknownCell: chưa có snapshot nào đọc được.

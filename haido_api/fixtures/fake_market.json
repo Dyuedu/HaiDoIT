@@ -5565,5 +5565,50 @@
       },
       "mentions_all_levels": 87
     }
+  },
+  "market_overview": {
+    "_note": "Số đếm bổ sung cho GET /api/v1/market-overview (#327) mà mục cells chưa có: Hà Nội và TP.HCM của các vai trò chưa có ô thành phố, và số tin theo mốc số năm của ô vn.all. Mọi ô khác lấy từ cells.",
+    "role_places": {
+      "embedded": {
+        "ha_noi": 6,
+        "ho_chi_minh": 5
+      },
+      "data_engineer": {
+        "ha_noi": 10,
+        "ho_chi_minh": 9
+      },
+      "data_analyst": {
+        "ha_noi": 44,
+        "ho_chi_minh": 39
+      },
+      "qa": {
+        "ha_noi": 60,
+        "ho_chi_minh": 53
+      },
+      "devops": {
+        "ha_noi": 22,
+        "ho_chi_minh": 20
+      },
+      "mobile": {
+        "ha_noi": 34,
+        "ho_chi_minh": 31
+      },
+      "frontend": {
+        "ha_noi": 110,
+        "ho_chi_minh": 98
+      },
+      "other": {
+        "ha_noi": 0,
+        "ho_chi_minh": 0
+      }
+    },
+    "years_upto": {
+      "0": 75,
+      "1": 560,
+      "2": 1240,
+      "3": 1960,
+      "5": 2470
+    },
+    "years_unstated": 1006
   }
 }

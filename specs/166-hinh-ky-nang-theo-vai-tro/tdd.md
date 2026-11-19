@@ -175,3 +175,9 @@ Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thậ
 Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.
 
 Ghi thêm (#168, 2026-11-17): kịch bản 1 của User Story 3 ("stat luôn 404 không ngày") chỉ còn đúng khi chưa có snapshot đọc được; test `test_fr09_stat_chua_co_so_that_nen_la_unknown_cell_khong_co_ngay` được thay bằng `test_fr09_stat_khong_mo_ket_noi_luc_dung_nguon`, còn 404 không ngày kiểm trên Postgres ở `tests/api/test_fr09_skill_roles_stat.py`. AC của issue #166 (hình response, bản giả) không đổi; đây là trạng thái chuyển tiếp mà chính spec ghi "đến #168".
+
+## Đợt #327, #328 (2026-11-19): thêm route toàn cảnh thị trường, AC của issue này không đổi
+
+Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
+
+- RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
