@@ -6,11 +6,20 @@ Thiếu khóa hoặc sai kiểu thì báo lỗi tiếng Việt, không tự đi�
 import re
 import tomllib
 from dataclasses import dataclass
+from datetime import date
 from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
 DEFAULT_RULES_PATH = Path(__file__).resolve().parents[1] / "config" / "rules.toml"
+DEFAULT_THETA_PATH = Path(__file__).resolve().parents[1] / "config" / "theta.toml"
+"""Sổ đăng ký θ (#102): các phiên bản đã đóng băng, chỉ thêm."""
+PRE_FREEZE_THETA_VERSION = "theta-1"
+"""Phiên bản θ của snapshot có `snapshots.theta_version` NULL (tính trước khi đóng băng, #102). Bắt buộc là mục ĐẦU TIÊN
+của `config/theta.toml`: NULL không phụ thuộc vào thứ tự hay vào phiên bản được thêm sau."""
+
+_THETA_ENTRY_KEYS = ("id", "theta_core", "theta_common", "calibrated_on", "note")
+_ISO_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
 
 ALL_ROLES = "all"
 """Mã dành riêng cho "mọi vai trò"; không được nằm trong danh sách `roles`."""
@@ -35,6 +44,18 @@ class CoverageNoteRule:
 
 
 @dataclass(frozen=True, slots=True)
+class ThetaVersion:
+    """Một phiên bản θ đã đóng băng trong `config/theta.toml` (#102)."""
+
+    id: str
+    theta_core: float
+    theta_common: float
+    calibrated_on: str
+    """Ngày hiệu chỉnh, `YYYY-MM-DD`."""
+    note: str
+
+
+@dataclass(frozen=True, slots=True)
 class RulesConfig:
     config_version: str
     window_days: int
@@ -44,8 +65,13 @@ class RulesConfig:
     excluded_sources: tuple[str, ...]
     """Nguồn không bao giờ được đếm và không được liệt kê (#263): tin của nguồn này bị loại khỏi `aggregate`."""
     min_sample: int
+    theta_version: str
+    """Phiên bản θ hiện hành (#102): phiên bản mà `aggregate` ghi vào snapshot mới."""
     theta_core: float
+    """θ_core của `theta_version` hiện hành. Snapshot đã tính đọc θ của chính nó qua `theta(version)`."""
     theta_common: float
+    theta_versions: tuple[ThetaVersion, ...]
+    """Mọi phiên bản trong sổ đăng ký, theo thứ tự thêm. Phiên bản đầu là phiên bản của snapshot chưa ghi phiên bản."""
     cv_max_bytes: int
     """Cỡ tối đa của file CV, tính bằng byte (#140). Kiểm trước khi đọc thân request."""
     cv_types: tuple[str, ...]
@@ -65,6 +91,17 @@ class RulesConfig:
     always_cities: tuple[str, ...] = ()
     """Nơi luôn có hàng trong `stat_*` (#285); nơi khác chỉ có hàng khi có tin."""
     """Mốc "tối đa N năm kinh nghiệm" của bản đồ (#280), tăng dần, không gồm `any`. Mã của mốc là `str(N)`."""
+
+    def theta(self, version: str) -> ThetaVersion:
+        """θ của một phiên bản trong sổ đăng ký (#102).
+
+        Raises:
+            KeyError: phiên bản không có trong sổ đăng ký.
+        """
+        for entry in self.theta_versions:
+            if entry.id == version:
+                return entry
+        raise KeyError(version)
 
 
 CV_SIGNATURES: dict[str, bytes] = {
@@ -198,7 +235,64 @@ _EXCLUDED_ERROR = (
 )
 
 
-def load_rules(path: Path | str | None = None) -> RulesConfig:
+def _theta_entry(entry: Any, position: int) -> ThetaVersion:
+    where = f"theta.toml, versions[{position}]"
+    if not isinstance(entry, dict):
+        raise ConfigError(f"{where} phải là một bảng.")
+    for key in ("id", "theta_core", "theta_common", "calibrated_on", "note"):
+        if key not in entry:
+            raise ConfigError(f"{where} thiếu khóa {key}.")
+    unknown = sorted(str(k) for k in entry if k not in _THETA_ENTRY_KEYS)
+    if unknown:
+        raise ConfigError(f"{where} có khóa lạ: {', '.join(unknown)}.")
+    for key in ("id", "calibrated_on", "note"):
+        if not isinstance(entry[key], str) or not entry[key].strip():
+            raise ConfigError(f"{where}: {key} phải là chuỗi không rỗng.")
+    if entry["id"] != entry["id"].strip():
+        raise ConfigError(f"{where}: id không được có khoảng trắng ở hai đầu ({entry['id']!r}).")
+    try:
+        if not _ISO_DATE.fullmatch(entry["calibrated_on"]):
+            raise ValueError(entry["calibrated_on"])
+        date.fromisoformat(entry["calibrated_on"])
+    except ValueError:
+        raise ConfigError(
+            f"{where}: calibrated_on phải là ngày dạng YYYY-MM-DD (theta {entry['id']}), nhận {entry['calibrated_on']!r}."
+        ) from None
+    values: dict[str, float] = {}
+    for key in ("theta_core", "theta_common"):
+        value = entry[key]
+        if not _is_number(value) or not 0 <= value <= 1:
+            raise ConfigError(f"{where}: {key} phải là số từ 0 đến 1 (theta {entry['id']}).")
+        values[key] = float(value)
+    if values["theta_common"] > values["theta_core"]:
+        raise ConfigError(f"{where}: theta_common không được lớn hơn theta_core (theta {entry['id']}).")
+    return ThetaVersion(entry["id"], values["theta_core"], values["theta_common"], entry["calibrated_on"], entry["note"])
+
+
+def load_theta_versions(path: Path | str | None = None) -> tuple[ThetaVersion, ...]:
+    """Đọc sổ đăng ký θ (`config/theta.toml`, #102). Id trùng, giá trị sai hay thiếu file đều là `ConfigError`."""
+    target = Path(path) if path is not None else DEFAULT_THETA_PATH
+    raw = _read_toml(target)
+    unknown = sorted(str(k) for k in raw if k != "versions")
+    if unknown:
+        raise ConfigError(f"theta.toml có khóa lạ ở cấp cao nhất: {', '.join(unknown)}; chỉ có các mục [[versions]].")
+    entries = raw.get("versions")
+    if not isinstance(entries, list) or not entries:
+        raise ConfigError("theta.toml phải có ít nhất một mục [[versions]] (versions là danh sách bảng).")
+    versions = tuple(_theta_entry(entry, i) for i, entry in enumerate(entries))
+    ids = [v.id for v in versions]
+    duplicated = sorted({i for i in ids if ids.count(i) > 1})
+    if duplicated:
+        raise ConfigError(f"theta.toml có id trùng: {', '.join(duplicated)}.")
+    if versions[0].id != PRE_FREEZE_THETA_VERSION:
+        raise ConfigError(
+            f"theta.toml: mục [[versions]] đầu tiên phải là {PRE_FREEZE_THETA_VERSION!r} (phiên bản của snapshot chưa ghi "
+            f"theta_version), nhận {versions[0].id!r}."
+        )
+    return versions
+
+
+def load_rules(path: Path | str | None = None, *, theta_path: Path | str | None = None) -> RulesConfig:
     target = Path(path) if path is not None else DEFAULT_RULES_PATH
     try:
         raw = tomllib.loads(target.read_text(encoding="utf-8"))
@@ -256,16 +350,22 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
     if isinstance(min_sample, bool) or not isinstance(min_sample, int) or min_sample < 1:
         raise ConfigError("min_sample phải là số nguyên từ 1 trở lên.")
 
-    thetas: dict[str, float] = {}
-    for key in ("theta_core", "theta_common"):
-        value = raw.get(key)
-        if value is None:
-            raise ConfigError(f"Cấu hình thiếu khóa {key}.")
-        if not _is_number(value) or not 0 <= value <= 1:
-            raise ConfigError(f"{key} phải là số từ 0 đến 1.")
-        thetas[key] = float(value)
-    if thetas["theta_common"] > thetas["theta_core"]:
-        raise ConfigError("theta_common không được lớn hơn theta_core.")
+    legacy = [key for key in ("theta_core", "theta_common") if key in raw]
+    if legacy:
+        raise ConfigError(
+            f"rules.toml còn khóa {', '.join(legacy)}: θ nay nằm ở config/theta.toml và rules.toml chỉ chọn phiên bản "
+            "hiện hành bằng khóa theta_version."
+        )
+    theta_version = raw.get("theta_version")
+    if theta_version is None:
+        raise ConfigError("Cấu hình thiếu khóa theta_version.")
+    if not isinstance(theta_version, str) or not theta_version.strip():
+        raise ConfigError("theta_version phải là chuỗi không rỗng.")
+    theta_versions = load_theta_versions(theta_path)
+    current = next((v for v in theta_versions if v.id == theta_version), None)
+    if current is None:
+        known = ", ".join(v.id for v in theta_versions)
+        raise ConfigError(f"theta_version {theta_version!r} không có trong sổ đăng ký θ (có: {known}).")
 
     cv_max_bytes = raw.get("cv_max_bytes")
     if cv_max_bytes is None:
@@ -329,8 +429,10 @@ def load_rules(path: Path | str | None = None) -> RulesConfig:
         source_priority=tuple(priority_norm),
         excluded_sources=tuple(excluded),
         min_sample=min_sample,
-        theta_core=thetas["theta_core"],
-        theta_common=thetas["theta_common"],
+        theta_version=current.id,
+        theta_core=current.theta_core,
+        theta_common=current.theta_common,
+        theta_versions=theta_versions,
         cv_max_bytes=cv_max_bytes,
         cv_types=tuple(cv_types),
         roles=tuple(roles),

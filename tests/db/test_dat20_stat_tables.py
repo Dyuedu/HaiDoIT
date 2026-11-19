@@ -62,7 +62,7 @@ def test_dat20_migration_0003_noi_tiep_0002() -> None:
 
 def test_dat259_migration_0004_noi_tiep_0003_va_chi_con_mot_head() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0009_haido_skill_rates"]  # #101 nối 0009, #285 nối 0008  # #163 thêm 0005, #280 thêm 0006, #283 thêm 0007
+    assert script.get_heads() == ["0010_haido_snapshot_theta"]  # #102 nối 0010, #101 nối 0009, #285 nối 0008  # #163 thêm 0005, #280 thêm 0006, #283 thêm 0007
     revision = script.get_revision("0004_haido_stat_sources")
     assert revision is not None and revision.down_revision == "0003_haido_city_share"
 

@@ -190,6 +190,9 @@ class Thresholds(BaseModel):
     theta_common: Fraction
     """Ngưỡng tỷ lệ của nhóm thường gặp."""
 
+    theta_version: Annotated[str, Field(min_length=1)]
+    """Phiên bản θ (`config/theta.toml`, #102) của snapshot mà response đọc; `theta_core` và `theta_common` là giá trị của nó."""
+
     @model_validator(mode="after")
     def _thu_tu_theta(self) -> Self:
         if self.theta_common > self.theta_core:

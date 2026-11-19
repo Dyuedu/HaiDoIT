@@ -28,7 +28,7 @@ def _columns(engine: Engine, table: str) -> dict[str, tuple[str, str]]:
 
 def test_gh283_migration_0007_noi_tiep_0006_va_la_head_duy_nhat() -> None:
     script = ScriptDirectory.from_config(alembic_config())
-    assert script.get_heads() == ["0009_haido_skill_rates"]  # #101 nối 0009, #285 nối 0008
+    assert script.get_heads() == ["0010_haido_snapshot_theta"]  # #102 nối 0010, #101 nối 0009, #285 nối 0008
     revision = script.get_revision("0007_haido_classify_at_ingest")
     assert revision is not None and revision.down_revision == "0006_haido_years_filter"
 

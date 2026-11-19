@@ -175,3 +175,8 @@ Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thậ
 Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.
 
 Ghi thêm (#168, 2026-11-17): kịch bản 1 của User Story 3 ("stat luôn 404 không ngày") chỉ còn đúng khi chưa có snapshot đọc được; test `test_fr09_stat_chua_co_so_that_nen_la_unknown_cell_khong_co_ngay` được thay bằng `test_fr09_stat_khong_mo_ket_noi_luc_dung_nguon`, còn 404 không ngày kiểm trên Postgres ở `tests/api/test_fr09_skill_roles_stat.py`. AC của issue #166 (hình response, bản giả) không đổi; đây là trạng thái chuyển tiếp mà chính spec ghi "đến #168".
+
+## Đợt #102 (2026-11-19): θ có phiên bản, AC của issue này không đổi
+
+Lý do: #102 đóng băng θ (`config/theta.toml`, `theta-1` = 0,3/0,1), thêm `snapshots.theta_version` (migration 0010) và `meta.thresholds.theta_version`, sửa file mà issue này từng đụng: `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fixtures/fake_market.json`, `haido_api/stat_market.py`, `haido_core/domain/envelope.py`, `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/domain/test_ad17_envelope.py`.
+Giá trị θ không đổi nên số, nhóm và hành vi của issue này không đổi; test chỉ thêm `theta_version` vào ngưỡng hoặc đổi head migration mong đợi sang 0010. RED, GREEN và đột biến: `specs/102-dong-bang-theta/tdd.md`.
