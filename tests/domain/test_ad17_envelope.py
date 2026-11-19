@@ -61,7 +61,7 @@ def _hop_le() -> dict[str, Any]:
             "snapshot_status": "published",
             "sources": ["careerlink", "itnavi"],
             "sources_failed": [],
-            "thresholds": {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1},
+            "thresholds": {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1, "theta_version": "theta-1"},
             "coverage_notes": [{"code": "n_sources", "text": "Chỉ gồm tin đăng online."}],
             "cells": {
                 "vn.data_ai": _cell(210),
@@ -291,7 +291,9 @@ def test_ad17_meta_phai_co_luu_y_do_phu() -> None:
 
 def test_ad17_theta_common_khong_lon_hon_theta_core() -> None:
     with pytest.raises(ValidationError, match="theta_common không được lớn hơn theta_core"):
-        Thresholds.model_validate({"min_sample": 30, "theta_core": 0.1, "theta_common": 0.3})
+        Thresholds.model_validate(
+            {"min_sample": 30, "theta_core": 0.1, "theta_common": 0.3, "theta_version": "theta-1"}
+        )
 
 
 # ---------------------------------------------------------------- AC: import của domain

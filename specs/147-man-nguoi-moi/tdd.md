@@ -63,3 +63,8 @@ Lý do: #169 thêm mục "Kỹ năng của bạn dùng ở vai trò nào" dướ
 - RED: `npx vitest run` → 2 failed trong `web/tests/fr37-newcomer-list.test.tsx`: "mạng hỏng thì báo không đọc được và thử lại được" (`fetch` được gọi 3 lần thay vì 2, lần thêm là `/api/v1/skills`) và test DEC-6 "lúc đang tải…" (`Found multiple elements with the role "status"`).
 - Sửa test: đếm lần gọi của `/api/v1/newcomer-roles`, và đọc vùng `status` trong region "Cửa vào cho người mới".
 - GREEN: `npx vitest run` → 25 files, 328 passed.
+
+## Đợt #102 (2026-11-19): θ có phiên bản, AC của issue này không đổi
+
+Lý do: #102 đóng băng θ (`config/theta.toml`, `theta-1` = 0,3/0,1), thêm `snapshots.theta_version` (migration 0010) và `meta.thresholds.theta_version`, sửa file mà issue này từng đụng: `web/lib/city-shares.ts`.
+Giá trị θ không đổi nên số, nhóm và hành vi của issue này không đổi; test chỉ thêm `theta_version` vào ngưỡng hoặc đổi head migration mong đợi sang 0010. RED, GREEN và đột biến: `specs/102-dong-bang-theta/tdd.md`.

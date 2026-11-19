@@ -8,4 +8,4 @@ Chỉ đọc, theo khóa, phạm vi `vn`, nhánh `all`, số năm `any` (cột c
 - `stat_cells`: `seniority`, `n`, `seniority_mix` của mọi ô của vai trò. `n` thành `meta.cells[..].n`; `seniority_mix` thành cơ cấu cấp của ô và nguồn của câu "Mid trở lên".
 - `stat_skill_rates`: `(seniority, n_scanned)` khác nhau của vai trò (`n_scanned` cùng giá trị ở mọi hàng của ô) và các hàng `(skill, n_with, rate)` của ô được chọn. `n_scanned` thành cỡ mẫu quyết định ô và `n_by_measure.skill_count`.
 
-Nhóm (`core`, `common`, `rare`) tính lúc đọc từ θ của `config/rules.toml`, không lưu.
+Nhóm (`core`, `common`, `rare`) tính lúc đọc, không lưu, bằng θ của phiên bản ghi ở `snapshots.theta_version` của snapshot đã chọn (giá trị trong `config/theta.toml`; #102).

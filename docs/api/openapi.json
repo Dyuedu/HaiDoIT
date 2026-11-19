@@ -1626,6 +1626,12 @@
             "minimum": 0.0,
             "title": "Theta Common",
             "description": "Ngưỡng tỷ lệ của nhóm thường gặp."
+          },
+          "theta_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Theta Version",
+            "description": "Phiên bản θ (`config/theta.toml`, #102) của snapshot mà response đọc; `theta_core` và `theta_common` là giá trị của nó."
           }
         },
         "additionalProperties": false,
@@ -1633,7 +1639,8 @@
         "required": [
           "min_sample",
           "theta_core",
-          "theta_common"
+          "theta_common",
+          "theta_version"
         ],
         "title": "Thresholds",
         "description": "Các ngưỡng đã dùng cho response, lấy từ cấu hình có phiên bản (AD-10)."

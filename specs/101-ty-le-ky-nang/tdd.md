@@ -100,3 +100,8 @@ Hành vi và AC của issue này không đổi: thay đổi chỉ thêm (phươn
 - GREEN (chạy thật, 2026-11-17): `uv run pytest -q` (Postgres thật, DB `fx151_test`, không skip) → 1580 passed; `cd web && npx vitest run` → 298 passed; `tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
 
 Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
+
+## Đợt #102 (2026-11-19): θ có phiên bản, AC của issue này không đổi
+
+Lý do: #102 đóng băng θ (`config/theta.toml`, `theta-1` = 0,3/0,1), thêm `snapshots.theta_version` (migration 0010) và `meta.thresholds.theta_version`, sửa file mà issue này từng đụng: `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`, `haido_core/steps/aggregate.py`, `tests/db/test_ad4_snapshot_schema.py`, `tests/db/test_dat20_stat_tables.py`, `tests/db/test_dat29_stat_skill_rates.py`, `tests/db/test_fr33_stat_city_shares_level.py`, `tests/db/test_fr33_stat_years.py`, `tests/db/test_gh283_facts_labels.py`, `tests/db/test_gh285_fact_city.py`.
+Giá trị θ không đổi nên số, nhóm và hành vi của issue này không đổi; test chỉ thêm `theta_version` vào ngưỡng hoặc đổi head migration mong đợi sang 0010. RED, GREEN và đột biến: `specs/102-dong-bang-theta/tdd.md`.

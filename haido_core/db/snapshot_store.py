@@ -356,12 +356,18 @@ def replace_stats(
     shares: Sequence[ShareRow],
     sources: Sequence[str],
     skill_rates: Sequence[SkillRateRow],
+    *,
+    theta_version: str,
 ) -> None:
     """Ghi lại `stat_cells`, `stat_city_shares`, `stat_sources` và `stat_skill_rates` của S (bảng dẫn xuất, chỉ ghi
     khi S còn `open`). `stat_skill_rates` có khóa ngoại tới `stat_cells`: xóa trước, ghi sau.
 
+    `theta_version` (#102) là phiên bản θ của lần tính này, ghi vào `snapshots.theta_version`: API nhóm kỹ năng của S
+    bằng θ đó, không bằng θ hiện hành.
+
     Raises:
         ValueError: một hàng tỷ lệ có `n_scanned` lớn hơn `n` của ô (hoặc không có ô); mẫu không thể lớn hơn dân số.
+            Hoặc S không tồn tại hay không còn `open` (câu UPDATE `theta_version` không khớp đúng một hàng).
     """
     cell_n = {(c.role, c.seniority, c.years, c.scope): c.n for c in cells}
     for r in skill_rates:
@@ -370,6 +376,13 @@ def replace_stats(
             raise ValueError(
                 f"Tỷ lệ kỹ năng của ô ({r.role}, {r.seniority}): n_scanned {r.n_scanned} vượt n của ô ({n})."
             )
+    updated = conn.execute(
+        sa.update(snapshots)
+        .where(snapshots.c.snapshot_id == day, snapshots.c.status == "open")
+        .values(theta_version=theta_version)
+    )
+    if updated.rowcount != 1:
+        raise ValueError(f"Snapshot {day.isoformat()} không có hoặc không còn open; không ghi bảng dẫn xuất và phiên bản θ.")
     conn.execute(sa.delete(stat_skill_rates).where(stat_skill_rates.c.snapshot_id == day))
     conn.execute(sa.delete(stat_cells).where(stat_cells.c.snapshot_id == day))
     conn.execute(sa.delete(stat_city_shares).where(stat_city_shares.c.snapshot_id == day))

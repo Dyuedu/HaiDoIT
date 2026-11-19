@@ -9,7 +9,8 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   trước migration 0005 chỉ có hàng `all` và không sửa được, nên cấp khác `all` lùi về snapshot có hàng của cấp đó.
 - `meta.sources` là `stat_sources` của snapshot đó, A–Z: các nguồn có ít nhất một tin được đếm trong cửa sổ 60 ngày
   (#259, DEC-12), do `aggregate` ghi, không phải các nguồn có lượt chạy ở S. `meta.sources_failed` lấy từ snapshot.
-- Ngưỡng và lưu ý độ phủ lấy từ `config/rules.toml`.
+- Ngưỡng mẫu và lưu ý độ phủ lấy từ `config/rules.toml`; θ lấy từ `config/theta.toml` theo `snapshots.theta_version` của snapshot
+  đã chọn (#102; NULL đọc là `theta-1`, phiên bản lạ là `RuntimeError`), và `meta.thresholds.theta_version` ghi phiên bản đó.
 - Kết nối mở ở yêu cầu đầu tiên, không mở lúc import hay lúc dựng nguồn.
 - Cấp bậc lọc (#163): `level` chọn hàng `seniority = level` của hai bảng; `all` là mọi cấp. Mã ô là `<scope>.<role>` ở
   `all` và `<scope>.<role>.<level>` ở cấp khác. Mẫu nhỏ theo n của ô ở cấp đã chọn.
@@ -23,7 +24,7 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   nguồn, có hàng tỷ lệ). Chỉ ô toàn quốc, nhánh `all`, số năm `any`. Ô được chọn bằng phép 2 (`CellSelector`, thân hàm ở
   `haido_core/domain/cells.py`) theo `n_scanned` (AD-17), không theo `n` của ô: `meta.cells[...].n` là `n` của
   `stat_cells`, `n_by_measure.skill_count` là `n_scanned`, `fallback_label` là nhãn của phép 2. Nhóm bằng phép 4 với θ của
-  `config/rules.toml` (#102 sẽ đóng băng θ). Dòng chỉ gồm `core` và `common`, tỷ lệ giảm dần rồi mã. Không tập nào đủ
+  `config/theta.toml` (#102): θ của phiên bản đã ghi trong snapshot, không phải θ hiện hành. Dòng chỉ gồm `core` và `common`, tỷ lệ giảm dần rồi mã. Không tập nào đủ
   ngưỡng thì dòng là kỹ năng có `n_with > 0` của ô cuối, theo mã, mọi tỷ lệ `null_data` và `group = null`. Chỉ đọc bảng
   `stat_*` theo khóa; không cộng lại từ bảng tin (AD-7).
 - Màn người mới (#145, #146): snapshot đọc được mới nhất có hàng cấp `entry`. Số tin entry-level của một vai trò là
@@ -60,7 +61,7 @@ from haido_api.schemas.market import (
     SkillRoleRow,
     SkillRolesData,
 )
-from haido_core.config import RulesConfig, load_rules
+from haido_core.config import PRE_FREEZE_THETA_VERSION, RulesConfig, load_rules
 from haido_core.db.engine import make_read_engine
 from haido_core.db.tables import (
     snapshots,
@@ -120,6 +121,28 @@ class StatMarket:
                 self._engine = self._factory()
             return self._engine
 
+    def _thresholds(self, latest: Any) -> Thresholds:
+        """Ngưỡng của response: θ của phiên bản đã ghi trong snapshot (#102), không phải θ hiện hành.
+
+        `theta_version` NULL là snapshot tính trước đóng băng, đọc là `PRE_FREEZE_THETA_VERSION` (`theta-1`). Phiên bản không có
+        trong sổ đăng ký là dữ liệu hỏng, không đoán θ khác.
+        """
+        rules = self._rules
+        version = latest.theta_version or PRE_FREEZE_THETA_VERSION
+        try:
+            theta = rules.theta(version)
+        except KeyError:
+            raise RuntimeError(
+                f"Snapshot {latest.snapshot_id.isoformat()} ghi phiên bản θ {version!r} không có trong sổ đăng ký "
+                "config/theta.toml; không nhóm kỹ năng bằng θ khác."
+            ) from None
+        return Thresholds(
+            min_sample=rules.min_sample,
+            theta_core=theta.theta_core,
+            theta_common=theta.theta_common,
+            theta_version=theta.id,
+        )
+
     def city_shares(self, *, role: str, level: str = ALL, years: str = ANY) -> Envelope[CitySharesData]:
         with self._db().connect() as conn:
             latest = _latest_readable(conn, level, years)
@@ -128,6 +151,7 @@ class StatMarket:
                     "Chưa có snapshot nào đã công bố được tính cho cấp bậc và bộ lọc số năm này.", snapshot_date=None
                 )
             day: date = latest.snapshot_id
+            thresholds = self._thresholds(latest)
             share_by_city = _shares(conn, day, role, level, years)
             cell_rows = _cells(conn, day, role, level, years)
             sources = _sources(conn, day)
@@ -171,9 +195,7 @@ class StatMarket:
             snapshot_status=SnapshotStatus(latest.status),
             sources=sources,
             sources_failed=list(latest.sources_failed),
-            thresholds=Thresholds(
-                min_sample=min_sample, theta_core=self._rules.theta_core, theta_common=self._rules.theta_common
-            ),
+            thresholds=thresholds,
             coverage_notes=[
                 CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources))))
                 for n in self._rules.coverage_notes
@@ -200,6 +222,7 @@ class StatMarket:
             if latest is None:
                 raise UnknownCell("Chưa có snapshot nào đã công bố có tỷ lệ kỹ năng.", snapshot_date=None)
             day: date = latest.snapshot_id
+            thresholds = self._thresholds(latest)
             if role not in rules.roles:
                 raise UnknownCell("Không có ô thống kê nào cho vai trò đã chọn.", snapshot_date=day)
             stats = _skill_cell_stats(conn, day, role)
@@ -240,7 +263,7 @@ class StatMarket:
         if enough:
             grouped = SkillGrouper().group_skills(
                 SkillGroupRequest(
-                    tuple(SkillRate(skill, rate) for skill, _, rate in rate_rows), rules.theta_core, rules.theta_common
+                    tuple(SkillRate(skill, rate) for skill, _, rate in rate_rows), thresholds.theta_core, thresholds.theta_common
                 )
             )
             assert isinstance(grouped, tuple)
@@ -278,7 +301,7 @@ class StatMarket:
             snapshot_status=SnapshotStatus(latest.status),
             sources=sources,
             sources_failed=list(latest.sources_failed),
-            thresholds=Thresholds(min_sample=min_sample, theta_core=rules.theta_core, theta_common=rules.theta_common),
+            thresholds=thresholds,
             coverage_notes=[
                 CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources)))) for n in rules.coverage_notes
             ],
@@ -295,6 +318,7 @@ class StatMarket:
             if latest is None:
                 raise UnknownCell("Chưa có snapshot nào đã công bố được tính cho nhóm mới vào nghề.", snapshot_date=None)
             day: date = latest.snapshot_id
+            thresholds = self._thresholds(latest)
             totals = _national_cells(conn, day, ALL)
             entries = _national_cells(conn, day, ENTRY)
             sources = _sources(conn, day)
@@ -327,9 +351,7 @@ class StatMarket:
             snapshot_status=SnapshotStatus(latest.status),
             sources=sources,
             sources_failed=list(latest.sources_failed),
-            thresholds=Thresholds(
-                min_sample=min_sample, theta_core=self._rules.theta_core, theta_common=self._rules.theta_common
-            ),
+            thresholds=thresholds,
             coverage_notes=[
                 CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources))))
                 for n in self._rules.coverage_notes
@@ -355,6 +377,7 @@ class StatMarket:
             if latest is None:
                 raise UnknownCell("Chưa có snapshot nào đã công bố có tỷ lệ kỹ năng.", snapshot_date=None)
             day: date = latest.snapshot_id
+            thresholds = self._thresholds(latest)
             mentioned_n, scanned_by_role, rate_by_role, with_by_role = _skill_role_rows(conn, day, skill)
             if mentioned_n is None:
                 raise UnknownCell("Snapshot đã chọn không có số liệu nào của kỹ năng đã chọn.", snapshot_date=day)
@@ -405,7 +428,7 @@ class StatMarket:
             snapshot_status=SnapshotStatus(latest.status),
             sources=sources,
             sources_failed=list(latest.sources_failed),
-            thresholds=Thresholds(min_sample=min_sample, theta_core=rules.theta_core, theta_common=rules.theta_common),
+            thresholds=thresholds,
             coverage_notes=[
                 CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources)))) for n in rules.coverage_notes
             ],
@@ -429,7 +452,7 @@ def _latest_readable(conn: Connection, level: str, years: str = ANY) -> Any:
     )
     has_sources = sa.exists().where(stat_sources.c.snapshot_id == snapshots.c.snapshot_id)
     stmt = (
-        sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed)
+        sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed, snapshots.c.theta_version)
         .where(snapshots.c.status.in_(READABLE), has_shares, has_sources)
         .order_by(snapshots.c.snapshot_id.desc())
         .limit(1)
@@ -500,7 +523,7 @@ def _latest_with_skill_rates(conn: Connection) -> Any:
     has_rates = sa.exists().where(stat_skill_rates.c.snapshot_id == snapshots.c.snapshot_id)
     has_sources = sa.exists().where(stat_sources.c.snapshot_id == snapshots.c.snapshot_id)
     stmt = (
-        sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed)
+        sa.select(snapshots.c.snapshot_id, snapshots.c.status, snapshots.c.sources_failed, snapshots.c.theta_version)
         .where(snapshots.c.status.in_(READABLE), has_rates, has_sources)
         .order_by(snapshots.c.snapshot_id.desc())
         .limit(1)

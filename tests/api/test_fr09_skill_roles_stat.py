@@ -141,7 +141,7 @@ def test_fr09_o_entry_co_n_va_co_cau_cap_cua_stat_cells(pg_engine: Engine) -> No
     meta = body["meta"]
     assert meta["snapshot_date"] == S and meta["snapshot_status"] == "published"
     assert meta["sources"] == ["itviec", "zalo"]
-    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1}
+    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1, "theta_version": "theta-1"}
     assert meta["coverage_notes"][0]["code"] == "n_sources"
     assert set(meta["cells"]) == {f"vn.{r}.entry" for r in ROLES}
 

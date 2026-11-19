@@ -101,3 +101,8 @@ Chưa chạy mutant cho hành vi 3 (factory gọi trong `__init__`) và 7; hành
 Lý do: AC 2 của #168 và AC 3 của #113 ghi "under 30 entry-level postings", còn code (theo #166) dùng số tin đọc được kỹ năng (`n_scanned`, `skill_count`). Người dùng chọn sửa câu chữ AC theo code. Code và test không đổi, nên không có RED mới; GREEN chạy lại sau khi merge `origin/main` (ghi bên dưới).
 
 - GREEN sau merge `origin/main` (66c8087): `uv run pytest -q` → 1627 passed; `ruff check .` sạch; `tools/gates/check_gates.py` → 10 pass. PR này không đổi file web.
+
+## Đợt #102 (2026-11-19): θ có phiên bản, AC của issue này không đổi
+
+Lý do: #102 đóng băng θ (`config/theta.toml`, `theta-1` = 0,3/0,1), thêm `snapshots.theta_version` (migration 0010) và `meta.thresholds.theta_version`, sửa file mà issue này từng đụng: `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_fr09_skill_roles_stat.py`.
+Giá trị θ không đổi nên số, nhóm và hành vi của issue này không đổi; test chỉ thêm `theta_version` vào ngưỡng hoặc đổi head migration mong đợi sang 0010. RED, GREEN và đột biến: `specs/102-dong-bang-theta/tdd.md`.
