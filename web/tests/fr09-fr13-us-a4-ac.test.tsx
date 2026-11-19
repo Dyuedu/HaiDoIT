@@ -55,7 +55,7 @@ describe("US-A4 #113 — vai trò nào dùng kỹ năng mình đã có", () => {
     routeInsights();
     const area = await openSection("?skill=python");
     const list = await within(area).findByRole("list", { name: LIST });
-    expect(rowOf(list, "AI/ML").textContent).toContain("77,6% tin AI/ML mới vào nghề nhắc tới Python");
+    expect(rowOf(list, "AI/ML").textContent).toContain("77,6% tin AI/ML cho người mới có nhắc tới Python");
     const shown = SKILL_ROLES.python.data.rows.filter((row) => row.share.value !== null).length;
     const percents = within(list)
       .getAllByRole("listitem")
@@ -68,13 +68,13 @@ describe("US-A4 #113 — vai trò nào dùng kỹ năng mình đã có", () => {
     routeInsights();
     const area = await openSection("?skill=python");
     const list = await within(area).findByRole("list", { name: LIST });
-    expect(rowOf(list, "Kỹ sư dữ liệu").textContent).toContain("chưa đủ dữ liệu (4/30)");
+    expect(rowOf(list, "Kỹ sư dữ liệu").textContent).toContain("Mới có 4 tin, cần ít nhất 30");
   });
 
   it("AC4 FR-09: kỹ năng không tin hiện tại nào nhắc thì nói như vậy", async () => {
     routeInsights();
     const area = await openSection("?skill=abap");
-    await within(area).findByText("Chưa tin tuyển dụng hiện tại nào nhắc tới ABAP.");
+    await within(area).findByText("Hiện chưa tin tuyển dụng nào nhắc tới ABAP.");
     expect(within(area).queryByRole("list", { name: LIST })).toBeNull();
   });
 

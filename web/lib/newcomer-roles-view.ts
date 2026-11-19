@@ -2,11 +2,19 @@
  * Màn người mới (#147): dựng chữ hiển thị từ envelope của `GET /api/v1/newcomer-roles`.
  *
  * Không tính số mới và không sắp xếp lại (AD-22): số tin entry-level và n tra ở `meta.cells`, tỷ lệ là `share` đã qua
- * `suppression_for` ở máy chủ. Dòng `null_data` ghi "chưa đủ dữ liệu (n/ngưỡng)" thay cho tỷ lệ (#110). Câu trên màn
+ * `suppression_for` ở máy chủ. Dòng `null_data` ghi "Mới có n tin, cần ít nhất ngưỡng" thay cho tỷ lệ (#110, #324). Câu trên màn
  * không chứa số; số đứng ở ô riêng (DEC-6, #132).
  */
 
-import { FAILED_SOURCES_PREFIX, NOT_ENOUGH_DATA, type SnapshotCaption, formatCount, formatDate, formatPercent } from "./city-shares-view";
+import {
+  ANY_YEARS_TEXT,
+  type SnapshotCaption,
+  filtersText,
+  formatCount,
+  formatPercent,
+  notEnoughText,
+  snapshotCaption,
+} from "./city-shares-view";
 import { levelLabel, roleLabel } from "./labels";
 import { type NewcomerRolesEnvelope, rowCounts } from "./newcomer-roles";
 
@@ -23,13 +31,11 @@ export interface NewcomerLine {
   role: string;
   label: string;
   href: string;
-  /** "132 tin cho người mới". */
-  entryText: string;
-  /** "27,2%" khi có tỷ lệ; "chưa đủ dữ liệu (12/30)" khi `null_data`. */
+  /** "132 trên 485 tin dành cho người mới" (#324); `null` khi vai trò không có tin nào. */
+  entryText: string | null;
+  /** "27,2%" khi có tỷ lệ; "Mới có 12 tin, cần ít nhất 30" hoặc "Chưa có tin nào" khi `null_data`. */
   shareText: string;
   shareShown: boolean;
-  /** "n = 485": số tin của vai trò. */
-  nText: string;
 }
 
 export interface NewcomerView {
@@ -47,25 +53,16 @@ export function buildNewcomerView(envelope: NewcomerRolesEnvelope): NewcomerView
       role: row.role,
       label: roleLabel(row.role),
       href: skillProfileHref(row.role),
-      entryText: `${formatCount(entry)} tin cho người mới`,
-      shareText: shareShown
-        ? formatPercent(row.share.value as number)
-        : `${NOT_ENOUGH_DATA} (${formatCount(n)}/${formatCount(minSample)})`,
+      entryText: n > 0 ? `${formatCount(entry)} trên ${formatCount(n)} tin dành cho người mới` : null,
+      shareText: shareShown ? formatPercent(row.share.value as number) : notEnoughText(n, minSample),
       shareShown,
-      nText: `n = ${formatCount(n)}`,
     };
   });
   return {
     lines,
-    caption: {
-      sources: meta.sources,
-      snapshotDate: formatDate(meta.snapshot_date),
-      notes: meta.coverage_notes,
-      failedSources:
-        meta.snapshot_status === "partial" && meta.sources_failed.length > 0
-          ? FAILED_SOURCES_PREFIX + meta.sources_failed.join(", ")
-          : null,
-      filters: `Mọi vai trò · ${levelLabel(NEWCOMER_LEVEL)} (${data.levels.map(levelLabel).join(", ")}) · Mọi số năm`,
-    },
+    caption: snapshotCaption(
+      meta,
+      filtersText(["Mọi vai trò", `${levelLabel(NEWCOMER_LEVEL)} (${data.levels.map(levelLabel).join(", ")})`, ANY_YEARS_TEXT]),
+    ),
   };
 }

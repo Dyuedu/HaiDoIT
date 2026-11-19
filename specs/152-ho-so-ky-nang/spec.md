@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#152](https://github.com/Dyuedu/HaiDoIT/issues/152) — Show the skill profile for a role and level. Phục vụ story #111 (US-A2), AC 3–6. Số giả của #149, số thật của #151. Cấp mặc định của #134 (DEC-8). Thay trang giữ chỗ `/ho-so-ky-nang` của #147.
 
@@ -23,7 +23,7 @@ Một sinh viên chạm Backend trên danh sách người mới (#147), mở `/h
 1. **Given** URL không có `level`, **When** mở trang, **Then** ô Cấp bậc là "Mới vào nghề" (`entry`, #134) và màn gọi `skill-rates?level=entry`. (AC 1)
 2. **Given** màn đã có số, **When** đổi ô Cấp bậc sang Intern, **Then** màn gọi `skill-rates?level=intern` và URL đổi theo. (AC 1)
 3. **Given** ô đủ 30 tin, **When** xem, **Then** mỗi dòng có tên kỹ năng (tên tiếng Việt từ `GET /api/v1/skills`), tỷ lệ ("65,4%") và nhóm ("Cốt lõi"), đúng thứ tự `data.rows`; web không sắp lại (AD-22). (AC 2)
-4. **Given** ô quay về (Backend · Intern), **When** xem, **Then** màn hiện nguyên văn `fallback_label` và n của ô đã dùng ("n = 157").
+4. **Given** ô quay về (Backend · Intern), **When** xem, **Then** màn hiện nguyên văn `fallback_label` và số tin của ô đã dùng ("Tính trên 157 tin", câu chữ theo #324).
 5. **Given** không ô nào đủ 30 (Data Engineer · Entry), **When** xem, **Then** mỗi dòng ghi "chưa đủ dữ liệu", không có dấu %, không tên nhóm, không dòng đếm core.
 6. **Given** hồ sơ có `java`, `sql`, `git`, **When** xem Backend · Entry, **Then** ba dòng đó được tick, và dòng đếm ghi `have_core/core_size` do API trả ("3/6") kèm "kỹ năng cốt lõi bạn đã có". Web không đếm (AD-22). (AC 3)
 7. **Given** API trả 404 `unknown_cell` (cấp không có ô), **When** mở, **Then** thông báo lỗi, không có nút "Thử lại", không có số. Mạng hỏng thì có "Thử lại".

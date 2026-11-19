@@ -336,7 +336,7 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
 
     expect(fill(daNang).getAttribute("data-low-sample")).toBe("true");
-    expect(daNang.textContent).toContain("Cỡ mẫu nhỏ (n = 11 < 30): số liệu chỉ để tham khảo");
+    expect(daNang.textContent).toContain("Mới có 11 tin, chưa đủ 30 để so sánh chắc chắn");
     expect(daNang.textContent).not.toContain("2,2%");
     expect(fill(cityButton("Hà Nội")).getAttribute("data-low-sample")).toBe("false");
 
@@ -352,12 +352,12 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
     });
     const user = await openScreen();
     await pick(user, roleSelect(), "AI/ML");
-    expect((await screen.findByRole("button", { name: /^Đà Nẵng:/ })).textContent).toContain("n = 11 < 30");
+    expect((await screen.findByRole("button", { name: /^Đà Nẵng:/ })).textContent).toContain("Mới có 11 tin, chưa đủ 30");
 
     await pick(user, levelSelect(), "Mọi cấp bậc");
 
     // #316: panel bên phải nhắc lại câu cỡ mẫu nhỏ; tìm trong biểu đồ 2D.
-    const daNang = await within(screen.getByRole("figure")).findByText(/n = 21 < 30/);
+    const daNang = await within(screen.getByRole("figure")).findByText(/Mới có 21 tin, chưa đủ 30/);
     expect(daNang.closest("button")).toBe(cityButton("Đà Nẵng"));
     expect(fill(cityButton("Đà Nẵng")).getAttribute("data-low-sample")).toBe("true");
   });
@@ -371,9 +371,9 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
 
     const table = screen.getByRole("table");
     const haNoi = within(within(table).getByRole("row", { name: /Hà Nội/ })).getAllByRole("cell");
-    expect(haNoi.map((cell) => cell.textContent)).toEqual(["chưa đủ dữ liệu", "20", "Cỡ mẫu nhỏ (n = 20 < 30)"]);
+    expect(haNoi.map((cell) => cell.textContent)).toEqual(["chưa đủ dữ liệu", "20", "Mới có 20 tin, chưa đủ 30"]);
     const daNang = within(within(table).getByRole("row", { name: /Đà Nẵng/ })).getAllByRole("cell");
-    expect(daNang.map((cell) => cell.textContent)).toEqual(["chưa đủ dữ liệu", "3", "Cỡ mẫu nhỏ (n = 3 < 30)"]);
+    expect(daNang.map((cell) => cell.textContent)).toEqual(["chưa đủ dữ liệu", "3", "Mới có 3 tin, chưa đủ 30"]);
   });
 
   it("fr33: web chỉ đọc display của API: n = 30 shown không mờ, n = 29 mờ", async () => {
@@ -385,7 +385,7 @@ describe("fr33 #163 — thành phố dưới 30 tin ở cấp đã chọn bị l
 
     expect(fill(haNoi).getAttribute("data-low-sample")).toBe("false");
     expect(fill(cityButton("TP.HCM")).getAttribute("data-low-sample")).toBe("true");
-    expect(cityButton("TP.HCM").textContent).toContain("Cỡ mẫu nhỏ (n = 29 < 30)");
+    expect(cityButton("TP.HCM").textContent).toContain("Mới có 29 tin, chưa đủ 30");
   });
 });
 

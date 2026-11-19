@@ -89,7 +89,7 @@ describe("US-A2 #111 — hồ sơ kỹ năng của một vai trò ở cấp củ
     const wider = await openProfile({ role: "backend", level: "intern" });
     await screen.findByRole("list", { name: PROFILE_LIST });
     expect(screen.getByText(SKILL_RATES["backend|intern"].meta.cells["vn.backend"].fallback_label)).toBeTruthy();
-    expect(screen.getByText("n = 157")).toBeTruthy();
+    expect(screen.getByText("Tính trên 157 tin")).toBeTruthy();
     wider.unmount();
 
     await openProfile({ role: "data_engineer", level: "entry" });

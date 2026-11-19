@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { MapScreen } from "@/app/components/map/map-screen";
+import { sourceLabel } from "@/lib/source-labels";
 
 import { fakeEnvelope, STAT_COVERAGE_NOTES, statEnvelope } from "./fixtures/envelopes";
 import { jsonResponse, routeCityShares } from "./helpers/fetch";
@@ -36,11 +37,11 @@ describe("fr36 — chú thích snapshot", () => {
     const envelope = fakeEnvelope("all");
     await openWith(envelope);
 
-    expect(caption().textContent).toContain(envelope.meta.sources.join(", "));
+    expect(caption().textContent).toContain(envelope.meta.sources.map(sourceLabel).join(", "));
     expect(caption().textContent).toContain("03/11/2026");
     expect(noteTexts()).toEqual(envelope.meta.coverage_notes.map((note) => note.text));
     expect(noteTexts()).toEqual(expect.arrayContaining(Object.values(FR36_NOTES)));
-    expect(caption().textContent).not.toContain("Nguồn lỗi ở snapshot này");
+    expect(caption().textContent).not.toContain("Lần cập nhật này chưa lấy đủ tin từ");
   });
 
   it("fr36: chú thích vẫn hiện ở lối Bảng", async () => {
@@ -61,13 +62,13 @@ describe("fr36 — chú thích snapshot", () => {
     expect(caption().textContent).toContain("28/10/2026");
   });
 
-  it("fr36: snapshot partial ghi 'Nguồn lỗi ở snapshot này: …'", async () => {
+  it("fr36: snapshot partial ghi 'Lần cập nhật này chưa lấy đủ tin từ …'", async () => {
     const envelope = fakeEnvelope("all");
     envelope.meta.snapshot_status = "partial";
     envelope.meta.sources_failed = ["topdev"];
     await openWith(envelope);
 
-    expect(caption().textContent).toContain("Nguồn lỗi ở snapshot này: topdev");
+    expect(caption().textContent).toContain("Lần cập nhật này chưa lấy đủ tin từ TopDev");
   });
 
   it("fr36: envelope hình #69 in nguyên văn bốn câu, kể cả câu số nguồn", async () => {

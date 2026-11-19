@@ -39,3 +39,9 @@ cd web && npx vitest run tests/fr33-ban-do-3d-hinh.test.ts tests/fr33-ban-do-3d.
   - 360px (giả lập thiết bị): mở lối 2D, không cuộn ngang; bấm 3D mở được, sân khấu `rotateX(56deg) rotateZ(-16deg)`.
   - Lần đo đầu ở 360px: thẻ nhãn 28–34px (sân khấu thu 0,62). Thêm phần bù cho thẻ dưới 640px; lần đo tiếp vẫn 38px vì khối `@media` đứng trước quy tắc `.card` gốc nên bị đè. Chuyển xuống cuối file: không còn ô bấm nào dưới 44px ở 360px và 1440px.
   - Ảnh chụp bằng `--window-size=360` của Chrome headless dàn trang rộng hơn 360px rồi cắt; chỉ dùng số đo của giả lập thiết bị.
+
+## Đợt #324 (2026-11-19): câu chữ trên màn viết lại
+
+Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot", "entry-level"; câu thiếu mẫu "Mới có X tin, cần ít nhất 30"; khung nguồn "Đang xem", "Cập nhật", tên nguồn). File của issue này bị đụng: `web/app/components/map/map-3d.tsx`. Số, thứ tự và ẩn số theo ngưỡng không đổi. Hành vi và AC của issue này không đổi.
+
+- RED và GREEN: `specs/324-cau-chu-de-hieu/tdd.md` (RED 42 failed / 299 passed; GREEN 357 passed, chạy `npx vitest run` từ PowerShell).

@@ -49,3 +49,9 @@ cd web && npx vitest run tests/fr33-ban-do-3d-hinh.test.ts tests/fr33-ban-do-3d.
 Lý do: lối 3D WebGL không giống prototype màn 01 (DESIGN.md: perspective 1500px, `translateZ`, cột năm mặt, thẻ nhãn DOM). #316 viết lại `map-3d.tsx` bằng CSS 3D, xóa `map-3d-panel.tsx` và `web/lib/webgl.ts`, gỡ `three`, `@react-three/fiber`, `@types/three`, đổi `buildColumns` sang nhận cả view và trả vị trí sân khấu 460×560. AC "trình duyệt không có WebGL thì 2D" của #314 không còn đúng nguyên văn; người dùng chốt đổi thành "không dựng được CSS 3D thì 2D" (2026-11-17).
 
 - RED/GREEN của đợt này ghi ở `specs/316-ban-do-3d-theo-prototype/tdd.md`. Test của #314 (`fr33-ban-do-3d*.test.ts(x)`) được viết lại theo hành vi mới.
+
+## Đợt #324 (2026-11-19): câu chữ trên màn viết lại
+
+Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot", "entry-level"; câu thiếu mẫu "Mới có X tin, cần ít nhất 30"; khung nguồn "Đang xem", "Cập nhật", tên nguồn). File của issue này bị đụng: `web/app/components/map/map-3d.tsx`. Số, thứ tự và ẩn số theo ngưỡng không đổi. Câu trong scenario của `spec.md` đã sửa theo câu mới; ý của AC giữ nguyên (người dùng đồng ý 2026-11-19).
+
+- RED và GREEN: `specs/324-cau-chu-de-hieu/tdd.md` (RED 42 failed / 299 passed; GREEN 357 passed, chạy `npx vitest run` từ PowerShell).

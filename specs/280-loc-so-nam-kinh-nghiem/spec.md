@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge. Cập nhật 2026-11-13 theo #293: bộ chọn số năm là `<select>` thay cho hàng nút `aria-pressed` (hành vi và AC không đổi).
+**Status**: Implemented, chờ merge. Cập nhật 2026-11-13 theo #293: bộ chọn số năm là `<select>` thay cho hàng nút `aria-pressed` (hành vi và AC không đổi). 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#280](https://github.com/Dyuedu/HaiDoIT/issues/280) — As an entry-level job seeker, I want to narrow the map to postings that ask for no more years of experience than I have, so that I can see where the jobs I can apply for today are. Liên quan: bộ lọc cấp bậc [#163](https://github.com/Dyuedu/HaiDoIT/issues/163) (cùng mẫu), story bản đồ [#112](https://github.com/Dyuedu/HaiDoIT/issues/112), quy tắc mẫu nhỏ AD-17, không đổi ngưỡng [#260](https://github.com/Dyuedu/HaiDoIT/issues/260).
 
@@ -69,12 +69,12 @@ Khi đang lọc theo số năm, màn có một dòng: "N tin của <vai trò> ·
 
 **Why this priority**: AC 4 của #280.
 
-**Independent Test**: Test web: đổi cấp rồi đổi số năm, lượt gọi mang cả `level` và `years`; khung "Nguồn và lưu ý" có dòng "Bộ lọc" nêu vai trò, cấp, số năm, cạnh "Ngày snapshot".
+**Independent Test**: Test web: đổi cấp rồi đổi số năm, lượt gọi mang cả `level` và `years`; khung "Nguồn và lưu ý" có dòng "Đang xem" nêu vai trò, cấp, số năm, cạnh "Cập nhật" (câu chữ theo #324).
 
 **Acceptance Scenarios**:
 
 1. **Given** cấp `senior` và số năm `3`, **When** đổi vai trò, **Then** lượt gọi mang `role` mới, `level=senior`, `years=3`.
-2. **Given** envelope có `data.level = entry`, `data.years = 2`, **When** dựng màn, **Then** khung chú thích có "Bộ lọc: AI/ML · Mới vào nghề · Tối đa 2 năm" và ngày snapshot; tiêu đề biểu đồ và caption của bảng cũng nêu số năm.
+2. **Given** envelope có `data.level = entry`, `data.years = 2`, **When** dựng màn, **Then** khung chú thích có "Đang xem: AI/ML, mới vào nghề, tối đa 2 năm" và ngày cập nhật (câu chữ theo #324); tiêu đề biểu đồ và caption của bảng cũng nêu số năm.
 3. **Given** envelope có `data.years` khác số năm đã hỏi, **When** web kiểm hợp đồng, **Then** coi là không đọc được.
 4. **Given** `aggregate` chạy, **When** đọc `stat_city_shares` theo (vai trò, cấp, số năm), **Then** mỗi bộ ba có đủ năm dòng thành phố và tổng bằng 1; n bằng 0 thì toàn bộ rơi vào `unknown`.
 

@@ -142,11 +142,11 @@ describe("fr33 #293 — đổi bộ lọc như chip cũ", () => {
     await pick(user, roleSelect(), "AI/ML");
     await pick(user, roleSelect(), "Backend");
     const daNang = await screen.findByRole("button", { name: /^Đà Nẵng:/ });
-    expect(daNang.textContent).toContain("n = 9 < 30");
+    expect(daNang.textContent).toContain("Mới có 9 tin, chưa đủ 30");
 
     await act(async () => slow.resolve(jsonResponse(200, fakeEnvelope("ai_ml"))));
 
-    expect(screen.getByRole("button", { name: /^Đà Nẵng:/ }).textContent).toContain("n = 9 < 30");
+    expect(screen.getByRole("button", { name: /^Đà Nẵng:/ }).textContent).toContain("Mới có 9 tin, chưa đủ 30");
     expect(selectedLabel(roleSelect())).toBe("Backend");
   });
 

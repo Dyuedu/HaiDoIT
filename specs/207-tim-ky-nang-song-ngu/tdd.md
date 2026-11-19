@@ -50,3 +50,9 @@ Lý do: API thật trả `rows = []`, `core_size = 0`, `have_core = 0` khi ô đ
 
 - RED: `npx vitest run tests/fr19-skill-profile.test.tsx` → 2 failed, 23 passed (rỗng với `core_size = 0` bị từ chối; màn hiện lỗi thay câu giải thích). Chi tiết ở `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
 - GREEN (chạy thật): `npx vitest run` → 22 files, 302 passed; `npx tsc --noEmit`, `npm run lint` sạch.
+
+## Đợt #324 (2026-11-19): câu chữ trên màn viết lại
+
+Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot", "entry-level"; câu thiếu mẫu "Mới có X tin, cần ít nhất 30"; khung nguồn "Đang xem", "Cập nhật", tên nguồn). File của issue này bị đụng: `web/lib/skill-profile-view.ts`, `web/lib/newcomer-roles-view.ts`. Số, thứ tự và ẩn số theo ngưỡng không đổi. Hành vi và AC của issue này không đổi.
+
+- RED và GREEN: `specs/324-cau-chu-de-hieu/tdd.md` (RED 42 failed / 299 passed; GREEN 357 passed, chạy `npx vitest run` từ PowerShell).

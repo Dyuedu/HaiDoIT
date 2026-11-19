@@ -99,7 +99,7 @@ describe("fr19 #152 — ô quay về và chưa đủ dữ liệu", () => {
     await skillList();
     const label = SKILL_RATES["backend|intern"].meta.cells["vn.backend"].fallback_label;
     expect(screen.getByText(label)).toBeTruthy();
-    expect(screen.getByText("n = 157")).toBeTruthy();
+    expect(screen.getByText("Tính trên 157 tin")).toBeTruthy();
   });
 
   it("fr19: không ô nào đủ 30 thì mỗi dòng ghi chưa đủ dữ liệu, không %, không nhóm, không dòng đếm", async () => {

@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import SkillProfilePage from "@/app/ho-so-ky-nang/page";
 import InsightsPage from "@/app/insights/page";
-import { NOT_ENOUGH_DATA, formatCount, formatPercent } from "@/lib/city-shares-view";
+import { formatCount, formatPercent, notEnoughText } from "@/lib/city-shares-view";
 import { fetchNewcomerRoles, type NewcomerRolesEnvelope } from "@/lib/newcomer-roles";
 
 import fixtureJson from "./fixtures/newcomer-roles.json";
@@ -73,7 +73,7 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     expect(nullRoles.length).toBeGreaterThan(0);
     routeNewcomer(() => jsonResponse(200, fixture));
     const rows = items(await openList());
-    const kinds = rows.map((r) => (r.textContent?.includes("chưa đủ dữ liệu") ? "null_data" : "shown"));
+    const kinds = rows.map((r) => (/cần ít nhất|Chưa có tin nào/.test(r.textContent ?? "") ? "null_data" : "shown"));
     expect(kinds.filter((k) => k === "shown")).toHaveLength(shownRoles.length);
     const firstNull = kinds.indexOf("null_data");
     expect(firstNull).toBe(shownRoles.length);
@@ -88,7 +88,7 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     expect(counts).toEqual([...counts].sort((a, b) => b - a));
     routeNewcomer(() => jsonResponse(200, fixture));
     const rows = items(await openList()).slice(0, shown.length);
-    const shownCounts = rows.map((r) => Number(/(\d+) tin cho người mới/.exec(r.textContent ?? "")![1]));
+    const shownCounts = rows.map((r) => Number(/(\d+) trên [\d.]+ tin dành cho người mới/.exec(r.textContent ?? "")![1]));
     expect(shownCounts).toEqual(counts);
     for (let i = 1; i < shownCounts.length; i++) expect(shownCounts[i]).toBeLessThan(shownCounts[i - 1]);
     rows.forEach((row, i) => expect(within(row).getByRole("link").getAttribute("href")).toContain(`role=${shown[i].role}`));
@@ -97,9 +97,9 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
   it("fr37: dòng đủ mẫu có số tin entry-level, tỷ lệ và n của vai trò", async () => {
     routeNewcomer(() => jsonResponse(200, fixture));
     const row = items(await openList())[0];
-    expect(row.textContent).toContain("501 tin cho người mới");
+    expect(row.textContent).toContain("501 trên 877 tin dành cho người mới");
     expect(row.textContent).toContain("57,1%");
-    expect(row.textContent).toContain("n = 877");
+    expect(row.textContent).not.toContain("n = ");
   });
 
   it("fr37: #110 AC1 — MỌI dòng ghi đúng số tin entry-level, n của vai trò và tỷ lệ của chính dòng đó", async () => {
@@ -115,12 +115,11 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
       const n = fixture.meta.cells[row.total_cell_id].n;
       const view = within(rows[i]);
       const where = `dòng ${i} (${row.role})`;
-      expect(view.getByText(`${formatCount(entry)} tin cho người mới`), where).toBeTruthy();
-      expect(view.getByText(`n = ${formatCount(n)}`), where).toBeTruthy();
+      if (n > 0) expect(view.getByText(`${formatCount(entry)} trên ${formatCount(n)} tin dành cho người mới`), where).toBeTruthy();
       if (row.share.display === "shown") {
-        expect(view.getByText(`${formatPercent(row.share.value as number)} số tin của vai trò`), where).toBeTruthy();
+        expect(view.getByText(formatPercent(row.share.value as number)), where).toBeTruthy();
       } else {
-        expect(view.getByText(`${NOT_ENOUGH_DATA} (${formatCount(n)}/${formatCount(minSample)})`), where).toBeTruthy();
+        expect(view.getByText(notEnoughText(n, minSample)), where).toBeTruthy();
         expect(rows[i].textContent, where).not.toMatch(/%/);
       }
     });
@@ -133,8 +132,8 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     routeNewcomer(() => jsonResponse(200, fixture));
     const rows = items(await openList());
     const embedded = rows.find((r) => within(r).queryByText("Nhúng"))!;
-    expect(embedded.textContent).toContain("chưa đủ dữ liệu (12/30)");
-    expect(embedded.textContent).toContain("6 tin cho người mới");
+    expect(embedded.textContent).toContain("Mới có 12 tin, cần ít nhất 30");
+    expect(embedded.textContent).toContain("6 trên 12 tin dành cho người mới");
     expect(embedded.textContent).not.toMatch(/%/);
   });
 
@@ -142,11 +141,11 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     routeNewcomer(() => jsonResponse(200, fixture));
     const rows = items(await openList());
     const devops = rows.find((r) => within(r).queryByText("DevOps"))!;
-    expect(devops.textContent).toContain("0 tin cho người mới");
+    expect(devops.textContent).toMatch(/0 trên [\d.]+ tin dành cho người mới/);
     expect(devops.textContent).toContain("0,0%");
     const other = rows.find((r) => within(r).queryByText("Vai trò khác"))!;
-    expect(other.textContent).toContain("0 tin cho người mới");
-    expect(other.textContent).toContain("chưa đủ dữ liệu (0/30)");
+    expect(other.textContent).toContain("Chưa có tin nào");
+    expect(other.textContent).not.toContain("trên 0 tin");
   });
 
   it("fr37: ngưỡng trong ghi chú lấy từ meta.thresholds.min_sample", async () => {
@@ -155,7 +154,7 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     routeNewcomer(() => jsonResponse(200, env));
     const rows = items(await openList());
     const embedded = rows.find((r) => within(r).queryByText("Nhúng"))!;
-    expect(embedded.textContent).toContain("chưa đủ dữ liệu (12/50)");
+    expect(embedded.textContent).toContain("Mới có 12 tin, cần ít nhất 50");
   });
 
   it("fr37: chạm một vai trò mở hồ sơ kỹ năng của vai trò đó ở cấp mới vào nghề", async () => {
@@ -171,7 +170,7 @@ describe("fr37 #147 — danh sách vai trò còn tuyển người mới", () => 
     await openList();
     const caption = screen.getByRole("region", { name: "Nguồn và lưu ý" });
     expect(caption.textContent).toContain("03/11/2026");
-    expect(caption.textContent).toContain("itviec");
+    expect(caption.textContent).toContain("ITviec");
     for (const note of fixture.meta.coverage_notes) expect(caption.textContent).toContain(note.text);
   });
 
