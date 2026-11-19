@@ -12,6 +12,7 @@ import { type SkillsResult, fetchSkills } from "@/lib/vocab";
 import { LoadError } from "../map/load-error";
 import { SnapshotCaption } from "../map/snapshot-caption";
 import { SkillPicker } from "./skill-picker";
+import { DataTable } from "./overview/charts";
 import { SkillRolesList } from "./skill-roles-list";
 
 const LOADING = "Đang tải số liệu…";
@@ -87,7 +88,15 @@ export function SkillRolesScreen() {
         {view.notMentionedText ? (
           <p className="m-0 text-body-md text-amber">{view.notMentionedText}</p>
         ) : (
-          <SkillRolesList lines={view.lines} />
+          <>
+            <SkillRolesList lines={view.lines} />
+            <DataTable
+              caption="Tỷ lệ tin cho người mới nhắc tới kỹ năng, theo vai trò"
+              head={["Vai trò", "Tỷ lệ", "Tính trên"]}
+              rows={view.lines.map((l) => [l.label, l.shareText, l.nText || "Chưa có tin nào"])}
+              numeric={[]}
+            />
+          </>
         )}
         <SnapshotCaption caption={view.caption} />
       </>

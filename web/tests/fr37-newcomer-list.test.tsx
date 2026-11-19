@@ -269,7 +269,9 @@ describe("fr37 ad8 DEC-6 (#132) — câu trên màn người mới không chứa
    */
   function narrative(root: HTMLElement): string[] {
     const caption = within(root).queryByRole("region", { name: CAPTION });
-    const outOfScope = (node: Node) => !!caption?.contains(node) || !!(node.parentElement ?? (node as Element)).closest("ol");
+    // Từ #330 bảng số (`table`) cũng là ô số theo thiết kế, như danh sách `ol`.
+    const outOfScope = (node: Node) =>
+      !!caption?.contains(node) || !!(node.parentElement ?? (node as Element)).closest("ol, table");
     const out: string[] = [];
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
