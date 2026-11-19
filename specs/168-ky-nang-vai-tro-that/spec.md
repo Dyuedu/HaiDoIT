@@ -79,7 +79,7 @@
 
 ## Assumptions
 
-- X trong "X/30" là `n_scanned` của hàng entry (`skill_count`), theo quyết định của #166.
+- X trong "X/30" là `n_scanned` của hàng entry (`skill_count`), theo quyết định của #166. Ngày 2026-11-19, AC 2 của #168 và AC 3 của #113 được sửa cho khớp (người dùng chọn): "A role with fewer than 30 entry-level postings that could be read for skills says \"not enough data (X/30)\"". Code không đổi.
 - Cỡ mẫu theo vai trò đọc từ hàng của chính kỹ năng đang xem; `aggregate` ghi cùng `n_scanned` ở mọi hàng của một ô (#101), nên đủ.
 - Bản giả và web không đổi.
 - Quyết định của #166 "stat luôn 404 đến #168" là trạng thái chuyển tiếp; nay thay bằng số thật (xem `specs/166-*` đợt 2026-11-17).

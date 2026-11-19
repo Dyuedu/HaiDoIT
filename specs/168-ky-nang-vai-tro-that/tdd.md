@@ -95,3 +95,7 @@ Chưa chạy mutant cho hành vi 3 (factory gọi trong `__init__`) và 7; hành
 
 - Hai file test: 91 passed.
 - Toàn bộ `uv run pytest -q`: 1620 passed (534 s), tăng 5 so với 1615 (5 test mới: biên, `mentioned` không lấy `all × entry`, snapshot không có nguồn, guard `n_with`, `UnknownSkill` trước kết nối). `uv run ruff check .` sạch. Cổng: 10 pass, 0 skip, 0 fail.
+
+## Đợt sửa câu chữ AC (2026-11-19)
+
+Lý do: AC 2 của #168 và AC 3 của #113 ghi "under 30 entry-level postings", còn code (theo #166) dùng số tin đọc được kỹ năng (`n_scanned`, `skill_count`). Người dùng chọn sửa câu chữ AC theo code. Code và test không đổi, nên không có RED mới; GREEN chạy lại sau khi merge `origin/main` (ghi bên dưới).

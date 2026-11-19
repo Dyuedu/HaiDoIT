@@ -49,6 +49,11 @@
 
 - [x] T019 `deploy.yml` build image kho, chép hai file lịch đêm, chạy khi đổi `config/**`; `vps-deploy.sh` kéo image kho và ghi `.warehouse-tag` khi khỏe. Test ở `tests/deploy/test_gh273_image_kho.py`
 
+## Phase 9: Dọn tag image cũ (đợt 2026-11-19)
+
+- [x] T020 Test `stale_tags` (giữ 2 tag mới nhất, giữ tag đang deploy, bỏ qua tag không phải `sha-*`) và test cả script với `docker` giả (khỏe thì `rmi` tag cũ của ba image, hỏng thì không, `rmi` lỗi không làm đỏ) trong `tests/deploy/test_gh262_don_tag_cu.py`
+- [x] T021 Thêm `stale_tags`, `prune_old_tags` vào `deploy/vps-deploy.sh`, gọi sau khi ghi `.warehouse-tag`
+
 ## Thay đổi đợt 2 (2026-11-17, #166)
 
 #166 đợt 2 sửa thêm file dùng chung với issue này (`deploy/compose.prod.yml` (thêm `HAIDO_MARKET_SOURCE_SKILL_ROLES: stat` vào môi trường dịch vụ `api`)). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.

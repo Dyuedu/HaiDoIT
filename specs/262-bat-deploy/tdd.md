@@ -91,6 +91,34 @@ Hành vi và AC của issue này không đổi: thay đổi chỉ thêm (phươn
 
 Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
 
+## Đợt 5 — 2026-11-19: deploy xóa tag image cũ
+
+Lý do: kiểm VPS sáng 2026-11-19 thấy đĩa 33 GB đầy 94% (còn 1,9 GB), 87 image, gần hết là tag `sha-*` cũ của api, web, kho. Dòng `docker image prune -f --filter until=168h` chỉ xóa image dangling nên không gỡ được chúng. Đã dọn tay một lần (còn 13 GB trống); đợt này để deploy tự dọn. Không có issue riêng; người dùng yêu cầu sửa thẳng.
+
+Lệnh:
+
+```text
+uv run pytest tests/deploy/test_gh262_don_tag_cu.py -q
+```
+
+Các hành vi:
+
+1. Giữ 2 tag `sha-*` mới nhất, in các tag còn lại.
+2. Tag đang deploy không bị in dù cũ hơn (rollback).
+3. Tag không phải `sha-*` bị bỏ qua và không đếm.
+4. Ít hơn hoặc bằng 2 tag thì không in gì.
+5. Deploy khỏe: `docker rmi` đúng `sha-old1`, `sha-old2` của cả ba image.
+6. Deploy hỏng: không có `docker rmi`.
+7. `docker rmi` lỗi: deploy vẫn trả 0.
+
+RED: 6 failed, 1 passed. `stale_tags` chưa có nên bốn test hàm đỏ; script chưa gọi `rmi` nên hai test chạy cả script đỏ. Test "deploy hỏng thì không xóa" xanh sẵn vì script cũ không xóa tag nào.
+
+Lần chạy đầu sau khi sửa: 1 failed (hành vi 2). Trên Windows Python ghi stdin bằng CRLF nên tag thành `sha-b`, không khớp tag cần giữ. Thêm bỏ CR cuối dòng trong `stale_tags`, như `env_value` đã làm.
+
+GREEN: `uv run pytest tests/deploy -q` → 84 passed. `uv run pytest -q --ignore=tests/deploy` → 1240 passed, 280 skipped.
+
+Chạy thử trên VPS: nạp script mới với `HAIDO_DEPLOY_LIB_ONLY=1`, đưa `docker images <repo>` thật qua `stale_tags 2 sha-5e4d9e6…`: mỗi image còn 2 tag nên không in tag nào, và `docker images` liệt kê mới trước như hàm giả định.
+
 ## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
 
 Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `deploy/compose.prod.yml`.

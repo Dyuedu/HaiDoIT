@@ -106,3 +106,13 @@ Quan sát TopCV của snapshot `2026-11-17` không bù được: snapshot đã c
 ### CI đợt 3 (2026-11-17)
 
 Job "Python - ruff and pytest" (có Postgres, máy dev skip các test này) đỏ 3 test của #93 (chưa có `specs/`): `tests/steps/test_dat20_publish_step.py::test_dat20_nguon_chay_tay_loi_khong_lam_snapshot_thanh_partial` khẳng định `"topcv" not in auto_sources`; `tests/test_dat20_cli.py` cho lượt chạy của đúng bảy nguồn nên publish ra `partial; nguồn lỗi: topcv`. Đổi ví dụ nguồn chạy tay sang `linkedin`, thêm `topcv` vào danh sách nguồn của test CLI.
+
+## Đợt 4: trang rỗng giữa listing (2026-11-18, #318)
+
+Lý do: `daily-2026-11-18.log` có `topcv listed=2169 complete=False … error: met 2169 of 2502 listed jobs`; snapshot chốt `partial; nguồn lỗi: topcv`. Trang 18–44 nhiều lần rỗng rồi có tin khi tải lại; trang 45 rỗng cả `EMPTY_PAGE_TRIES` lần nên hành vi 13 (trang rỗng 3 lần liền là hết listing) dừng lượt khi còn khoảng 7 trang.
+
+Hành vi 13 đổi: trang vẫn rỗng được để lại và thử lại sau. RED/GREEN của thay đổi ghi trong `specs/318-topcv-thu-lai-trang-trong/tdd.md`. Test của hành vi 13 (`test_topcv_empty_page_is_fetched_again_before_ending`) không sửa và vẫn xanh: không có tổng trên tiêu đề, trang 3 rỗng là đuôi listing, không có trang rỗng kẹp giữa nên không có vòng thử lại.
+
+`python -m pytest tests -q -p no:cacheprovider` → 82 passed, 9 skipped.
+
+Cùng ngày, #318 đợt 2: `fetch()` của trang listing chờ số thẻ đứng yên (`wait_for_cards`) thay cho `select(..., timeout=6)`, trang thiếu thẻ được tải lại, trang rỗng/thiếu được lưu HTML chẩn đoán. Test cũ của #302 không sửa, vẫn xanh: `python -m pytest tests -q -p no:cacheprovider` → 88 passed, 9 skipped.

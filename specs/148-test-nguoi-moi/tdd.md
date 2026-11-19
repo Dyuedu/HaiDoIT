@@ -129,6 +129,12 @@ Hành vi và AC của issue này không đổi: thay đổi chỉ thêm (phươn
 
 Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_rates` đổi thêm (404 khi ô không có hàng tỷ lệ, `n_scanned` nhất quán, chữ nhãn); hành vi và AC của issue này vẫn không đổi. RED và GREEN: `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2.
 
+## Đợt 2026-11-17 (#113, #169)
+
+Lý do: test DEC-6 "lúc đang tải…" của #148 trong `web/tests/fr37-newcomer-list.test.tsx` đọc `getByRole("status")` trên cả trang; từ #169 trang có hai vùng trạng thái. Test đọc vùng của mục người mới; điều nó kiểm không đổi. Xem `specs/147-man-nguoi-moi/tdd.md`.
+
+- GREEN: `npx vitest run` → 25 files, 328 passed.
+
 ## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
 
 Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `haido_api/stat_market.py`.
