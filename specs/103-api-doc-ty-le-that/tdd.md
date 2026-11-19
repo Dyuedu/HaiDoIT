@@ -34,3 +34,8 @@ Lý do: test route chưa có số thật chấp nhận cả 404 lẫn 500; một
 
 - RED: không có. Điều kiện siết đã đúng với code hiện tại (`StatMarket.learning_path` và `skill_roles` ném `UnknownCell`), nên test xanh ngay; đây là siết, không chứng minh bằng đỏ.
 - GREEN (chạy thật): `uv run pytest tests/api/test_ad17_meta_nguon_stat.py -q` → 2 passed. Số chạy toàn bộ: `specs/151-ty-le-ky-nang-that/tdd.md`.
+
+## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`.
+Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.

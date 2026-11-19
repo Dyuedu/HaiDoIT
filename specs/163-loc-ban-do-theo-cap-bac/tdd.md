@@ -270,3 +270,8 @@ Lý do: #316 sửa `web/app/components/map/map-screen.tsx`: bố cục hai cột
 - Sửa test `fr33-level-filter.test.tsx` ("mờ theo n của cấp đã chọn"): panel bên phải nhắc lại câu cỡ mẫu nhỏ nên tìm trong biểu đồ 2D (`within(figure)`); điều test kiểm không đổi.
 
 - GREEN: `npx vitest run` → 27 files, 347 passed.
+
+## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `docs/api/envelope-meta.md`, `haido_api/stat_market.py`.
+Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.

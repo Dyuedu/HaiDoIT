@@ -28,7 +28,7 @@
 ## Phase 3: Sau merge
 
 - [ ] T014 Comment hợp đồng lên #166 cho người làm #168, #169, #170
-- [ ] T015 (#168) `StatMarket.skill_roles` đọc `stat_skill_rates`: `n_scanned` thành `n_by_measure.skill_count` của `meta.cells[vn.<role>.entry]` (`n` giữ là số tin của ô); `mentioned = n_with > 0` của hàng ô `vn.all` (mọi vai trò, mọi cấp); thứ tự dòng `null_data` theo `skill_count` (Envelope kiểm)
+- [x] T015 (#168, xong ở `specs/168-ky-nang-vai-tro-that/`) `StatMarket.skill_roles` đọc `stat_skill_rates`: `n_scanned` thành `n_by_measure.skill_count` của `meta.cells[vn.<role>.entry]` (`n` giữ là số tin của ô); `mentioned = n_with > 0` của hàng ô `vn.all` (mọi vai trò, mọi cấp); thứ tự dòng `null_data` theo `skill_count` (Envelope kiểm)
 
 ## Phase 4: Đợt 2 theo review (2026-11-17)
 

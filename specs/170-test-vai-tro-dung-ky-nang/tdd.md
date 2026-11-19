@@ -32,3 +32,7 @@ cd web && npx vitest run tests/fr09-vai-tro-dung-ky-nang.test.tsx tests/fr13-cho
   - Gõ "học máy", chọn Học máy: URL `?skill=machine_learning`, dòng đầu "65,9% tin AI/ML mới vào nghề nhắc tới Học máy".
   - `?skill=abap`: "Kỹ năng: ABAP", "Chưa tin tuyển dụng hiện tại nào nhắc tới ABAP.", không dòng nào.
 - Production (`haidoit.io.vn`) còn trả 404 `unknown_cell` cho `skill-roles` tới khi #168 có số thật; màn hiện thông báo đó.
+
+## Đợt #168 (2026-11-19): câu chữ AC 3 của #113 đổi, hành vi không đổi
+
+Lý do: AC 3 của #113 nay ghi "fewer than 30 entry-level postings that could be read for skills". Màn lấy X bằng `rowN` (`skill_count`, thiếu thì `n`); test AC3 của issue này dùng `data_engineer` có `n` bằng `skill_count` nên không phân biệt hai số, còn chỗ phân biệt (`vn.game.entry`, 43 và 12) đã có ở `web/tests/fr09-skill-roles-fixture.test.ts` (#166). Không sửa test. Nguồn `stat` thật của `skill-roles`: `specs/168-ky-nang-vai-tro-that/tdd.md`.

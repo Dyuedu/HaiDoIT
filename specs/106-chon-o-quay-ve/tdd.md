@@ -44,3 +44,8 @@ Lý do: nhãn phải nói con số là gì (với tỷ lệ kỹ năng là `n_sc
 - Hành vi thêm: `sample_noun` ("tin" mặc định; "tin đọc được kỹ năng" cho `skill_rates`) vào nhãn quay về và nhãn không tập nào đủ; làm tròn nửa lên bằng số nguyên `(200*mid + total) // (2*total)`; test mẫu số có `unknown`, `lead`, `mid`, `senior`, cấp entry (50%, không phải 60%) và các ca .5 (1/8 thành 13%, 7/8 thành 88%, 1/3 thành 33%, 0%); mọi test nhãn so cả chuỗi.
 - RED: xem `specs/151-ty-le-ky-nang-that/tdd.md` đợt 2: `test_ad2_select_cell.py` 22 failed (`TypeError` do `sample_noun` chưa có), sau khi thêm tham số rỗng 2 failed, 20 passed (chữ nhãn, và 12% khác 13%).
 - GREEN (chạy thật): `uv run pytest tests/domain/test_ad2_select_cell.py -q` → 22 passed.
+
+## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`.
+Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.

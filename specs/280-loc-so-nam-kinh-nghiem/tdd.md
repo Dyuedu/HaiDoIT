@@ -220,3 +220,8 @@ Lý do: #314 sửa `web/app/components/map/map-screen.tsx` (lối 3D mặc đị
 Lý do: #316 sửa `web/app/components/map/map-screen.tsx`: bố cục hai cột (panel "Tin <vai trò> nằm ở đâu" và "Nguồn và lưu ý" bên phải), lối 3D dựng bằng CSS 3D. Bộ lọc và cách gọi `city-shares` không đổi. Không AC nào của issue này đổi.
 
 - GREEN: `npx vitest run` → 27 files, 347 passed.
+
+## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `docs/api/envelope-meta.md`, `haido_api/stat_market.py`.
+Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.

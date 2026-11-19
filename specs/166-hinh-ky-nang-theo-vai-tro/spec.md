@@ -66,7 +66,7 @@ Production phải thấy 404 `unknown_cell` (chưa có số thật) thay vì s�
 
 **Acceptance Scenarios**:
 
-1. **Given** nguồn `stat`, **When** gọi `skill_roles`, **Then** 404 `unknown_cell` không có ngày snapshot (như `learning_path`), không bao giờ trả số giả.
+1. **Given** nguồn `stat`, **When** gọi `skill_roles`, **Then** 404 `unknown_cell` không có ngày snapshot (như `learning_path`), không bao giờ trả số giả. *(Đợt 2026-11-17, #168: chỉ còn đúng khi chưa có snapshot đọc được; có snapshot thì trả số thật, xem `specs/168-ky-nang-vai-tro-that/`.)*
 2. **Given** `deploy/compose.prod.yml`, **Then** `HAIDO_MARKET_SOURCE_SKILL_ROLES = stat`.
 3. **Given** `deploy/compose.local.yml`, **Then** biến này chưa đặt hoặc là `fake`.
 

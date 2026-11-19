@@ -16,7 +16,7 @@ from tests.api.test_fr19_skill_rates_stat import _cell, _snapshot
 from tests.steps.conftest import S
 
 RULES = load_rules()
-REAL = {"/api/v1/city-shares", "/api/v1/skill-rates", "/api/v1/newcomer-roles"}
+REAL = {"/api/v1/city-shares", "/api/v1/skill-rates", "/api/v1/newcomer-roles", "/api/v1/skill-roles"}
 
 
 def _stat_client(engine: Engine) -> TestClient:
@@ -29,6 +29,7 @@ def _seed(engine: Engine) -> None:
     _snapshot(engine)
     _cell(engine, "ai_ml", "entry", 80, 60, {"python": 40, "sql": 10})
     _cell(engine, "ai_ml", "all", 300, 250, {"python": 200, "sql": 60})
+    _cell(engine, "all", "all", 5000, 4000, {"python": 2000, "sql": 900})  # mọi vai trò, mọi cấp: `mentioned` của skill-roles
     _cell(engine, "ai_ml", "all", 100, 0, {}, scope="ha_noi")
     _cell(engine, "ai_ml", "entry", 30, 0, {}, scope="ha_noi")
     with engine.begin() as conn:

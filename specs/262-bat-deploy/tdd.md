@@ -120,6 +120,11 @@ GREEN: `uv run pytest tests/deploy -q` → 84 passed. `uv run pytest -q --ignore
 
 Chạy thử trên VPS: nạp script mới với `HAIDO_DEPLOY_LIB_ONLY=1`, đưa `docker images <repo>` thật qua `stale_tags 2 sha-5e4d9e6…`: mỗi image còn 2 tag nên không in tag nào, và `docker images` liệt kê mới trước như hàm giả định.
 
+## Đợt #168 (2026-11-17): file dùng chung đổi, AC của issue này không đổi
+
+Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `deploy/compose.prod.yml`.
+Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.
+
 ## Đợt 6 — 2026-11-19: thứ tự theo lịch sử deploy, không theo CreatedAt
 
 Lý do: lần deploy đầu có đợt 5 (PR #320, run 44445036102) xanh nhưng api và kho vẫn còn 3 tag. `docker images` của cả ba tag cùng `CreatedAt` `2026-11-17 13:43:23` vì image build lại được, nên thứ tự trả về tùy ý: tag mới `sha-66c8087` đứng cuối, hai tag cũ lọt vào "2 mới nhất". Không xóa nhầm (tag đang deploy được giữ), nhưng không dọn được. Lần chạy thử ở đợt 5 không lộ vì lúc đó mỗi image chỉ còn 2 tag.

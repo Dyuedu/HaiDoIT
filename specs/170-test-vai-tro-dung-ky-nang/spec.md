@@ -27,7 +27,7 @@ Người review mở một file và thấy năm test, mỗi test một AC của 
 |---|---|---|
 | 1. Gõ kỹ năng tiếng Anh hoặc tiếng Việt khớp một kỹ năng, màn ghi kỹ năng đó | `AC1 FR-13 …` | FR-13 |
 | 2. Mỗi vai trò có tỷ lệ tin entry-level nhắc kỹ năng, theo tỷ lệ, bằng một câu thường | `AC2 FR-09 …` | FR-09, AD-22 |
-| 3. Vai trò dưới 30 tin ghi "chưa đủ dữ liệu (X/30)" | `AC3 FR-09 …` | FR-09 |
+| 3. Vai trò dưới 30 tin entry-level đọc được kỹ năng ghi "chưa đủ dữ liệu (X/30)" (AC sửa câu chữ 2026-11-19, X là `skill_count`) | `AC3 FR-09 …` | FR-09 |
 | 4. Kỹ năng không tin nào nhắc thì nói như vậy | `AC4 FR-09 …` | FR-09 |
 | 5. Chạm vai trò mở hồ sơ kỹ năng (#111) | `AC5 FR-18 …` | FR-18 |
 

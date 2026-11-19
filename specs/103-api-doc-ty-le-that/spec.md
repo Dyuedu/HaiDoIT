@@ -20,8 +20,8 @@ Người dùng không bao giờ thấy một con số không kèm ngày snapshot
 
 **Acceptance Scenarios**:
 
-1. **Given** nguồn `stat` cho mọi phép và một snapshot có số, **When** gọi `city-shares`, `skill-rates`, `newcomer-roles`, **Then** body là `{data, meta}` với `meta.snapshot_date` và `meta.cells` không rỗng. (AC 1)
-2. **Given** nguồn `stat` cho `learning-path` và `skill-roles` (chưa có số thật), **When** gọi, **Then** trả lỗi chuẩn `{error}`, không có `data` và không có số. (AC 1)
+1. **Given** nguồn `stat` cho mọi phép và một snapshot có số, **When** gọi `city-shares`, `skill-rates`, `newcomer-roles`, `skill-roles`, **Then** body là `{data, meta}` với `meta.snapshot_date` và `meta.cells` không rỗng. (AC 1)
+2. **Given** nguồn `stat` cho `learning-path` (chưa có số thật; `skill-roles` có số thật từ #168 và nằm ở kịch bản 1), **When** gọi, **Then** trả lỗi chuẩn `{error}`, không có `data` và không có số. (AC 1)
 3. **Given** một lần gọi `skill-rates` qua `StatMarket`, **When** ghi lại mọi câu SQL, **Then** chỉ đọc `stat_skill_rates` và `stat_cells`, không nhắc `job_*`, và không có `group by`, `avg(`, `count(`, `sum(`, `percentile`. (AC 2)
 4. **Given** mã nguồn `haido_api/`, **When** chạy cổng AD-7, **Then** PASS. (AC 2)
 
