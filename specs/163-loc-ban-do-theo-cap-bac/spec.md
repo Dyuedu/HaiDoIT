@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: Implemented. Cập nhật 2026-11-13 theo #293: bộ chọn cấp bậc là `<select>` thay cho hàng nút `aria-pressed` (hành vi và AC không đổi). Cập nhật 2026-11-12 theo #280: web gửi thêm `years` (mặc định `any`), hai bảng stat có thêm `years` trong khóa; số của mọi cấp ở `years = any` không đổi. Không AC nào của #163 đổi.
+**Status**: Implemented. Cập nhật 2026-11-13 theo #293: bộ chọn cấp bậc là `<select>` thay cho hàng nút `aria-pressed` (hành vi và AC không đổi). Cập nhật 2026-11-12 theo #280: web gửi thêm `years` (mặc định `any`), hai bảng stat có thêm `years` trong khóa; số của mọi cấp ở `years = any` không đổi. Không AC nào của #163 đổi. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#163](https://github.com/Dyuedu/HaiDoIT/issues/163) — The map has a level filter. It opens on the default level recorded on #134, and changing the level updates the table and the chart together. Phục vụ story [#112](https://github.com/Dyuedu/HaiDoIT/issues/112). Quyết định ràng buộc: [#134](https://github.com/Dyuedu/HaiDoIT/issues/134) (cấp mặc định và cách chia cấp), [#260](https://github.com/Dyuedu/HaiDoIT/issues/260) (không đổi ngưỡng, θ, lưu ý độ phủ).
 
@@ -52,7 +52,7 @@ Người dùng bấm một cấp khác. Màn hiện "Đang tải số liệu…"
 
 **Why this priority**: AC thứ ba của #163 và là quy tắc ẩn số của AD-17.
 
-**Independent Test**: Cấp có Đà Nẵng n < 30 cho `display = low_sample_shown`; test web kiểm thanh mờ (`data-low-sample`), nhãn "Cỡ mẫu nhỏ (n = … < 30)" và ô bảng.
+**Independent Test**: Cấp có Đà Nẵng n < 30 cho `display = low_sample_shown`; test web kiểm thanh mờ (`data-low-sample`), nhãn "Mới có … tin, chưa đủ 30" (câu chữ theo #324) và ô bảng.
 
 **Acceptance Scenarios**:
 

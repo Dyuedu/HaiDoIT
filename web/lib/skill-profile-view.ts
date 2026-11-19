@@ -5,7 +5,15 @@
  * máy chủ, dòng đếm core là `have_core`/`core_size` của API. Câu trên màn không chứa số; số đứng ở ô riêng (DEC-6).
  */
 
-import { FAILED_SOURCES_PREFIX, NOT_ENOUGH_DATA, type SnapshotCaption, formatCount, formatDate, formatPercent } from "./city-shares-view";
+import {
+  ANY_YEARS_TEXT,
+  NOT_ENOUGH_DATA,
+  type SnapshotCaption,
+  filtersText,
+  formatCount,
+  formatPercent,
+  snapshotCaption,
+} from "./city-shares-view";
 import { levelLabel, roleLabel } from "./labels";
 import type { SkillGroup, SkillRatesEnvelope } from "./skill-rates";
 
@@ -49,7 +57,7 @@ export interface SkillProfileView {
   emptyText: string | null;
   /** Câu quay về của API, nguyên văn; `null` khi chọn thẳng ô. */
   fallbackText: string | null;
-  /** "n = 157": n của ô đã dùng. */
+  /** "Tính trên 157 tin": số tin của ô đã dùng (#324). */
   nText: string;
   /** "3/6" do API đếm; `null` khi chưa đủ dữ liệu. */
   coreCountText: string | null;
@@ -77,20 +85,11 @@ export function buildSkillProfileView(
     lines,
     emptyText: lines.length === 0 ? NO_COMMON_SKILLS : null,
     fallbackText: cell.fallback_label,
-    nText: `n = ${formatCount(cell.n)}`,
+    nText: `Tính trên ${formatCount(cell.n)} tin`,
     coreCountText:
       data.core_size !== null && data.have_core !== null && data.core_size > 0
         ? `${data.have_core}/${data.core_size}`
         : null,
-    caption: {
-      sources: meta.sources,
-      snapshotDate: formatDate(meta.snapshot_date),
-      notes: meta.coverage_notes,
-      failedSources:
-        meta.snapshot_status === "partial" && meta.sources_failed.length > 0
-          ? FAILED_SOURCES_PREFIX + meta.sources_failed.join(", ")
-          : null,
-      filters: `${roleLabel(data.role)} · ${levelLabel(data.level)} · Mọi số năm`,
-    },
+    caption: snapshotCaption(meta, filtersText([roleLabel(data.role), levelLabel(data.level), ANY_YEARS_TEXT])),
   };
 }

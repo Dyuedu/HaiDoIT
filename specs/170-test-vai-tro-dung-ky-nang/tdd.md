@@ -36,3 +36,9 @@ cd web && npx vitest run tests/fr09-vai-tro-dung-ky-nang.test.tsx tests/fr13-cho
 ## Đợt #168 (2026-11-19): câu chữ AC 3 của #113 đổi, hành vi không đổi
 
 Lý do: AC 3 của #113 nay ghi "fewer than 30 entry-level postings that could be read for skills". Màn lấy X bằng `rowN` (`skill_count`, thiếu thì `n`); test AC3 của issue này dùng `data_engineer` có `n` bằng `skill_count` nên không phân biệt hai số, còn chỗ phân biệt (`vn.game.entry`, 43 và 12) đã có ở `web/tests/fr09-skill-roles-fixture.test.ts` (#166). Không sửa test. Nguồn `stat` thật của `skill-roles`: `specs/168-ky-nang-vai-tro-that/tdd.md`.
+
+## Đợt #324 (2026-11-19): câu chữ trên màn viết lại
+
+Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot", "entry-level"; câu thiếu mẫu "Mới có X tin, cần ít nhất 30"; khung nguồn "Đang xem", "Cập nhật", tên nguồn). File của issue này bị đụng: `web/lib/skill-roles-view.ts`, `web/app/components/insights/skill-roles-list.tsx`. Số, thứ tự và ẩn số theo ngưỡng không đổi. Câu trong scenario của `spec.md` đã sửa theo câu mới; ý của AC giữ nguyên (người dùng đồng ý 2026-11-19).
+
+- RED và GREEN: `specs/324-cau-chu-de-hieu/tdd.md` (RED 42 failed / 299 passed; GREEN 357 passed, chạy `npx vitest run` từ PowerShell).

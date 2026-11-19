@@ -106,13 +106,12 @@ export function Map3D({ view }: { view: CitySharesView }) {
   };
 
   const deg = (n: number) => `${Number(n.toFixed(1))}deg`;
-  const total = view.table.total.nText;
 
   return (
     <section aria-label="Bản đồ 3D" className="m-0 flex flex-col gap-3 rounded-xl border border-border bg-panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="font-mono text-kicker uppercase text-text-muted">
-          Tin {view.roleLabel} nằm ở đâu · {view.levelLabel} · {view.yearsLabel} · n = {total}
+          {view.title}
         </span>
         <div className="flex items-center gap-1.5">
           <button type="button" aria-label="Xoay trái 30 độ" className={ICON_BUTTON} onClick={() => setRz((z) => z - STEP)}>

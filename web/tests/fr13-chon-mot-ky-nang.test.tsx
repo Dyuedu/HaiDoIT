@@ -106,7 +106,7 @@ describe("fr09 #167 — kỹ năng không tin nào nhắc", () => {
     window.history.replaceState(null, "", "/insights?skill=abap");
     render(<InsightsPage />);
     const area = await section();
-    await within(area).findByText("Chưa tin tuyển dụng hiện tại nào nhắc tới ABAP.");
+    await within(area).findByText("Hiện chưa tin tuyển dụng nào nhắc tới ABAP.");
     expect(within(area).queryByRole("list", { name: LIST })).toBeNull();
     expect(area.textContent).not.toContain("0,0%");
   });
@@ -117,7 +117,7 @@ describe("fr09 #167 — kỹ năng không tin nào nhắc", () => {
     render(<InsightsPage />);
     const area = await section();
     await within(area).findByRole("list", { name: LIST });
-    expect(within(area).queryByText(/Chưa tin tuyển dụng hiện tại nào nhắc/)).toBeNull();
+    expect(within(area).queryByText(/Hiện chưa tin tuyển dụng nào nhắc/)).toBeNull();
   });
 
   it("fr13: unknown_skill thì hiện thông báo của API, không có Thử lại", async () => {

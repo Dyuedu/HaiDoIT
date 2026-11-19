@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented. 2026-11-16: trang giữ chỗ `/ho-so-ky-nang` được #152 thay bằng hồ sơ kỹ năng thật (FR-005); US2 scenario 2 không còn áp dụng.
+**Status**: Implemented. 2026-11-16: trang giữ chỗ `/ho-so-ky-nang` được #152 thay bằng hồ sơ kỹ năng thật (FR-005); US2 scenario 2 không còn áp dụng. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
 
 **Input**: GitHub issue [#147](https://github.com/Dyuedu/HaiDoIT/issues/147) — Show the newcomer list and open a role's skill profile. Phục vụ story #110 (US-A1). Hình dữ liệu của #144; số thật của #145, #146 (PR #290). Quy tắc câu không có số của DEC-6 (#132).
 
@@ -21,11 +21,11 @@ Một sinh viên mở Insights và thấy mọi vai trò, mỗi dòng có số t
 **Acceptance Scenarios**:
 
 1. **Given** response của API giả, **When** mở `/insights`, **Then** danh sách có một dòng mỗi vai trò, nhãn tiếng Việt, đúng thứ tự `data.rows`; web không sắp xếp lại (AD-22).
-2. **Given** vai trò đủ mẫu, **When** xem dòng, **Then** có "501 tin cho người mới", "57,1%", "n = 877".
-3. **Given** vai trò dưới 30 tin (`null_data`), **When** xem dòng, **Then** ghi "chưa đủ dữ liệu (12/30)" thay cho tỷ lệ, không có dấu %, viền nét đứt hổ phách; dòng nằm sau các dòng có tỷ lệ vì API gửi như vậy. (AC 1)
-4. **Given** `min_sample = 50` trong `meta.thresholds`, **When** xem dòng đó, **Then** ghi "(12/50)".
-5. **Given** vai trò đủ mẫu mà không có tin entry-level (`devops`), hoặc không có tin nào (`other`), **When** xem, **Then** dòng ghi "0 tin cho người mới" và vẫn ở trong danh sách. (AC 2)
-6. **Given** danh sách, **When** đọc khung "Nguồn và lưu ý", **Then** có ngày snapshot, nguồn và mọi lưu ý độ phủ.
+2. **Given** vai trò đủ mẫu, **When** xem dòng, **Then** có "57,1%" và "501 trên 877 tin dành cho người mới" (câu chữ theo #324).
+3. **Given** vai trò dưới 30 tin (`null_data`), **When** xem dòng, **Then** ghi "Mới có 12 tin, cần ít nhất 30" thay cho tỷ lệ (câu chữ theo #324), không có dấu %, viền nét đứt hổ phách; dòng nằm sau các dòng có tỷ lệ vì API gửi như vậy. (AC 1)
+4. **Given** `min_sample = 50` trong `meta.thresholds`, **When** xem dòng đó, **Then** ghi "Mới có 12 tin, cần ít nhất 50".
+5. **Given** vai trò đủ mẫu mà không có tin entry-level (`devops`), hoặc không có tin nào (`other`), **When** xem, **Then** dòng vẫn ở trong danh sách: `devops` ghi "0,0%" và "0 trên N tin dành cho người mới", `other` ghi "Chưa có tin nào" (câu chữ theo #324). (AC 2)
+6. **Given** danh sách, **When** đọc khung "Nguồn và lưu ý", **Then** có ngày cập nhật, tên nguồn và mọi lưu ý độ phủ.
 7. **Given** API trả 404 `unknown_cell` kèm ngày, **When** mở trang, **Then** có thông báo lỗi, ngày snapshot, không có nút "Thử lại", không có danh sách.
 8. **Given** mạng hỏng, **When** mở trang, **Then** báo "Không đọc được số liệu", bấm "Thử lại" thì tải lại được.
 9. **Given** envelope sai hợp đồng (share không phải `level_share`, `cell_id` khác ô vai trò, thiếu ô, `shown` mà không có giá trị, `null_data` mà có giá trị, vai trò lặp, không có dòng, `levels` rỗng), **When** đọc, **Then** coi là không đọc được, không hiện số.
@@ -55,7 +55,7 @@ Một sinh viên mở Insights và thấy mọi vai trò, mỗi dòng có số t
 
 - **FR-001**: `/insights` có mục "Cửa vào cho người mới" gọi `GET /api/v1/newcomer-roles` phía trình duyệt qua proxy `/api/*`.
 - **FR-002**: Số đọc từ `meta.cells` và `share`; web không tính lại, không sắp xếp lại (AD-22).
-- **FR-003**: `null_data` ghi "chưa đủ dữ liệu (n/min_sample)"; ngưỡng lấy từ `meta.thresholds`.
+- **FR-003**: `null_data` ghi "Mới có n tin, cần ít nhất min_sample" ("Chưa có tin nào" khi n = 0, #324); ngưỡng lấy từ `meta.thresholds`.
 - **FR-004**: Mỗi dòng là một liên kết tới `/ho-so-ky-nang?role=<mã>&level=entry`, cao tối thiểu 44px.
 - **FR-005**: `/ho-so-ky-nang` là trang giữ chỗ tới khi #111 (#152) thay bằng hồ sơ thật.
 

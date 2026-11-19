@@ -7,8 +7,9 @@
  * `n` với ngưỡng. Làm tròn đúng một lần, ở `formatPercent`.
  */
 
-import type { CityShareRow, CitySharesEnvelope, CoverageNote } from "./city-shares";
+import type { CityShareRow, CitySharesEnvelope, CoverageNote, Meta } from "./city-shares";
 import { BAR_CITIES, cityLabel, LEGEND_CITIES, levelLabel, roleLabel, yearsLabel } from "./labels";
+import { sourcesText } from "./source-labels";
 
 /** Một dòng có tỷ trọng: thanh ở lối 2D, hoặc dòng chú thích Khác / không xác định. */
 export interface ShareLine {
@@ -52,7 +53,7 @@ export interface SnapshotCaption {
   notes: CoverageNote[];
   /** Câu nguồn lỗi khi snapshot `partial` có nguồn lỗi; ngược lại `null`. */
   failedSources: string | null;
-  /** Bộ lọc đang dùng (#280): "vai trò · cấp bậc · số năm". */
+  /** Bộ lọc đang dùng (#280, #324): "Mọi vai trò, mới vào nghề, mọi số năm kinh nghiệm". */
   filters: string;
 }
 
@@ -66,6 +67,8 @@ export interface CitySharesView {
   years: string;
   yearsLabel: string;
   /** Câu số tin bị bỏ vì không ghi số năm khi `years` khác `any`; ngược lại `null`. */
+  /** Tiêu đề khung bản đồ (#324): "521 tin Backend · mọi cấp bậc, mọi số năm kinh nghiệm". */
+  title: string;
   unstatedNote: string | null;
   bars: ShareLine[];
   legend: ShareLine[];
@@ -75,7 +78,53 @@ export interface CitySharesView {
 
 export const NOT_ENOUGH_DATA = "chưa đủ dữ liệu";
 export const ROUNDING_NOTE = "Tổng các dòng có thể lệch 0,1% do làm tròn.";
-export const FAILED_SOURCES_PREFIX = "Nguồn lỗi ở snapshot này: ";
+/** Câu cho nhóm không có tin nào (#324), thay cho "Mới có 0 tin…". */
+export const NO_POSTINGS = "Chưa có tin nào";
+
+/** Câu của snapshot `partial` (#324): tên nguồn viết như trang đó viết. */
+export function failedSourcesText(codes: readonly string[]): string {
+  return `Lần cập nhật này chưa lấy đủ tin từ ${sourcesText(codes)}`;
+}
+
+/** Dòng dưới ngưỡng trong danh sách (#324): "Mới có 12 tin, cần ít nhất 30"; 0 tin thì "Chưa có tin nào". */
+export function notEnoughText(n: number, minSample: number): string {
+  return n === 0 ? NO_POSTINGS : `Mới có ${formatCount(n)} tin, cần ít nhất ${formatCount(minSample)}`;
+}
+
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLocaleLowerCase("vi") + text.slice(1);
+}
+
+/** Các phần của bộ lọc thành một câu (#324): "Mọi vai trò, mới vào nghề, mọi số năm kinh nghiệm". */
+export function filtersText(parts: readonly string[]): string {
+  return parts.map((part, i) => (i === 0 ? part : lowerFirst(part))).join(", ");
+}
+
+/** Vai trò trong câu bộ lọc: "Tất cả" đọc thành "Mọi vai trò". */
+export function roleFilterLabel(role: string): string {
+  return role === "all" ? "Mọi vai trò" : roleLabel(role);
+}
+
+/** Số năm trong câu bộ lọc: "Mọi số năm" của ô chọn đọc đủ thành "Mọi số năm kinh nghiệm". */
+export function yearsFilterLabel(years: string): string {
+  return years === "any" ? ANY_YEARS_TEXT : yearsLabel(years);
+}
+
+export const ANY_YEARS_TEXT = "Mọi số năm kinh nghiệm";
+
+/** Caption chung của mọi màn (#324): nguồn để nguyên mã, khung chú thích đổi ra tên khi in. */
+export function snapshotCaption(meta: Meta, filters: string): SnapshotCaption {
+  return {
+    sources: meta.sources,
+    snapshotDate: formatDate(meta.snapshot_date),
+    notes: meta.coverage_notes,
+    failedSources:
+      meta.snapshot_status === "partial" && meta.sources_failed.length > 0
+        ? failedSourcesText(meta.sources_failed)
+        : null,
+    filters,
+  };
+}
 
 const PERCENT = new Intl.NumberFormat("vi-VN", {
   style: "percent",
@@ -100,8 +149,9 @@ export function formatDate(isoDate: string): string {
   return `${day}/${month}/${year}`;
 }
 
+/** Ghi chú mẫu nhỏ trong bảng (#324): "Mới có 21 tin, chưa đủ 30"; 0 tin thì "Chưa có tin nào". */
 function lowSampleLead(n: number, minSample: number): string {
-  return `Cỡ mẫu nhỏ (n = ${formatCount(n)} < ${formatCount(minSample)})`;
+  return n === 0 ? NO_POSTINGS : `Mới có ${formatCount(n)} tin, chưa đủ ${formatCount(minSample)}`;
 }
 
 function toShareLine(row: CityShareRow, envelope: CitySharesEnvelope): ShareLine {
@@ -112,7 +162,9 @@ function toShareLine(row: CityShareRow, envelope: CitySharesEnvelope): ShareLine
   const nText = formatCount(n);
   const lowSample = row.share.display === "low_sample_shown";
   const lowSampleNote = lowSample
-    ? `${lowSampleLead(n, envelope.meta.thresholds.min_sample)}: số liệu chỉ để tham khảo`
+    ? n === 0
+      ? NO_POSTINGS
+      : `${lowSampleLead(n, envelope.meta.thresholds.min_sample)} để so sánh chắc chắn`
     : null;
   const accessibleName =
     `${label}: ${percent}, ${nText} tin` + (lowSampleNote ? `. ${lowSampleNote}` : "");
@@ -155,12 +207,14 @@ export function buildCitySharesView(envelope: CitySharesEnvelope): CitySharesVie
   const legend = legendRows.map((row) => toShareLine(row, envelope));
   const tableRows = [...barRows, ...provinceRows, ...legendRows].map((row) => toTableRow(row, envelope));
 
-  const scope = `${roleLabel(data.role)} · ${levelLabel(data.level)}`;
+  const scope = [roleFilterLabel(data.role), levelLabel(data.level)];
   const unstatedNote =
     data.years_unstated_cell_id === null
       ? null
-      : `${formatCount(meta.cells[data.years_unstated_cell_id].n)} tin của ${scope} ` +
-        "không ghi số năm kinh nghiệm nên không được tính.";
+      : `${formatCount(meta.cells[data.years_unstated_cell_id].n)} tin không ghi số năm kinh nghiệm ` +
+        `nên không được tính (${lowerFirst(filtersText(scope))}).`;
+  const totalText = formatCount(meta.cells[data.total_cell_id].n);
+  const subject = data.role === "all" ? "IT" : roleLabel(data.role);
 
   return {
     role: data.role,
@@ -169,23 +223,15 @@ export function buildCitySharesView(envelope: CitySharesEnvelope): CitySharesVie
     levelLabel: levelLabel(data.level),
     years: data.years,
     yearsLabel: yearsLabel(data.years),
+    title: `${totalText} tin ${subject} · ${lowerFirst(filtersText([levelLabel(data.level), yearsFilterLabel(data.years)]))}`,
     unstatedNote,
     bars,
     legend,
     table: {
       rows: tableRows,
-      total: { label: "Tổng", share: "100%", nText: formatCount(meta.cells[data.total_cell_id].n) },
+      total: { label: "Tổng", share: "100%", nText: totalText },
       roundingNote: ROUNDING_NOTE,
     },
-    caption: {
-      sources: meta.sources,
-      snapshotDate: formatDate(meta.snapshot_date),
-      notes: meta.coverage_notes,
-      failedSources:
-        meta.snapshot_status === "partial" && meta.sources_failed.length > 0
-          ? FAILED_SOURCES_PREFIX + meta.sources_failed.join(", ")
-          : null,
-      filters: `${scope} · ${yearsLabel(data.years)}`,
-    },
+    caption: snapshotCaption(meta, filtersText([...scope, yearsFilterLabel(data.years)])),
   };
 }

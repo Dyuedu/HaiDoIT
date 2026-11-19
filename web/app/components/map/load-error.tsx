@@ -16,7 +16,7 @@ export function LoadError({ message, snapshotDate = null, onRetry }: LoadErrorPr
         <p className="m-0 text-body-md text-text">{message}</p>
         {snapshotDate && (
           <p className="m-0 text-caption text-text-muted">
-            Ngày snapshot: <span className="font-mono text-footer">{formatDate(snapshotDate)}</span>
+            Cập nhật: <span className="font-mono text-footer">{formatDate(snapshotDate)}</span>
           </p>
         )}
       </div>

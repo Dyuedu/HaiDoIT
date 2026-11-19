@@ -63,3 +63,9 @@ Lý do: #169 thêm mục "Kỹ năng của bạn dùng ở vai trò nào" dướ
 - RED: `npx vitest run` → 2 failed trong `web/tests/fr37-newcomer-list.test.tsx`: "mạng hỏng thì báo không đọc được và thử lại được" (`fetch` được gọi 3 lần thay vì 2, lần thêm là `/api/v1/skills`) và test DEC-6 "lúc đang tải…" (`Found multiple elements with the role "status"`).
 - Sửa test: đếm lần gọi của `/api/v1/newcomer-roles`, và đọc vùng `status` trong region "Cửa vào cho người mới".
 - GREEN: `npx vitest run` → 25 files, 328 passed.
+
+## Đợt #324 (2026-11-19): câu chữ trên màn viết lại
+
+Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot", "entry-level"; câu thiếu mẫu "Mới có X tin, cần ít nhất 30"; khung nguồn "Đang xem", "Cập nhật", tên nguồn). File của issue này bị đụng: `web/lib/newcomer-roles-view.ts`, `web/app/components/insights/newcomer-list.tsx`. Số, thứ tự và ẩn số theo ngưỡng không đổi. Câu trong scenario của `spec.md` đã sửa theo câu mới; ý của AC giữ nguyên (người dùng đồng ý 2026-11-19).
+
+- RED và GREEN: `specs/324-cau-chu-de-hieu/tdd.md` (RED 42 failed / 299 passed; GREEN 357 passed, chạy `npx vitest run` từ PowerShell).

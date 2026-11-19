@@ -6,7 +6,15 @@
  * ô riêng (DEC-6).
  */
 
-import { FAILED_SOURCES_PREFIX, NOT_ENOUGH_DATA, type SnapshotCaption, formatCount, formatDate, formatPercent } from "./city-shares-view";
+import {
+  ANY_YEARS_TEXT,
+  type SnapshotCaption,
+  filtersText,
+  formatCount,
+  formatPercent,
+  notEnoughText,
+  snapshotCaption,
+} from "./city-shares-view";
 import { levelLabel, roleLabel } from "./labels";
 import { skillProfileHref } from "./newcomer-roles-view";
 import { type SkillLabel, type SkillRolesEnvelope, rowN } from "./skill-roles";
@@ -24,18 +32,18 @@ export interface SkillRoleLine {
   /** Hồ sơ kỹ năng của vai trò ở cấp `data.level` (#111). */
   href: string;
   shareShown: boolean;
-  /** "77,6%" khi có tỷ lệ; "chưa đủ dữ liệu (4/30)" khi `null_data`. */
+  /** "77,6%" khi có tỷ lệ; "Mới có 4 tin, cần ít nhất 30" hoặc "Chưa có tin nào" khi `null_data` (#324). */
   shareText: string;
-  /** "tin AI/ML mới vào nghề nhắc tới Python" khi có tỷ lệ; `null` khi `null_data`. */
+  /** "tin AI/ML cho người mới có nhắc tới Python" khi có tỷ lệ; `null` khi `null_data`. */
   sentence: string | null;
-  /** "n = 501": cỡ mẫu của phép đo. */
+  /** "tính trên 501 tin": cỡ mẫu của phép đo (#324); rỗng khi không có tin nào. */
   nText: string;
 }
 
 export interface SkillRolesView {
   /** "Kỹ năng: Học máy (Machine Learning)". */
   skillText: string;
-  /** "Chưa tin tuyển dụng hiện tại nào nhắc tới ABAP." khi `mentioned = false`; `null` khi có. */
+  /** "Hiện chưa tin tuyển dụng nào nhắc tới ABAP." khi `mentioned = false`; `null` khi có. */
   notMentionedText: string | null;
   lines: SkillRoleLine[];
   caption: SnapshotCaption;
@@ -45,7 +53,7 @@ export function buildSkillRolesView(envelope: SkillRolesEnvelope): SkillRolesVie
   const { data, meta } = envelope;
   const minSample = meta.thresholds.min_sample;
   const name = data.skill.name_vi;
-  const entry = levelLabel(data.level).toLowerCase();
+  const audience = data.level === "entry" ? "cho người mới" : `cấp ${levelLabel(data.level)}`;
   const lines = data.rows.map((row) => {
     const n = rowN(envelope, row);
     const shareShown = row.share.display !== "null_data" && row.share.value !== null;
@@ -55,26 +63,18 @@ export function buildSkillRolesView(envelope: SkillRolesEnvelope): SkillRolesVie
       label,
       href: skillProfileHref(row.role, data.level),
       shareShown,
-      shareText: shareShown
-        ? formatPercent(row.share.value as number)
-        : `${NOT_ENOUGH_DATA} (${formatCount(n)}/${formatCount(minSample)})`,
-      sentence: shareShown ? `tin ${label} ${entry} nhắc tới ${name}` : null,
-      nText: `n = ${formatCount(n)}`,
+      shareText: shareShown ? formatPercent(row.share.value as number) : notEnoughText(n, minSample),
+      sentence: shareShown ? `tin ${label} ${audience} có nhắc tới ${name}` : null,
+      nText: n > 0 ? `tính trên ${formatCount(n)} tin` : "",
     };
   });
   return {
     skillText: `Kỹ năng: ${skillLabelText(data.skill)}`,
-    notMentionedText: data.mentioned ? null : `Chưa tin tuyển dụng hiện tại nào nhắc tới ${name}.`,
+    notMentionedText: data.mentioned ? null : `Hiện chưa tin tuyển dụng nào nhắc tới ${name}.`,
     lines,
-    caption: {
-      sources: meta.sources,
-      snapshotDate: formatDate(meta.snapshot_date),
-      notes: meta.coverage_notes,
-      failedSources:
-        meta.snapshot_status === "partial" && meta.sources_failed.length > 0
-          ? FAILED_SOURCES_PREFIX + meta.sources_failed.join(", ")
-          : null,
-      filters: `Mọi vai trò · ${levelLabel(data.level)} (${data.levels.map(levelLabel).join(", ")}) · Mọi số năm`,
-    },
+    caption: snapshotCaption(
+      meta,
+      filtersText(["Mọi vai trò", `${levelLabel(data.level)} (${data.levels.map(levelLabel).join(", ")})`, ANY_YEARS_TEXT]),
+    ),
   };
 }

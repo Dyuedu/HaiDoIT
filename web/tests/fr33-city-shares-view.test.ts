@@ -15,7 +15,7 @@ import {
   statEnvelope,
 } from "./fixtures/envelopes";
 
-const LOW_SAMPLE_21 = "Cỡ mẫu nhỏ (n = 21 < 30): số liệu chỉ để tham khảo";
+const LOW_SAMPLE_21 = "Mới có 21 tin, chưa đủ 30 để so sánh chắc chắn";
 
 describe("fr33 — ba thanh thành phố", () => {
   it("fr33: role=all dựng đúng ba thanh Hà Nội, TP.HCM, Đà Nẵng theo share.value", () => {
@@ -68,11 +68,11 @@ describe("fr33 — ba thanh thành phố", () => {
     const view = buildCitySharesView(fakeEnvelope("backend"));
 
     expect(view.legend.map((line) => [line.city, line.lowSample, line.lowSampleNote])).toEqual([
-      ["remote", true, "Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo"],
-      ["abroad", true, "Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo"],
-      ["unknown", true, "Cỡ mẫu nhỏ (n = 8 < 30): số liệu chỉ để tham khảo"],
+      ["remote", true, "Chưa có tin nào"],
+      ["abroad", true, "Chưa có tin nào"],
+      ["unknown", true, "Mới có 8 tin, chưa đủ 30 để so sánh chắc chắn"],
     ]);
-    expect(view.bars[2].lowSampleNote).toBe("Cỡ mẫu nhỏ (n = 9 < 30): số liệu chỉ để tham khảo");
+    expect(view.bars[2].lowSampleNote).toBe("Mới có 9 tin, chưa đủ 30 để so sánh chắc chắn");
   });
 
   it("fr33: tỷ trọng 0 với n = 0 vẫn là một thanh, kèm nhãn n = 0 (envelope hình #69)", () => {
@@ -83,7 +83,7 @@ describe("fr33 — ba thanh thành phố", () => {
     expect(daNang.value).toBe(0);
     expect(daNang.percent).toBe("0,0%");
     expect(daNang.lowSample).toBe(true);
-    expect(daNang.lowSampleNote).toBe("Cỡ mẫu nhỏ (n = 0 < 30): số liệu chỉ để tham khảo");
+    expect(daNang.lowSampleNote).toBe("Chưa có tin nào");
   });
 
   it("fr33: năm dòng đều mẫu nhỏ thì mọi thanh và dòng chú thích đều có nhãn, chú thích đủ", () => {
@@ -131,7 +131,7 @@ describe("fr33 — ba thanh thành phố", () => {
     });
     const view = buildCitySharesView(envelope);
 
-    expect(view.bars[1].lowSampleNote).toBe("Cỡ mẫu nhỏ (n = 20 < 50): số liệu chỉ để tham khảo");
+    expect(view.bars[1].lowSampleNote).toBe("Mới có 20 tin, chưa đủ 50 để so sánh chắc chắn");
   });
 });
 
@@ -149,7 +149,7 @@ describe("fr33 — bảng", () => {
       ["Không xác định nơi làm việc", "7,4%", "65"],
     ]);
     expect(view.table.rows.map((row) => row.shareShown)).toEqual([true, true, false, true, false, false, true]);
-    expect(view.table.rows[2].note).toBe("Cỡ mẫu nhỏ (n = 21 < 30)");
+    expect(view.table.rows[2].note).toBe("Mới có 21 tin, chưa đủ 30");
     expect(view.table.rows[0].note).toBe("");
   });
 
@@ -227,13 +227,13 @@ describe("fr33 — chú thích snapshot", () => {
     expect(buildCitySharesView(envelope).caption.snapshotDate).toBe("28/10/2026");
   });
 
-  it("fr33: snapshot partial ghi 'Nguồn lỗi ở snapshot này: …' với sources_failed", () => {
+  it("fr33: snapshot partial ghi 'Lần cập nhật này chưa lấy đủ tin từ …' với sources_failed", () => {
     const envelope = fakeEnvelope("all");
     envelope.meta.snapshot_status = "partial";
     envelope.meta.sources_failed = ["topdev", "itviec"];
 
     expect(buildCitySharesView(envelope).caption.failedSources).toBe(
-      "Nguồn lỗi ở snapshot này: topdev, itviec",
+      "Lần cập nhật này chưa lấy đủ tin từ TopDev, ITviec",
     );
   });
 
@@ -318,6 +318,6 @@ describe("fr33 #163 — nhãn cấp bậc trên view", () => {
     expect(entryView.bars.map((bar) => bar.nText)).toEqual(["241", "188", "11"]);
     expect(allView.bars.map((bar) => bar.nText)).toEqual(["412", "333", "21"]);
     expect(entryView.table.total.nText).toBe("501");
-    expect(entryView.bars[2].lowSampleNote).toBe("Cỡ mẫu nhỏ (n = 11 < 30): số liệu chỉ để tham khảo");
+    expect(entryView.bars[2].lowSampleNote).toBe("Mới có 11 tin, chưa đủ 30 để so sánh chắc chắn");
   });
 });
