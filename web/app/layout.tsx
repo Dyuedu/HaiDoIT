@@ -20,6 +20,8 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  // Gốc để Next ghép URL tuyệt đối cho opengraph-image (deploy/compose.proxy.yml).
+  metadataBase: new URL("https://haidoit.io.vn"),
   title: "Hải Đồ IT",
   description: "Bản đồ nhu cầu kỹ năng trên tin tuyển dụng IT",
 };
