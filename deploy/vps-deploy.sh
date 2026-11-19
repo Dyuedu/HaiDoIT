@@ -9,33 +9,49 @@ WAREHOUSE_IMAGE=ghcr.io/dyuedu/haidoit-warehouse
 # daily.sh đọc tag image kho đã deploy từ file này, cùng thư mục VPS_PATH.
 WAREHOUSE_TAG_FILE=.warehouse-tag
 APP_IMAGES="ghcr.io/dyuedu/haidoit-api ghcr.io/dyuedu/haidoit-web $WAREHOUSE_IMAGE"
+# Mỗi lần deploy khỏe ghi một dòng tag vào đây. Thứ tự "mới nhất" lấy từ file này, không
+# từ CreatedAt: image build lại được nên mọi tag cùng CreatedAt (2026-11-19).
+DEPLOY_HISTORY=.deploy-history
 # Số tag sha giữ lại mỗi image: bản vừa deploy và một bản trước để rollback.
 # Mỗi bộ ba image khoảng 1,5 GB; đĩa 33 GB lên 94% ngày 2026-11-19.
 KEEP_TAGS=2
 
-# Đọc tag từ stdin, mới trước (thứ tự của `docker images`). In các tag sha-* ngoài $1 tag
-# mới nhất, trừ các tag nêu ở $2... Tag không phải sha-* thì bỏ qua, không đếm.
+# In KEEP_TAGS tag deploy gần nhất, không trùng, mới trước. Lịch sử chưa đủ thì không in
+# gì, để prune_old_tags không xóa khi chưa biết bản rollback.
+kept_tags() {
+  local tags
+  [ -f "$DEPLOY_HISTORY" ] || return 0
+  tags=$(tr -d '\r' < "$DEPLOY_HISTORY" | grep '^sha-' | tac | awk '!seen[$0]++' | head -n "$KEEP_TAGS")
+  [ "$(printf '%s\n' "$tags" | grep -c '^sha-')" -ge "$KEEP_TAGS" ] || return 0
+  printf '%s\n' "$tags"
+}
+
+# Đọc tag từ stdin, in các tag sha-* không nằm trong các tag nêu ở tham số.
 stale_tags() {
-  local keep=$1 tag p n=0 protected
-  shift
+  local tag p kept
   while IFS= read -r tag; do
     tag=${tag%$'\r'}
     case "$tag" in sha-*) ;; *) continue ;; esac
-    n=$((n + 1))
-    [ "$n" -le "$keep" ] && continue
-    protected=0
+    kept=0
     for p in "$@"; do
-      [ "$tag" = "$p" ] && protected=1
+      [ "$tag" = "$p" ] && kept=1
     done
-    [ "$protected" = 1 ] || printf '%s\n' "$tag"
+    [ "$kept" = 1 ] || printf '%s\n' "$tag"
   done
 }
 
-# Xóa tag sha cũ của api, web, kho. Image đang được container dùng thì rmi từ chối: bỏ qua.
+# Xóa tag sha của api, web, kho ngoài các bản deploy gần nhất. Image đang được container
+# dùng thì rmi từ chối: bỏ qua.
 prune_old_tags() {
-  local repo tag
+  local repo tag kept
+  kept=$(kept_tags)
+  if [ -z "$kept" ]; then
+    echo "lịch sử deploy chưa đủ $KEEP_TAGS bản, chưa dọn tag cũ"
+    return 0
+  fi
   for repo in $APP_IMAGES; do
-    docker images "$repo" --format '{{.Tag}}' | stale_tags "$KEEP_TAGS" "$IMAGE_TAG" |
+    # shellcheck disable=SC2086  # kept là các tag sha-*, không có dấu cách
+    docker images "$repo" --format '{{.Tag}}' | stale_tags $kept |
       while IFS= read -r tag; do
         docker rmi "$repo:$tag" >/dev/null || echo "không xóa được $repo:$tag"
       done
@@ -108,6 +124,7 @@ main() {
       printf '%s\n' "$IMAGE_TAG" > "$WAREHOUSE_TAG_FILE.tmp"
       mv "$WAREHOUSE_TAG_FILE.tmp" "$WAREHOUSE_TAG_FILE"
       echo "lịch đêm dùng $WAREHOUSE_IMAGE:$IMAGE_TAG"
+      printf '%s\n' "$IMAGE_TAG" >> "$DEPLOY_HISTORY"
       # Dọn chỉ khi bản mới đã khỏe: deploy hỏng thì còn nguyên các tag để rollback.
       prune_old_tags || echo "dọn image cũ lỗi, deploy vẫn xong"
       return 0

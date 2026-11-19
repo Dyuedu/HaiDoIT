@@ -53,6 +53,8 @@
 
 - [x] T020 Test `stale_tags` (giữ 2 tag mới nhất, giữ tag đang deploy, bỏ qua tag không phải `sha-*`) và test cả script với `docker` giả (khỏe thì `rmi` tag cũ của ba image, hỏng thì không, `rmi` lỗi không làm đỏ) trong `tests/deploy/test_gh262_don_tag_cu.py`
 - [x] T021 Thêm `stale_tags`, `prune_old_tags` vào `deploy/vps-deploy.sh`, gọi sau khi ghi `.warehouse-tag`
+- [x] T022 Test `kept_tags` (2 tag gần nhất, rollback không đếm trùng, thiếu lịch sử thì rỗng) và test deploy với `docker images` trả thứ tự bất kỳ, chưa có lịch sử thì không xóa
+- [x] T023 Ghi `.deploy-history` khi deploy khỏe, `prune_old_tags` giữ theo `kept_tags`
 
 ## Thay đổi đợt 2 (2026-11-17, #166)
 
