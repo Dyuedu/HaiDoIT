@@ -113,8 +113,35 @@ Các hành vi:
 
 RED: 6 failed, 1 passed. `stale_tags` chưa có nên bốn test hàm đỏ; script chưa gọi `rmi` nên hai test chạy cả script đỏ. Test "deploy hỏng thì không xóa" xanh sẵn vì script cũ không xóa tag nào.
 
-Lần chạy đầu sau khi sửa: 1 failed (hành vi 2). Trên Windows Python ghi stdin bằng CRLF nên tag thành `sha-b`, không khớp tag cần giữ. Thêm bỏ CR cuối dòng trong `stale_tags`, như `env_value` đã làm.
+Lần chạy đầu sau khi sửa: 1 failed (hành vi 2). Trên Windows Python ghi stdin bằng CRLF nên tag thành `sha-b
+`, không khớp tag cần giữ. Thêm bỏ CR cuối dòng trong `stale_tags`, như `env_value` đã làm.
 
 GREEN: `uv run pytest tests/deploy -q` → 84 passed. `uv run pytest -q --ignore=tests/deploy` → 1240 passed, 280 skipped.
 
 Chạy thử trên VPS: nạp script mới với `HAIDO_DEPLOY_LIB_ONLY=1`, đưa `docker images <repo>` thật qua `stale_tags 2 sha-5e4d9e6…`: mỗi image còn 2 tag nên không in tag nào, và `docker images` liệt kê mới trước như hàm giả định.
+
+## Đợt 6 — 2026-11-19: thứ tự theo lịch sử deploy, không theo CreatedAt
+
+Lý do: lần deploy đầu có đợt 5 (PR #320, run 44445036102) xanh nhưng api và kho vẫn còn 3 tag. `docker images` của cả ba tag cùng `CreatedAt` `2026-11-17 13:43:23` vì image build lại được, nên thứ tự trả về tùy ý: tag mới `sha-66c8087` đứng cuối, hai tag cũ lọt vào "2 mới nhất". Không xóa nhầm (tag đang deploy được giữ), nhưng không dọn được. Lần chạy thử ở đợt 5 không lộ vì lúc đó mỗi image chỉ còn 2 tag.
+
+Sửa: deploy khỏe thì thêm tag vào `.deploy-history`. `kept_tags` lấy 2 tag gần nhất không trùng trong file đó; chưa đủ 2 thì không dọn. `stale_tags` chỉ lọc tag `sha-*` ngoài tập giữ.
+
+Các hành vi (thay hành vi 1, 2, 4 của đợt 5):
+
+1. `stale_tags sha-new sha-prev` in các tag `sha-*` còn lại, thứ tự vào bất kỳ.
+2. Tag không phải `sha-*` bị bỏ qua.
+3. `kept_tags` với lịch sử `a, b, c` in `c, b`.
+4. Lịch sử `a, b, a` (rollback) in `a, b`.
+5. Lịch sử một dòng hoặc không có file: không in gì.
+6. Deploy khỏe, `docker images` trả `sha-old1, sha-prev, sha-old2, sha-new`: xóa `old1`, `old2` của ba image, lịch sử thành `sha-prev, sha-new`.
+7. Chưa có lịch sử: không `rmi`, lịch sử thành `sha-new`.
+8. Deploy hỏng: không `rmi`, lịch sử không đổi.
+9. `rmi` lỗi: deploy vẫn trả 0.
+
+RED (test mới, script của đợt 5): 7 failed, 2 passed. `kept_tags` chưa có; `stale_tags` còn nhận số tag giữ ở tham số đầu; deploy không ghi lịch sử và dọn theo thứ tự `docker images`. Hai test xanh sẵn là deploy hỏng và `rmi` lỗi.
+
+GREEN: `uv run pytest tests/deploy -q` → 86 passed; `uv run ruff check .` sạch; `bash -n deploy/vps-deploy.sh` qua.
+
+Chạy thử trên VPS, chỉ đọc (script qua stdin, không ghi file): giả lập lịch sử `sha-66c8087…, sha-NEXT`, `stale_tags` in đúng `api` và `warehouse` `sha-5c49037…`, `sha-5e4d9e6…`, `web` `sha-5e4d9e6…`. VPS có `tac` và `awk`.
+
+Trên VPS chưa có `.deploy-history`, nên lần deploy đầu có bản này chỉ ghi tag mới và chưa dọn; từ lần deploy thứ hai thì dọn.

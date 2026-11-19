@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Đường deploy đã ở `main` (#268, #269), `DEPLOY_ENABLED` đã bật. Đợt 3 (2026-11-10) chuyển script chạy trên VPS ra `deploy/vps-deploy.sh` sau khi run 42851541091 lỗi cú pháp bash. Đợt 4 (2026-11-11, #273): workflow build thêm image kho, script deploy kéo nó và ghi `.warehouse-tag`. Đợt 5 (2026-11-19, không có issue riêng): deploy khỏe thì xóa tag `sha-*` cũ của image api, web, kho, chỉ giữ 2 bản mới nhất và bản vừa deploy, sau khi đĩa VPS lên 94%.
+**Status**: Đường deploy đã ở `main` (#268, #269), `DEPLOY_ENABLED` đã bật. Đợt 3 (2026-11-10) chuyển script chạy trên VPS ra `deploy/vps-deploy.sh` sau khi run 42851541091 lỗi cú pháp bash. Đợt 4 (2026-11-11, #273): workflow build thêm image kho, script deploy kéo nó và ghi `.warehouse-tag`. Đợt 5 (2026-11-19, không có issue riêng): deploy khỏe thì xóa tag `sha-*` cũ của image api, web, kho, chỉ giữ 2 bản mới nhất và bản vừa deploy, sau khi đĩa VPS lên 94%. Đợt 6 (cùng ngày): "mới nhất" lấy theo `.deploy-history` trên VPS thay vì `CreatedAt`, vì image build lại được nên mọi tag trùng `CreatedAt`.
 
 **Input**: GitHub issue [#262](https://github.com/Dyuedu/HaiDoIT/issues/262) — Merges to `main` reach the VPS: the deploy workflow is switched on, the production compose file is on the VPS, and migrations run as a deploy step.
 
@@ -91,12 +91,13 @@ Mỗi lần deploy kéo ba image `sha-<commit>` (api, web, kho), khoảng 1,5 GB
 
 **Why this priority**: Đĩa đầy thì lượt crawl đêm và lần deploy sau đều hỏng. Thêm vài lần deploy nữa là tới mức đó.
 
-**Independent Test**: `stale_tags` trong `deploy/vps-deploy.sh` nhận danh sách tag (mới trước) và in các tag cần xóa. Chạy cả script với `docker` giả, xem các lệnh `docker rmi`.
+**Independent Test**: `kept_tags` trong `deploy/vps-deploy.sh` đọc `.deploy-history` và in 2 tag deploy gần nhất; `stale_tags` in các tag `sha-*` ngoài tập đó. Chạy cả script với `docker` giả, xem các lệnh `docker rmi`.
 
 **Acceptance Scenarios**:
 
-1. **Given** mỗi image có các tag `sha-new`, `sha-prev`, `sha-old1`, `sha-old2` và cổng sức khỏe qua, **When** deploy `sha-new` xong, **Then** script xóa `sha-old1` và `sha-old2` của cả api, web, kho, giữ `sha-new` và `sha-prev`.
-2. **Given** rollback về một tag cũ hơn hai tag mới nhất, **When** dọn, **Then** tag đang deploy không bị xóa.
+1. **Given** `.deploy-history` có `sha-prev`, mỗi image có các tag `sha-new`, `sha-prev`, `sha-old1`, `sha-old2` theo thứ tự bất kỳ, và cổng sức khỏe qua, **When** deploy `sha-new` xong, **Then** `sha-new` được ghi thêm vào lịch sử, script xóa `sha-old1` và `sha-old2` của cả api, web, kho, giữ `sha-new` và `sha-prev`.
+2. **Given** lịch sử `sha-a`, `sha-b` rồi rollback về `sha-a`, **When** dọn, **Then** giữ `sha-a` và `sha-b`.
+6. **Given** lịch sử chưa đủ 2 tag (VPS mới, hoặc lần deploy đầu có bản này), **When** deploy xong, **Then** không xóa tag nào.
 3. **Given** cổng sức khỏe không qua, **When** script dừng, **Then** không tag nào bị xóa.
 4. **Given** một image cũ đang được container dùng nên `docker rmi` lỗi, **When** dọn, **Then** deploy vẫn coi là xong.
 5. **Given** tag không phải `sha-*` (`local`, `main`), **When** dọn, **Then** không bị xóa và không tính vào 2 bản giữ lại.
@@ -126,7 +127,7 @@ Mỗi lần deploy kéo ba image `sha-<commit>` (api, web, kho), khoảng 1,5 GB
 - **FR-007**: Không in URL cơ sở dữ liệu hay token ra log.
 - **FR-009**: Script chạy trên VPS là file `deploy/vps-deploy.sh`, qua được `bash -n`, và workflow gửi nó qua stdin của `ssh ... bash -se`. Token kéo image đi qua stdin, không nằm trên dòng lệnh.
 - **FR-010**: Từ #273, workflow còn build image kho, chép `compose.scraper.yml` và `daily.sh` (`scp -p`), và chạy cả khi đổi `config/**`. `vps-deploy.sh` kéo image kho cùng tag trước `docker logout` và chỉ ghi `.warehouse-tag` sau khi cổng sức khỏe qua. Chi tiết ở `specs/273-image-kho-trong-deploy/`.
-- **FR-011**: Sau khi cổng sức khỏe qua và `.warehouse-tag` đã ghi, `vps-deploy.sh` xóa tag `sha-*` của `haidoit-api`, `haidoit-web`, `haidoit-warehouse` ngoài 2 tag mới nhất, trừ tag vừa deploy, rồi `docker image prune -f`. Lỗi khi xóa không làm deploy đỏ.
+- **FR-011**: Sau khi cổng sức khỏe qua và `.warehouse-tag` đã ghi, `vps-deploy.sh` thêm tag vào `.deploy-history`, rồi xóa tag `sha-*` của `haidoit-api`, `haidoit-web`, `haidoit-warehouse` ngoài 2 tag deploy gần nhất (không trùng) trong file đó, rồi `docker image prune -f`. Lịch sử chưa đủ 2 tag thì không xóa. Lỗi khi xóa không làm deploy đỏ.
 - **FR-008**: `web` ở trong mạng ngoài `haido-edge`, `api` thì không. Script deploy tạo `haido-edge` khi chưa có, trước `up`. Proxy nằm ở project `haido-proxy`, cổng 81 chỉ trên localhost.
 
 ### Key Entities
