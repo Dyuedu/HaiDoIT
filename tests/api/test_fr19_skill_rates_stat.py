@@ -142,7 +142,7 @@ def test_ad17_meta_o_da_dung_co_n_cua_stat_cells_va_skill_count_la_n_scanned(pg_
     meta = body["meta"]
     assert meta["snapshot_date"] == S and meta["snapshot_status"] == "published"
     assert meta["sources"] == ["itviec", "zalo"]
-    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1}
+    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1, "theta_version": "theta-1"}
     assert meta["coverage_notes"][0]["code"] == "n_sources"
 
 

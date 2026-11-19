@@ -18,6 +18,7 @@ snapshots = sa.Table(
     sa.Column("opened_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")),
     sa.Column("closed_at", sa.DateTime(timezone=True)),
     sa.Column("sources_failed", sa.ARRAY(sa.Text()), nullable=False, server_default=sa.text("'{}'::text[]")),
+    sa.Column("theta_version", sa.Text()),
 )
 
 pipeline_runs = sa.Table(

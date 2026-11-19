@@ -245,7 +245,7 @@ def test_fr33_display_do_suppression_for_voi_min_sample_cua_config(pg_engine: En
 def test_fr33_cap_bac_khong_doi_nguong_theta_va_ghi_chu_pham_vi(pg_engine: Engine, client: TestClient) -> None:
     _seed(pg_engine, SEEDED)
     meta = _ok(client, level="entry")["meta"]
-    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1}
+    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1, "theta_version": "theta-1"}
     assert [n["code"] for n in meta["coverage_notes"]] == [n.code for n in RULES.coverage_notes]
     assert meta["sources"] == ["itviec"]
 

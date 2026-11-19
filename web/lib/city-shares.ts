@@ -33,6 +33,8 @@ export interface Thresholds {
   min_sample: number;
   theta_core: number;
   theta_common: number;
+  /** Phiên bản θ của snapshot (config/theta.toml, #102); theta_core và theta_common là giá trị của nó. */
+  theta_version: string;
 }
 
 export interface CoverageNote {

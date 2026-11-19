@@ -1,6 +1,6 @@
 # Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn, bảng nhãn.
 # Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle và stat_cells lưu phiên bản đã dùng.
-config_version = "2026-11-17.1"
+config_version = "2026-11-19.1"
 
 # Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
 # Phép dân số đếm đúng window_days ngày kết thúc ở S, gồm cả S: S - (window_days - 1) <= last_seen <= S.
@@ -8,9 +8,10 @@ window_days = 60
 
 # Ngưỡng mẫu: ô có n < min_sample thì tỷ trọng vẫn trả về nhưng đánh dấu mẫu nhỏ (AD-17).
 min_sample = 30
-# Ngưỡng nhóm kỹ năng (θ), dùng cho tỷ lệ kỹ năng.
-theta_core = 0.3
-theta_common = 0.1
+# Ngưỡng nhóm kỹ năng (θ) dùng cho tỷ lệ kỹ năng (#102). Giá trị nằm trong config/theta.toml, chỉ thêm phiên bản mới,
+# không sửa phiên bản cũ. Đây là phiên bản hiện hành cho snapshot sắp tính; mỗi snapshot lưu phiên bản nó đã dùng
+# (haido.snapshots.theta_version) nên đổi dòng này không làm snapshot cũ đổi nhóm.
+theta_version = "theta-1"
 
 # Tải CV lên (#140, AD-11): cỡ tối đa tính bằng byte (5 MiB) và kiểu file được nhận (PDF, DOCX).
 # haido_api.uploads kiểm cả hai trước khi đọc thân request, rồi đối chiếu byte đầu của file.

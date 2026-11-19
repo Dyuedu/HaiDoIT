@@ -28,7 +28,7 @@ ALWAYS_CITIES = 'always_cities = ["ha_noi", "unknown"]\n'  # #285
 CV = f'cv_max_bytes = 5242880\ncv_types = ["{PDF}", "{DOCX}"]\n'
 
 BASE = (
-    'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_core = 0.3\ntheta_common = 0.1\n'
+    'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_version = "theta-1"\n'
     f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{YEARS_OPTIONS}{ALWAYS_CITIES}{CV}\n'
     f"{SOURCES}\n{LEVEL_GROUPS}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
 )
@@ -64,7 +64,7 @@ def test_ad10_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize(
-    "khoa", ["config_version", "window_days", "min_sample", "theta_core", "theta_common", "roles"]
+    "khoa", ["config_version", "window_days", "min_sample", "theta_version", "roles"]
 )
 def test_ad10_thieu_khoa_thi_bao_loi_tieng_viet(tmp_path: Path, khoa: str) -> None:
     with pytest.raises(ConfigError, match="thiếu") as exc:
@@ -100,9 +100,8 @@ def test_ad10_gia_tri_sai_kieu_thi_bao_loi(tmp_path: Path) -> None:
     [
         ({"min_sample": "0"}, "min_sample"),
         ({"min_sample": "30.5"}, "min_sample"),
-        ({"theta_core": "1.5"}, "theta_core"),
-        ({"theta_common": '"x"'}, "theta_common"),
-        ({"theta_common": "0.5"}, "theta_common"),
+        ({"theta_version": "1"}, "theta_version"),
+        ({"theta_version": '""'}, "theta_version"),
         ({"roles": "[]"}, "roles"),
         ({"roles": '["backend", "backend", "other"]'}, "roles"),
         ({"roles": '["all", "backend", "other"]'}, "roles"),

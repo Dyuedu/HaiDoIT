@@ -169,7 +169,7 @@ def test_dat20_meta_co_ngay_snapshot_nguon_dang_bat_a_z_va_ghi_chu_so_nguon(pg_e
     assert meta["snapshot_status"] == "published"
     assert meta["sources"] == ["itviec", "momo", "topcv", "zalo"]
     assert meta["sources_failed"] == []
-    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1}
+    assert meta["thresholds"] == {"min_sample": 30, "theta_core": 0.3, "theta_common": 0.1, "theta_version": "theta-1"}
     notes = {n["code"]: n["text"] for n in meta["coverage_notes"]}
     assert notes["n_sources"] == "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 4 nguồn."
     assert [n["code"] for n in meta["coverage_notes"]] == [n.code for n in RULES.coverage_notes]

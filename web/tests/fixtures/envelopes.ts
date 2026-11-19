@@ -122,7 +122,7 @@ export function buildEnvelope(spec: EnvelopeSpec): CitySharesEnvelope {
       snapshot_status: spec.snapshotStatus ?? "published",
       sources: spec.sources ?? STAT_SOURCES,
       sources_failed: spec.sourcesFailed ?? [],
-      thresholds: { min_sample: spec.minSample ?? 30, theta_core: 0.3, theta_common: 0.1 },
+      thresholds: { min_sample: spec.minSample ?? 30, theta_core: 0.3, theta_common: 0.1, theta_version: "theta-1" },
       coverage_notes: spec.coverageNotes ?? STAT_COVERAGE_NOTES,
       cells,
     },
