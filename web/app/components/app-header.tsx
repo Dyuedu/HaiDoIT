@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -20,6 +21,7 @@ export function AppHeader() {
           href="/"
           className="flex items-center gap-1 text-logo text-text transition-opacity hover:opacity-90"
         >
+          <Image src="/brand/logo-mark.svg" alt="" width={28} height={28} priority className="mr-1" />
           <span>HẢI ĐỒ</span>
           <span className="text-primary">•</span>
           <span>IT</span>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 560" width="1200" height="1120" fill="none">
+  <defs>
+    <linearGradient id="grad-chart" x1="340" y1="100" x2="120" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#50AAE6" />
+      <stop offset="55%" stop-color="#2B84C2" />
+      <stop offset="100%" stop-color="#166FB0" />
+    </linearGradient>
+
+    <linearGradient id="grad-bl-outer" x1="90" y1="20" x2="240" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4BA3E2" />
+      <stop offset="45%" stop-color="#2682C1" />
+      <stop offset="100%" stop-color="#035F9E" />
+    </linearGradient>
+
+    <linearGradient id="grad-bl-navy" x1="120" y1="40" x2="260" y2="425" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0D61B7" />
+      <stop offset="45%" stop-color="#044180" />
+      <stop offset="100%" stop-color="#002A52" />
+    </linearGradient>
+
+    <linearGradient id="grad-tr-light" x1="260" y1="10" x2="410" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#AFDEFC" />
+      <stop offset="50%" stop-color="#7FC1EA" />
+      <stop offset="100%" stop-color="#2D84BF" />
+    </linearGradient>
+
+    <linearGradient id="grad-tr-mid" x1="260" y1="30" x2="380" y2="370" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#51AAE4" />
+      <stop offset="55%" stop-color="#2E85C1" />
+      <stop offset="100%" stop-color="#03619F" />
+    </linearGradient>
+
+    <linearGradient id="grad-wordmark" x1="300" y1="370" x2="300" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0E5FA8" />
+      <stop offset="100%" stop-color="#032C66" />
+    </linearGradient>
+
+    <clipPath id="clip-inner-bars">
+      <circle cx="260.2" cy="200.3" r="201.5" />
+    </clipPath>
+  </defs>
+
+  <!-- Biểu tượng -->
+  <g transform="translate(130, 14) scale(0.7328)">
+    <g clip-path="url(#clip-inner-bars)" fill="url(#grad-chart)">
+      <rect x="114.5" y="308" width="39" height="110" />
+      <rect x="180" y="218" width="39" height="200" />
+      <rect x="245.5" y="264" width="39" height="154" />
+      <rect x="311" y="172" width="39" height="246" />
+    </g>
+
+    <polyline points="134,251 199.5,161 265,208 330.5,116" fill="none" stroke="url(#grad-chart)" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round" />
+    <g fill="url(#grad-chart)">
+      <circle cx="134" cy="251" r="15" />
+      <circle cx="199.5" cy="161" r="15" />
+      <circle cx="265" cy="208" r="15" />
+      <circle cx="330.5" cy="116" r="15" />
+    </g>
+
+    <path d="M 73.1 184.5 A 179.8 179.8 0 1 1 273.7 389.9 A 169.4 169.4 0 1 0 73.1 184.5 Z" fill="url(#grad-tr-mid)" />
+    <path d="M 73.7 180.8 A 190.3 190.3 0 1 1 275.7 389.6 A 179.8 179.8 0 1 0 73.7 180.8 Z" fill="url(#grad-tr-light)" />
+    <path d="M 168.2 23.2 A 199.6 199.6 0 1 0 438.4 290.3 A 208.3 208.3 0 1 1 168.2 23.2 Z" fill="url(#grad-bl-navy)" />
+    <path d="M 75.0 20.0 L 177.0 20.0 A 208.3 208.3 0 1 0 443.4 275.0 A 218.6 218.6 0 1 1 95.4 58.5 Z" fill="url(#grad-bl-outer)" />
+  </g>
+
+  <!-- Chữ (chuyển sang outline path bằng Ctrl+Shift+O trong Figma/Illustrator) -->
+  <text x="300" y="446" text-anchor="middle" fill="url(#grad-wordmark)" font-family="&#39;Montserrat&#39;, &#39;Be Vietnam Pro&#39;, &#39;Lato&#39;, &#39;Noto Sans&#39;, sans-serif" font-size="76" font-weight="900" letter-spacing="10">HẢI ĐỒ IT</text>
+
+  <text x="300" y="512" text-anchor="middle" fill="#0B5A99" font-family="&#39;Montserrat&#39;, &#39;Be Vietnam Pro&#39;, &#39;Lato&#39;, &#39;Noto Sans&#39;, sans-serif" font-size="34" font-weight="400" letter-spacing="15">SINCE  2026</text>
+</svg>
