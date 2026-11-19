@@ -85,6 +85,45 @@ export interface OverviewView {
   caption: SnapshotCaption;
 }
 
+export interface MixRow {
+  key: string;
+  label: string;
+  /** Các đoạn theo thứ tự cấp, chỉ cấp có tin; độ rộng là `share.value` của API. */
+  segments: { code: string; label: string; value: number; percent: string }[];
+  /** "chưa đủ dữ liệu" khi API ẩn tỷ lệ cấp của vai trò. */
+  note: string | null;
+}
+
+/**
+ * Cơ cấu cấp bậc của từng vai trò (#330), theo đúng thứ tự `order` mà danh sách khác (người mới) đã nhận từ API. Chỉ tra
+ * và nối hai response, không xếp lại; vai trò không có trong toàn cảnh thì bỏ qua.
+ */
+export function buildLevelMixRows(envelope: MarketOverviewEnvelope, order: string[]): MixRow[] {
+  const roles = new Map(envelope.data.roles.map((r) => [r.role, r]));
+  return order.flatMap((code) => {
+    const role = roles.get(code);
+    if (!role) return [];
+    const hidden = role.level_mix.every((s) => s.share.value === null);
+    return [
+      {
+        key: code,
+        label: roleLabel(code),
+        segments: hidden
+          ? []
+          : role.level_mix
+              .filter((s) => (s.share.value ?? 0) > 0)
+              .map((s) => ({
+                code: s.code,
+                label: levelLabel(s.code),
+                value: s.share.value as number,
+                percent: formatPercent(s.share.value as number),
+              })),
+        note: hidden ? NOT_ENOUGH_DATA : null,
+      },
+    ];
+  });
+}
+
 /** Nhãn mốc số năm: `0`, `1`, `4-5`, `over_5`, `none`. */
 export function yearsBucketLabel(code: string): string {
   if (code === "0") return "Không cần kinh nghiệm";

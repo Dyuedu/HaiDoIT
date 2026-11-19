@@ -35,3 +35,9 @@ Thứ tự thực tế: code của màn được viết trước test (lệch qu
 - `npx vitest run` → `Test Files 29 passed (29)`, `Tests 366 passed (366)`. `npm run lint`, `npx tsc --noEmit` sạch.
 - Chụp trang ở máy với API bản giả (`next start`, 1280 px và 390 px): không tràn ngang, chọn Senior lọc đúng biểu đồ vai trò.
 - `next build` ở máy dừng ở bước cuối với `SecurityFatalError: Your version of Next.js is affected by a known security vulnerability` (Next.js 16.4.4) sau khi đã "Compiled successfully"; không phải lỗi của thay đổi này. Đã báo người dùng.
+
+## Đợt #330 (2026-11-19): danh sách thành biểu đồ, AC của issue này không đổi
+
+Lý do: #330 thêm thanh vào danh sách người mới, lollipop vào danh sách kỹ năng theo vai trò, bảng số cho cả hai và biểu đồ cơ cấu cấp bậc (`web/lib/newcomer-roles-view.ts`, `skill-roles-view.ts`, `market-overview-view.ts`, các component trong `web/app/components/insights/`). Chữ, số, thứ tự và luật ẩn số không đổi. Bộ quét DEC-6 trong `web/tests/fr37-newcomer-list.test.tsx` miễn thêm `table` (bảng số là ô số theo thiết kế).
+
+- RED và GREEN: `specs/330-bieu-do-nguoi-moi-ky-nang/tdd.md` (`npx vitest run` → 373 passed).

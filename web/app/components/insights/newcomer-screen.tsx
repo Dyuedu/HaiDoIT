@@ -2,12 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { levelLabel } from "@/lib/labels";
+import { type MarketOverviewEnvelope, fetchMarketOverview } from "@/lib/market-overview";
+import { buildLevelMixRows } from "@/lib/market-overview-view";
 import { type NewcomerRolesResult, fetchNewcomerRoles } from "@/lib/newcomer-roles";
 import { buildNewcomerView } from "@/lib/newcomer-roles-view";
 
 import { LoadError } from "../map/load-error";
 import { SnapshotCaption } from "../map/snapshot-caption";
+import { LevelMixChart } from "./level-mix-chart";
 import { NewcomerList } from "./newcomer-list";
+import { DataTable } from "./overview/charts";
 
 const LOADING = "Đang tải số liệu…";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
@@ -25,6 +30,16 @@ export function NewcomerScreen() {
   const [requestId, setRequestId] = useState(0);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
+  // Cơ cấu cấp bậc từng vai trò (#330) lấy tỷ lệ cấp của market-overview; lỗi thì chỉ thiếu biểu đồ này.
+  const [overview, setOverview] = useState<MarketOverviewEnvelope | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchMarketOverview({ signal: controller.signal }).then((result) => {
+      if (!controller.signal.aborted && result.kind === "ok") setOverview(result.envelope);
+    });
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -53,9 +68,36 @@ export function NewcomerScreen() {
     content = <LoadError message={UNREADABLE} onRetry={retry} />;
   } else if (current?.kind === "ok") {
     const view = buildNewcomerView(current.envelope);
+    const mix = overview ? buildLevelMixRows(overview, view.lines.map((l) => l.role)) : [];
     content = (
       <>
         <NewcomerList lines={view.lines} />
+        <DataTable
+          caption="Tỷ lệ tin cho người mới theo vai trò"
+          head={["Vai trò", "Tỷ lệ", "Số tin"]}
+          rows={view.lines.map((l) => [l.label, l.shareText, l.entryText ?? "Chưa có tin nào"])}
+          numeric={[]}
+        />
+        {mix.length > 0 && overview && (
+          <section aria-labelledby="co-cau-cap" className="flex flex-col gap-3 rounded-xl border border-border bg-panel p-panel">
+            <div>
+              <h3 id="co-cau-cap" className="m-0 text-body-md font-semibold text-text">
+                Cơ cấu cấp bậc của từng vai trò
+              </h3>
+              <p className="m-0 text-caption text-text-muted">Cùng thứ tự với danh sách trên. Màu nhạt là cấp mới vào nghề.</p>
+            </div>
+            <LevelMixChart rows={mix} levels={overview.data.levels.map((code) => ({ code, label: levelLabel(code) }))} />
+            <DataTable
+              caption="Cơ cấu cấp bậc của từng vai trò"
+              head={["Vai trò", ...overview.data.levels.map(levelLabel)]}
+              rows={mix.map((r) => [
+                r.label,
+                ...overview.data.levels.map((lv) => r.note ?? r.segments.find((s) => s.code === lv)?.percent ?? "0,0%"),
+              ])}
+              numeric={overview.data.levels.map((_, i) => i + 1)}
+            />
+          </section>
+        )}
         <SnapshotCaption caption={view.caption} />
       </>
     );

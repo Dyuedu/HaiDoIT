@@ -36,6 +36,8 @@ export interface NewcomerLine {
   /** "27,2%" khi có tỷ lệ; "Mới có 12 tin, cần ít nhất 30" hoặc "Chưa có tin nào" khi `null_data`. */
   shareText: string;
   shareShown: boolean;
+  /** Độ dài thanh 0–1 (#330): tỷ lệ của dòng so với tỷ lệ lớn nhất của danh sách, chỉ để vẽ; `null` khi API ẩn tỷ lệ. */
+  barLength: number | null;
 }
 
 export interface NewcomerView {
@@ -46,6 +48,8 @@ export interface NewcomerView {
 export function buildNewcomerView(envelope: NewcomerRolesEnvelope): NewcomerView {
   const { data, meta } = envelope;
   const minSample = meta.thresholds.min_sample;
+  // Tỷ lệ lớn nhất chỉ dùng để vẽ thanh dài nhất kín rãnh (#330); số in ra vẫn là `share.value` (AD-22).
+  const top = data.rows.reduce((max, row) => (row.share.value !== null && row.share.value > max ? row.share.value : max), 0);
   const lines = data.rows.map((row) => {
     const { entry, n } = rowCounts(envelope, row);
     const shareShown = row.share.display === "shown" && row.share.value !== null;
@@ -56,6 +60,7 @@ export function buildNewcomerView(envelope: NewcomerRolesEnvelope): NewcomerView
       entryText: n > 0 ? `${formatCount(entry)} trên ${formatCount(n)} tin dành cho người mới` : null,
       shareText: shareShown ? formatPercent(row.share.value as number) : notEnoughText(n, minSample),
       shareShown,
+      barLength: shareShown && top > 0 ? (row.share.value as number) / top : null,
     };
   });
   return {

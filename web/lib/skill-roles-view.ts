@@ -34,6 +34,8 @@ export interface SkillRoleLine {
   shareShown: boolean;
   /** "77,6%" khi có tỷ lệ; "Mới có 4 tin, cần ít nhất 30" hoặc "Chưa có tin nào" khi `null_data` (#324). */
   shareText: string;
+  /** Vị trí chấm 0–1 trên trục 0–100% (#330): đúng `share.value`; `null` khi `null_data`. */
+  dot: number | null;
   /** "tin AI/ML cho người mới có nhắc tới Python" khi có tỷ lệ; `null` khi `null_data`. */
   sentence: string | null;
   /** "tính trên 501 tin": cỡ mẫu của phép đo (#324); rỗng khi không có tin nào. */
@@ -64,6 +66,7 @@ export function buildSkillRolesView(envelope: SkillRolesEnvelope): SkillRolesVie
       href: skillProfileHref(row.role, data.level),
       shareShown,
       shareText: shareShown ? formatPercent(row.share.value as number) : notEnoughText(n, minSample),
+      dot: shareShown ? (row.share.value as number) : null,
       sentence: shareShown ? `tin ${label} ${audience} có nhắc tới ${name}` : null,
       nText: n > 0 ? `tính trên ${formatCount(n)} tin` : "",
     };
