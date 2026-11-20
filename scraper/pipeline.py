@@ -58,7 +58,7 @@ SOURCES = {
     },
     "itviec": {
         "module": "crawlers.itviec",
-        "type": "playwright",
+        "type": "nodriver",
         "has_limit": True,
         "args": [],
         "timeout": 6 * 3600,  # no detail limit; the seen file is written before details
