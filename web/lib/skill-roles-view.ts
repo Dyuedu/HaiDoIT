@@ -47,8 +47,27 @@ export interface SkillRolesView {
   skillText: string;
   /** "Hiện chưa tin tuyển dụng nào nhắc tới ABAP." khi `mentioned = false`; `null` khi có. */
   notMentionedText: string | null;
+  /** Nhận định: "nền tảng" (nhiều vai trò) hoặc "chuyên biệt" (ít vai trò); `null` khi không nhắc. */
+  insight: string | null;
   lines: SkillRoleLine[];
   caption: SnapshotCaption;
+}
+
+const BROAD_THRESHOLD = 0.2;
+
+function skillInsight(skillName: string, lines: SkillRoleLine[]): string | null {
+  const shown = lines.filter((l) => l.shareShown);
+  if (shown.length === 0) return null;
+  const broad = shown.filter((l) => l.dot !== null && l.dot > BROAD_THRESHOLD);
+  if (broad.length >= Math.ceil(shown.length * 0.6)) {
+    return `${skillName} là kỹ năng nền tảng — được nhiều vai trò yêu cầu ở tin cho người mới.`;
+  }
+  if (broad.length <= 2 && broad.length > 0) {
+    const names = broad.map((l) => l.label);
+    const joined = names.length === 1 ? names[0] : `${names[0]} và ${names[1]}`;
+    return `${skillName} là kỹ năng chuyên biệt, chủ yếu được nhắc ở ${joined}.`;
+  }
+  return null;
 }
 
 export function buildSkillRolesView(envelope: SkillRolesEnvelope): SkillRolesView {
@@ -74,6 +93,7 @@ export function buildSkillRolesView(envelope: SkillRolesEnvelope): SkillRolesVie
   return {
     skillText: `Kỹ năng: ${skillLabelText(data.skill)}`,
     notMentionedText: data.mentioned ? null : `Hiện chưa tin tuyển dụng nào nhắc tới ${name}.`,
+    insight: data.mentioned ? skillInsight(name, lines) : null,
     lines,
     caption: snapshotCaption(
       meta,

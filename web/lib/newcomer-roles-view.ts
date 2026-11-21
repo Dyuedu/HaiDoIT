@@ -42,7 +42,25 @@ export interface NewcomerLine {
 
 export interface NewcomerView {
   lines: NewcomerLine[];
+  takeaways: string[];
   caption: SnapshotCaption;
+}
+
+function newcomerTakeaways(lines: NewcomerLine[]): string[] {
+  const shown = lines.filter((l) => l.shareShown);
+  const result: string[] = [];
+  if (shown.length >= 3) {
+    result.push(`${shown[0].label} và ${shown[1].label} chiếm phần lớn cơ hội cho người mới vào nghề.`);
+  }
+  if (shown.length >= 3) {
+    const byTotalDesc = [...lines].filter((l) => l.shareShown);
+    const topByTotal = byTotalDesc.slice(0, 3).map((l) => l.role);
+    const surprise = shown.find((l) => !topByTotal.includes(l.role));
+    if (surprise) {
+      result.push(`Đáng chú ý, ${surprise.label} cũng là cửa vào rộng dù tổng tin không nằm trong nhóm đầu.`);
+    }
+  }
+  return result;
 }
 
 export function buildNewcomerView(envelope: NewcomerRolesEnvelope): NewcomerView {
@@ -65,6 +83,7 @@ export function buildNewcomerView(envelope: NewcomerRolesEnvelope): NewcomerView
   });
   return {
     lines,
+    takeaways: newcomerTakeaways(lines),
     caption: snapshotCaption(
       meta,
       filtersText(["Mọi vai trò", `${levelLabel(NEWCOMER_LEVEL)} (${data.levels.map(levelLabel).join(", ")})`, ANY_YEARS_TEXT]),
