@@ -302,6 +302,12 @@ def test_browser_crawlers_keep_walking_past_the_detail_limit(workdir, monkeypatc
     assert page.details == 1
 
 
+def test_itviec_playwright_flag_runs_the_playwright_walk(workdir, monkeypatch, fake_browser):
+    fake_browser(itviec, FakePage({1: [1]}, itviec_card))
+    run_crawler(itviec, monkeypatch, "--playwright", "--skip-details")
+    assert seen_doc("itviec")["job_urls"] == ["https://itviec.com/it-jobs/detail-1"]
+
+
 @pytest.mark.parametrize("module,card", [(itviec, itviec_card)])
 def test_browser_crawlers_block_is_an_incomplete_run(workdir, monkeypatch, fake_browser, module, card):
     fake_browser(module, FakePage({1: [1]}, card, blocked_on=2))
@@ -969,19 +975,20 @@ def capture_run(monkeypatch):
     return seen
 
 
-def test_pipeline_wraps_topcv_in_xvfb_without_display(monkeypatch):
+@pytest.mark.parametrize("name", ["topcv", "itviec"])
+def test_pipeline_wraps_nodriver_in_xvfb_without_display(monkeypatch, name):
     seen = capture_run(monkeypatch)
     monkeypatch.setattr(pipeline.sys, "platform", "linux")
     monkeypatch.delenv("DISPLAY", raising=False)
 
-    pipeline.run_crawler("topcv", pipeline.SOURCES["topcv"], [])
+    pipeline.run_crawler(name, pipeline.SOURCES[name], [])
 
     assert seen["cmd"][0] == "xvfb-run"
-    assert seen["cmd"][-2:] == ["-m", "crawlers.topcv"]
+    assert seen["cmd"][-2:] == ["-m", f"crawlers.{name}"]
     assert seen["timeout"] == 6 * 3600
 
 
-@pytest.mark.parametrize("name,display", [("topcv", ":0"), ("momo", None), ("itviec", None)])
+@pytest.mark.parametrize("name,display", [("topcv", ":0"), ("momo", None), ("itviec", ":0")])
 def test_pipeline_does_not_wrap_when_display_or_not_nodriver(monkeypatch, name, display):
     seen = capture_run(monkeypatch)
     monkeypatch.setattr(pipeline.sys, "platform", "linux")
