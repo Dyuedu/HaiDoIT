@@ -85,6 +85,11 @@ export function SkillRolesScreen() {
     content = (
       <>
         <p className="m-0 text-body-md font-semibold text-text">{view.skillText}</p>
+        {view.insight && (
+          <p data-testid="skill-insight" className="m-0 max-w-[78ch] text-body-md text-text-secondary">
+            {view.insight}
+          </p>
+        )}
         {view.notMentionedText ? (
           <p className="m-0 text-body-md text-amber">{view.notMentionedText}</p>
         ) : (

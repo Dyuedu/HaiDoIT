@@ -276,7 +276,7 @@ function barRow(
 }
 
 /** Câu tóm tắt: chỉ gọi tên theo thứ hạng máy chủ gửi, không chứa số (DEC-6). */
-function takeaways({ data }: MarketOverviewEnvelope): string[] {
+function takeaways({ data, meta }: MarketOverviewEnvelope): string[] {
   const lines: string[] = [];
   const sizes = data.levels_by_size;
   if (sizes.length >= 3) {
@@ -308,6 +308,46 @@ function takeaways({ data }: MarketOverviewEnvelope): string[] {
       .map((r) => roleLabel(r.role));
     lines.push(`${more} có nhiều tin IT hơn ${less}${leaning.length ? `, nhưng ${less} dẫn ở ${joinNames(leaning)}` : ""}.`);
   }
+
+  // #338: nhận định hành động cho sinh viên
+  if (doors.length >= 2) {
+    lines.push(
+      `Nếu bạn chưa chọn hướng, ${roleLabel(doors[0])} và ${roleLabel(doors[1])} là nơi bắt đầu dễ nhất với tỷ lệ tin dành cho người mới cao nhất.`,
+    );
+  }
+
+  const total = meta.cells[data.total_cell_id].n;
+  if (total > 0) {
+    const noExpCode = data.years.find((y) => y.code === "0");
+    const unstatedCode = data.years.find((y) => y.code === "none");
+    const noExpN = noExpCode ? meta.cells[noExpCode.share.cell_id].n : 0;
+    const unstatedN = unstatedCode ? meta.cells[unstatedCode.share.cell_id].n : 0;
+    const accessible = (noExpN + unstatedN) / total;
+    if (accessible >= 0.4) {
+      lines.push("Nhiều tin không yêu cầu kinh nghiệm hoặc không ghi rõ — kinh nghiệm không phải rào cản lớn cho người mới.");
+    } else {
+      lines.push("Phần lớn tin yêu cầu kinh nghiệm — sinh viên nên chuẩn bị qua thực tập hoặc dự án cá nhân.");
+    }
+  }
+
+  if (hn !== null && hcm !== null && hn !== hcm) {
+    const minor = hn > hcm ? "Hà Nội" : "TP.HCM";
+    const minorCode = hn > hcm ? "ha_noi" : "ho_chi_minh";
+    const majorCode = hn > hcm ? "ho_chi_minh" : "ha_noi";
+    const leanMinor = data.roles
+      .filter((r) => r.role !== OTHER_ROLE && r.share.display === "shown")
+      .filter((r) => {
+        const a = r.places.find((p) => p.code === minorCode)?.share.value ?? 0;
+        const b = r.places.find((p) => p.code === majorCode)?.share.value ?? 0;
+        return a > b;
+      })
+      .slice(0, 3)
+      .map((r) => roleLabel(r.role));
+    if (leanMinor.length > 0) {
+      lines.push(`Sinh viên ở miền ${hn > hcm ? "Bắc" : "Nam"} nên lưu ý ${joinNames(leanMinor)} — ${minor} có lợi thế hơn ở những vai trò này.`);
+    }
+  }
+
   return lines;
 }
 

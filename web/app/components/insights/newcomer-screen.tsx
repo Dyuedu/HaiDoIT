@@ -71,6 +71,16 @@ export function NewcomerScreen() {
     const mix = overview ? buildLevelMixRows(overview, view.lines.map((l) => l.role)) : [];
     content = (
       <>
+        {view.takeaways.length > 0 && (
+          <ul data-testid="newcomer-takeaways" className="m-0 flex max-w-[78ch] list-none flex-col gap-2 p-0">
+            {view.takeaways.map((line) => (
+              <li key={line} className="grid grid-cols-[14px_minmax(0,1fr)] gap-2 text-body-md text-text-secondary">
+                <span aria-hidden="true" className="mt-2 h-2 w-2 rounded-sm bg-primary" />
+                {line}
+              </li>
+            ))}
+          </ul>
+        )}
         <NewcomerList lines={view.lines} />
         <DataTable
           caption="Tỷ lệ tin cho người mới theo vai trò"
