@@ -8,6 +8,10 @@ import http from "k6/http";
 import { check } from "k6";
 import exec from "k6/execution";
 import { SharedArray } from "k6/data";
+import { Rate } from "k6/metrics";
+
+// Tỷ lệ response có `x-cache: HIT` (#343). Không có header (cache tắt) thì tính là không trúng.
+const cacheHit = new Rate("cache_hit");
 
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8001";
 const SCENARIO = __ENV.SCENARIO || "smoke";
@@ -86,6 +90,7 @@ export function setup() {
 function hit(name, path) {
   const res = http.get(`${BASE_URL}${path}`, { tags: { name } });
   check(res, { "status 200": (r) => r.status === 200 }, { name });
+  cacheHit.add(res.headers["X-Cache"] === "HIT", { name });
 }
 
 export function smokeStep() {

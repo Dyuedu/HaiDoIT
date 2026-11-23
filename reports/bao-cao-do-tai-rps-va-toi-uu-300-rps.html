@@ -1,0 +1,1580 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Báo Cáo Kỹ Thuật: Đo Tải Baseline & Tối Ưu Hóa API Đạt 300 RPS — Hải Đồ IT</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --panel-alt: #f1f5f9;
+      --ink: #0f172a;
+      --muted: #475569;
+      --subtle: #94a3b8;
+      --line: #e2e8f0;
+      --primary: #0284c7;
+      --primary-light: #e0f2fe;
+      --primary-dark: #0369a1;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --code-bg: #1e293b;
+      --code-ink: #f8fafc;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 10px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b0f19;
+      --panel: #131b2e;
+      --panel-alt: #1e293b;
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --subtle: #64748b;
+      --line: #22304d;
+      --primary: #38bdf8;
+      --primary-light: #0c4a6e;
+      --primary-dark: #7dd3fc;
+      --success: #4ade80;
+      --success-light: #14532d;
+      --warning: #fbbf24;
+      --warning-light: #78350f;
+      --danger: #f87171;
+      --danger-light: #7f1d1d;
+      --code-bg: #070b14;
+      --code-ink: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15.5px;
+      line-height: 1.68;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* Top Bar */
+    header.navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .brand-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-toggle, .btn-action {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .theme-toggle:hover, .btn-action:hover {
+      background: var(--panel-alt);
+      border-color: var(--subtle);
+    }
+
+    /* Layout Wrapper */
+    .layout-wrapper {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 36px;
+    }
+
+    /* Sidebar Navigation */
+    aside.sidebar {
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 96px);
+      overflow-y: auto;
+      padding-right: 12px;
+    }
+    aside.sidebar::-webkit-scrollbar { width: 5px; }
+    aside.sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+    .toc-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--subtle);
+      margin-bottom: 12px;
+    }
+    .toc-list { list-style: none; }
+    .toc-item { margin-bottom: 4px; }
+    .toc-link {
+      display: block;
+      padding: 6px 10px;
+      font-size: 13.5px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 6px;
+      line-height: 1.4;
+      transition: all 0.15s;
+    }
+    .toc-link:hover {
+      color: var(--ink);
+      background: var(--panel-alt);
+    }
+    .toc-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 600;
+    }
+    .toc-sublist {
+      list-style: none;
+      padding-left: 14px;
+      margin-top: 4px;
+      border-left: 1px solid var(--line);
+    }
+
+    /* Main Content Area */
+    main.content { min-width: 0; }
+
+    /* Header Hero */
+    .hero-banner {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--primary-light) 50%, var(--panel)), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .tag {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: var(--panel-alt);
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+    .tag.primary { background: var(--primary-light); color: var(--primary); border-color: transparent; }
+    .tag.success { background: var(--success-light); color: var(--success); border-color: transparent; }
+    .hero-banner h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.28;
+      margin-bottom: 12px;
+    }
+    .hero-banner p.subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 820px;
+      line-height: 1.6;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+    .meta-cell { font-size: 13px; }
+    .meta-cell .label { color: var(--subtle); display: block; margin-bottom: 2px; }
+    .meta-cell .val { font-weight: 600; color: var(--ink); }
+
+    /* KPI Cards */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+    .kpi-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .kpi-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .kpi-val {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .kpi-change {
+      font-size: 12.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kpi-change.up { color: var(--success); }
+    .kpi-change.down { color: var(--primary); }
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--subtle);
+      margin-top: 4px;
+    }
+
+    /* Content Sections */
+    section.doc-section {
+      margin-bottom: 48px;
+    }
+    section.doc-section > h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 2px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    section.doc-section > h2 .sec-badge {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    section.doc-section h3 {
+      font-size: 17.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 24px 0 10px;
+    }
+    section.doc-section h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 18px 0 8px;
+    }
+    section.doc-section p {
+      margin-bottom: 14px;
+      color: var(--ink);
+    }
+
+    /* Cards & Panels */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin: 18px 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Callout Alerts */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--panel-alt);
+      padding: 14px 18px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 18px 0;
+      font-size: 14.5px;
+    }
+    .callout.tip { border-left-color: var(--success); background: color-mix(in srgb, var(--success-light) 30%, var(--panel)); }
+    .callout.warn { border-left-color: var(--warning); background: color-mix(in srgb, var(--warning-light) 30%, var(--panel)); }
+    .callout.danger { border-left-color: var(--danger); background: color-mix(in srgb, var(--danger-light) 30%, var(--panel)); }
+    .callout strong { display: block; margin-bottom: 4px; color: var(--ink); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 18px 0 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    thead th {
+      background: var(--panel-alt);
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11.5px;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--line);
+      transition: background 0.1s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: color-mix(in srgb, var(--panel-alt) 60%, transparent); }
+    td {
+      padding: 11px 16px;
+      color: var(--ink);
+    }
+    td.bold { font-weight: 600; }
+    td.num { font-variant-numeric: tabular-nums; }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .pill.green { background: var(--success-light); color: var(--success); }
+    .pill.red { background: var(--danger-light); color: var(--danger); }
+    .pill.blue { background: var(--primary-light); color: var(--primary); }
+    .pill.amber { background: var(--warning-light); color: var(--warning); }
+
+    /* Code Blocks */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-ink);
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 13.5px;
+      line-height: 1.55;
+      margin: 14px 0;
+      box-shadow: var(--shadow-sm);
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9em;
+      padding: 2px 6px;
+      background: var(--panel-alt);
+      color: var(--ink);
+      border-radius: 4px;
+      border: 1px solid var(--line);
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      border: none;
+    }
+
+    /* Diagram Containers (SVG) */
+    .diagram-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 22px 0;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .diagram-caption {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
+    svg.diag {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Step Pipeline List */
+    .steps-chain {
+      position: relative;
+      padding-left: 28px;
+      margin: 20px 0;
+    }
+    .steps-chain::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: var(--line);
+    }
+    .step-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .step-item::before {
+      content: "";
+      position: absolute;
+      left: -23px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid var(--panel);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    .step-header {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .layout-wrapper { grid-template-columns: 1fr; }
+      aside.sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Hải Đồ IT</span>
+        <span class="brand-badge">Perf Report</span>
+      </a>
+      <div class="nav-actions">
+        <button class="btn-action" onclick="window.print()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          In Báo Cáo
+        </button>
+        <button class="theme-toggle" id="themeBtn" aria-label="Đổi giao diện">
+          <span id="themeIcon">🌙</span>
+          <span id="themeText">Tối</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="toc-title">Nội dung báo cáo</div>
+      <ul class="toc-list">
+        <li class="toc-item"><a href="#tong-quan" class="toc-link">1. Tóm tắt quản trị & Chỉ số cốt lõi</a></li>
+        <li class="toc-item">
+          <a href="#co-che-do-luong" class="toc-link">2. Bản chất các chỉ số đo lường</a>
+          <ul class="toc-sublist">
+            <li><a href="#dinh-nghia-rps" class="toc-link">RPS & Open System Model</a></li>
+            <li><a href="#dinh-nghia-p90-p95" class="toc-link">Phân vị p90 & p95 Latency</a></li>
+            <li><a href="#bay-do-tre-tich-luy" class="toc-link">Cạm bẫy độ trễ tích lũy</a></li>
+          </ul>
+        </li>
+        <li class="toc-item">
+          <a href="#cac-buoc-do-tai" class="toc-link">3. Chi tiết 5 bước đo tải baseline (#342)</a>
+          <ul class="toc-sublist">
+            <li><a href="#buoc-1-moi-truong" class="toc-link">Bước 1: Môi trường compose.loadtest</a></li>
+            <li><a href="#buoc-2-seed" class="toc-link">Bước 2: Nạp dữ liệu loadtest_seed</a></li>
+            <li><a href="#buoc-3-kich-ban-k6" class="toc-link">Bước 3: Kịch bản baseline.js</a></li>
+            <li><a href="#buoc-4-thuc-thi-do" class="toc-link">Bước 4: Thực thi đo cố định & ramp</a></li>
+            <li><a href="#buoc-5-nut-that-1" class="toc-link">Bước 5: Nhận diện nút thắt #1</a></li>
+          </ul>
+        </li>
+        <li class="toc-item">
+          <a href="#cac-buoc-toi-uu" class="toc-link">4. Chi tiết các bước tối ưu lên 300 RPS (#343)</a>
+          <ul class="toc-sublist">
+            <li><a href="#phan-tich-goc-re" class="toc-link">Phân tích nguyên nhân gốc rễ</a></li>
+            <li><a href="#kien-truc-response-cache" class="toc-link">Kiến trúc In-Process Response Cache</a></li>
+            <li><a href="#invalidation-snapshot" class="toc-link">Xóa cache theo Snapshot Version</a></li>
+            <li><a href="#an-toan-du-lieu" class="toc-link">Bộ lọc quyền riêng tư & Chuẩn hóa Key</a></li>
+          </ul>
+        </li>
+        <li class="toc-item">
+          <a href="#ket-qua-sau-toi-uu" class="toc-link">5. Kết quả thực nghiệm & Congestion Collapse</a>
+          <ul class="toc-sublist">
+            <li><a href="#so-lieu-sau-cache" class="toc-link">Số liệu kiểm thử sau cache</a></li>
+            <li><a href="#mo-xe-congestion-collapse" class="toc-link">Mổ xẻ Congestion Collapse</a></li>
+            <li><a href="#connection-churn" class="toc-link">Nút thắt DB Connection Churn</a></li>
+          </ul>
+        </li>
+        <li class="toc-item"><a href="#lo-trinh-5k" class="toc-link">6. Đúc kết & Lộ trình hướng tới 5.000 RPS</a></li>
+        <li class="toc-item"><a href="#phu-luc-lenh" class="toc-link">7. Phụ lục: Danh mục lệnh tái hiện</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Body -->
+    <main class="content">
+
+      <!-- Hero Header -->
+      <div class="hero-banner">
+        <div class="hero-tags">
+          <span class="tag primary">GitHub #342 & #343</span>
+          <span class="tag success">Performance Engineering</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">PostgreSQL 18</span>
+          <span class="tag">k6 Load Testing</span>
+        </div>
+        <h1>Báo Cáo Đo Tải Baseline & Tối Ưu Hóa API Đạt 300 RPS</h1>
+        <p class="subtitle">
+          Tài liệu kỹ thuật tổng hợp chi tiết phương pháp đo lường RPS, p90, p95 bằng k6, phân tích nút thắt CPU/GIL và quá trình hiện thực giải pháp In-Process Response Cache theo Snapshot giúp tăng thông lượng gấp 7.5 lần trong hệ thống Hải Đồ IT.
+        </p>
+
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <span class="label">Dự án</span>
+            <span class="val">Hải Đồ IT (Backend API)</span>
+          </div>
+          <div class="meta-cell">
+            <span class="label">Ngày hoàn thành</span>
+            <span class="val">23/11/2026</span>
+          </div>
+          <div class="meta-cell">
+            <span class="label">Mục tiêu dài hạn</span>
+            <span class="val">10.000 CCU / 5.000 RPS</span>
+          </div>
+          <div class="meta-cell">
+            <span class="label">Trạng thái</span>
+            <span class="val" style="color: var(--success);">✓ Đã cán mốc 300 RPS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Highlight Cards -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">RPS Đạt Chuẩn (p95 &lt; 200ms)</div>
+          <div class="kpi-val">300 <span style="font-size:18px;font-weight:600;color:var(--muted)">RPS</span></div>
+          <div class="kpi-change up">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+            Tăng 7.5x (từ 40 RPS)
+          </div>
+          <div class="kpi-sub">Đạt 330 RPS trong mạng Docker</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Độ trễ Phân vị p95</div>
+          <div class="kpi-val">3.7 <span style="font-size:18px;font-weight:600;color:var(--muted)">ms</span></div>
+          <div class="kpi-change down">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            Giảm 16.2 lần (từ 60 ms)
+          </div>
+          <div class="kpi-sub">Đo ở mức tải 300 RPS</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Độ trễ Trung vị (Median / p50)</div>
+          <div class="kpi-val">2.6 <span style="font-size:18px;font-weight:600;color:var(--muted)">ms</span></div>
+          <div class="kpi-change down">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            Giảm 5.8 lần (từ 15 ms)
+          </div>
+          <div class="kpi-sub">Phản hồi siêu tốc từ RAM</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Tài nguyên CPU của API</div>
+          <div class="kpi-val">48%</div>
+          <div class="kpi-change down">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            Tiết kiệm >58% CPU
+          </div>
+          <div class="kpi-sub">So với 115% lúc chạy 40 RPS</div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: TỔNG QUAN & SO SÁNH -->
+      <section id="tong-quan" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 1</span> Tóm Tắt Quản Trị & Bảng Chỉ Số Cốt Lõi</h2>
+        <p>
+          Trong kế hoạch nâng cấp hạ tầng Hải Đồ IT hướng tới khả năng phục vụ 10.000 người dùng đồng thời và 5.000 RPS, nhóm kỹ thuật đã thực hiện kiểm thử đo tải ban đầu (Baseline #342) nhằm đánh giá năng lực gốc của hệ thống khi chạy trên cấu hình tối giản: 1 container Uvicorn (1 worker), đọc trực tiếp PostgreSQL qua SQLAlchemy, không có tầng bộ nhớ đệm (cache).
+        </p>
+        <p>
+          Dựa trên kết quả định vị nút thắt, giải pháp <strong>In-Process Response Cache theo Snapshot (#343)</strong> đã được nghiên cứu, phát triển và tích hợp trực tiếp dưới dạng Pure ASGI Middleware. Dưới đây là bảng đối chiếu chi tiết hiệu năng giữa hai giai đoạn:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tiêu chí đánh giá</th>
+                <th>Baseline (#342) - Không Cache</th>
+                <th>Tối Ưu (#343) - Có Response Cache</th>
+                <th>Mức độ cải thiện / Nhận xét</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="bold">RPS an toàn (SLA p95 &lt; 200ms, 0% lỗi)</td>
+                <td class="num bold" style="color:var(--danger)">40 RPS</td>
+                <td class="num bold" style="color:var(--success)">300 RPS <span style="font-size:12px;color:var(--muted)">(Windows)</span> / 330 RPS <span style="font-size:12px;color:var(--muted)">(Docker)</span></td>
+                <td><span class="pill green">Tăng 7.5x (+650%)</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Trần thông lượng tối đa (Saturation Limit)</td>
+                <td class="num">≈ 50 – 58 RPS</td>
+                <td class="num">≈ 330 – 360 RPS</td>
+                <td><span class="pill green">Tăng ~6.2x</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Độ trễ trung vị (Median / p50)</td>
+                <td class="num">15 – 16 ms</td>
+                <td class="num">2.6 ms</td>
+                <td><span class="pill blue">Nhanh hơn 5.8 lần</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Độ trễ phân vị p95 (95th percentile)</td>
+                <td class="num">60 – 61 ms</td>
+                <td class="num">3.7 ms <span style="font-size:12px;color:var(--muted)">(64 ms lúc khởi động cache)</span></td>
+                <td><span class="pill green">Nhanh hơn 16.2 lần</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Tỷ lệ lỗi HTTP (5xx / 4xx)</td>
+                <td class="num">0.0%</td>
+                <td class="num">0.0%</td>
+                <td><span class="pill green">Tuyệt đối an toàn</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Tỷ lệ trúng cache (Cache Hit Ratio)</td>
+                <td class="num">—</td>
+                <td class="num bold" style="color:var(--success)">100.0%</td>
+                <td><span class="pill green">Triệt để</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Tài nguyên CPU API tại mức RPS tối đa</td>
+                <td class="num">~115% <span style="font-size:12px;color:var(--subtle)">(ở 40 RPS)</span></td>
+                <td class="num">~48% <span style="font-size:12px;color:var(--subtle)">(ở 300 RPS)</span></td>
+                <td><span class="pill blue">Giảm áp lực CPU rõ rệt</span></td>
+              </tr>
+              <tr>
+                <td class="bold">Tài nguyên CPU PostgreSQL</td>
+                <td class="num">10 – 33%</td>
+                <td class="num">~14% <span style="font-size:12px;color:var(--subtle)">(ở 300 RPS)</span></td>
+                <td>Chỉ thực thi query version nhẹ</td>
+              </tr>
+              <tr>
+                <td class="bold">Nút thắt kỹ thuật chính (Bottleneck)</td>
+                <td style="color:var(--danger)">CPU của tiến trình Python (Uvicorn 1 worker / GIL)</td>
+                <td style="color:var(--warning)">Pool kết nối DB (Connection Churn khi quá tải)</td>
+                <td>Chuyển từ CPU-bound sang Pool-bound</td>
+              </tr>
+              <tr>
+                <td class="bold">Khoảng cách tới mục tiêu 5.000 RPS</td>
+                <td class="num">Còn cách <strong>125 lần</strong></td>
+                <td class="num">Còn cách <strong>≈ 15 lần</strong></td>
+                <td>Rút ngắn 88% khoảng cách</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Biểu đồ so sánh trực quan SVG -->
+        <div class="diagram-card">
+          <svg class="diag" viewBox="0 0 850 260" width="100%" height="260">
+            <!-- Background Grid -->
+            <rect x="50" y="20" width="750" height="200" fill="none" stroke="var(--line)" stroke-dasharray="4"/>
+            <line x1="50" y1="220" x2="800" y2="220" stroke="var(--muted)" stroke-width="1.5"/>
+
+            <!-- Y Axis Label -->
+            <text x="35" y="25" fill="var(--subtle)" font-size="11" text-anchor="end">350</text>
+            <text x="35" y="80" fill="var(--subtle)" font-size="11" text-anchor="end">250</text>
+            <text x="35" y="140" fill="var(--subtle)" font-size="11" text-anchor="end">150</text>
+            <text x="35" y="195" fill="var(--subtle)" font-size="11" text-anchor="end">50</text>
+            <text x="35" y="224" fill="var(--subtle)" font-size="11" text-anchor="end">0</text>
+
+            <!-- Bars for Baseline -->
+            <rect x="140" y="197" width="70" height="23" fill="#dc2626" rx="4"/>
+            <text x="175" y="190" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle">40 RPS</text>
+            <text x="175" y="240" fill="var(--muted)" font-size="12" text-anchor="middle">RPS Baseline</text>
+
+            <rect x="230" y="185" width="70" height="35" fill="#f87171" rx="4"/>
+            <text x="265" y="178" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle">60 ms</text>
+            <text x="265" y="240" fill="var(--muted)" font-size="12" text-anchor="middle">p95 Baseline</text>
+
+            <line x1="360" y1="30" x2="360" y2="210" stroke="var(--line)" stroke-width="2"/>
+
+            <!-- Bars for Optimized -->
+            <rect x="420" y="48" width="70" height="172" fill="#0284c7" rx="4"/>
+            <text x="455" y="40" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle">300 RPS</text>
+            <text x="455" y="240" fill="var(--muted)" font-size="12" text-anchor="middle">RPS (Win Host)</text>
+
+            <rect x="510" y="31" width="70" height="189" fill="#16a34a" rx="4"/>
+            <text x="545" y="24" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle">330 RPS</text>
+            <text x="545" y="240" fill="var(--muted)" font-size="12" text-anchor="middle">RPS (Docker Net)</text>
+
+            <rect x="600" y="217" width="70" height="3" fill="#38bdf8" rx="2"/>
+            <text x="635" y="210" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle">3.7 ms</text>
+            <text x="635" y="240" fill="var(--muted)" font-size="12" text-anchor="middle">p95 (Có Cache)</text>
+
+            <!-- Legend Badge -->
+            <rect x="680" y="30" width="110" height="60" fill="var(--panel-alt)" rx="6" stroke="var(--line)"/>
+            <circle cx="695" cy="46" r="4" fill="#16a34a"/>
+            <text x="706" y="50" font-size="11" fill="var(--ink)">RPS Cao nhất</text>
+            <circle cx="695" cy="68" r="4" fill="#38bdf8"/>
+            <text x="706" y="72" font-size="11" fill="var(--ink)">p95 Giảm sâu</text>
+          </svg>
+          <div class="diagram-caption">Hình 1.1: So sánh trực quan thông lượng RPS và thời gian phản hồi p95 giữa Baseline (#342) và Sau Tối Ưu (#343).</div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: BẢN CHẤT CHỈ SỐ -->
+      <section id="co-che-do-luong" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 2</span> Bản Chất & Cơ Chế Các Chỉ Số Đo Lường (RPS, p90, p95)</h2>
+        
+        <div id="dinh-nghia-rps">
+          <h3>2.1. Requests Per Second (RPS) trong mô hình k6</h3>
+          <p>
+            RPS biểu thị số lượng yêu cầu HTTP được máy chủ tiếp nhận và phản hồi trọn vẹn trong một giây. Trong kiểm thử hiệu năng, việc chọn đúng mô hình tải là yếu tố sống còn:
+          </p>
+          <ul>
+            <li><strong>Closed System Model (Mô hình đóng):</strong> Định nghĩa số lượng Virtual Users (VUs) cố định kết hợp lệnh <code>sleep</code> giữa các request. Khi máy chủ bắt đầu chậm, VU phải chờ response lâu hơn, dẫn đến tần suất gửi request tự động giảm xuống. Điều này làm <em>che giấu mức độ nghẽn</em> và khiến RPS bị hạ một cách sai lệch.</li>
+            <li><strong>Open System Model (Mô hình mở - Lựa chọn trong repo):</strong> Sử dụng executor <code>ramping-arrival-rate</code>. Tốc độ gửi request được quy định độc lập hoàn toàn với thời gian phản hồi của máy chủ. Nếu máy chủ phản hồi chậm, k6 sẽ tự động huy động thêm VU từ pool dự phòng (<code>preAllocatedVUs: 100</code> đến <code>maxVUs: 2000</code>) để duy trì tốc độ phát tải.</li>
+          </ul>
+
+          <div class="callout tip">
+            <strong>Nguyên lý 1 Iteration = 1 Request trong repo:</strong>
+            Mỗi vòng lặp k6 (iteration) được viết để thực thi đúng 1 HTTP request duy nhất, không có vòng lặp con, không có lệnh sleep. Do đó, chỉ số <code>iterations/s</code> báo cáo trên màn hình k6 chính là giá trị <strong>RPS thực tế</strong>.
+          </div>
+
+          <p>
+            Đặc biệt, script đo tải thiết lập cờ <code>discardResponseBodies: true</code>. Cấu hình này chỉ thị cho k6 chỉ đọc HTTP status và headers mà bỏ qua việc cấp phát bộ nhớ đọc thân response JSON (vốn có kích thước lên đến 40 KB ở <code>market-overview</code>). Nhờ vậy, tiến trình k6 tiêu tốn cực ít CPU trên máy đo, không gây tranh chấp tài nguyên với container API.
+          </p>
+        </div>
+
+        <div id="dinh-nghia-p90-p95">
+          <h3>2.2. Phân vị p90 và p95 Latency (Percentiles)</h3>
+          <p>
+            Trong kỹ thuật hệ thống, giá trị trung bình (Average Latency) được coi là một "cạm bẫy toán học" nguy hiểm: nếu 90 request hoàn thành trong 10 ms nhưng 10 request mất tới 1.000 ms, độ trễ trung bình là 109 ms — con số này vừa làm trầm trọng hóa trải nghiệm của 90% người dùng, vừa đánh giá quá nhẹ độ trễ của nhóm 10% bị kẹt.
+          </p>
+          <ul>
+            <li><strong>p90 (90th Percentile):</strong> Mốc thời gian mà 90% tổng số request được xử lý xong trong khoảng thời gian nhỏ hơn hoặc bằng nó. 10% request còn lại có thời gian xử lý lâu hơn.</li>
+            <li><strong>p95 (95th Percentile):</strong> Mốc thời gian mà 95% request hoàn thành. Đây là chỉ số SLA chuẩn mực quốc tế cho các hệ sinh thái Web/API, phản ánh sát thực nhất "đuôi trễ" (tail latency) mà người dùng gặp phải dưới áp lực tải.</li>
+          </ul>
+        </div>
+
+        <div id="bay-do-tre-tich-luy">
+          <h3>2.3. Cạm bẫy "Độ trễ tích lũy" (Cumulative Latency) trong k6</h3>
+          <div class="callout warn">
+            <strong>Phát hiện quan trọng từ kết quả đo Baseline (#342):</strong>
+            Trong k6, giá trị <code>p(95)</code> hiển thị trên dashboard là <strong>giá trị tích lũy từ giây đầu tiên của bài test</strong> chứ không phải là giá trị tức thời trong 1 giây gần nhất!
+          </div>
+          <p>
+            Khi chạy kịch bản ramp tăng tốc từ 10 lên 1.000 RPS trong 5 phút (tăng khoảng 3.3 RPS mỗi giây):
+          </p>
+          <pre><code>SCENARIO=breakpoint MAX_RPS=1000 DURATION=5m k6 run baseline.js</code></pre>
+          <p>
+            Hệ thống thực tế đã bắt đầu nghẽn và quá tải ở mức ~55 RPS (khoảng giây thứ 15). Tuy nhiên, vì hàng ngàn request ở 15 giây đầu đều có độ trễ cực thấp (15 ms), lượng mẫu lớn này đã kéo mức p95 tích lũy xuống thấp. Phải đến giây thứ 32 (khi tải đặt đã vượt lên 115 RPS), độ trễ tích lũy mới vượt ngưỡng 200 ms để kích hoạt <code>abortOnFail</code>.
+          </p>
+          <p>
+            <strong>Giải pháp khắc phục được thực hiện trong repo:</strong> Không chỉ dựa vào kịch bản ramp, nhóm đã thiết lập các phiên <strong>Fixed-Rate Testing (Tốc độ cố định)</strong> chạy liên tục 60 giây cho từng mốc tải (20, 25, 30, 35, 40, 50, 60, 70, 80 RPS), có thời gian nghỉ giữa các hiệp và chạy xáo trộn thứ tự để loại bỏ hoàn toàn nhiễu máy và bắt chính xác điểm gãy của hệ thống.
+          </p>
+        </div>
+      </section>
+
+      <!-- SECTION 3: CÁC BƯỚC ĐO TẢI BASELINE -->
+      <section id="cac-buoc-do-tai" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 3</span> Chi Tiết 5 Bước Đo Tải Baseline Trong Repo (#342)</h2>
+        <p>
+          Để bài đo mang tính khách quan và có thể tái hiện 100%, quy trình đo tải được chuẩn hóa thành 5 bước độc lập, tuyệt đối không bắn tải vào môi trường production hay VPS.
+        </p>
+
+        <!-- Sơ đồ kiến trúc đo tải SVG -->
+        <div class="diagram-card">
+          <svg class="diag" viewBox="0 0 820 280" width="100%" height="280">
+            <!-- Host Boundary -->
+            <rect x="10" y="10" width="800" height="260" rx="10" fill="var(--panel-alt)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="30" y="34" fill="var(--subtle)" font-size="12" font-weight="700">MÁY DEV (WINDOWS 11 - 12 CPU CORES)</text>
+
+            <!-- k6 Runner Box -->
+            <rect x="35" y="60" width="210" height="185" rx="8" fill="var(--panel)" stroke="var(--primary)" stroke-width="1.5"/>
+            <text x="140" y="88" fill="var(--primary)" font-size="14" font-weight="700" text-anchor="middle">k6 Load Runner (Host)</text>
+            <text x="50" y="115" fill="var(--muted)" font-size="12">• baseline.js (Arrival-rate)</text>
+            <text x="50" y="135" fill="var(--muted)" font-size="12">• params.json (16 roles, 20 skills)</text>
+            <text x="50" y="155" fill="var(--muted)" font-size="12">• Discard response bodies</text>
+            <text x="50" y="175" fill="var(--muted)" font-size="12">• Thresholds: p95 &lt; 200ms</text>
+            <text x="50" y="195" fill="var(--muted)" font-size="12">• Tagging từng endpoint</text>
+            <rect x="50" y="210" width="180" height="22" rx="4" fill="var(--primary-light)"/>
+            <text x="140" y="225" fill="var(--primary)" font-size="11" font-weight="600" text-anchor="middle">HTTP GET (127.0.0.1:8001)</text>
+
+            <!-- Arrow from k6 to Compose -->
+            <path d="M245 150 L 305 150" stroke="var(--primary)" stroke-width="2.5" fill="none"/>
+
+            <!-- Docker Compose Boundary -->
+            <rect x="315" y="45" width="475" height="210" rx="8" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="335" y="68" fill="var(--ink)" font-size="13" font-weight="700">Docker Compose (deploy/compose.loadtest.yml)</text>
+
+            <!-- Container API -->
+            <rect x="335" y="85" width="205" height="150" rx="6" fill="var(--panel-alt)" stroke="var(--line)"/>
+            <text x="437" y="108" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">Container API (uvicorn)</text>
+            <text x="345" y="130" fill="var(--muted)" font-size="11.5">• 1 Uvicorn Worker (Python 3.13)</text>
+            <text x="345" y="148" fill="var(--muted)" font-size="11.5">• deploy/api.Dockerfile</text>
+            <text x="345" y="166" fill="var(--muted)" font-size="11.5">• Limits: 2 CPU / 1 GB RAM</text>
+            <text x="345" y="184" fill="var(--muted)" font-size="11.5">• HAIDO_MARKET_SOURCE_*=stat</text>
+            <text x="345" y="202" fill="var(--danger)" font-size="11.5" font-weight="600">• Bottleneck: Python GIL (1 Core)</text>
+
+            <!-- Arrow API to DB -->
+            <path d="M540 155 L 575 155" stroke="var(--subtle)" stroke-width="2" fill="none"/>
+
+            <!-- Container Postgres -->
+            <rect x="585" y="85" width="185" height="150" rx="6" fill="var(--panel-alt)" stroke="var(--line)"/>
+            <text x="677" y="108" fill="var(--ink)" font-size="13" font-weight="700" text-anchor="middle">Container PostgreSQL 18</text>
+            <text x="595" y="130" fill="var(--muted)" font-size="11.5">• DB: haido_load_test</text>
+            <text x="595" y="148" fill="var(--muted)" font-size="11.5">• Port: 127.0.0.1:5434</text>
+            <text x="595" y="166" fill="var(--muted)" font-size="11.5">• Limits: 2 CPU / 1 GB RAM</text>
+            <text x="595" y="184" fill="var(--muted)" font-size="11.5">• 5.600 Facts (Seed 342)</text>
+            <text x="595" y="202" fill="var(--success)" font-size="11.5">• CPU rảnh (10-33%)</text>
+          </svg>
+          <div class="diagram-caption">Hình 3.1: Kiến trúc môi trường đo tải cô lập (Isolated Load Testing Environment) theo issue #342.</div>
+        </div>
+
+        <div class="steps-chain">
+          <!-- BƯỚC 1 -->
+          <div class="step-item" id="buoc-1-moi-truong">
+            <div class="step-header">
+              <span>Bước 1: Khởi tạo môi trường đo tải cô lập</span>
+              <code>deploy/compose.loadtest.yml</code>
+            </div>
+            <p>
+              Tạo cấu hình Docker Compose độc lập kế thừa chính xác cấu hình production (cùng Dockerfile, cùng lệnh khởi chạy Uvicorn 1 worker), nhưng cô lập cổng mạng và dữ liệu:
+            </p>
+            <ul>
+              <li><strong>Giới hạn tài nguyên thực tế:</strong> Cấu hình <code>cpus: "2"</code> và <code>memory: 1G</code> mô phỏng sát thông số VPS production.</li>
+              <li><strong>Đọc số liệu thật (#309):</strong> Đặt tất cả các biến môi trường nguồn số liệu thị trường sang <code>stat</code> (<code>HAIDO_MARKET_SOURCE_CITY_SHARES: stat</code>, <code>HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat</code>, v.v.), đảm bảo mọi request đều phải đi qua pipeline truy vấn cơ sở dữ liệu thật.</li>
+              <li><strong>Bảo vệ mạng:</strong> Toàn bộ cổng kết nối chỉ bind nội bộ trên <code>127.0.0.1</code> (API cổng 8001, Postgres cổng 5434).</li>
+            </ul>
+            <pre><code># Khởi động dịch vụ đo tải
+docker compose -f deploy/compose.loadtest.yml up -d --build --wait</code></pre>
+          </div>
+
+          <!-- BƯỚC 2 -->
+          <div class="step-item" id="buoc-2-seed">
+            <div class="step-header">
+              <span>Bước 2: Nạp dữ liệu giả chuẩn hóa qua pipeline thật</span>
+              <code>tools/loadtest_seed.py</code>
+            </div>
+            <p>
+              Để dữ liệu đo tải phản ánh chính xác cấu trúc dữ liệu thị trường thực tế, công cụ <code>loadtest_seed.py</code> nạp 5.600 tin tuyển dụng với phân bố Zipf của các kỹ năng, mô phỏng quan sát trong 3 ngày và chạy qua đầy đủ các bước thật của hệ thống:
+            </p>
+            <ol style="margin-left:20px;margin-bottom:12px;">
+              <li>Kiểm tra an toàn bảo vệ: Hàm <code>check_target()</code> từ chối chạy nếu URL trỏ tới máy từ xa hoặc tên DB không có hậu tố <code>_test</code>.</li>
+              <li>Xóa sạch schema <code>haido</code> và chạy migration Alembic mới nhất.</li>
+              <li>Nạp 5.600 fact tin tuyển dụng giả theo phân bố Zipf bằng <code>bench_skill_rates._build</code>.</li>
+              <li>Chạy quy trình tổng hợp số liệu <code>aggregate_snapshot</code> và công bố <code>publish_snapshot</code> cho snapshot ngày 2026-11-10. Trạng thái đạt <code>published</code> như một đêm hoàn tất trên production.</li>
+            </ol>
+            <pre><code># Nạp 5.600 fact dữ liệu với seed 342
+HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5434/haido_load_test \
+  uv run python -m tools.loadtest_seed --facts 5600 --seed 342</code></pre>
+          </div>
+
+          <!-- BƯỚC 3 -->
+          <div class="step-item" id="buoc-3-kich-ban-k6">
+            <div class="step-header">
+              <span>Bước 3: Thiết kế kịch bản k6 mô phỏng hành vi người dùng</span>
+              <code>loadtest/k6/baseline.js</code>
+            </div>
+            <p>
+              Kịch bản kiểm thử đọc bộ tham số từ <code>params.json</code> (16 vai trò, 5 cấp bậc, 20 kỹ năng chuẩn) và phân bổ xác suất gọi endpoint dựa theo hành vi truy cập trang Insights:
+            </p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Endpoint được đo</th>
+                    <th>Trọng số (%)</th>
+                    <th>Mô tả hành vi mô phỏng</th>
+                    <th>Thời gian đơn lẻ (Latency)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>/api/v1/market-overview</code></td>
+                    <td class="num bold">25%</td>
+                    <td>Tải toàn cảnh thị trường (Top skills, stats tổng)</td>
+                    <td class="num bold" style="color:var(--danger)">Median: 45.8 ms | p90: 56.8 ms (40.4 KB)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/api/v1/newcomer-roles</code></td>
+                    <td class="num bold">20%</td>
+                    <td>Xem cơ hội việc làm cho người mới bắt đầu</td>
+                    <td class="num">Median: 14.4 ms | p90: 16.5 ms (9.4 KB)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/api/v1/city-shares</code></td>
+                    <td class="num bold">20%</td>
+                    <td>Lọc tỷ trọng việc làm theo thành phố & cấp bậc</td>
+                    <td class="num">Median: 14.8 ms | p90: 17.1 ms (12.1 KB)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/api/v1/skill-rates</code></td>
+                    <td class="num bold">15%</td>
+                    <td>Tỷ lệ yêu cầu kỹ năng theo vai trò (cấp entry)</td>
+                    <td class="num">Median: 15.8 ms | p90: 16.9 ms (2.6 KB)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/api/v1/skill-roles</code></td>
+                    <td class="num bold">15%</td>
+                    <td>Xem vai trò nào đòi hỏi một kỹ năng cụ thể</td>
+                    <td class="num">Median: 14.6 ms | p90: 16.6 ms (5.8 KB)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/api/v1/skills</code></td>
+                    <td class="num bold">5%</td>
+                    <td>Lấy danh mục từ vựng kỹ năng (chỉ đọc RAM)</td>
+                    <td class="num" style="color:var(--success)">Median: 5.1 ms | p90: 6.4 ms (30.3 KB)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              <strong>Cấu hình ngưỡng bảo vệ tự động (SLA Thresholds):</strong>
+            </p>
+            <pre><code>thresholds: {
+  http_req_duration: [{ threshold: "p(95)<200", abortOnFail: true, delayAbortEval: "30s" }],
+  http_req_failed:   [{ threshold: "rate<0.001", abortOnFail: true, delayAbortEval: "30s" }],
+  checks: ["rate>0.999"],
+}</code></pre>
+          </div>
+
+          <!-- BƯỚC 4 -->
+          <div class="step-item" id="buoc-4-thuc-thi-do">
+            <div class="step-header">
+              <span>Bước 4: Thực thi kiểm thử Smoke và Tốc độ cố định</span>
+            </div>
+            <p>
+              Tiến hành chạy kiểm thử toàn diện:
+            </p>
+            <pre><code># 1. Chạy Smoke Test (120 requests - 100% thành công)
+SCENARIO=smoke k6 run baseline.js
+
+# 2. Chạy Breakpoint Ramp Test (dò tìm điểm gãy sơ bộ)
+SCENARIO=breakpoint MAX_RPS=1000 DURATION=5m \
+  K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=breakpoint.html k6 run baseline.js
+
+# 3. Chạy các mức tải cố định 60 giây (Fixed Rate)
+SCENARIO=breakpoint START_RPS=40 MAX_RPS=40 DURATION=60s k6 run baseline.js</code></pre>
+
+            <p><strong>Kết quả bảng đo tốc độ cố định Baseline (#342):</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tải đặt (RPS)</th>
+                    <th>Số lượt chạy</th>
+                    <th>Trung vị (Median)</th>
+                    <th>p95 Latency</th>
+                    <th>RPS thực đạt</th>
+                    <th>Dropped Iterations</th>
+                    <th>Đánh giá trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>20</td><td>2</td><td class="num">15 – 16 ms</td><td class="num">51 – 57 ms</td><td class="num bold">20.0</td><td class="num">0</td><td><span class="pill green">Rất tốt</span></td></tr>
+                  <tr><td>25</td><td>2</td><td class="num">15 ms</td><td class="num">57 ms</td><td class="num bold">25.0</td><td class="num">0</td><td><span class="pill green">Rất tốt</span></td></tr>
+                  <tr><td>30</td><td>2</td><td class="num">14 – 15 ms</td><td class="num">56 – 57 ms</td><td class="num bold">30.0</td><td class="num">0</td><td><span class="pill green">Rất tốt</span></td></tr>
+                  <tr><td>35</td><td>1</td><td class="num">16 ms</td><td class="num">60 ms</td><td class="num bold">34.9</td><td class="num">0</td><td><span class="pill green">Rất tốt</span></td></tr>
+                  <tr style="background:var(--primary-light)">
+                    <td class="bold">40</td><td>1</td><td class="num bold">16 ms</td><td class="num bold">61 ms</td><td class="num bold">40.0</td><td class="num bold">0</td>
+                    <td><span class="pill blue">Baseline An Toàn</span></td>
+                  </tr>
+                  <tr><td>50</td><td>2</td><td class="num">31 – 270 ms</td><td class="num">0.37 – 1.02 s</td><td class="num">49.9</td><td class="num">0</td><td><span class="pill amber">Bắt đầu nghẽn queue</span></td></tr>
+                  <tr style="background:var(--danger-light)">
+                    <td>60</td><td>2</td><td class="num">0.32 – 2.6 s</td><td class="num">0.83 – 4.65 s</td><td class="num">47.4 – 57.8</td><td class="num">0 – 152</td>
+                    <td><span class="pill red">Quá trần (Chậm nghiêm trọng)</span></td>
+                  </tr>
+                  <tr><td>70</td><td>2</td><td class="num">2.9 – 3.8 s</td><td class="num">4.6 – 6.1 s</td><td class="num">49.7 – 54.0</td><td class="num">203 – 274</td><td><span class="pill red">Nghẽn nặng, rụng request</span></td></tr>
+                  <tr><td>80</td><td>1</td><td class="num">4.3 s</td><td class="num">7.7 s</td><td class="num">50.1</td><td class="num">425</td><td><span class="pill red">Sập hàng đợi</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- BƯỚC 5 -->
+          <div class="step-item" id="buoc-5-nut-that-1">
+            <div class="step-header">
+              <span>Bước 5: Giám sát tài nguyên & Nhận diện Nút thắt số 1</span>
+            </div>
+            <p>
+              Giám sát liên tục bằng <code>docker stats</code> và bảng điều khiển PostgreSQL <code>pg_stat_activity</code> trong suốt quá trình quá tải:
+            </p>
+            <ul>
+              <li><strong>Container API (FastAPI/Uvicorn):</strong> CPU dao động liên tục từ <strong>113% đến 155%</strong> (trên trần 200% của 2 core). Mặc dù tiến trình hiển thị >100% do các luồng I/O của psycopg và threadpool của anyio, nhưng <em>tiến trình thực thi mã Python chỉ chạy trên đúng 1 CPU core duy nhất</em> do khóa Global Interpreter Lock (GIL) của CPython.</li>
+              <li><strong>Container PostgreSQL:</strong> Mức tiêu thụ CPU chỉ từ <strong>10% đến 33%</strong>. Cơ sở dữ liệu hoàn toàn rảnh rỗi.</li>
+              <li><strong>Kết nối cơ sở dữ liệu:</strong> Số kết nối tăng kịch trần 15–16 kết nối (đúng bằng giới hạn pool mặc định của SQLAlchemy: 5 kết nối thường trực + 10 kết nối overflow).</li>
+            </ul>
+
+            <div class="callout danger">
+              <strong>Công thức toán học giải thích điểm nghẽn 45 RPS:</strong><br>
+              Tính theo trọng số kịch bản, thời gian trung bình của 1 request là:<br>
+              <code>T_avg = (45.8 × 0.25) + (14.4 × 0.20) + (14.8 × 0.20) + (15.8 × 0.15) + (14.6 × 0.15) + (5.1 × 0.05) ≈ 22.1 ms</code><br>
+              Với 1 worker Python đơn luồng xử lý tuần tự (GIL-bound), trần thông lượng lý thuyết cực đại là:<br>
+              <code>RPS_max = 1.000 ms / 22.1 ms ≈ 45.2 RPS</code><br>
+              Con số lý thuyết này <strong>hoàn toàn trùng khớp</strong> với trần đo thực tế là 40–50 RPS!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: CÁC BƯỚC TỐI ƯU 300 RPS -->
+      <section id="cac-buoc-toi-uu" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 4</span> Chi Tiết Các Bước Tối Ưu Lên 300 RPS (#343)</h2>
+
+        <div id="phan-tich-goc-re">
+          <h3>4.1. Phân tích nguyên nhân gốc rễ & Ràng buộc kiến trúc</h3>
+          <p>
+            Tại sao API lại bị nghẽn ở CPU khi dữ liệu thị trường thực tế <em>chỉ được tính toán và công bố một lần mỗi ngày vào ban đêm</em>?
+          </p>
+          <p>
+            Ở cấu hình baseline, mỗi khi một request được gửi tới:
+          </p>
+          <ol style="margin-left:20px;margin-bottom:14px;">
+            <li>FastAPI tiếp nhận và điều hướng vào router.</li>
+            <li>SQLAlchemy lấy kết nối từ pool, tạo SQL query đọc các bảng <code>stat_*</code>.</li>
+            <li>Postgres trả về dữ liệu thô, psycopg deserialize thành Python types.</li>
+            <li>Hệ thống khởi tạo hàng loạt <strong>Pydantic Models</strong>, thực hiện kiểm tra kiểu dữ liệu (data validation) cho từng trường.</li>
+            <li>FastAPI encode model Pydantic thành chuỗi JSON bytes rồi truyền qua HTTP response.</li>
+          </ol>
+          <p>
+            Chuỗi thao tác dựng model Pydantic và JSON serialization cho response 40 KB chiếm phần lớn thời gian CPU.
+          </p>
+
+          <div class="callout warn">
+            <strong>Ràng buộc hiến pháp hệ thống (System Constitution & Acceptance Criteria):</strong>
+            <ul>
+              <li><strong>Không được dùng TTL thông thường:</strong> Nếu dùng cache hết hạn theo thời gian (vd: 1 giờ, 24 giờ), khi một snapshot mới được chốt ban đêm, người dùng vẫn sẽ nhận dữ liệu cũ cho đến khi TTL hết hạn. Điều này vi phạm nghiêm trọng tiêu chuẩn AC: <em>"Snapshot mới được phục vụ ngay ở request kế tiếp"</em> (#145, #146, #151, #328).</li>
+              <li><strong>Bảo mật thông tin người dùng (#150, #205):</strong> Tuyệt đối không được lưu cache các request có chứa dữ liệu đầu vào nhạy cảm của người dùng (như chức danh CV <code>title</code> hoặc kỹ năng cá nhân <code>have</code>).</li>
+              <li><strong>Không giải mã ngược lại Pydantic:</strong> Nếu dùng các thư viện cache phổ biến (như <code>fastapi-cache</code>) giải mã chuỗi cache ngược về Pydantic Model rồi để FastAPI serialize lại, CPU vẫn sẽ bị nghẽn y như cũ.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="kien-truc-response-cache">
+          <h3>4.2. Thiết kế In-Process Response Cache dạng Pure ASGI Middleware</h3>
+          <p>
+            Nhóm kỹ thuật đã tự thiết kế module <code>haido_api/response_cache.py</code> sử dụng chuẩn <strong>Pure ASGI Middleware</strong> (không dùng <code>BaseHTTPMiddleware</code> của Starlette để tránh overhead tạo context task).
+          </p>
+
+          <!-- Sơ đồ quy trình Response Cache SVG -->
+          <div class="diagram-card">
+            <svg class="diag" viewBox="0 0 820 310" width="100%" height="310">
+              <!-- Request In -->
+              <rect x="20" y="130" width="110" height="40" rx="6" fill="var(--primary)" stroke="none"/>
+              <text x="75" y="155" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">HTTP GET</text>
+
+              <path d="M130 150 L 175 150" stroke="var(--primary)" stroke-width="2" fill="none"/>
+
+              <!-- Check Scope & Privacy -->
+              <polygon points="230,120 285,150 230,180 175,150" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+              <text x="230" y="148" fill="var(--ink)" font-size="10.5" font-weight="600" text-anchor="middle">Hợp lệ &</text>
+              <text x="230" y="160" fill="var(--ink)" font-size="10.5" font-weight="600" text-anchor="middle">Không private?</text>
+
+              <!-- If No -> Direct Route -->
+              <path d="M230 180 L 230 250 L 640 250" stroke="var(--subtle)" stroke-width="1.5" stroke-dasharray="3" fill="none"/>
+              <text x="270" y="240" fill="var(--subtle)" font-size="10">Không (private/POST/...)</text>
+
+              <path d="M285 150 L 335 150" stroke="var(--primary)" stroke-width="2" fill="none"/>
+
+              <!-- Check Version -->
+              <rect x="335" y="125" width="130" height="50" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+              <text x="400" y="145" fill="var(--ink)" font-size="11" font-weight="700" text-anchor="middle">StatMarket.version()</text>
+              <text x="400" y="162" fill="var(--muted)" font-size="10" text-anchor="middle">(Query md5 snapshots)</text>
+
+              <path d="M465 150 L 510 150" stroke="var(--primary)" stroke-width="2" fill="none"/>
+
+              <!-- Check Store -->
+              <polygon points="555,120 600,150 555,180 510,150" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+              <text x="555" y="154" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle">Cache Hit?</text>
+
+              <!-- Cache HIT Path -->
+              <path d="M555 120 L 555 60 L 710 60" stroke="var(--success)" stroke-width="2.5" fill="none"/>
+              <text x="565" y="75" fill="var(--success)" font-size="11" font-weight="700">HIT (100%)</text>
+
+              <rect x="710" y="40" width="95" height="40" rx="6" fill="var(--success-light)" stroke="var(--success)"/>
+              <text x="757" y="58" fill="var(--success)" font-size="11" font-weight="700" text-anchor="middle">Gửi Raw Bytes</text>
+              <text x="757" y="72" fill="var(--success)" font-size="10" text-anchor="middle">x-cache: HIT (2.6ms)</text>
+
+              <!-- Cache MISS Path -->
+              <path d="M600 150 L 640 150" stroke="var(--danger)" stroke-width="2" fill="none"/>
+              <text x="618" y="142" fill="var(--danger)" font-size="10" font-weight="700">MISS</text>
+
+              <rect x="640" y="130" width="155" height="60" rx="6" fill="var(--panel-alt)" stroke="var(--line)"/>
+              <text x="717" y="150" fill="var(--ink)" font-size="11" font-weight="700" text-anchor="middle">Gọi Route -> Pydantic</text>
+              <text x="717" y="166" fill="var(--muted)" font-size="10" text-anchor="middle">Bắt HTTP 200 Body Chunks</text>
+              <text x="717" y="180" fill="var(--primary)" font-size="10" font-weight="600" text-anchor="middle">Lưu ResponseStore LRU (1024)</text>
+            </svg>
+            <div class="diagram-caption">Hình 4.1: Luồng xử lý dữ liệu của Pure ASGI ResponseCache Middleware (#343).</div>
+          </div>
+
+          <h4>A. Cấu trúc lưu trữ ResponseStore (LRU theo Version)</h4>
+          <p>
+            <code>ResponseStore</code> lưu trữ cặp dữ liệu gồm status code, headers và chuỗi <strong>raw body bytes</strong>. Bằng cách lưu trực tiếp mảng bytes nhị phân đã encode từ lần đầu, các request sau trúng cache sẽ được trả về trực tiếp mà không tốn bất kỳ chu kỳ CPU nào cho router hay Pydantic:
+          </p>
+          <pre><code>class ResponseStore:
+    # LRU có trần số mục, gắn với một version. Version đổi thì rỗng.
+    def __init__(self, max_entries: int = 1024) -> None:
+        self.max_entries = max_entries
+        self.version: str | None = None
+        self._entries: OrderedDict[Key, Entry] = OrderedDict()
+
+    def use(self, version: str) -> None:
+        if version != self.version:
+            self._entries.clear()
+            self.version = version
+
+    def get(self, key: Key) -> Entry | None:
+        entry = self._entries.get(key)
+        if entry is not None:
+            self._entries.move_to_end(key)
+        return entry
+
+    def put(self, version: str, key: Key, entry: Entry) -> None:
+        if version != self.version:  # Snapshot đổi trong lúc route chạy: không ghi đè số cũ
+            return
+        self._entries[key] = entry
+        self._entries.move_to_end(key)
+        while len(self._entries) > self.max_entries:
+            self._entries.popitem(last=False)</code></pre>
+        </div>
+
+        <div id="invalidation-snapshot">
+          <h3>4.3. Cơ chế xóa cache theo Snapshot Version cực nhẹ</h3>
+          <p>
+            Thay vì dùng thời gian (TTL), mỗi request đến middleware sẽ hỏi <code>StatMarket.version()</code>. Hàm này thực thi câu lệnh SQL siêu nhẹ trên bảng <code>haido.snapshots</code>:
+          </p>
+          <pre><code>SELECT count(*)::text || ':' || coalesce(md5(string_agg(
+    snapshot_id::text || '|' || status || '|' || coalesce(closed_at::text, ''), ',' 
+    ORDER BY snapshot_id
+)), '') 
+FROM haido.snapshots 
+WHERE status &lt;&gt; 'open'</code></pre>
+
+          <div class="callout tip">
+            <strong>Tại sao câu query này tối ưu tuyệt đối?</strong>
+            <ul>
+              <li>Bảng <code>snapshots</code> chỉ có duy nhất 1 dòng mỗi ngày (khoảng 30 dòng cho cả tháng), hoàn toàn nằm trên bộ nhớ đệm shared buffers của PostgreSQL.</li>
+              <li>Mệnh đề <code>WHERE status &lt;&gt; 'open'</code> đảm bảo các snapshot đang thu thập dang dở trong ngày không làm thay đổi version. Chỉ khi một snapshot được <code>publish</code> hoặc <code>partial</code>, chuỗi MD5 mới thay đổi.</li>
+              <li>Khi chuỗi version đổi, <code>store.use(version)</code> kích hoạt <code>self._entries.clear()</code> dọn sạch toàn bộ cache. Nhờ đó, <strong>snapshot mới được phục vụ ngay lập tức ở request kế tiếp</strong> mà không cần khởi động lại dịch vụ.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="an-toan-du-lieu">
+          <h3>4.4. Chuẩn hóa Cache Key & Bộ lọc an toàn dữ liệu cá nhân</h3>
+          <p>
+            Hàm <code>_key(scope)</code> bảo vệ quyền riêng tư và chuẩn hóa đường dẫn:
+          </p>
+          <pre><code>PRIVATE_PARAMS = frozenset({"title", "have"})
+
+def _key(scope: Scope) -> Key | None:
+    if scope["type"] != "http" or scope["method"] != "GET":
+        return None
+    path: str = scope["path"]
+    if not path.startswith("/api/v1/"):
+        return None
+    query = parse_qsl(scope.get("query_string", b"").decode("latin-1"), keep_blank_values=True)
+    if any(name in PRIVATE_PARAMS for name, _ in query):
+        return None  # Không bao giờ lưu chức danh hay hồ sơ kỹ năng của ứng viên
+    
+    # Sắp xếp query param theo alphabet để tránh phân mảnh khóa
+    return path, tuple(sorted(query, key=itemgetter(0)))</code></pre>
+          <p>
+            Nhờ việc sắp xếp <code>sorted(query)</code>, hai yêu cầu <code>/city-shares?role=backend&level=all</code> và <code>/city-shares?level=all&role=backend</code> đều trỏ về chung một khóa cache duy nhất, loại bỏ hiện tượng cache trùng lặp.
+          </p>
+        </div>
+      </section>
+
+      <!-- SECTION 5: KẾT QUẢ THỰC NGHIỆM & CONGESTION COLLAPSE -->
+      <section id="ket-qua-sau-toi-uu" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 5</span> Kết Quả Thực Nghiệm & Mổ Xẻ Hiện Tượng Congestion Collapse</h2>
+
+        <div id="so-lieu-sau-cache">
+          <h3>5.1. Bảng số liệu kiểm thử sau khi bật Cache (#343)</h3>
+          <p>
+            Bài đo được thực hiện lại trên cùng máy dev, cùng 5.600 fact tin tuyển dụng, cùng kịch bản k6 trọng số. Bật biến môi trường <code>HAIDO_RESPONSE_CACHE=on</code>.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tải đặt (RPS)</th>
+                  <th>Môi trường đo</th>
+                  <th>Số lượt</th>
+                  <th>Trung vị (p50)</th>
+                  <th>p95 Latency</th>
+                  <th>RPS đạt</th>
+                  <th>Dropped Iterations</th>
+                  <th>Tỷ lệ Cache Hit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>200</td><td>Windows (Host)</td><td>2</td><td class="num">2.7 – 2.9 ms</td><td class="num">3.7 – 3.8 ms</td><td class="num bold">200.0</td><td class="num">0</td><td class="num bold" style="color:var(--success)">100%</td>
+                </tr>
+                <tr style="background:var(--success-light)">
+                  <td class="bold">300</td><td>Windows (Host)</td><td>3</td><td class="num bold">2.6 ms</td><td class="num bold">3.7 ms <span style="font-size:11px;color:var(--muted)">(64ms lượt đầu)</span></td><td class="num bold">300.0</td><td class="num bold">0</td><td class="num bold" style="color:var(--success)">100%</td>
+                </tr>
+                <tr style="background:color-mix(in srgb, var(--success-light) 60%, transparent)">
+                  <td class="bold">330</td><td>Docker Network</td><td>2</td><td class="num bold">1.9 – 2.0 ms</td><td class="num bold">2.6 – 3.0 ms</td><td class="num bold">330.0</td><td class="num bold">0</td><td class="num bold" style="color:var(--success)">100%</td>
+                </tr>
+                <tr style="background:var(--warning-light)">
+                  <td>330</td><td>Windows (Host)</td><td>2</td><td class="num">0.8 – 2.7 s</td><td class="num">4.7 – 5.6 s</td><td class="num">230 – 245</td><td class="num">1.311 – 1.566</td><td>—</td>
+                </tr>
+                <tr>
+                  <td>350</td><td>Windows (Host)</td><td>1</td><td class="num">383 ms</td><td class="num">4.36 s</td><td class="num">264.0</td><td class="num">1.332</td><td>—</td>
+                </tr>
+                <tr style="background:var(--danger-light)">
+                  <td class="bold">400</td><td>Docker Network</td><td>2</td><td class="num">3.5 – 3.8 s</td><td class="num">8.0 – 8.1 s</td><td class="num">231 – 234</td><td class="num">~2.700</td><td>100%</td>
+                </tr>
+                <tr style="background:var(--danger-light)">
+                  <td class="bold">400</td><td>Windows (Host)</td><td>2</td><td class="num">4.2 – 4.3 s</td><td class="num">9.1 – 9.6 s</td><td class="num">209.0</td><td class="num">~3.070</td><td class="num bold" style="color:var(--success)">100%</td>
+                </tr>
+                <tr>
+                  <td>500</td><td>Windows (Host)</td><td>1</td><td class="num">6.4 s</td><td class="num">11.7 s</td><td class="num">218.0</td><td class="num">5.987</td><td class="num">100%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            <em>Ghi chú:</em> Khi chạy k6 trực tiếp trong mạng Docker (gọi thẳng IP nội bộ container <code>api:8000</code>), mức 330 RPS đạt trọn vẹn với p95 chỉ 2.6–3.0 ms. Điều này chứng minh tầng port-forwarding qua máy ảo của Docker Desktop trên Windows làm giảm khoảng 10% thông lượng.
+          </p>
+        </div>
+
+        <div id="mo-xe-congestion-collapse">
+          <h3>5.2. Hiện tượng Congestion Collapse (Sụp đổ do tắc nghẽn)</h3>
+          <p>
+            Quan sát bảng số liệu khi tăng tải từ 300 lên 400 RPS: Thay vì giữ nguyên mức 300 RPS, <strong>thông lượng thực tế phục vụ bị tụt ngược xuống còn 209 RPS</strong>, độ trễ vọt lên 9 giây và hàng ngàn iteration bị hủy. Đây là hiện tượng kinh điển trong kỹ thuật hệ thống mang tên <strong>Congestion Collapse</strong>: quá tải khiến chi phí phục vụ mỗi request tăng vọt, làm hệ thống phục vụ được ít hơn cả lúc tải thấp.
+          </p>
+
+          <div class="diagram-card">
+            <svg class="diag" viewBox="0 0 800 240" width="100%" height="240">
+              <!-- Coordinate System -->
+              <line x1="60" y1="200" x2="740" y2="200" stroke="var(--ink)" stroke-width="2"/>
+              <line x1="60" y1="200" x2="60" y2="30" stroke="var(--ink)" stroke-width="2"/>
+              <text x="730" y="225" fill="var(--ink)" font-size="12" font-weight="700">Tải đặt (Offered Load)</text>
+              <text x="50" y="25" fill="var(--ink)" font-size="12" font-weight="700">Thông lượng (Throughput)</text>
+
+              <!-- Ideal Line -->
+              <line x1="60" y1="200" x2="350" y2="50" stroke="var(--subtle)" stroke-width="1.5" stroke-dasharray="4"/>
+              <text x="260" y="85" fill="var(--subtle)" font-size="11" transform="rotate(-32 260 85)">Đường lý tưởng (1:1)</text>
+
+              <!-- Curve with Cache -->
+              <path d="M 60 200 Q 200 130 350 55 T 450 70 Q 520 140 700 155" fill="none" stroke="#dc2626" stroke-width="3"/>
+              
+              <!-- Peak Label -->
+              <circle cx="370" cy="58" r="5" fill="#16a34a"/>
+              <text x="370" y="42" fill="#16a34a" font-size="12" font-weight="700" text-anchor="middle">Đỉnh: 330 RPS (p95 = 2.6ms)</text>
+
+              <!-- Collapse Zone -->
+              <rect x="440" y="50" width="280" height="135" fill="var(--danger-light)" opacity="0.4" rx="6"/>
+              <text x="580" y="80" fill="var(--danger)" font-size="13" font-weight="700" text-anchor="middle">VÙNG CONGESTION COLLAPSE</text>
+              <text x="580" y="105" fill="var(--danger)" font-size="11" text-anchor="middle">Tải 400 RPS -> Rơi xuống 209 RPS</text>
+              <text x="580" y="125" fill="var(--danger)" font-size="11" text-anchor="middle">Độ trễ tăng từ 3.7ms lên >9.000ms</text>
+              <text x="580" y="145" fill="var(--danger)" font-size="11" text-anchor="middle">Do bão fork connection trong Postgres</text>
+            </svg>
+            <div class="diagram-caption">Hình 5.1: Biểu đồ đường cong Congestion Collapse khi hệ thống vượt quá ngưỡng 330 RPS.</div>
+          </div>
+        </div>
+
+        <div id="connection-churn">
+          <h3>5.3. Nút thắt kỹ thuật số 2: Connection Churn trong DB Pool</h3>
+          <p>
+            Bằng cách đối chiếu tài nguyên và số liệu thống kê <code>pg_stat_database.sessions</code> trong hai lượt chạy 45 giây giữa 300 RPS và 400 RPS, nhóm đã phát hiện chính xác nguồn gốc gây sụp đổ:
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Chỉ số phần cứng & DB</th>
+                  <th>Tại mức tải 300 RPS (Ổn định)</th>
+                  <th>Tại mức tải 400 RPS (Sụp đổ)</th>
+                  <th>Hiện tượng quan sát</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="bold">CPU của container API</td>
+                  <td class="num">~48%</td>
+                  <td class="num bold" style="color:var(--danger)">~195% (Hết sạch 2 core)</td>
+                  <td>Nghẽn hàng đợi bất đồng bộ anyio</td>
+                </tr>
+                <tr>
+                  <td class="bold">CPU của PostgreSQL</td>
+                  <td class="num">~14%</td>
+                  <td class="num bold" style="color:var(--danger)">70% – 98%</td>
+                  <td>Quá tải do fork tiến trình backend liên tục</td>
+                </tr>
+                <tr>
+                  <td class="bold">Số phiên kết nối mới / Tổng request</td>
+                  <td class="num bold">40.4% <span style="font-size:12px;color:var(--muted)">(2.645 / 6.548)</span></td>
+                  <td class="num bold" style="color:var(--danger)">48.6% <span style="font-size:12px;color:var(--muted)">(3.039 / 6.258)</span></td>
+                  <td>Gần một nửa request phải mở kết nối DB mới!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout danger">
+            <strong>Cơ chế "Vòng xoáy tử thần" (The Death Spiral) của Connection Churn:</strong>
+            <ol style="margin-left:18px;">
+              <li>Hàm tạo kết nối <code>make_read_engine</code> sử dụng pool mặc định của SQLAlchemy: <strong>5 kết nối thường trực (pool_size=5)</strong> và cho phép tối đa <strong>10 kết nối tạm thời (max_overflow=10)</strong>.</li>
+              <li>Khi kết nối overflow hoàn thành công việc và trả về pool, SQLAlchemy <strong>đóng hẳn kết nối socket đó</strong> (close connection).</li>
+              <li>Bộ tạo tải k6 gửi request theo các xung (bursts). Khi số lượng request đồng thời trong 1 thời điểm vượt quá 5, pool buộc phải gửi yêu cầu mở kết nối mới tới PostgreSQL.</li>
+              <li>Mỗi lần mở kết nối mới, tiến trình chính của PostgreSQL phải thực hiện lệnh <code>fork()</code> một backend worker mới trong Linux. Đây là một tác vụ cực kỳ đắt đỏ về tài nguyên CPU.</li>
+              <li><strong>Vòng xoáy bắt đầu:</strong> Khi tải lên 400 RPS, các request phải xếp hàng -> thời gian giữ kết nối lâu hơn -> số request đồng thời vượt 5 liên tục -> Postgres phải liên tục fork và đóng tiến trình -> CPU Postgres chạm 98% -> xử lý càng chậm hơn -> hàng đợi càng dài hơn -> sụp đổ hoàn toàn.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: ĐÚC KẾT & LỘ TRÌNH 5K RPS -->
+      <section id="lo-trinh-5k" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 6</span> Đúc Kết Kỹ Thuật & Lộ Trình Hướng Tới 5.000 RPS</h2>
+        
+        <h3>6.1. Bốn bài học kiến trúc đắt giá rút ra từ đợt đo</h3>
+        <div class="card">
+          <ul style="padding-left:20px;">
+            <li style="margin-bottom:10px;">
+              <strong>1. Đo đạc trước khi tối ưu (Measure, Don't Guess):</strong> Nếu không có bài đo baseline ở #342, nhóm có thể đã vội vàng triển khai Redis, PgBouncer hay scale nhiều worker — những giải pháp làm tăng độ phức tạp hệ thống mà không giải quyết đúng nút thắt serialize Pydantic ở 1 worker.
+            </li>
+            <li style="margin-bottom:10px;">
+              <strong>2. Sức mạnh của Raw Bytes Caching:</strong> Việc lưu trực tiếp mảng bytes thô đã biến API từ tác vụ nặng về tính toán (CPU-bound) thành thao tác đọc RAM thuần túy (Memory-bound), giảm độ trễ từ 60 ms xuống 3.7 ms.
+            </li>
+            <li style="margin-bottom:10px;">
+              <strong>3. Hiểm họa của Dynamic Connection Overflow:</strong> Cơ chế mở/đóng kết nối database động theo tải (overflow close-on-return) là "kẻ thù" số 1 của hệ thống chịu tải cao. Cần duy trì một kích thước pool cố định (Fixed Pool) để triệt tiêu chi phí fork process.
+            </li>
+            <li>
+              <strong>4. Đừng tin vào giá trị trung bình hay ramp nhanh:</strong> Kiểm thử tốc độ cố định (Fixed-Rate) độc lập là phương pháp duy nhất để bắt trúng năng lực thật của hệ thống.
+            </li>
+          </ul>
+        </div>
+
+        <h3>6.2. Lộ trình 4 giai đoạn chinh phục mốc 5.000 RPS</h3>
+        <div class="steps-chain">
+          <div class="step-item">
+            <div class="step-header">
+              <span>Giai đoạn 1: Chuẩn hóa Fixed Connection Pool</span>
+              <span class="pill blue">Ưu tiên cao</span>
+            </div>
+            <p>
+              Cấu hình lại <code>make_read_engine</code> trong SQLAlchemy: tăng <code>pool_size</code> lên mức cố định (ví dụ 20–30 kết nối) và đặt <code>max_overflow=0</code>. Không bao giờ đóng mở kết nối theo request. Mục tiêu: đưa tỷ lệ phiên mới / request về <strong>gần 0%</strong>.
+            </p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-header">
+              <span>Giai đoạn 2: Cơ chế Event-Driven Invalidation qua Postgres LISTEN/NOTIFY</span>
+              <span class="pill green">Kỳ vọng tăng 2x</span>
+            </div>
+            <p>
+              Hiện tại, mỗi request vẫn phải thực hiện 1 query nhỏ tới bảng <code>snapshots</code> để kiểm tra version. Thay vào đó, tiến trình background của API sẽ lắng nghe kênh sự kiện <code>LISTEN snapshot_published</code>. Khi pipeline chốt snapshot đêm, Postgres gửi <code>NOTIFY</code>, API nhận tín hiệu và xóa cache ngay lập tức. Request trúng cache sẽ <strong>100% không chạm DB</strong>!
+            </p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-header">
+              <span>Giai đoạn 3: Scale Multi-Worker trên đa nhân CPU</span>
+              <span class="pill blue">Kỳ vọng đạt 1.000 – 1.500 RPS</span>
+            </div>
+            <p>
+              Cấu hình <code>gunicorn -k uvicorn.workers.UvicornWorker -w 2</code> trên container 2 CPU để phá bỏ giới hạn 1 core duy nhất của GIL. Kết hợp với PgBouncer để quản lý tập trung kết nối từ nhiều worker vào PostgreSQL.
+            </p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-header">
+              <span>Giai đoạn 4: CDN Edge Caching & Thẻ Header ETag / 304</span>
+              <span class="pill amber">Mục tiêu 5.000 RPS</span>
+            </div>
+            <p>
+              Thêm header <code>Cache-Control: public, max-age=...</code> và <code>ETag</code> để đẩy toàn bộ tải đọc của các trang tĩnh sang Cloudflare/CloudFront. 95% lưu lượng người dùng sẽ được phân giải tại biên (Edge CDN) mà không hề chạm tới máy chủ gốc.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: PHỤ LỤC LỆNH TÁI HIỆN -->
+      <section id="phu-luc-lenh" class="doc-section">
+        <h2><span class="sec-badge">PHẦN 7</span> Phụ Lục: Danh Mục Lệnh Tái Hiện Toàn Diện</h2>
+        <p>
+          Toàn bộ các lệnh terminal dùng để tái hiện và kiểm chứng kết quả từ đầu:
+        </p>
+
+        <div class="card">
+          <div class="card-title">1. Khởi động môi trường & Nạp dữ liệu</div>
+          <pre><code># Dựng container API và PostgreSQL
+docker compose -f deploy/compose.loadtest.yml up -d --build --wait
+
+# Nạp 5.600 fact tin giả, aggregate và publish snapshot
+HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5434/haido_load_test \
+  uv run python -m tools.loadtest_seed --facts 5600 --seed 342</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-title">2. Chạy k6 kiểm thử tốc độ</div>
+          <pre><code>cd loadtest/k6
+
+# Kiểm thử tính toàn vẹn (Smoke - 120 URL)
+SCENARIO=smoke k6 run baseline.js
+
+# Đo tải có Cache ở mức 300 RPS trong 60 giây (Windows Host)
+SCENARIO=breakpoint START_RPS=300 MAX_RPS=300 DURATION=60s k6 run baseline.js
+
+# Đo tải trong mạng Docker (tránh overhead port-forwarding của Windows)
+docker run --rm -i --network haido-loadtest_default \
+  -v ${PWD}:/loadtest -w /loadtest \
+  --cpus="4" grafana/k6:2.2.0 run \
+  -e BASE_URL=http://api:8000 \
+  -e SCENARIO=breakpoint -e START_RPS=330 -e MAX_RPS=330 -e DURATION=60s baseline.js</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-title">3. Chạy unit & integration test bảo vệ mã nguồn</div>
+          <pre><code># Kiểm tra cấu hình compose đo và script k6
+uv run pytest tests/deploy/test_gh342_do_tai_baseline.py
+
+# Kiểm tra logic In-Process Response Cache và version invalidation
+HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5434/haido_load_test \
+  uv run pytest tests/api/test_gh343_cache_response.py</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-title">4. Dọn dẹp tài nguyên sau đo</div>
+          <pre><code># Dừng và xóa toàn bộ container cùng volume dữ liệu test
+docker compose -f deploy/compose.loadtest.yml down -v</code></pre>
+        </div>
+      </section>
+
+      <footer style="margin-top:60px;padding-top:20px;border-top:1px solid var(--line);text-align:center;color:var(--subtle);font-size:13px;">
+        Báo cáo kỹ thuật được khởi tạo tự động từ mã nguồn và dữ liệu thực nghiệm của repo Hải Đồ IT • Phiên bản 1.0 (2026-11-23)
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Theme Switcher Logic
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Sáng';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Tối';
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // Active TOC link highlighting on scroll
+    const sections = document.querySelectorAll('section.doc-section, div[id]');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 120;
+        if (window.scrollY >= top) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      tocLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

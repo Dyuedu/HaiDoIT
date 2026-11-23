@@ -26,3 +26,9 @@ CI của PR #331 (job "Python - ruff and pytest", Postgres thật): hai test c�
 Lý do: #102 (θ có phiên bản) vào main trước PR này, thêm `theta_version` bắt buộc vào `meta.thresholds` và hàm `StatMarket._thresholds(latest)`. `market_overview` chuyển sang dùng hàm đó thay vì tự dựng `Thresholds`; fixture web `market-overview.json` và `docs/api/openapi.json` sinh lại. Xung đột khi gộp chỉ ở các `tdd.md` (hai đợt cùng thêm cuối file); giữ cả hai, đợt #102 trước.
 
 - GREEN ở máy: `uv run pytest -q` → 1403 passed, 339 skipped; `ruff check .` sạch. Test Postgres chạy trên CI.
+
+## Đợt #343 (2026-11-23): thêm `version()` cho nguồn, AC của issue này không đổi
+
+Lý do: #343 thêm `version()` vào `MarketReadModel`, `FakeMarket`, `StatMarket` để cache response biết khi nào có snapshot mới. `version()` được hỏi ở mỗi request, nên `market-overview` vẫn đọc snapshot đọc được mới nhất ngay sau khi chốt (`test_gh343_snapshot_moi_duoc_phuc_vu_ngay_request_ke_tiep` kiểm đúng route này trên Postgres).
+
+- RED và GREEN: `specs/343-cache-response/tdd.md`.

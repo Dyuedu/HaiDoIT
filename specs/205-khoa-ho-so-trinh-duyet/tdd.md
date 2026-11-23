@@ -147,3 +147,9 @@ Lý do: #278 thêm 40 mã vào `haido_core/vocab/skills_seed.json` (225 → 265,
 Một test đổi: `tests/core/test_fr13_skill_seed.py::test_fr13_khong_co_ten_vai_tro_trong_danh_sach` không còn cấm `it support` làm bí danh. Quy tắc thật (đợt review 2026-11-23): `it support` là bí danh **chỉ để tra thẻ** của `helpdesk` (thẻ "IT Support", 41 tin) và nằm trong `scan_skip`, nên không bao giờ khớp tên vai trò trong văn bản JD. Các tên `tester`, `fullstack`, `data engineer`, `công nghệ thông tin` vẫn bị cấm hoàn toàn; test mới `test_fr13_ten_vai_tro_duoc_giu_lam_bi_danh_phai_nam_trong_scan_skip` đòi mọi tên vai trò còn là bí danh phải nằm trong `scan_skip`. (Bản đầu của đợt này và comment trong test nói người dùng đã duyệt việc bỏ `it support` khỏi danh sách cấm; điều đó không đúng.)
 
 RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.
+
+## Đợt #343 (2026-11-23): cache response, AC của issue này không đổi
+
+Lý do: #343 sửa `haido_api/main.py` để thêm cache response. Hồ sơ vẫn chỉ nằm trong trình duyệt: request mang mã kỹ năng của hồ sơ (`have`) không bao giờ vào cache, nên máy chủ không giữ bản sao nào.
+
+- RED và GREEN: `specs/343-cache-response/tdd.md`.
