@@ -1,0 +1,4084 @@
+{
+ "rows": [
+  {
+   "key": "cong nghe thong tin",
+   "postings": 2037,
+   "spelling": "Công nghệ Thông tin",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "viec lam it",
+   "postings": 2003,
+   "spelling": "Việc làm IT",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "ha noi",
+   "postings": 1426,
+   "spelling": "Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "ba ria-vung tau",
+   "postings": 519,
+   "spelling": "Bà Rịa-Vũng Tàu",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "binh duong",
+   "postings": 519,
+   "spelling": "Bình Dương",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "ho chi minh",
+   "postings": 519,
+   "spelling": "Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "it infrastructure and operations",
+   "postings": 365,
+   "spelling": "IT Infrastructure and Operations",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "software engineering",
+   "postings": 359,
+   "spelling": "Software Engineering",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "exclude",
+   "target": "lĩnh vực, không phải một kỹ năng"
+  },
+  {
+   "key": "phuong cau giay - ha noi",
+   "postings": 290,
+   "spelling": "Phường Cầu Giấy - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "agile/scrum",
+   "postings": 244,
+   "spelling": "Agile/Scrum",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "composite",
+   "target": "agile+scrum"
+  },
+  {
+   "key": "api",
+   "postings": 197,
+   "spelling": "API",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "api"
+  },
+  {
+   "key": "ai",
+   "postings": 195,
+   "spelling": "AI",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "artificial_intelligence"
+  },
+  {
+   "key": "phuong thanh xuan - ha noi",
+   "postings": 184,
+   "spelling": "Phường Thanh Xuân - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tu liem - ha noi",
+   "postings": 183,
+   "spelling": "Phường Từ Liêm - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "cloud",
+   "postings": 153,
+   "spelling": "Cloud",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "cloud_computing"
+  },
+  {
+   "key": "cong nghe thong tin khac",
+   "postings": 151,
+   "spelling": "Công nghệ thông tin khác",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "devops",
+   "postings": 149,
+   "spelling": "DevOps",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "devops"
+  },
+  {
+   "key": "business analyst (phan tich nghiep vu)",
+   "postings": 146,
+   "spelling": "Business Analyst (Phân tích nghiệp vụ)",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "phuong yen hoa - ha noi",
+   "postings": 146,
+   "spelling": "Phường Yên Hòa - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "data science",
+   "postings": 142,
+   "spelling": "Data Science",
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "data_science"
+  },
+  {
+   "key": "thiet ke",
+   "postings": 122,
+   "spelling": "Thiết kế",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "quá chung (thiết kế gì?)"
+  },
+  {
+   "key": "product owner/product manager",
+   "postings": 117,
+   "spelling": "Product Owner/Product Manager",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "it project management",
+   "postings": 116,
+   "spelling": "IT Project Management",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "project_management"
+  },
+  {
+   "key": "software engineer",
+   "postings": 111,
+   "spelling": "Software Engineer",
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "chuyen mon cong nghe thong tin khac",
+   "postings": 108,
+   "spelling": "Chuyên môn Công nghệ thông tin khác",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "database",
+   "postings": 102,
+   "spelling": "Database",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "databases"
+  },
+  {
+   "key": "phuong dong da - ha noi",
+   "postings": 97,
+   "spelling": "Phường Đống Đa - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "windows",
+   "postings": 97,
+   "spelling": "Windows",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "windows"
+  },
+  {
+   "key": "backend developer",
+   "postings": 96,
+   "spelling": "Backend Developer",
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "code review",
+   "postings": 88,
+   "spelling": "code review",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "code_review"
+  },
+  {
+   "key": "monitoring",
+   "postings": 86,
+   "spelling": "monitoring",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "observability"
+  },
+  {
+   "key": "phuong hai ba trung - ha noi",
+   "postings": 85,
+   "spelling": "Phường Hai Bà Trưng - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong nghia do - ha noi",
+   "postings": 85,
+   "spelling": "Phường Nghĩa Đô - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "dien/dien tu/vien thong",
+   "postings": 84,
+   "spelling": "Điện/Điện tử/Viễn thông",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "stakeholder management",
+   "postings": 84,
+   "spelling": "stakeholder management",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "stakeholder_management"
+  },
+  {
+   "key": "it helpdesk/it support",
+   "postings": 83,
+   "spelling": "IT Helpdesk/IT support",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "fullstack developer",
+   "postings": 81,
+   "spelling": "Fullstack Developer",
+   "sources": [
+    "itviec",
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "artificial intelligence (ai)",
+   "postings": 80,
+   "spelling": "Artificial Intelligence (AI)",
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "artificial_intelligence"
+  },
+  {
+   "key": "game development",
+   "postings": 80,
+   "spelling": "Game Development",
+   "sources": [
+    "topcv"
+   ],
+   "action": "new",
+   "target": "game_development"
+  },
+  {
+   "key": "it management/specialist",
+   "postings": 80,
+   "spelling": "IT Management/Specialist",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "software design",
+   "postings": 79,
+   "spelling": "Software Design",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "software_architecture"
+  },
+  {
+   "key": "data engineer",
+   "postings": 78,
+   "spelling": "Data Engineer",
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "it project manager",
+   "postings": 78,
+   "spelling": "IT Project Manager",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "software tester (automation & manual)",
+   "postings": 77,
+   "spelling": "Software Tester (Automation & Manual)",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "marketing/pr/quang cao",
+   "postings": 76,
+   "spelling": "Marketing/PR/Quảng cáo",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "json",
+   "postings": 75,
+   "spelling": "JSON",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "json"
+  },
+  {
+   "key": "ai engineer",
+   "postings": 74,
+   "spelling": "AI Engineer",
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "devops engineer",
+   "postings": 74,
+   "spelling": "DevOps Engineer",
+   "sources": [
+    "itviec",
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "security",
+   "postings": 74,
+   "spelling": "Security",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "cybersecurity"
+  },
+  {
+   "key": "ci/cd pipelines",
+   "postings": 73,
+   "spelling": "CI/CD pipelines",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "ci_cd"
+  },
+  {
+   "key": "da nang",
+   "postings": 71,
+   "spelling": "Đà Nẵng",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "quang nam",
+   "postings": 71,
+   "spelling": "Quảng Nam",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "sdlc",
+   "postings": 70,
+   "spelling": "SDLC",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "sdlc"
+  },
+  {
+   "key": "co so du lieu",
+   "postings": 69,
+   "spelling": "cơ sở dữ liệu",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "databases"
+  },
+  {
+   "key": "viec lam business analyst tai ha noi",
+   "postings": 69,
+   "spelling": "Việc làm Business Analyst tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "thiet ke do hoa/giao dien/trai nghiem",
+   "postings": 68,
+   "spelling": "Thiết kế Đồ hoạ/Giao diện/Trải nghiệm",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "troubleshooting",
+   "postings": 68,
+   "spelling": "troubleshooting",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "troubleshooting"
+  },
+  {
+   "key": "phuong cua nam - ha noi",
+   "postings": 66,
+   "spelling": "Phường Cửa Nam - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "ui/ux design",
+   "postings": 63,
+   "spelling": "UI/UX Design",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "ui_design"
+  },
+  {
+   "key": "phuong dai mo - ha noi",
+   "postings": 62,
+   "spelling": "Phường Đại Mỗ - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong ha dong - ha noi",
+   "postings": 62,
+   "spelling": "Phường Hà Đông - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "apis",
+   "postings": 61,
+   "spelling": "APIs",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "api"
+  },
+  {
+   "key": "system engineer",
+   "postings": 59,
+   "spelling": "System Engineer",
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "qa qc",
+   "postings": 58,
+   "spelling": "QA QC",
+   "sources": [
+    "itviec"
+   ],
+   "action": "alias",
+   "target": "software_testing"
+  },
+  {
+   "key": "xu ly su co",
+   "postings": 58,
+   "spelling": "xử lý sự cố",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "troubleshooting"
+  },
+  {
+   "key": "data analyst",
+   "postings": 57,
+   "spelling": "Data Analyst",
+   "sources": [
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "market research and analysis",
+   "postings": 56,
+   "spelling": "Market Research and Analysis",
+   "sources": [
+    "topcv",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "market_research"
+  },
+  {
+   "key": "automation",
+   "postings": 55,
+   "spelling": "Automation",
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "exclude",
+   "target": "quá chung (kiểm thử tự động hay tự động hóa quy trình?)"
+  },
+  {
+   "key": "switch",
+   "postings": 55,
+   "spelling": "Switch",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "tester",
+   "postings": 55,
+   "spelling": "Tester",
+   "sources": [
+    "itviec",
+    "topdev"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "solid",
+   "postings": 54,
+   "spelling": "SOLID",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "solid"
+  },
+  {
+   "key": "router",
+   "postings": 53,
+   "spelling": "Router",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "embedded javascript (ejs)",
+   "postings": 52,
+   "spelling": "Embedded JavaScript (EJS)",
+   "sources": [
+    "itnavi"
+   ],
+   "action": "exclude",
+   "target": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác"
+  },
+  {
+   "key": "phuong an khanh - ho chi minh",
+   "postings": 52,
+   "spelling": "Phường An Khánh - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong hoan kiem - ha noi",
+   "postings": 51,
+   "spelling": "Phường Hoàn Kiếm - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "viec lam product owner tai ha noi",
+   "postings": 51,
+   "spelling": "Việc làm Product Owner tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "phuong lang - ha noi",
+   "postings": 50,
+   "spelling": "Phường Láng - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong sai gon - ho chi minh",
+   "postings": 49,
+   "spelling": "Phường Sài Gòn - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "azure devops",
+   "postings": 48,
+   "spelling": "Azure DevOps",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "ci_cd"
+  },
+  {
+   "key": "integration testing",
+   "postings": 48,
+   "spelling": "integration testing",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "integration_testing"
+  },
+  {
+   "key": "network engineer",
+   "postings": 48,
+   "spelling": "Network Engineer",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "nghe thuat/hoat hinh/game",
+   "postings": 48,
+   "spelling": "Nghệ thuật/Hoạt hình/Game",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "wi-fi",
+   "postings": 48,
+   "spelling": "Wi-Fi",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "etl/elt",
+   "postings": 47,
+   "spelling": "ETL/ELT",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "etl"
+  },
+  {
+   "key": "integration test",
+   "postings": 47,
+   "spelling": "integration test",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "integration_testing"
+  },
+  {
+   "key": "logging",
+   "postings": 46,
+   "spelling": "logging",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "observability"
+  },
+  {
+   "key": "manual tester",
+   "postings": 45,
+   "spelling": "Manual Tester",
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "viec lam truong nhom tai ha noi",
+   "postings": 45,
+   "spelling": "Việc làm Trưởng Nhóm tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "phuong tan thuan - ho chi minh",
+   "postings": 44,
+   "spelling": "Phường Tân Thuận - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong vinh tuy - ha noi",
+   "postings": 44,
+   "spelling": "Phường Vĩnh Tuy - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "debugging",
+   "postings": 43,
+   "spelling": "debugging",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "debugging"
+  },
+  {
+   "key": "iot/embedded engineer",
+   "postings": 43,
+   "spelling": "IoT/Embedded Engineer",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tay ho - ha noi",
+   "postings": 43,
+   "spelling": "Phường Tây Hồ - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong trung my tay - ho chi minh",
+   "postings": 43,
+   "spelling": "Phường Trung Mỹ Tây - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "system administrator",
+   "postings": 43,
+   "spelling": "System Administrator",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "azure sql data warehouse",
+   "postings": 42,
+   "spelling": "Azure SQL Data Warehouse",
+   "sources": [
+    "itnavi"
+   ],
+   "action": "exclude",
+   "target": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác"
+  },
+  {
+   "key": "phuong giang vo - ha noi",
+   "postings": 42,
+   "spelling": "Phường Giảng Võ - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong xuan dinh - ha noi",
+   "postings": 42,
+   "spelling": "Phường Xuân Đỉnh - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "it support",
+   "postings": 41,
+   "spelling": "IT Support",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "helpdesk"
+  },
+  {
+   "key": "javascript/typescript",
+   "postings": 41,
+   "spelling": "JavaScript/TypeScript",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "composite",
+   "target": "javascript+typescript"
+  },
+  {
+   "key": "quan tri he thong",
+   "postings": 41,
+   "spelling": "quản trị hệ thống",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_administration"
+  },
+  {
+   "key": "dien tu/phan cung",
+   "postings": 40,
+   "spelling": "Điện tử/Phần cứng",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "lap trinh",
+   "postings": 40,
+   "spelling": "lập trình",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "mvc",
+   "postings": 40,
+   "spelling": "MVC",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "design_patterns"
+  },
+  {
+   "key": "phuong phu nhuan - ho chi minh",
+   "postings": 40,
+   "spelling": "Phường Phú Nhuận - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong xuan hoa - ho chi minh",
+   "postings": 40,
+   "spelling": "Phường Xuân Hòa - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "prototype",
+   "postings": 40,
+   "spelling": "prototype",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "ui_design"
+  },
+  {
+   "key": "rest",
+   "postings": 40,
+   "spelling": "REST",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "rest_api"
+  },
+  {
+   "key": "technical leader",
+   "postings": 40,
+   "spelling": "Technical Leader",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "testing",
+   "postings": 40,
+   "spelling": "testing",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "exclude",
+   "target": "quá chung; kiểm thử cụ thể đã có mã"
+  },
+  {
+   "key": "doc hieu tai lieu tieng anh",
+   "postings": 39,
+   "spelling": "đọc hiểu tài liệu tiếng Anh",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "english"
+  },
+  {
+   "key": "event-driven architecture",
+   "postings": 39,
+   "spelling": "event-driven architecture",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "software_architecture"
+  },
+  {
+   "key": "phuong tan son hoa - ho chi minh",
+   "postings": 39,
+   "spelling": "Phường Tân Sơn Hòa - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong ba dinh - ha noi",
+   "postings": 38,
+   "spelling": "Phường Ba Đình - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong o cho dua - ha noi",
+   "postings": 38,
+   "spelling": "Phường Ô Chợ Dừa - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "code reviews",
+   "postings": 37,
+   "spelling": "code reviews",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "code_review"
+  },
+  {
+   "key": "giao tiep tot",
+   "postings": 37,
+   "spelling": "Giao tiếp tốt",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "communication"
+  },
+  {
+   "key": "product owner",
+   "postings": 37,
+   "spelling": "Product Owner",
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "bao mat",
+   "postings": 36,
+   "spelling": "bảo mật",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "cybersecurity"
+  },
+  {
+   "key": "business analyst",
+   "postings": 36,
+   "spelling": "Business Analyst",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "it consultant",
+   "postings": 36,
+   "spelling": "IT Consultant",
+   "sources": [
+    "careerlink",
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "phuong tan binh - ho chi minh",
+   "postings": 36,
+   "spelling": "Phường Tân Bình - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "backend",
+   "postings": 35,
+   "spelling": "Backend",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "mảng việc, trùng với vai trò Backend"
+  },
+  {
+   "key": "cloud security",
+   "postings": 35,
+   "spelling": "Cloud Security",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "cybersecurity"
+  },
+  {
+   "key": "databases",
+   "postings": 35,
+   "spelling": "databases",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "databases"
+  },
+  {
+   "key": "html/css",
+   "postings": 35,
+   "spelling": "HTML/CSS",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "composite",
+   "target": "html+css"
+  },
+  {
+   "key": "system architecture",
+   "postings": 35,
+   "spelling": "System Architecture",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "software_architecture"
+  },
+  {
+   "key": "tu duy he thong",
+   "postings": 35,
+   "spelling": "tư duy hệ thống",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "analytical_thinking"
+  },
+  {
+   "key": "chuyen vien cyber security",
+   "postings": 34,
+   "spelling": "Chuyên viên Cyber Security",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "phuong dinh cong - ha noi",
+   "postings": 34,
+   "spelling": "Phường Định Công - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "storage",
+   "postings": 34,
+   "spelling": "Storage",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "big data",
+   "postings": 33,
+   "spelling": "Big Data",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "big_data"
+  },
+  {
+   "key": "embedded engineer/lap trinh nhung",
+   "postings": 33,
+   "spelling": "Embedded Engineer/Lập trình nhúng",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "lap ke hoach",
+   "postings": 33,
+   "spelling": "lập kế hoạch",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "project_management"
+  },
+  {
+   "key": "phuong kim lien - ha noi",
+   "postings": 33,
+   "spelling": "Phường Kim Liên - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong ngoc ha - ha noi",
+   "postings": 33,
+   "spelling": "Phường Ngọc Hà - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong phu dien - ha noi",
+   "postings": 33,
+   "spelling": "Phường Phú Diễn - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "power automate",
+   "postings": 33,
+   "spelling": "Power Automate",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "workflow_automation"
+  },
+  {
+   "key": "risk management",
+   "postings": 33,
+   "spelling": "risk management",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "risk_management"
+  },
+  {
+   "key": "server",
+   "postings": 33,
+   "spelling": "Server",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "software development",
+   "postings": 33,
+   "spelling": "software development",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "system admin",
+   "postings": 32,
+   "spelling": "System Admin",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_administration"
+  },
+  {
+   "key": "viec lam devops engineer tai ha noi",
+   "postings": 32,
+   "spelling": "Việc làm DevOps Engineer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "viec lam project manager tai ha noi",
+   "postings": 32,
+   "spelling": "Việc làm Project Manager tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "container",
+   "postings": 31,
+   "spelling": "Container",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "docker"
+  },
+  {
+   "key": "it infrastructure",
+   "postings": 31,
+   "spelling": "IT Infrastructure",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_administration"
+  },
+  {
+   "key": "junit",
+   "postings": 31,
+   "spelling": "JUnit",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "unit_testing"
+  },
+  {
+   "key": "phuong hiep binh - ho chi minh",
+   "postings": 31,
+   "spelling": "Phường Hiệp Bình - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tan my - ho chi minh",
+   "postings": 31,
+   "spelling": "Phường Tân Mỹ - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "problem-solving skills",
+   "postings": 31,
+   "spelling": "problem-solving skills",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "problem_solving"
+  },
+  {
+   "key": "quy trinh phat trien phan mem",
+   "postings": 31,
+   "spelling": "quy trình phát triển phần mềm",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "sdlc"
+  },
+  {
+   "key": "word",
+   "postings": 31,
+   "spelling": "Word",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "ms_office"
+  },
+  {
+   "key": "doc hieu tai lieu ky thuat tieng anh",
+   "postings": 30,
+   "spelling": "đọc hiểu tài liệu kỹ thuật tiếng Anh",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "english"
+  },
+  {
+   "key": "kinh doanh/ban hang",
+   "postings": 30,
+   "spelling": "Kinh doanh/Bán hàng",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "phuong hai chau - da nang",
+   "postings": 30,
+   "spelling": "Phường Hải Châu - Đà Nẵng",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong phuong liet - ha noi",
+   "postings": 30,
+   "spelling": "Phường Phương Liệt - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tang nhon phu - ho chi minh",
+   "postings": 30,
+   "spelling": "Phường Tăng Nhơn Phú - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "analytical skills",
+   "postings": 29,
+   "spelling": "analytical skills",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "analytical_thinking"
+  },
+  {
+   "key": "bao mat he thong",
+   "postings": 29,
+   "spelling": "bảo mật hệ thống",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "cybersecurity"
+  },
+  {
+   "key": "biopython",
+   "postings": 29,
+   "spelling": "Biopython",
+   "sources": [
+    "itnavi"
+   ],
+   "action": "exclude",
+   "target": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác"
+  },
+  {
+   "key": "game developer",
+   "postings": 29,
+   "spelling": "Game Developer",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "phat trien phan mem",
+   "postings": 29,
+   "spelling": "phát triển phần mềm",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "phuong bay hien - ho chi minh",
+   "postings": 29,
+   "spelling": "Phường Bảy Hiền - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong hoang mai - ha noi",
+   "postings": 29,
+   "spelling": "Phường Hoàng Mai - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong khuong dinh - ha noi",
+   "postings": 29,
+   "spelling": "Phường Khương Đình - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong xom chieu - ho chi minh",
+   "postings": 29,
+   "spelling": "Phường Xóm Chiếu - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "review code",
+   "postings": 29,
+   "spelling": "review code",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "code_review"
+  },
+  {
+   "key": "team management",
+   "postings": 29,
+   "spelling": "Team Management",
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "leadership"
+  },
+  {
+   "key": "thuyet trinh",
+   "postings": 29,
+   "spelling": "thuyết trình",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "presentation"
+  },
+  {
+   "key": "tich hop he thong",
+   "postings": 29,
+   "spelling": "tích hợp hệ thống",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_integration"
+  },
+  {
+   "key": "viet tai lieu",
+   "postings": 29,
+   "spelling": "viết tài liệu",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "technical_writing"
+  },
+  {
+   "key": "vpc",
+   "postings": 29,
+   "spelling": "VPC",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "agile methodologies",
+   "postings": 28,
+   "spelling": "Agile methodologies",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "agile"
+  },
+  {
+   "key": "api gateway",
+   "postings": 28,
+   "spelling": "API Gateway",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "api"
+  },
+  {
+   "key": "backup/restore",
+   "postings": 28,
+   "spelling": "backup/restore",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "backup"
+  },
+  {
+   "key": "fullstack",
+   "postings": 28,
+   "spelling": "Fullstack",
+   "sources": [
+    "itviec",
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "mảng việc, trùng với vai trò Fullstack"
+  },
+  {
+   "key": "mobile developer",
+   "postings": 28,
+   "spelling": "Mobile Developer",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "ms sql server",
+   "postings": 28,
+   "spelling": "MS SQL Server",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "sql_server"
+  },
+  {
+   "key": "phuong ban co - ho chi minh",
+   "postings": 28,
+   "spelling": "Phường Bàn Cờ - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong dong ngac - ha noi",
+   "postings": 28,
+   "spelling": "Phường Đông Ngạc - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tan dinh - ho chi minh",
+   "postings": 28,
+   "spelling": "Phường Tân Định - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "relational databases",
+   "postings": 28,
+   "spelling": "relational databases",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "databases"
+  },
+  {
+   "key": "system administration",
+   "postings": 28,
+   "spelling": "System Administration",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_administration"
+  },
+  {
+   "key": "wifi",
+   "postings": 28,
+   "spelling": "WiFi",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "ai/ml",
+   "postings": 27,
+   "spelling": "AI/ML",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "composite",
+   "target": "artificial intelligence+machine learning"
+  },
+  {
+   "key": "debug",
+   "postings": 27,
+   "spelling": "debug",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "debugging"
+  },
+  {
+   "key": "phuong tan hung - ho chi minh",
+   "postings": 27,
+   "spelling": "Phường Tân Hưng - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "solution architecture",
+   "postings": 27,
+   "spelling": "Solution Architecture",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "software_architecture"
+  },
+  {
+   "key": "system integration",
+   "postings": 27,
+   "spelling": "system integration",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_integration"
+  },
+  {
+   "key": "transaction",
+   "postings": 27,
+   "spelling": "transaction",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "viec lam data engineer tai ha noi",
+   "postings": 27,
+   "spelling": "Việc làm Data Engineer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "xu ly du lieu",
+   "postings": 27,
+   "spelling": "xử lý dữ liệu",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "data_analysis"
+  },
+  {
+   "key": "agentic ai",
+   "postings": 26,
+   "spelling": "Agentic AI",
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev"
+   ],
+   "action": "alias",
+   "target": "ai_agent"
+  },
+  {
+   "key": "authentication",
+   "postings": 26,
+   "spelling": "authentication",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "iam"
+  },
+  {
+   "key": "cloudwatch",
+   "postings": 26,
+   "spelling": "CloudWatch",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "observability"
+  },
+  {
+   "key": "concurrency",
+   "postings": 26,
+   "spelling": "concurrency",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "concurrency"
+  },
+  {
+   "key": "http",
+   "postings": 26,
+   "spelling": "HTTP",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "http"
+  },
+  {
+   "key": "http/https",
+   "postings": 26,
+   "spelling": "HTTP/HTTPS",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "http"
+  },
+  {
+   "key": "ky thuat it",
+   "postings": 26,
+   "spelling": "Kỹ thuật IT",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "lam viec doc lap",
+   "postings": 26,
+   "spelling": "làm việc độc lập",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "independent_work"
+  },
+  {
+   "key": "lan",
+   "postings": 26,
+   "spelling": "LAN",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "quan ly rui ro",
+   "postings": 26,
+   "spelling": "quản lý rủi ro",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "risk_management"
+  },
+  {
+   "key": "exception handling",
+   "postings": 25,
+   "spelling": "exception handling",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "exclude",
+   "target": "quá hẹp, thuộc kỹ năng lập trình cơ bản"
+  },
+  {
+   "key": "hai duong",
+   "postings": 25,
+   "spelling": "Hải Dương",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "hai phong",
+   "postings": 25,
+   "spelling": "Hải Phòng",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "kiem thu tich hop",
+   "postings": 25,
+   "spelling": "kiểm thử tích hợp",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "integration_testing"
+  },
+  {
+   "key": "lap trinh huong doi tuong (oop)",
+   "postings": 25,
+   "spelling": "lập trình hướng đối tượng (OOP)",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "oop"
+  },
+  {
+   "key": "mes",
+   "postings": 25,
+   "spelling": "MES",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "mes"
+  },
+  {
+   "key": "ms project",
+   "postings": 25,
+   "spelling": "MS Project",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "project_management"
+  },
+  {
+   "key": "n8n",
+   "postings": 25,
+   "spelling": "n8n",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "workflow_automation"
+  },
+  {
+   "key": "phuong cau ong lanh - ho chi minh",
+   "postings": 25,
+   "spelling": "Phường Cầu Ông Lãnh - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong duong noi - ha noi",
+   "postings": 25,
+   "spelling": "Phường Dương Nội - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong thanh my tay - ho chi minh",
+   "postings": 25,
+   "spelling": "Phường Thạnh Mỹ Tây - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "project manager",
+   "postings": 25,
+   "spelling": "Project Manager",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "viec lam engineer tai ha noi",
+   "postings": 25,
+   "spelling": "Việc làm Engineer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "xml",
+   "postings": 25,
+   "spelling": "XML",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "xml"
+  },
+  {
+   "key": "dashboard",
+   "postings": 24,
+   "spelling": "dashboard",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung (công cụ BI cụ thể đã có mã)"
+  },
+  {
+   "key": "high availability",
+   "postings": 24,
+   "spelling": "High Availability",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "system_design"
+  },
+  {
+   "key": "incident management",
+   "postings": 24,
+   "spelling": "Incident Management",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "itil"
+  },
+  {
+   "key": "phan quyen",
+   "postings": 24,
+   "spelling": "phân quyền",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "iam"
+  },
+  {
+   "key": "phuong ben thanh - ho chi minh",
+   "postings": 24,
+   "spelling": "Phường Bến Thành - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong hoa hung - ho chi minh",
+   "postings": 24,
+   "spelling": "Phường Hòa Hưng - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tan phu - ho chi minh",
+   "postings": 24,
+   "spelling": "Phường Tân Phú - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tan son nhat - ho chi minh",
+   "postings": 24,
+   "spelling": "Phường Tân Sơn Nhất - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong xuan phuong - ha noi",
+   "postings": 24,
+   "spelling": "Phường Xuân Phương - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "rdbms",
+   "postings": 24,
+   "spelling": "RDBMS",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "databases"
+  },
+  {
+   "key": "viec lam backend developer tai ha noi",
+   "postings": 24,
+   "spelling": "Việc làm Backend Developer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "wireshark",
+   "postings": 24,
+   "spelling": "Wireshark",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "xa gia lam - ha noi",
+   "postings": 24,
+   "spelling": "Xã Gia Lâm - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "agile scrum",
+   "postings": 23,
+   "spelling": "Agile Scrum",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "composite",
+   "target": "agile+scrum"
+  },
+  {
+   "key": "api design",
+   "postings": 23,
+   "spelling": "API design",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "api"
+  },
+  {
+   "key": "ethernet",
+   "postings": 23,
+   "spelling": "Ethernet",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "phuong binh thanh - ho chi minh",
+   "postings": 23,
+   "spelling": "Phường Bình Thạnh - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong binh trung - ho chi minh",
+   "postings": 23,
+   "spelling": "Phường Bình Trưng - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong gia dinh - ho chi minh",
+   "postings": 23,
+   "spelling": "Phường Gia Định - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "scripting",
+   "postings": 23,
+   "spelling": "scripting",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "scripting"
+  },
+  {
+   "key": "vulnerability management",
+   "postings": 23,
+   "spelling": "Vulnerability Management",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "cybersecurity"
+  },
+  {
+   "key": "xa hoa lac - ha noi",
+   "postings": 23,
+   "spelling": "Xã Hòa Lạc - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "can",
+   "postings": 22,
+   "spelling": "CAN",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "can_bus"
+  },
+  {
+   "key": "endpoint security",
+   "postings": 22,
+   "spelling": "Endpoint Security",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "edr"
+  },
+  {
+   "key": "infrastructure as code (iac)",
+   "postings": 22,
+   "spelling": "Infrastructure as Code (IaC)",
+   "sources": [
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "infrastructure_as_code"
+  },
+  {
+   "key": "integration",
+   "postings": 22,
+   "spelling": "Integration",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "may chu",
+   "postings": 22,
+   "spelling": "máy chủ",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "nat",
+   "postings": 22,
+   "spelling": "NAT",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "networking"
+  },
+  {
+   "key": "performance optimization",
+   "postings": 22,
+   "spelling": "performance optimization",
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "performance_optimization"
+  },
+  {
+   "key": "phan tich log",
+   "postings": 22,
+   "spelling": "phân tích log",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "troubleshooting"
+  },
+  {
+   "key": "phan tich yeu cau nghiep vu",
+   "postings": 22,
+   "spelling": "phân tích yêu cầu nghiệp vụ",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "business_analysis"
+  },
+  {
+   "key": "phuong bach mai - ha noi",
+   "postings": 22,
+   "spelling": "Phường Bạch Mai - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "process quality assurance (pqa)",
+   "postings": 22,
+   "spelling": "Process Quality Assurance (PQA)",
+   "sources": [
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "process_quality_assurance"
+  },
+  {
+   "key": "sast",
+   "postings": 22,
+   "spelling": "SAST",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "sast_dast"
+  },
+  {
+   "key": "soc",
+   "postings": 22,
+   "spelling": "SOC",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "siem"
+  },
+  {
+   "key": "tich hop api",
+   "postings": 22,
+   "spelling": "tích hợp API",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "api"
+  },
+  {
+   "key": "tls",
+   "postings": 22,
+   "spelling": "TLS",
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "tls"
+  },
+  {
+   "key": "viec lam game designer tai ha noi",
+   "postings": 22,
+   "spelling": "Việc làm Game Designer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "viec lam phan tich nghiep vu tai ha noi",
+   "postings": 22,
+   "spelling": "Việc làm Phân Tích Nghiệp Vụ tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "xa hoai duc - ha noi",
+   "postings": 22,
+   "spelling": "Xã Hoài Đức - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "access control",
+   "postings": 21,
+   "spelling": "access control",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "iam"
+  },
+  {
+   "key": "application security",
+   "postings": 21,
+   "spelling": "Application Security",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "cybersecurity"
+  },
+  {
+   "key": "bac giang",
+   "postings": 21,
+   "spelling": "Bắc Giang",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "bac ninh",
+   "postings": 21,
+   "spelling": "Bắc Ninh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "change management",
+   "postings": 21,
+   "spelling": "Change Management",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "itil"
+  },
+  {
+   "key": "core banking",
+   "postings": 21,
+   "spelling": "Core Banking",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "core_banking"
+  },
+  {
+   "key": "dast",
+   "postings": 21,
+   "spelling": "DAST",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "sast_dast"
+  },
+  {
+   "key": "design systems",
+   "postings": 21,
+   "spelling": "Design Systems",
+   "sources": [
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "ui_design"
+  },
+  {
+   "key": "he dieu hanh",
+   "postings": 21,
+   "spelling": "hệ điều hành",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "operating_systems"
+  },
+  {
+   "key": "kien truc he thong",
+   "postings": 21,
+   "spelling": "kiến trúc hệ thống",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "software_architecture"
+  },
+  {
+   "key": "mcp",
+   "postings": 21,
+   "spelling": "MCP",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "ai_agent"
+  },
+  {
+   "key": "mitre att&ck",
+   "postings": 21,
+   "spelling": "MITRE ATT&CK",
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "siem"
+  },
+  {
+   "key": "phuong duc nhuan - ho chi minh",
+   "postings": 21,
+   "spelling": "Phường Đức Nhuận - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong go vap - ho chi minh",
+   "postings": 21,
+   "spelling": "Phường Gò Vấp - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong nhieu loc - ho chi minh",
+   "postings": 21,
+   "spelling": "Phường Nhiêu Lộc - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tan son nhi - ho chi minh",
+   "postings": 21,
+   "spelling": "Phường Tân Sơn Nhì - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tay mo - ha noi",
+   "postings": 21,
+   "spelling": "Phường Tây Mỗ - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "regression",
+   "postings": 21,
+   "spelling": "Regression",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev"
+   ],
+   "action": "alias",
+   "target": "regression"
+  },
+  {
+   "key": "sql co ban",
+   "postings": 21,
+   "spelling": "SQL cơ bản",
+   "sources": [
+    "careerlink",
+    "topcv"
+   ],
+   "action": "alias",
+   "target": "sql"
+  },
+  {
+   "key": "ssl/tls",
+   "postings": 21,
+   "spelling": "SSL/TLS",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "tls"
+  },
+  {
+   "key": "tu dong hoa",
+   "postings": 21,
+   "spelling": "tự động hóa",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung (kiểm thử tự động hay tự động hóa quy trình?)"
+  },
+  {
+   "key": "viec lam fullstack developer tai ha noi",
+   "postings": 21,
+   "spelling": "Việc làm Fullstack Developer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "webhook",
+   "postings": 21,
+   "spelling": "webhook",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ],
+   "action": "new",
+   "target": "api"
+  },
+  {
+   "key": "xa son dong - ha noi",
+   "postings": 21,
+   "spelling": "Xã Sơn Đồng - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "ajax",
+   "postings": 20,
+   "spelling": "AJAX",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "javascript"
+  },
+  {
+   "key": "c#/.net",
+   "postings": 20,
+   "spelling": "C#/.NET",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "composite",
+   "target": "c#+.net"
+  },
+  {
+   "key": "computer science",
+   "postings": 20,
+   "spelling": "Computer Science",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "nền tảng học vấn, không phải kỹ năng"
+  },
+  {
+   "key": "dependency injection",
+   "postings": 20,
+   "spelling": "Dependency Injection",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "alias",
+   "target": "design_patterns"
+  },
+  {
+   "key": "documentation",
+   "postings": 20,
+   "spelling": "documentation",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "technical_writing"
+  },
+  {
+   "key": "enterprise architecture",
+   "postings": 20,
+   "spelling": "Enterprise Architecture",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "software_architecture"
+  },
+  {
+   "key": "ibm rational functional tester",
+   "postings": 20,
+   "spelling": "IBM Rational Functional Tester",
+   "sources": [
+    "itnavi"
+   ],
+   "action": "exclude",
+   "target": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác"
+  },
+  {
+   "key": "it operations",
+   "postings": 20,
+   "spelling": "IT Operations",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "system_administration"
+  },
+  {
+   "key": "logical thinking",
+   "postings": 20,
+   "spelling": "logical thinking",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "analytical_thinking"
+  },
+  {
+   "key": "macos",
+   "postings": 20,
+   "spelling": "macOS",
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "macos"
+  },
+  {
+   "key": "memory management",
+   "postings": 20,
+   "spelling": "memory management",
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "zalo"
+   ],
+   "action": "new",
+   "target": "memory_management"
+  },
+  {
+   "key": "middleware",
+   "postings": 20,
+   "spelling": "Middleware",
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "exclude",
+   "target": "quá chung"
+  },
+  {
+   "key": "openstack",
+   "postings": 20,
+   "spelling": "OpenStack",
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "alias",
+   "target": "virtualization"
+  },
+  {
+   "key": "phuong hanh thong - ho chi minh",
+   "postings": 20,
+   "spelling": "Phường Hạnh Thông - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong hoang liet - ha noi",
+   "postings": 20,
+   "spelling": "Phường Hoàng Liệt - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong khanh hoi - ho chi minh",
+   "postings": 20,
+   "spelling": "Phường Khánh Hội - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong long bien - ha noi",
+   "postings": 20,
+   "spelling": "Phường Long Biên - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong thu duc - ho chi minh",
+   "postings": 20,
+   "spelling": "Phường Thủ Đức - Hồ Chí Minh",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "phuong tuong mai - ha noi",
+   "postings": 20,
+   "spelling": "Phường Tương Mai - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  },
+  {
+   "key": "qa engineer",
+   "postings": 20,
+   "spelling": "QA Engineer",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ"
+  },
+  {
+   "key": "sales it phan mem",
+   "postings": 20,
+   "spelling": "Sales IT Phần mềm",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng"
+  },
+  {
+   "key": "technical documentation",
+   "postings": 20,
+   "spelling": "technical documentation",
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ],
+   "action": "new",
+   "target": "technical_writing"
+  },
+  {
+   "key": "viec lam ai engineer tai ha noi",
+   "postings": 20,
+   "spelling": "Việc làm AI Engineer tại Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng"
+  },
+  {
+   "key": "xa thach that - ha noi",
+   "postings": 20,
+   "spelling": "Xã Thạch Thất - Hà Nội",
+   "sources": [
+    "topcv"
+   ],
+   "action": "exclude",
+   "target": "địa điểm, không phải kỹ năng"
+  }
+ ],
+ "new": {
+  "devops": {
+   "name_en": "DevOps",
+   "name_vi": "DevOps",
+   "keys": [
+    "devops"
+   ],
+   "scan_skip": false
+  },
+  "data_science": {
+   "name_en": "Data science",
+   "name_vi": "Khoa học dữ liệu",
+   "keys": [
+    "data science"
+   ],
+   "scan_skip": false
+  },
+  "artificial_intelligence": {
+   "name_en": "Artificial intelligence",
+   "name_vi": "Trí tuệ nhân tạo",
+   "keys": [
+    "ai",
+    "artificial intelligence (ai)",
+    "artificial intelligence"
+   ],
+   "scan_skip": false
+  },
+  "cloud_computing": {
+   "name_en": "Cloud computing",
+   "name_vi": "Điện toán đám mây",
+   "keys": [
+    "cloud"
+   ],
+   "scan_skip": true
+  },
+  "api": {
+   "name_en": "API development",
+   "name_vi": "Phát triển API",
+   "keys": [
+    "api",
+    "apis",
+    "api design",
+    "tich hop api",
+    "api gateway",
+    "webhook"
+   ],
+   "scan_skip": true
+  },
+  "http": {
+   "name_en": "HTTP",
+   "name_vi": "HTTP",
+   "keys": [
+    "http",
+    "http/https"
+   ],
+   "scan_skip": true
+  },
+  "tls": {
+   "name_en": "TLS/SSL",
+   "name_vi": "TLS/SSL",
+   "keys": [
+    "tls",
+    "ssl/tls"
+   ],
+   "scan_skip": false
+  },
+  "databases": {
+   "name_en": "Databases",
+   "name_vi": "Cơ sở dữ liệu",
+   "keys": [
+    "databases"
+   ],
+   "scan_skip": true
+  },
+  "windows": {
+   "name_en": "Windows",
+   "name_vi": "Windows",
+   "keys": [
+    "windows"
+   ],
+   "scan_skip": true
+  },
+  "macos": {
+   "name_en": "macOS",
+   "name_vi": "macOS",
+   "keys": [
+    "macos"
+   ],
+   "scan_skip": false
+  },
+  "operating_systems": {
+   "name_en": "Operating systems",
+   "name_vi": "Hệ điều hành",
+   "keys": [
+    "he dieu hanh"
+   ],
+   "scan_skip": false
+  },
+  "code_review": {
+   "name_en": "Code review",
+   "name_vi": "Review code",
+   "keys": [
+    "code review",
+    "code reviews",
+    "review code"
+   ],
+   "scan_skip": false
+  },
+  "stakeholder_management": {
+   "name_en": "Stakeholder management",
+   "name_vi": "Quản lý các bên liên quan",
+   "keys": [
+    "stakeholder management"
+   ],
+   "scan_skip": false
+  },
+  "game_development": {
+   "name_en": "Game development",
+   "name_vi": "Phát triển game",
+   "keys": [
+    "game development"
+   ],
+   "scan_skip": false
+  },
+  "json": {
+   "name_en": "JSON",
+   "name_vi": "JSON",
+   "keys": [
+    "json"
+   ],
+   "scan_skip": false
+  },
+  "xml": {
+   "name_en": "XML",
+   "name_vi": "XML",
+   "keys": [
+    "xml"
+   ],
+   "scan_skip": false
+  },
+  "sast_dast": {
+   "name_en": "SAST/DAST",
+   "name_vi": "Kiểm thử bảo mật SAST/DAST",
+   "keys": [
+    "sast",
+    "dast"
+   ],
+   "scan_skip": false
+  },
+  "sdlc": {
+   "name_en": "SDLC",
+   "name_vi": "Quy trình phát triển phần mềm",
+   "keys": [
+    "sdlc",
+    "quy trinh phat trien phan mem"
+   ],
+   "scan_skip": false
+  },
+  "troubleshooting": {
+   "name_en": "Troubleshooting",
+   "name_vi": "Xử lý sự cố",
+   "keys": [
+    "troubleshooting",
+    "xu ly su co",
+    "phan tich log"
+   ],
+   "scan_skip": false
+  },
+  "debugging": {
+   "name_en": "Debugging",
+   "name_vi": "Gỡ lỗi",
+   "keys": [
+    "debugging",
+    "debug"
+   ],
+   "scan_skip": true
+  },
+  "integration_testing": {
+   "name_en": "Integration testing",
+   "name_vi": "Kiểm thử tích hợp",
+   "keys": [
+    "integration testing",
+    "integration test"
+   ],
+   "scan_skip": false
+  },
+  "workflow_automation": {
+   "name_en": "Workflow automation",
+   "name_vi": "Tự động hóa quy trình",
+   "keys": [
+    "power automate",
+    "n8n"
+   ],
+   "scan_skip": false
+  },
+  "big_data": {
+   "name_en": "Big data",
+   "name_vi": "Dữ liệu lớn",
+   "keys": [
+    "big data"
+   ],
+   "scan_skip": false
+  },
+  "system_administration": {
+   "name_en": "System administration",
+   "name_vi": "Quản trị hệ thống",
+   "keys": [
+    "system administration",
+    "quan tri he thong",
+    "system admin",
+    "it infrastructure",
+    "it operations"
+   ],
+   "scan_skip": false
+  },
+  "risk_management": {
+   "name_en": "Risk management",
+   "name_vi": "Quản lý rủi ro",
+   "keys": [
+    "risk management",
+    "quan ly rui ro"
+   ],
+   "scan_skip": false
+  },
+  "presentation": {
+   "name_en": "Presentation",
+   "name_vi": "Thuyết trình",
+   "keys": [
+    "thuyet trinh"
+   ],
+   "scan_skip": false
+  },
+  "technical_writing": {
+   "name_en": "Technical writing",
+   "name_vi": "Viết tài liệu kỹ thuật",
+   "keys": [
+    "viet tai lieu",
+    "documentation",
+    "technical documentation"
+   ],
+   "scan_skip": false
+  },
+  "analytical_thinking": {
+   "name_en": "Analytical thinking",
+   "name_vi": "Tư duy phân tích",
+   "keys": [
+    "analytical skills",
+    "tu duy he thong",
+    "logical thinking"
+   ],
+   "scan_skip": false
+  },
+  "independent_work": {
+   "name_en": "Working independently",
+   "name_vi": "Làm việc độc lập",
+   "keys": [
+    "lam viec doc lap"
+   ],
+   "scan_skip": false
+  },
+  "market_research": {
+   "name_en": "Market research",
+   "name_vi": "Nghiên cứu thị trường",
+   "keys": [
+    "market research and analysis"
+   ],
+   "scan_skip": false
+  },
+  "core_banking": {
+   "name_en": "Core banking",
+   "name_vi": "Core banking",
+   "keys": [
+    "core banking"
+   ],
+   "scan_skip": false
+  },
+  "mes": {
+   "name_en": "Manufacturing execution system (MES)",
+   "name_vi": "Hệ thống điều hành sản xuất (MES)",
+   "keys": [
+    "mes"
+   ],
+   "scan_skip": true
+  },
+  "can_bus": {
+   "name_en": "CAN bus",
+   "name_vi": "CAN bus",
+   "keys": [
+    "can"
+   ],
+   "scan_skip": true
+  },
+  "concurrency": {
+   "name_en": "Concurrency",
+   "name_vi": "Lập trình đồng thời",
+   "keys": [
+    "concurrency"
+   ],
+   "scan_skip": false
+  },
+  "memory_management": {
+   "name_en": "Memory management",
+   "name_vi": "Quản lý bộ nhớ",
+   "keys": [
+    "memory management"
+   ],
+   "scan_skip": false
+  },
+  "performance_optimization": {
+   "name_en": "Performance optimization",
+   "name_vi": "Tối ưu hiệu năng",
+   "keys": [
+    "performance optimization"
+   ],
+   "scan_skip": false
+  },
+  "scripting": {
+   "name_en": "Scripting",
+   "name_vi": "Viết script",
+   "keys": [
+    "scripting"
+   ],
+   "scan_skip": false
+  },
+  "infrastructure_as_code": {
+   "name_en": "Infrastructure as code",
+   "name_vi": "Hạ tầng dưới dạng mã (IaC)",
+   "keys": [
+    "infrastructure as code (iac)"
+   ],
+   "scan_skip": false
+  },
+  "system_integration": {
+   "name_en": "System integration",
+   "name_vi": "Tích hợp hệ thống",
+   "keys": [
+    "tich hop he thong",
+    "system integration"
+   ],
+   "scan_skip": false
+  },
+  "process_quality_assurance": {
+   "name_en": "Process quality assurance",
+   "name_vi": "Đảm bảo chất lượng quy trình (PQA)",
+   "keys": [
+    "process quality assurance (pqa)"
+   ],
+   "scan_skip": false
+  }
+ },
+ "composite": {
+  "agile/scrum": [
+   "agile",
+   "scrum"
+  ],
+  "agile scrum": [
+   "agile",
+   "scrum"
+  ],
+  "javascript/typescript": [
+   "javascript",
+   "typescript"
+  ],
+  "html/css": [
+   "html",
+   "css"
+  ],
+  "c#/.net": [
+   "c#",
+   ".net"
+  ],
+  "ai/ml": [
+   "artificial intelligence",
+   "machine learning"
+  ]
+ },
+ "scan_skip": [
+  "access control",
+  "ai",
+  "api",
+  "apis",
+  "authentication",
+  "can",
+  "cloud",
+  "concurrency",
+  "container",
+  "database",
+  "databases",
+  "debug",
+  "documentation",
+  "http",
+  "integration test",
+  "lan",
+  "logging",
+  "mes",
+  "monitoring",
+  "nat",
+  "prototype",
+  "regression",
+  "rest",
+  "router",
+  "scripting",
+  "security",
+  "soc",
+  "solid",
+  "switch",
+  "windows",
+  "word"
+ ]
+}

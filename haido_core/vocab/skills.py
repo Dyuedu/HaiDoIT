@@ -4,7 +4,8 @@ Mã kỹ năng là snake_case ASCII, tối đa 40 ký tự: an toàn không cầ
 của link chia sẻ và của AD-22. `web/lib/haido-keys.ts` giữ cùng mẫu này.
 
 Danh sách mồi nằm ở `skills_seed.json`, lấy từ các tag kỹ năng hay gặp nhất của bộ tin nền.
-Bộ từ vựng v1 (#96) sẽ thay file đó; mã giữ nguyên định dạng.
+Thẻ hay gặp mà cố ý không gán mã nằm ở `skills_excluded.json`, kèm lý do (#278).
+Bộ từ vựng v1 (#96) sẽ thay các file đó; mã giữ nguyên định dạng.
 """
 
 import json
@@ -20,6 +21,7 @@ MAX_PROFILE_SKILLS = 200
 
 _SKILL_CODE_RE = re.compile(SKILL_CODE_PATTERN)
 _SEED_FILE = "skills_seed.json"
+_EXCLUDED_FILE = "skills_excluded.json"
 
 
 @dataclass(frozen=True, slots=True)
@@ -155,7 +157,80 @@ def load_vocabulary() -> Vocabulary:
         folded_parts = tuple(fold(p) for p in parts) if isinstance(parts, list) else ()
         if len(folded_parts) < 2 or any(p not in lookup for p in folded_parts):
             raise ValueError(f"{_SEED_FILE}: mã ghép {term!r} phải có từ hai phần, mỗi phần là tên hoặc bí danh.")
-        composites[fold(term)] = folded_parts
+        key = fold(term)
+        outside = [p for p in folded_parts if p not in key]
+        if outside:
+            raise ValueError(f"{_SEED_FILE}: phần {outside} của mã ghép {term!r} không nằm trong cụm, không neo được vị trí.")
+        composites[key] = folded_parts
     skip = {fold(t) for t in raw_skip if isinstance(t, str)}
     scan_terms = tuple(sorted((set(lookup) - skip) | set(composites)))
     return Vocabulary(version=version, lookup=lookup, scan_terms=scan_terms, composites=composites)
+
+
+@dataclass(frozen=True, slots=True)
+class ExcludedSkill:
+    """Một thẻ hay gặp mà cố ý không có mã kỹ năng (#278)."""
+
+    key: str
+    """Dạng đã bỏ dấu (`posting_text.fold`), cùng dạng với khóa của `Vocabulary.lookup`."""
+    spelling: str
+    reason: str
+    postings: int
+    """Số tin nhắc thẻ ở snapshot nguồn: bằng chứng rằng thẻ đủ hay gặp để phải có lý do."""
+
+
+@dataclass(frozen=True, slots=True)
+class ExclusionList:
+    version: str
+    snapshot: str
+    entries: tuple[ExcludedSkill, ...]
+
+    @property
+    def keys(self) -> frozenset[str]:
+        return frozenset(e.key for e in self.entries)
+
+
+def _parse_excluded(entry: object) -> ExcludedSkill:
+    from haido_core.domain.posting_text import fold
+
+    if not isinstance(entry, dict):
+        raise TypeError(f"{_EXCLUDED_FILE}: mỗi dòng phải là object, nhận {entry!r}.")
+    key, spelling, reason, postings = (entry.get(k) for k in ("key", "spelling", "reason", "postings"))
+    if not isinstance(key, str) or not key.strip() or fold(key) != key:
+        raise ValueError(f"{_EXCLUDED_FILE}: khóa {key!r} phải không rỗng và đã bỏ dấu.")
+    if not isinstance(reason, str) or not reason.strip():
+        raise ValueError(f"{_EXCLUDED_FILE}: {key!r} thiếu lý do loại trừ.")
+    if not isinstance(spelling, str) or not spelling.strip():
+        raise ValueError(f"{_EXCLUDED_FILE}: {key!r} thiếu cách viết gốc.")
+    if isinstance(postings, bool) or not isinstance(postings, int) or postings < 1:
+        raise ValueError(f"{_EXCLUDED_FILE}: {key!r} thiếu số tin làm bằng chứng.")
+    return ExcludedSkill(key=key, spelling=spelling, reason=reason, postings=postings)
+
+
+def parse_exclusions(doc: object, vocab: Vocabulary) -> ExclusionList:
+    """Kiểm một danh sách loại trừ đã đọc từ JSON với từ vựng `vocab`; sai thì ném `ValueError` hoặc `TypeError`."""
+    if not isinstance(doc, dict):
+        raise TypeError(f"{_EXCLUDED_FILE}: gốc phải là object.")
+    version, snapshot, entries = doc.get("version"), doc.get("snapshot"), doc.get("entries")
+    if not isinstance(version, str) or not version.startswith("excluded-"):
+        raise ValueError(f"{_EXCLUDED_FILE}: version phải bắt đầu bằng 'excluded-', nhận {version!r}.")
+    if not isinstance(snapshot, str) or not snapshot:
+        raise ValueError(f"{_EXCLUDED_FILE}: thiếu snapshot nguồn.")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError(f"{_EXCLUDED_FILE}: thiếu danh sách entries.")
+    parsed = tuple(_parse_excluded(e) for e in entries)
+    keys = [e.key for e in parsed]
+    if len(keys) != len(set(keys)):
+        dup = sorted({k for k in keys if keys.count(k) > 1})
+        raise ValueError(f"{_EXCLUDED_FILE}: khóa trùng {dup}.")
+    clash = sorted(set(keys) & (set(vocab.lookup) | set(vocab.composites)))
+    if clash:
+        raise ValueError(f"{_EXCLUDED_FILE}: {clash} vừa bị loại trừ vừa có trong từ vựng.")
+    return ExclusionList(version=version, snapshot=snapshot, entries=parsed)
+
+
+@cache
+def load_exclusions() -> ExclusionList:
+    """Danh sách loại trừ đã kiểm (xem `parse_exclusions`)."""
+    raw = files("haido_core.vocab").joinpath(_EXCLUDED_FILE).read_text(encoding="utf-8")
+    return parse_exclusions(json.loads(raw), load_vocabulary())

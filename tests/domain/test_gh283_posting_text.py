@@ -41,7 +41,8 @@ def test_gh283_giu_muc_yeu_cau_va_nhiem_vu_bo_quyen_loi_va_gioi_thieu() -> None:
     assert "python" in text
     assert "machine learning" not in text
     assert "kubernetes" not in text
-    assert _skills(jd) == {"docker": 1, "python": 2}
+    # #278: "Phát triển API" là tên Việt của mã `api`, nên câu mô tả công việc cho ra `api` cùng `docker`.
+    assert _skills(jd) == {"api": 1, "docker": 1, "python": 2}
 
 
 def test_gh283_khong_co_tieu_de_muc_thi_giu_het() -> None:

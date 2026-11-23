@@ -186,3 +186,9 @@ Giá trị θ không đổi nên số, nhóm và hành vi của issue này khôn
 Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
 
 - RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #278 (2026-11-23): từ vựng lớn lên, AC của issue này không đổi
+
+Lý do: #278 sửa `haido_core/vocab/skills.py` (thêm `ExcludedSkill`, `ExclusionList`, `parse_exclusions`, `load_exclusions`), file mà issue này từng đụng. `find_seed_skill`, `load_seed_skills` và hình dạng response không đổi; chỉ có thêm 40 mã trong từ vựng.
+
+RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.

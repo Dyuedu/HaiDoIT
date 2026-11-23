@@ -9,7 +9,7 @@
 ## Phase 1: User Story 2 - Danh sách mồi (Priority: P1)
 
 - [x] T001 [US2] Test định dạng mã, tên song ngữ, nguồn, thứ tự và bí danh không trùng trong `tests/core/test_fr13_skill_seed.py`
-- [x] T002 [US2] Test "học máy" ra `machine_learning`, "C#" ra `csharp`, "ReactJS" ra `react`; không có tên vai trò
+- [x] T002 [US2] Test "học máy" ra `machine_learning`, "C#" ra `csharp`, "ReactJS" ra `react`; không có tên vai trò (ghi chú 2026-11-23, #278: `it support` là bí danh chỉ để tra thẻ của `helpdesk`, nằm trong `scan_skip`; #278 cũng thêm các mã `ai`, `cloud`, `api`, `database` mà từ vựng chỉ tra thẻ qua `scan_skip`, không quét JD)
 - [x] T003 [US2] Test `GET /api/v1/skills` trả `{data: {vocab_version, skills}}`, không chứa số, trong `tests/api/test_fr13_skills_route.py`
 - [x] T004 [US2] Cho test AD-17 nhận route không có số qua `NUMBERLESS_ROUTES` trong `tests/api/test_ad17_routes.py`
 
@@ -50,3 +50,5 @@
 ## Thay đổi đợt 2 (2026-11-17, #166)
 
 #166 đợt 2 sửa thêm file dùng chung với issue này (`haido_api/fake_market.py`, `fixtures/fake_market.json`, `routes/market.py`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+- [x] T900 (#278, 2026-11-23) `haido_core/vocab/skills_seed.json`, `skills.py`: 265 mã, danh sách loại trừ; sửa `tests/core/test_fr13_skill_seed.py` (review 2026-11-23: `it support` là bí danh chỉ-tra-thẻ của `helpdesk` trong `scan_skip`, các tên vai trò còn lại vẫn cấm; thêm test đòi tên vai trò làm bí danh phải ở `scan_skip`). Chi tiết: `specs/278-ma-ky-nang-thuong-gap/`

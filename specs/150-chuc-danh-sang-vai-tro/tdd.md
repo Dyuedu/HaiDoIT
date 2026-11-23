@@ -99,3 +99,10 @@ Giá trị θ không đổi nên số, nhóm và hành vi của issue này khôn
 Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
 
 - RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #278 (2026-11-23): fixture `skills.json` sinh lại, AC của issue này không đổi
+
+Lý do: commit `fecab28` (#149, #150) tạo `web/tests/fixtures/skills.json`; #278 sinh lại file này từ response `GET /api/v1/skills` vì từ vựng lớn lên 265 mã, `vocab_version` `seed-2026-11-23`. Hình dạng không đổi, hành vi `role-for-title` của issue này không đổi.
+
+- RED: `tests/api/test_ad17_web_fixtures.py::test_ad17_fixture_web_khop_response_skills` đỏ khi từ vựng đã đổi mà fixture chưa sinh lại (chạy thật ở đợt đầu của #278).
+- GREEN: sau khi sinh lại, test xanh; `cd web && npx vitest run` xanh. Số liệu đầy đủ: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.
