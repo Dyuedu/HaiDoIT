@@ -20,6 +20,8 @@ services:
       # Lộ trình (#309): `stat` trả 404 `unknown_cell` đến khi #216 có số thật. Mọi khóa của SOURCE_ENV phải có ở đây
       # (tests/deploy/test_gh309_*), vì mã mặc định là `fake`.
       HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
+      # Cache response theo snapshot (#343): mỗi request vẫn hỏi bảng snapshots, nên snapshot mới lên ngay.
+      HAIDO_RESPONSE_CACHE: "on"
     ports:
       - "127.0.0.1:8000:8000"
     healthcheck:

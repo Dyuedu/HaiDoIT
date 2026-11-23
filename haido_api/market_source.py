@@ -40,6 +40,13 @@ class UnknownSkill(LookupError):
 class MarketReadModel(Protocol):
     """Nguồn đọc số liệu thị trường của snapshot mới nhất còn đọc được."""
 
+    def version(self) -> str:
+        """Dấu của tập snapshot đã chốt. Mọi phép khác trả cùng kết quả khi dấu không đổi (#343).
+
+        Cache response hỏi dấu này ở mỗi request và bỏ cache khi nó đổi. Phải rẻ: không đọc bảng `stat_*`.
+        """
+        ...
+
     def city_shares(self, *, role: str, level: str, years: str) -> Envelope[CitySharesData]:
         """Tỷ trọng từng thành phố trong số tin của `role` ở cấp bậc lọc `level` và mốc số năm `years` trên toàn quốc.
 

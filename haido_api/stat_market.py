@@ -96,6 +96,11 @@ from haido_core.domain.skill_groups import SkillGrouper
 from haido_core.vocab.skills import find_seed_skill
 
 READABLE = ("published", "partial")
+_VERSION_SQL = sa.text(
+    "SELECT count(*)::text || ':' || coalesce(md5(string_agg("
+    "snapshot_id::text || '|' || status || '|' || coalesce(closed_at::text, ''), ',' ORDER BY snapshot_id)), '') "
+    "FROM haido.snapshots WHERE status <> 'open'"
+)
 NATIONWIDE = "vn"
 ALL = "all"
 ANY = "any"
@@ -122,6 +127,15 @@ class StatMarket:
             if self._engine is None:
                 self._engine = self._factory()
             return self._engine
+
+    def version(self) -> str:
+        """Dấu của mọi snapshot đã chốt: ngày, trạng thái, lúc chốt (#343).
+
+        Snapshot đã chốt không bao giờ được tính lại (`publish` từ chối chốt lại), nên số của mọi route chỉ đổi khi
+        tập này đổi. Snapshot `open` không tính: route không đọc nó. Bảng một dòng mỗi ngày, query đọc cả bảng vẫn rẻ.
+        """
+        with self._db().connect() as conn:
+            return conn.execute(_VERSION_SQL).scalar_one()
 
     def _thresholds(self, latest: Any) -> Thresholds:
         """Ngưỡng của response: θ của phiên bản đã ghi trong snapshot (#102), không phải θ hiện hành.

@@ -104,6 +104,10 @@ class FakeMarket:
         self._roles: tuple[str, ...] = tuple(load_rules().roles)
         self._check_skill_roles()
 
+    def version(self) -> str:
+        """Fixture đọc một lần lúc khởi tạo, nên số không bao giờ đổi trong một tiến trình (#343)."""
+        return "fake"
+
     def _check_skill_roles(self) -> None:
         """Fixture `skill_roles` phải đủ và chỉ đủ vai trò của `config/rules.toml`, mỗi vai trò có ô entry (#166).
 

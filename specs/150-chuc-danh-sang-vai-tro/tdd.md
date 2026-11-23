@@ -106,3 +106,9 @@ Lý do: commit `fecab28` (#149, #150) tạo `web/tests/fixtures/skills.json`; #2
 
 - RED: `tests/api/test_ad17_web_fixtures.py::test_ad17_fixture_web_khop_response_skills` đỏ khi từ vựng đã đổi mà fixture chưa sinh lại (chạy thật ở đợt đầu của #278).
 - GREEN: sau khi sinh lại, test xanh; `cd web && npx vitest run` xanh. Số liệu đầy đủ: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.
+
+## Đợt #343 (2026-11-23): cache response, AC của issue này không đổi
+
+Lý do: #343 sửa `haido_api/main.py` để thêm middleware cache response cho `GET /api/v1/*`. Request có tham số `title` không bao giờ đi qua cache, nên máy chủ vẫn không giữ chức danh người dùng gõ; response của `role-for-title` không có header `x-cache`.
+
+- RED và GREEN: `specs/343-cache-response/tdd.md` (`test_gh343_khong_cache_du_lieu_nguoi_dung_go`, `test_gh343_khong_giu_ban_sao_nao_cua_chuc_danh`).

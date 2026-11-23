@@ -45,3 +45,9 @@ Giá trị θ không đổi nên số, nhóm và hành vi của issue này khôn
 Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
 
 - RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #343 (2026-11-23): thêm `HAIDO_RESPONSE_CACHE` vào prod, AC của issue này không đổi
+
+Lý do: #343 thêm biến `HAIDO_RESPONSE_CACHE: "on"` vào `deploy/compose.prod.yml` và phương thức `version()` vào `market_source.py`, `fake_market.py`, `stat_market.py`. Mọi khóa của `SOURCE_ENV` vẫn là `stat` trên prod; `compose.local.yml` vẫn giữ nguồn `fake` và không bật cache. Test của issue này không phải sửa.
+
+- RED và GREEN: `specs/343-cache-response/tdd.md`.

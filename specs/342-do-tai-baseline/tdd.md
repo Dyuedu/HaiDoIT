@@ -59,3 +59,10 @@ Kiểm tra thêm:
 - `loadtest/k6/baseline.js`, `loadtest/k6/params.json`, `loadtest/README.md`.
 
 Đo thật: `smoke` qua (119 URL đều 200). Số breakpoint ở [ket-qua-do.md](ket-qua-do.md).
+
+## Đợt #343 (2026-11-23): compose đo bật cache mặc định như prod
+
+Lý do: #343 thêm `HAIDO_RESPONSE_CACHE: ${HAIDO_RESPONSE_CACHE:-on}` vào `deploy/compose.loadtest.yml`, để môi trường đo khớp prod. Đo lại baseline không cache: `HAIDO_RESPONSE_CACHE=off docker compose -f deploy/compose.loadtest.yml up -d`. Số baseline trong `ket-qua-do.md` đo trước thay đổi này, tức không có cache.
+
+- `uv run pytest tests/deploy/test_gh342_do_tai_baseline.py`: chạy lại sau khi sửa compose, xem `specs/343-cache-response/tdd.md`.
+- `loadtest/k6/baseline.js` thêm chỉ số `cache_hit` (tỷ lệ response có `x-cache: HIT`). Kịch bản, ngưỡng và URL không đổi; `tests/deploy/test_gh342_do_tai_baseline.py` vẫn xanh.
