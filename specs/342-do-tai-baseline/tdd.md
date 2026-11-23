@@ -1,0 +1,61 @@
+# TDD: Đo sức chịu tải baseline của API bằng k6 (#342)
+
+**Lệnh test**:
+
+```
+HAIDO_TEST_DATABASE_URL=postgresql+psycopg://haido:haido_local@127.0.0.1:5433/haido_test \
+  uv run pytest tests/deploy/test_gh342_do_tai_baseline.py tests/tools/test_gh342_loadtest_seed.py -q
+```
+
+Postgres lấy từ `deploy/compose.local.yml` (`docker compose -f deploy/compose.local.yml up -d postgres`).
+
+## Danh sách hành vi cần test
+
+### Compose đo (KB2)
+1. `api` build từ `deploy/api.Dockerfile`, context là gốc repo
+2. `api` không ghi đè `command`/`entrypoint`
+3. Mọi khóa của `SOURCE_ENV` là `stat` (5 test, tham số theo nguồn)
+4. `api` giới hạn 2 CPU
+5. Healthcheck của `api` giống prod
+6. Mọi cổng chỉ mở trên `127.0.0.1`
+7. DB đo có tên kết thúc bằng `_test`
+
+### Script k6 (KB3)
+8. Mọi đường dẫn `/api/v1/...` trong script có trong OpenAPI
+9. Script không gọi `/api/v1/learning-path`
+10. Vai trò, cấp bậc, kỹ năng trong `params.json` có trong config và từ vựng (3 test)
+11. Có kịch bản `smoke` và `breakpoint`, dùng `ramping-arrival-rate`
+12. Ngưỡng `p(95)<200` và `rate<0.001` đều có `abortOnFail: true`
+
+### Seed (KB1)
+13. Từ chối host ngoài local, DB không tên `_test`, DB tên `_test` ở giữa (3 test)
+14. Nhận DB local tên `_test`
+15. Seed công bố đúng một snapshot `published`, và API `stat` trả 200 cho mọi URL của kịch bản (cần Postgres)
+
+## RED — Đợt 1 (2026-11-23)
+
+Lệnh: như trên.
+
+Kết quả:
+
+- `tests/deploy/test_gh342_do_tai_baseline.py`: **18 fail, 0 pass**. Cả 18 đều `FileNotFoundError`: chưa có `deploy/compose.loadtest.yml`, `loadtest/k6/baseline.js`, `loadtest/k6/params.json`.
+- `tests/tools/test_gh342_loadtest_seed.py`: **lỗi lúc collect** (`ModuleNotFoundError: No module named 'tools.loadtest_seed'`), nên cả 5 test của file chưa chạy được.
+
+## GREEN — Đợt 1 (2026-11-23)
+
+Lệnh: như trên.
+
+Kết quả: **23 pass, 0 fail** (18 của compose/k6, 5 của seed; test seed chạy thật trên Postgres, không skip).
+
+Kiểm tra thêm:
+
+- `uv run pytest tests/deploy tests/tools -q`: 299 pass, 0 fail.
+- `uv run ruff check .`: sạch. Đã sửa một lỗi FURB167 trong test (`re.S` → `re.DOTALL`).
+
+Đã thêm:
+
+- `tools/loadtest_seed.py`: `check_target` (host local, DB tên `_test`) và `seed` (dùng lại `_build` của `tools/bench_skill_rates.py`, thêm lượt chạy hoàn tất cho mọi nguồn tự động, rồi `aggregate` và `publish`). Phải chạy dạng module (`python -m tools.loadtest_seed`). Chạy dạng file thì `tools/` nằm đầu `sys.path`, nên không import được `haido_core`.
+- `deploy/compose.loadtest.yml`: postgres + api, 2 CPU / 1 GB mỗi service, cổng 5434 và 8001 trên localhost.
+- `loadtest/k6/baseline.js`, `loadtest/k6/params.json`, `loadtest/README.md`.
+
+Đo thật: `smoke` qua (119 URL đều 200). Số breakpoint ở [ket-qua-do.md](ket-qua-do.md).

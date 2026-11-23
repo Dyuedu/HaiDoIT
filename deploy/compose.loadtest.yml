@@ -1,0 +1,58 @@
+# Môi trường đo tải (#342). Không chạy trên VPS, không bắn tải vào production.
+#   docker compose -f deploy/compose.loadtest.yml up -d --build --wait
+# API cùng Dockerfile và lệnh với prod (uvicorn một worker), mọi nguồn `stat`, giới hạn 2 CPU như VPS.
+# Cách chạy đầy đủ: loadtest/README.md.
+name: haido-loadtest
+
+services:
+  postgres:
+    image: postgres:18.6
+    environment:
+      POSTGRES_USER: haido
+      POSTGRES_HOST_AUTH_METHOD: trust
+      # Tên phải kết thúc bằng _test: tools/loadtest_seed.py xóa schema haido.
+      POSTGRES_DB: haido_load_test
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - haido_loadtest_pgdata:/var/lib/postgresql
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U haido -d haido_load_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HAIDO_DATABASE_URL: postgresql+psycopg://haido@postgres:5432/haido_load_test
+      HAIDO_MARKET_SOURCE_CITY_SHARES: stat
+      HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat
+      HAIDO_MARKET_SOURCE_SKILL_RATES: stat
+      HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
+      HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
+    ports:
+      - "127.0.0.1:8001:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/openapi.json')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  haido_loadtest_pgdata:
