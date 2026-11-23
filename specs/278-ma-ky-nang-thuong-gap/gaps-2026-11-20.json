@@ -1,0 +1,14127 @@
+{
+ "meta": {
+  "snapshot": "2026-11-20",
+  "window_days": 60,
+  "postings": 4688,
+  "postings_with_raw_skills": 4622,
+  "vocab_version": "seed-2026-11-13",
+  "vocab_codes": 225
+ },
+ "roles_before": {
+  "AI/ML Engineer": {
+   "postings": 213,
+   "mentions": 5745,
+   "mapped": 1669,
+   "share": 0.2905134899912968
+  },
+  "BA/PO/PM": {
+   "postings": 992,
+   "mentions": 20646,
+   "mapped": 3912,
+   "share": 0.1894798023830282
+  },
+  "Backend": {
+   "postings": 556,
+   "mentions": 12626,
+   "mapped": 5563,
+   "share": 0.44059876445430063
+  },
+  "Data Analyst/BI": {
+   "postings": 183,
+   "mentions": 2914,
+   "mapped": 865,
+   "share": 0.29684282772820864
+  },
+  "Data Engineer": {
+   "postings": 179,
+   "mentions": 3876,
+   "mapped": 1284,
+   "share": 0.33126934984520123
+  },
+  "Data Scientist": {
+   "postings": 34,
+   "mentions": 679,
+   "mapped": 232,
+   "share": 0.34167893961708395
+  },
+  "DevOps": {
+   "postings": 273,
+   "mentions": 7349,
+   "mapped": 3027,
+   "share": 0.41189277452714657
+  },
+  "Embedded": {
+   "postings": 110,
+   "mentions": 2518,
+   "mapped": 549,
+   "share": 0.21803018268467037
+  },
+  "Frontend": {
+   "postings": 87,
+   "mentions": 1848,
+   "mapped": 816,
+   "share": 0.44155844155844154
+  },
+  "Fullstack": {
+   "postings": 217,
+   "mentions": 6020,
+   "mapped": 2629,
+   "share": 0.4367109634551495
+  },
+  "Game": {
+   "postings": 114,
+   "mentions": 2078,
+   "mapped": 387,
+   "share": 0.18623676612127046
+  },
+  "Hạ tầng/IT support": {
+   "postings": 648,
+   "mentions": 15310,
+   "mapped": 2903,
+   "share": 0.18961463096015677
+  },
+  "Mobile": {
+   "postings": 106,
+   "mentions": 2600,
+   "mapped": 719,
+   "share": 0.2765384615384615
+  },
+  "Other": {
+   "postings": 280,
+   "mentions": 4659,
+   "mapped": 1303,
+   "share": 0.27967374973170206
+  },
+  "QA/Tester": {
+   "postings": 373,
+   "mentions": 7736,
+   "mapped": 2349,
+   "share": 0.3036452947259566
+  },
+  "Security": {
+   "postings": 234,
+   "mentions": 4903,
+   "mapped": 1399,
+   "share": 0.2853355088721191
+  },
+  "UI/UX": {
+   "postings": 89,
+   "mentions": 2787,
+   "mapped": 432,
+   "share": 0.155005382131324
+  }
+ },
+ "skills": [
+  {
+   "key": "cong nghe thong tin",
+   "postings": 2037,
+   "code_before": null,
+   "spellings": [
+    [
+     "Công nghệ Thông tin",
+     2003
+    ],
+    [
+     "Công Nghệ Thông Tin",
+     24
+    ],
+    [
+     "Công nghệ thông tin",
+     10
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viec lam it",
+   "postings": 2003,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm IT",
+     2003
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "ha noi",
+   "postings": 1426,
+   "code_before": null,
+   "spellings": [
+    [
+     "Hà Nội",
+     1426
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "python",
+   "postings": 862,
+   "code_before": "python",
+   "spellings": [
+    [
+     "Python",
+     803
+    ],
+    [
+     "PYTHON",
+     45
+    ],
+    [
+     "python",
+     14
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "sql",
+   "postings": 722,
+   "code_before": "sql",
+   "spellings": [
+    [
+     "SQL",
+     688
+    ],
+    [
+     "Sql",
+     33
+    ],
+    [
+     "sql",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ba ria-vung tau",
+   "postings": 519,
+   "code_before": null,
+   "spellings": [
+    [
+     "Bà Rịa-Vũng Tàu",
+     519
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "binh duong",
+   "postings": 519,
+   "code_before": null,
+   "spellings": [
+    [
+     "Bình Dương",
+     519
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "docker",
+   "postings": 519,
+   "code_before": "docker",
+   "spellings": [
+    [
+     "Docker",
+     506
+    ],
+    [
+     "docker",
+     13
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ho chi minh",
+   "postings": 519,
+   "code_before": null,
+   "spellings": [
+    [
+     "Hồ Chí Minh",
+     519
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "git",
+   "postings": 478,
+   "code_before": "git",
+   "spellings": [
+    [
+     "Git",
+     442
+    ],
+    [
+     "GIT",
+     20
+    ],
+    [
+     "git",
+     16
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "java",
+   "postings": 467,
+   "code_before": "java",
+   "spellings": [
+    [
+     "Java",
+     463
+    ],
+    [
+     "JAVA",
+     3
+    ],
+    [
+     "java",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ci/cd",
+   "postings": 466,
+   "code_before": "ci_cd",
+   "spellings": [
+    [
+     "CI/CD",
+     463
+    ],
+    [
+     "Ci/Cd",
+     2
+    ],
+    [
+     "ci/cd",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "postgresql",
+   "postings": 370,
+   "code_before": "postgresql",
+   "spellings": [
+    [
+     "PostgreSQL",
+     301
+    ],
+    [
+     "PostgreSql",
+     51
+    ],
+    [
+     "Postgresql",
+     12
+    ],
+    [
+     "postgreSQL",
+     2
+    ],
+    [
+     "PostgresQL",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "linux",
+   "postings": 366,
+   "code_before": "linux",
+   "spellings": [
+    [
+     "Linux",
+     347
+    ],
+    [
+     "LINUX",
+     16
+    ],
+    [
+     "linux",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "it infrastructure and operations",
+   "postings": 365,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Infrastructure and Operations",
+     365
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "software engineering",
+   "postings": 359,
+   "code_before": null,
+   "spellings": [
+    [
+     "Software Engineering",
+     352
+    ],
+    [
+     "software engineering",
+     6
+    ],
+    [
+     "Software engineering",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "aws",
+   "postings": 358,
+   "code_before": "aws",
+   "spellings": [
+    [
+     "AWS",
+     357
+    ],
+    [
+     "Aws",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "kubernetes",
+   "postings": 356,
+   "code_before": "kubernetes",
+   "spellings": [
+    [
+     "Kubernetes",
+     356
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "jira",
+   "postings": 336,
+   "code_before": "jira",
+   "spellings": [
+    [
+     "Jira",
+     297
+    ],
+    [
+     "JIRA",
+     37
+    ],
+    [
+     "jira",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "mysql",
+   "postings": 315,
+   "code_before": "mysql",
+   "spellings": [
+    [
+     "MySQL",
+     295
+    ],
+    [
+     "Mysql",
+     7
+    ],
+    [
+     "MYSQL",
+     6
+    ],
+    [
+     "mysql",
+     3
+    ],
+    [
+     "mySQL",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "product management",
+   "postings": 315,
+   "code_before": "product_management",
+   "spellings": [
+    [
+     "Product Management",
+     311
+    ],
+    [
+     "product management",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "english",
+   "postings": 307,
+   "code_before": "english",
+   "spellings": [
+    [
+     "English",
+     307
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong cau giay - ha noi",
+   "postings": 290,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Cầu Giấy - Hà Nội",
+     290
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "javascript",
+   "postings": 284,
+   "code_before": "javascript",
+   "spellings": [
+    [
+     "JavaScript",
+     242
+    ],
+    [
+     "Javascript",
+     40
+    ],
+    [
+     "JAVASCRIPT",
+     1
+    ],
+    [
+     "javascript",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "agile",
+   "postings": 255,
+   "code_before": "agile",
+   "spellings": [
+    [
+     "Agile",
+     249
+    ],
+    [
+     "agile",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "agile/scrum",
+   "postings": 244,
+   "code_before": null,
+   "spellings": [
+    [
+     "Agile/Scrum",
+     242
+    ],
+    [
+     "Agile/scrum",
+     1
+    ],
+    [
+     "Agile/SCRUM",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "oracle",
+   "postings": 241,
+   "code_before": "oracle_db",
+   "spellings": [
+    [
+     "Oracle",
+     240
+    ],
+    [
+     "oracle",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "c#",
+   "postings": 237,
+   "code_before": "csharp",
+   "spellings": [
+    [
+     "C#",
+     237
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "microservices",
+   "postings": 227,
+   "code_before": "microservices",
+   "spellings": [
+    [
+     "Microservices",
+     147
+    ],
+    [
+     "microservices",
+     79
+    ],
+    [
+     "MicroServices",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "software testing",
+   "postings": 213,
+   "code_before": "software_testing",
+   "spellings": [
+    [
+     "Software Testing",
+     197
+    ],
+    [
+     "software testing",
+     12
+    ],
+    [
+     "Software testing",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "typescript",
+   "postings": 213,
+   "code_before": "typescript",
+   "spellings": [
+    [
+     "TypeScript",
+     190
+    ],
+    [
+     "Typescript",
+     22
+    ],
+    [
+     "typescript",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "azure",
+   "postings": 212,
+   "code_before": "azure",
+   "spellings": [
+    [
+     "Azure",
+     211
+    ],
+    [
+     "AZURE",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "mongodb",
+   "postings": 207,
+   "code_before": "mongodb",
+   "spellings": [
+    [
+     "MongoDB",
+     194
+    ],
+    [
+     "Mongodb",
+     6
+    ],
+    [
+     "mongodb",
+     4
+    ],
+    [
+     "MongoDb",
+     2
+    ],
+    [
+     "mongoDB",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "redis",
+   "postings": 205,
+   "code_before": "redis",
+   "spellings": [
+    [
+     "Redis",
+     200
+    ],
+    [
+     "redis",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "kafka",
+   "postings": 203,
+   "code_before": "kafka",
+   "spellings": [
+    [
+     "Kafka",
+     197
+    ],
+    [
+     "kafka",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "api",
+   "postings": 197,
+   "code_before": null,
+   "spellings": [
+    [
+     "API",
+     196
+    ],
+    [
+     "Api",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ai",
+   "postings": 195,
+   "code_before": null,
+   "spellings": [
+    [
+     "AI",
+     194
+    ],
+    [
+     "Ai",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "figma",
+   "postings": 192,
+   "code_before": "figma",
+   "spellings": [
+    [
+     "Figma",
+     188
+    ],
+    [
+     "figma",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong thanh xuan - ha noi",
+   "postings": 184,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Thanh Xuân - Hà Nội",
+     184
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tu liem - ha noi",
+   "postings": 183,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Từ Liêm - Hà Nội",
+     183
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "firewall",
+   "postings": 178,
+   "code_before": "firewall",
+   "spellings": [
+    [
+     "Firewall",
+     123
+    ],
+    [
+     "firewall",
+     55
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "sql server",
+   "postings": 175,
+   "code_before": "sql_server",
+   "spellings": [
+    [
+     "SQL Server",
+     162
+    ],
+    [
+     "SQL server",
+     11
+    ],
+    [
+     "Sql Server",
+     1
+    ],
+    [
+     "sql server",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "restful api",
+   "postings": 173,
+   "code_before": "rest_api",
+   "spellings": [
+    [
+     "RESTful API",
+     154
+    ],
+    [
+     "Restful Api",
+     12
+    ],
+    [
+     "Restful API",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "reactjs",
+   "postings": 167,
+   "code_before": "react",
+   "spellings": [
+    [
+     "ReactJS",
+     153
+    ],
+    [
+     "Reactjs",
+     8
+    ],
+    [
+     "reactjs",
+     3
+    ],
+    [
+     "ReactJs",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "spring boot",
+   "postings": 162,
+   "code_before": "spring_boot",
+   "spellings": [
+    [
+     "Spring Boot",
+     156
+    ],
+    [
+     "Spring boot",
+     5
+    ],
+    [
+     "spring boot",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "scrum",
+   "postings": 159,
+   "code_before": "scrum",
+   "spellings": [
+    [
+     "Scrum",
+     158
+    ],
+    [
+     "SCRUM",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "tcp/ip",
+   "postings": 154,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "TCP/IP",
+     154
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "cloud",
+   "postings": 153,
+   "code_before": null,
+   "spellings": [
+    [
+     "Cloud",
+     130
+    ],
+    [
+     "cloud",
+     23
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "cong nghe thong tin khac",
+   "postings": 151,
+   "code_before": null,
+   "spellings": [
+    [
+     "Công nghệ thông tin khác",
+     151
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "terraform",
+   "postings": 151,
+   "code_before": "terraform",
+   "spellings": [
+    [
+     "Terraform",
+     149
+    ],
+    [
+     "terraform",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "jenkins",
+   "postings": 150,
+   "code_before": "jenkins",
+   "spellings": [
+    [
+     "Jenkins",
+     148
+    ],
+    [
+     "jenkins",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "devops",
+   "postings": 149,
+   "code_before": null,
+   "spellings": [
+    [
+     "DevOps",
+     138
+    ],
+    [
+     "Devops",
+     6
+    ],
+    [
+     "devops",
+     4
+    ],
+    [
+     "DevOPs",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "power bi",
+   "postings": 147,
+   "code_before": "power_bi",
+   "spellings": [
+    [
+     "Power BI",
+     127
+    ],
+    [
+     "Power Bi",
+     19
+    ],
+    [
+     "power BI",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "business analyst (phan tich nghiep vu)",
+   "postings": 146,
+   "code_before": null,
+   "spellings": [
+    [
+     "Business Analyst (Phân tích nghiệp vụ)",
+     146
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "oop",
+   "postings": 146,
+   "code_before": "oop",
+   "spellings": [
+    [
+     "OOP",
+     143
+    ],
+    [
+     "Oop",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong yen hoa - ha noi",
+   "postings": 146,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Yên Hòa - Hà Nội",
+     146
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "data science",
+   "postings": 142,
+   "code_before": null,
+   "spellings": [
+    [
+     "Data Science",
+     141
+    ],
+    [
+     "data science",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "grafana",
+   "postings": 141,
+   "code_before": "prometheus",
+   "spellings": [
+    [
+     "Grafana",
+     141
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "confluence",
+   "postings": 140,
+   "code_before": "jira",
+   "spellings": [
+    [
+     "Confluence",
+     139
+    ],
+    [
+     "confluence",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "information security",
+   "postings": 137,
+   "code_before": "cybersecurity",
+   "spellings": [
+    [
+     "Information Security",
+     127
+    ],
+    [
+     "information security",
+     7
+    ],
+    [
+     "Information security",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": ".net",
+   "postings": 134,
+   "code_before": "dotnet",
+   "spellings": [
+    [
+     ".NET",
+     114
+    ],
+    [
+     ".Net",
+     19
+    ],
+    [
+     ".net",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "react",
+   "postings": 133,
+   "code_before": "react",
+   "spellings": [
+    [
+     "React",
+     129
+    ],
+    [
+     "ReAct",
+     2
+    ],
+    [
+     "react",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "bash",
+   "postings": 131,
+   "code_before": "bash",
+   "spellings": [
+    [
+     "Bash",
+     128
+    ],
+    [
+     "bash",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dns",
+   "postings": 131,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "DNS",
+     131
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "html",
+   "postings": 131,
+   "code_before": "html",
+   "spellings": [
+    [
+     "HTML",
+     120
+    ],
+    [
+     "Html",
+     9
+    ],
+    [
+     "html",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "css",
+   "postings": 129,
+   "code_before": "css",
+   "spellings": [
+    [
+     "CSS",
+     126
+    ],
+    [
+     "Css",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "node.js",
+   "postings": 129,
+   "code_before": "nodejs",
+   "spellings": [
+    [
+     "Node.js",
+     115
+    ],
+    [
+     "Node.Js",
+     11
+    ],
+    [
+     "Node.JS",
+     2
+    ],
+    [
+     "node.js",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "gcp",
+   "postings": 127,
+   "code_before": "gcp",
+   "spellings": [
+    [
+     "GCP",
+     127
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "prometheus",
+   "postings": 122,
+   "code_before": "prometheus",
+   "spellings": [
+    [
+     "Prometheus",
+     122
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "thiet ke",
+   "postings": 122,
+   "code_before": null,
+   "spellings": [
+    [
+     "Thiết kế",
+     118
+    ],
+    [
+     "thiết kế",
+     4
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "angular",
+   "postings": 120,
+   "code_before": "angular",
+   "spellings": [
+    [
+     "Angular",
+     117
+    ],
+    [
+     "angular",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "erp",
+   "postings": 119,
+   "code_before": "erp",
+   "spellings": [
+    [
+     "ERP",
+     119
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "excel",
+   "postings": 117,
+   "code_before": "excel",
+   "spellings": [
+    [
+     "Excel",
+     110
+    ],
+    [
+     "excel",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "product owner/product manager",
+   "postings": 117,
+   "code_before": null,
+   "spellings": [
+    [
+     "Product Owner/Product Manager",
+     117
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "it project management",
+   "postings": 116,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Project Management",
+     113
+    ],
+    [
+     "IT project management",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "postman",
+   "postings": 116,
+   "code_before": "postman",
+   "spellings": [
+    [
+     "Postman",
+     116
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "unit test",
+   "postings": 114,
+   "code_before": "unit_testing",
+   "spellings": [
+    [
+     "unit test",
+     55
+    ],
+    [
+     "Unit Test",
+     43
+    ],
+    [
+     "Unit test",
+     15
+    ],
+    [
+     "unit Test",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "vpn",
+   "postings": 114,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "VPN",
+     114
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "machine learning",
+   "postings": 112,
+   "code_before": "machine_learning",
+   "spellings": [
+    [
+     "Machine Learning",
+     89
+    ],
+    [
+     "machine learning",
+     22
+    ],
+    [
+     "Machine learning",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ansible",
+   "postings": 111,
+   "code_before": "ansible",
+   "spellings": [
+    [
+     "Ansible",
+     104
+    ],
+    [
+     "ansible",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "software engineer",
+   "postings": 111,
+   "code_before": null,
+   "spellings": [
+    [
+     "Software Engineer",
+     110
+    ],
+    [
+     "Software engineer",
+     1
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "business analysis",
+   "postings": 108,
+   "code_before": "business_analysis",
+   "spellings": [
+    [
+     "Business Analysis",
+     91
+    ],
+    [
+     "Business analysis",
+     11
+    ],
+    [
+     "business analysis",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "chuyen mon cong nghe thong tin khac",
+   "postings": 108,
+   "code_before": null,
+   "spellings": [
+    [
+     "Chuyên môn Công nghệ thông tin khác",
+     108
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "giao tiep",
+   "postings": 108,
+   "code_before": "communication",
+   "spellings": [
+    [
+     "giao tiếp",
+     94
+    ],
+    [
+     "Giao tiếp",
+     14
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "project management",
+   "postings": 107,
+   "code_before": "project_management",
+   "spellings": [
+    [
+     "Project Management",
+     79
+    ],
+    [
+     "project management",
+     15
+    ],
+    [
+     "Project management",
+     13
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "tieng anh",
+   "postings": 106,
+   "code_before": "english",
+   "spellings": [
+    [
+     "Tiếng Anh",
+     57
+    ],
+    [
+     "tiếng Anh",
+     48
+    ],
+    [
+     "tiếng anh",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "windows server",
+   "postings": 106,
+   "code_before": "windows_server",
+   "spellings": [
+    [
+     "Windows Server",
+     98
+    ],
+    [
+     "Windows server",
+     6
+    ],
+    [
+     "windows server",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "c++",
+   "postings": 104,
+   "code_before": "cpp",
+   "spellings": [
+    [
+     "C++",
+     104
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "go",
+   "postings": 103,
+   "code_before": "golang",
+   "spellings": [
+    [
+     "Go",
+     100
+    ],
+    [
+     "GO",
+     2
+    ],
+    [
+     "go",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "database",
+   "postings": 102,
+   "code_before": null,
+   "spellings": [
+    [
+     "Database",
+     77
+    ],
+    [
+     "database",
+     25
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phan tich nghiep vu",
+   "postings": 101,
+   "code_before": "business_analysis",
+   "spellings": [
+    [
+     "phân tích nghiệp vụ",
+     45
+    ],
+    [
+     "Phân tích nghiệp vụ",
+     37
+    ],
+    [
+     "Phân Tích Nghiệp Vụ",
+     19
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "design patterns",
+   "postings": 100,
+   "code_before": "design_patterns",
+   "spellings": [
+    [
+     "design patterns",
+     51
+    ],
+    [
+     "Design Patterns",
+     48
+    ],
+    [
+     "Design patterns",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "networking",
+   "postings": 100,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "networking",
+     51
+    ],
+    [
+     "Networking",
+     49
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "uat",
+   "postings": 99,
+   "code_before": "uat",
+   "spellings": [
+    [
+     "UAT",
+     99
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "llm",
+   "postings": 98,
+   "code_before": "llm",
+   "spellings": [
+    [
+     "LLM",
+     98
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong dong da - ha noi",
+   "postings": 97,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Đống Đa - Hà Nội",
+     97
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "windows",
+   "postings": 97,
+   "code_before": null,
+   "spellings": [
+    [
+     "Windows",
+     97
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "backend developer",
+   "postings": 96,
+   "code_before": null,
+   "spellings": [
+    [
+     "Backend Developer",
+     95
+    ],
+    [
+     "Backend developer",
+     1
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "rabbitmq",
+   "postings": 94,
+   "code_before": "rabbitmq",
+   "spellings": [
+    [
+     "RabbitMQ",
+     87
+    ],
+    [
+     "rabbitmq",
+     3
+    ],
+    [
+     "rabbitMQ",
+     2
+    ],
+    [
+     "Rabbitmq",
+     1
+    ],
+    [
+     "RabbitMq",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "rest api",
+   "postings": 94,
+   "code_before": "rest_api",
+   "spellings": [
+    [
+     "REST API",
+     89
+    ],
+    [
+     "Rest API",
+     2
+    ],
+    [
+     "Rest Api",
+     2
+    ],
+    [
+     "REST api",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "vmware",
+   "postings": 94,
+   "code_before": "vmware",
+   "spellings": [
+    [
+     "VMware",
+     70
+    ],
+    [
+     "Vmware",
+     15
+    ],
+    [
+     "VMWare",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "php",
+   "postings": 92,
+   "code_before": "php",
+   "spellings": [
+    [
+     "PHP",
+     92
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "golang",
+   "postings": 91,
+   "code_before": "golang",
+   "spellings": [
+    [
+     "Golang",
+     90
+    ],
+    [
+     "golang",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "rag",
+   "postings": 89,
+   "code_before": "rag",
+   "spellings": [
+    [
+     "RAG",
+     88
+    ],
+    [
+     "Rag",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "code review",
+   "postings": 88,
+   "code_before": null,
+   "spellings": [
+    [
+     "code review",
+     63
+    ],
+    [
+     "Code Review",
+     21
+    ],
+    [
+     "Code review",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "selenium",
+   "postings": 88,
+   "code_before": "selenium",
+   "spellings": [
+    [
+     "Selenium",
+     88
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tu duy logic",
+   "postings": 88,
+   "code_before": "problem_solving",
+   "spellings": [
+    [
+     "tư duy logic",
+     70
+    ],
+    [
+     "Tư duy logic",
+     18
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nodejs",
+   "postings": 87,
+   "code_before": "nodejs",
+   "spellings": [
+    [
+     "NodeJS",
+     80
+    ],
+    [
+     "Nodejs",
+     5
+    ],
+    [
+     "NodeJs",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "restful apis",
+   "postings": 87,
+   "code_before": "rest_api",
+   "spellings": [
+    [
+     "RESTful APIs",
+     86
+    ],
+    [
+     "Restful APIs",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "monitoring",
+   "postings": 86,
+   "code_before": null,
+   "spellings": [
+    [
+     "monitoring",
+     66
+    ],
+    [
+     "Monitoring",
+     20
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "nosql",
+   "postings": 85,
+   "code_before": "nosql",
+   "spellings": [
+    [
+     "NoSQL",
+     83
+    ],
+    [
+     "noSQL",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong hai ba trung - ha noi",
+   "postings": 85,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hai Bà Trưng - Hà Nội",
+     85
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong nghia do - ha noi",
+   "postings": 85,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Nghĩa Đô - Hà Nội",
+     85
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "dien/dien tu/vien thong",
+   "postings": 84,
+   "code_before": null,
+   "spellings": [
+    [
+     "Điện/Điện tử/Viễn thông",
+     84
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "stakeholder management",
+   "postings": 84,
+   "code_before": null,
+   "spellings": [
+    [
+     "stakeholder management",
+     43
+    ],
+    [
+     "Stakeholder management",
+     29
+    ],
+    [
+     "Stakeholder Management",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "it helpdesk/it support",
+   "postings": 83,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Helpdesk/IT support",
+     83
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "gitlab ci",
+   "postings": 82,
+   "code_before": "gitlab_ci",
+   "spellings": [
+    [
+     "GitLab CI",
+     77
+    ],
+    [
+     "Gitlab CI",
+     3
+    ],
+    [
+     "Gitlab Ci",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "fullstack developer",
+   "postings": 81,
+   "code_before": null,
+   "spellings": [
+    [
+     "Fullstack Developer",
+     81
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "phan tich du lieu",
+   "postings": 81,
+   "code_before": "data_analysis",
+   "spellings": [
+    [
+     "phân tích dữ liệu",
+     38
+    ],
+    [
+     "Phân tích dữ liệu",
+     22
+    ],
+    [
+     "Phân Tích Dữ Liệu",
+     21
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "playwright",
+   "postings": 81,
+   "code_before": "playwright",
+   "spellings": [
+    [
+     "Playwright",
+     80
+    ],
+    [
+     "playwright",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "artificial intelligence (ai)",
+   "postings": 80,
+   "code_before": null,
+   "spellings": [
+    [
+     "Artificial Intelligence (AI)",
+     80
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data analysis",
+   "postings": 80,
+   "code_before": "data_analysis",
+   "spellings": [
+    [
+     "Data Analysis",
+     47
+    ],
+    [
+     "Data analysis",
+     20
+    ],
+    [
+     "data analysis",
+     13
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "game development",
+   "postings": 80,
+   "code_before": null,
+   "spellings": [
+    [
+     "Game Development",
+     80
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "github actions",
+   "postings": 80,
+   "code_before": "github_actions",
+   "spellings": [
+    [
+     "GitHub Actions",
+     80
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "it management/specialist",
+   "postings": 80,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Management/Specialist",
+     80
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "software design",
+   "postings": 79,
+   "code_before": null,
+   "spellings": [
+    [
+     "Software Design",
+     71
+    ],
+    [
+     "software design",
+     8
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data engineer",
+   "postings": 78,
+   "code_before": null,
+   "spellings": [
+    [
+     "Data Engineer",
+     78
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "it project manager",
+   "postings": 78,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Project Manager",
+     78
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "html5",
+   "postings": 77,
+   "code_before": "html",
+   "spellings": [
+    [
+     "HTML5",
+     76
+    ],
+    [
+     "Html5",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "software tester (automation & manual)",
+   "postings": 77,
+   "code_before": null,
+   "spellings": [
+    [
+     "Software Tester (Automation & Manual)",
+     77
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "lam viec nhom",
+   "postings": 76,
+   "code_before": "teamwork",
+   "spellings": [
+    [
+     "làm việc nhóm",
+     65
+    ],
+    [
+     "Làm việc nhóm",
+     10
+    ],
+    [
+     "Làm Việc Nhóm",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "marketing/pr/quang cao",
+   "postings": 76,
+   "code_before": null,
+   "spellings": [
+    [
+     "Marketing/PR/Quảng cáo",
+     76
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "waterfall",
+   "postings": 76,
+   "code_before": "waterfall",
+   "spellings": [
+    [
+     "Waterfall",
+     73
+    ],
+    [
+     "waterfall",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "automation test",
+   "postings": 75,
+   "code_before": "automation_testing",
+   "spellings": [
+    [
+     "Automation Test",
+     66
+    ],
+    [
+     "automation test",
+     8
+    ],
+    [
+     "Automation test",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "json",
+   "postings": 75,
+   "code_before": null,
+   "spellings": [
+    [
+     "JSON",
+     73
+    ],
+    [
+     "Json",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "powershell",
+   "postings": 75,
+   "code_before": "powershell",
+   "spellings": [
+    [
+     "PowerShell",
+     68
+    ],
+    [
+     "Powershell",
+     5
+    ],
+    [
+     "powershell",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ai engineer",
+   "postings": 74,
+   "code_before": null,
+   "spellings": [
+    [
+     "AI Engineer",
+     74
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "api testing",
+   "postings": 74,
+   "code_before": "api_testing",
+   "spellings": [
+    [
+     "API testing",
+     45
+    ],
+    [
+     "API Testing",
+     24
+    ],
+    [
+     "Api Testing",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "devops engineer",
+   "postings": 74,
+   "code_before": null,
+   "spellings": [
+    [
+     "DevOps Engineer",
+     73
+    ],
+    [
+     "DevOps engineer",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "security",
+   "postings": 74,
+   "code_before": null,
+   "spellings": [
+    [
+     "Security",
+     53
+    ],
+    [
+     "security",
+     21
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ci/cd pipelines",
+   "postings": 73,
+   "code_before": null,
+   "spellings": [
+    [
+     "CI/CD pipelines",
+     70
+    ],
+    [
+     "CI/CD Pipelines",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "test case",
+   "postings": 73,
+   "code_before": "test_design",
+   "spellings": [
+    [
+     "Test Case",
+     46
+    ],
+    [
+     "test case",
+     23
+    ],
+    [
+     "Test case",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "pytorch",
+   "postings": 72,
+   "code_before": "pytorch",
+   "spellings": [
+    [
+     "PyTorch",
+     68
+    ],
+    [
+     "Pytorch",
+     3
+    ],
+    [
+     "PYTorch",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "c/c++",
+   "postings": 71,
+   "code_before": "cpp",
+   "spellings": [
+    [
+     "C/C++",
+     71
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "da nang",
+   "postings": 71,
+   "code_before": null,
+   "spellings": [
+    [
+     "Đà Nẵng",
+     71
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "quang nam",
+   "postings": 71,
+   "code_before": null,
+   "spellings": [
+    [
+     "Quảng Nam",
+     71
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "sdlc",
+   "postings": 70,
+   "code_before": null,
+   "spellings": [
+    [
+     "SDLC",
+     68
+    ],
+    [
+     "Sdlc",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "wireframe",
+   "postings": 70,
+   "code_before": "ui_design",
+   "spellings": [
+    [
+     "wireframe",
+     35
+    ],
+    [
+     "Wireframe",
+     35
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "co so du lieu",
+   "postings": 69,
+   "code_before": null,
+   "spellings": [
+    [
+     "cơ sở dữ liệu",
+     66
+    ],
+    [
+     "Cơ sở dữ liệu",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phan tich yeu cau",
+   "postings": 69,
+   "code_before": "business_analysis",
+   "spellings": [
+    [
+     "phân tích yêu cầu",
+     44
+    ],
+    [
+     "Phân tích yêu cầu",
+     24
+    ],
+    [
+     "Phân Tích Yêu Cầu",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viec lam business analyst tai ha noi",
+   "postings": 69,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Business Analyst tại Hà Nội",
+     69
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "ccna",
+   "postings": 68,
+   "code_before": "cisco",
+   "spellings": [
+    [
+     "CCNA",
+     68
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data modeling",
+   "postings": 68,
+   "code_before": "data_modeling",
+   "spellings": [
+    [
+     "Data Modeling",
+     31
+    ],
+    [
+     "data modeling",
+     28
+    ],
+    [
+     "Data modeling",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "thiet ke do hoa/giao dien/trai nghiem",
+   "postings": 68,
+   "code_before": null,
+   "spellings": [
+    [
+     "Thiết kế Đồ hoạ/Giao diện/Trải nghiệm",
+     68
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "troubleshooting",
+   "postings": 68,
+   "code_before": null,
+   "spellings": [
+    [
+     "troubleshooting",
+     50
+    ],
+    [
+     "Troubleshooting",
+     18
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kiem thu phan mem",
+   "postings": 67,
+   "code_before": "software_testing",
+   "spellings": [
+    [
+     "kiểm thử phần mềm",
+     45
+    ],
+    [
+     "Kiểm thử phần mềm",
+     13
+    ],
+    [
+     "Kiểm Thử Phần Mềm",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "acceptance criteria",
+   "postings": 66,
+   "code_before": "ba_docs",
+   "spellings": [
+    [
+     "Acceptance Criteria",
+     34
+    ],
+    [
+     "acceptance criteria",
+     32
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "giai quyet van de",
+   "postings": 66,
+   "code_before": "problem_solving",
+   "spellings": [
+    [
+     "giải quyết vấn đề",
+     57
+    ],
+    [
+     "Giải quyết vấn đề",
+     5
+    ],
+    [
+     "Giải Quyết Vấn Đề",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong cua nam - ha noi",
+   "postings": 66,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Cửa Nam - Hà Nội",
+     66
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "vlan",
+   "postings": 66,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "VLAN",
+     66
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "problem-solving",
+   "postings": 65,
+   "code_before": "problem_solving",
+   "spellings": [
+    [
+     "problem-solving",
+     58
+    ],
+    [
+     "Problem-solving",
+     6
+    ],
+    [
+     "Problem-Solving",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "clean architecture",
+   "postings": 64,
+   "code_before": "clean_architecture",
+   "spellings": [
+    [
+     "Clean Architecture",
+     54
+    ],
+    [
+     "clean architecture",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "quan ly du an",
+   "postings": 64,
+   "code_before": "project_management",
+   "spellings": [
+    [
+     "quản lý dự án",
+     31
+    ],
+    [
+     "Quản Lý Dự Án",
+     17
+    ],
+    [
+     "Quản lý dự án",
+     16
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "core java",
+   "postings": 63,
+   "code_before": "java",
+   "spellings": [
+    [
+     "Core Java",
+     62
+    ],
+    [
+     "core Java",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "pmp",
+   "postings": 63,
+   "code_before": "project_management",
+   "spellings": [
+    [
+     "PMP",
+     63
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ui/ux design",
+   "postings": 63,
+   "code_before": null,
+   "spellings": [
+    [
+     "UI/UX Design",
+     59
+    ],
+    [
+     "UI/UX design",
+     3
+    ],
+    [
+     "Ui/Ux Design",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "user story",
+   "postings": 63,
+   "code_before": "ba_docs",
+   "spellings": [
+    [
+     "User Story",
+     47
+    ],
+    [
+     "user story",
+     11
+    ],
+    [
+     "User story",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "brd",
+   "postings": 62,
+   "code_before": "ba_docs",
+   "spellings": [
+    [
+     "BRD",
+     62
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "elasticsearch",
+   "postings": 62,
+   "code_before": "elasticsearch",
+   "spellings": [
+    [
+     "Elasticsearch",
+     50
+    ],
+    [
+     "ElasticSearch",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong dai mo - ha noi",
+   "postings": 62,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Đại Mỗ - Hà Nội",
+     62
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong ha dong - ha noi",
+   "postings": 62,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hà Đông - Hà Nội",
+     62
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "siem",
+   "postings": 62,
+   "code_before": "siem",
+   "spellings": [
+    [
+     "SIEM",
+     58
+    ],
+    [
+     "Siem",
+     4
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "an toan thong tin",
+   "postings": 61,
+   "code_before": "cybersecurity",
+   "spellings": [
+    [
+     "an toàn thông tin",
+     37
+    ],
+    [
+     "An Toàn Thông Tin",
+     15
+    ],
+    [
+     "An toàn thông tin",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "apis",
+   "postings": 61,
+   "code_before": null,
+   "spellings": [
+    [
+     "APIs",
+     61
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "microsoft 365",
+   "postings": 61,
+   "code_before": "windows_server",
+   "spellings": [
+    [
+     "Microsoft 365",
+     61
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "rest apis",
+   "postings": 61,
+   "code_before": "rest_api",
+   "spellings": [
+    [
+     "REST APIs",
+     60
+    ],
+    [
+     "Rest APIs",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "unity",
+   "postings": 61,
+   "code_before": "unity",
+   "spellings": [
+    [
+     "Unity",
+     61
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "cisco",
+   "postings": 60,
+   "code_before": "cisco",
+   "spellings": [
+    [
+     "Cisco",
+     60
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "fastapi",
+   "postings": 60,
+   "code_before": "fastapi",
+   "spellings": [
+    [
+     "FastAPI",
+     58
+    ],
+    [
+     "FastApi",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kotlin",
+   "postings": 60,
+   "code_before": "kotlin",
+   "spellings": [
+    [
+     "Kotlin",
+     59
+    ],
+    [
+     "kotlin",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "prompt engineering",
+   "postings": 60,
+   "code_before": "prompt_engineering",
+   "spellings": [
+    [
+     "prompt engineering",
+     31
+    ],
+    [
+     "Prompt Engineering",
+     27
+    ],
+    [
+     "Prompt engineering",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "routing",
+   "postings": 60,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "routing",
+     34
+    ],
+    [
+     "Routing",
+     26
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "spring",
+   "postings": 60,
+   "code_before": "spring",
+   "spellings": [
+    [
+     "Spring",
+     60
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "system engineer",
+   "postings": 59,
+   "code_before": null,
+   "spellings": [
+    [
+     "System Engineer",
+     59
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "active directory",
+   "postings": 58,
+   "code_before": "windows_server",
+   "spellings": [
+    [
+     "Active Directory",
+     58
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "distributed systems",
+   "postings": 58,
+   "code_before": "system_design",
+   "spellings": [
+    [
+     "distributed systems",
+     46
+    ],
+    [
+     "Distributed Systems",
+     11
+    ],
+    [
+     "Distributed systems",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "qa qc",
+   "postings": 58,
+   "code_before": null,
+   "spellings": [
+    [
+     "QA QC",
+     58
+    ]
+   ],
+   "sources": [
+    "itviec"
+   ]
+  },
+  {
+   "key": "xu ly su co",
+   "postings": 58,
+   "code_before": null,
+   "spellings": [
+    [
+     "xử lý sự cố",
+     49
+    ],
+    [
+     "Xử lý sự cố",
+     5
+    ],
+    [
+     "Xử Lý Sự Cố",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "a/b testing",
+   "postings": 57,
+   "code_before": "ab_testing",
+   "spellings": [
+    [
+     "A/B testing",
+     40
+    ],
+    [
+     "A/B Testing",
+     17
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "data analyst",
+   "postings": 57,
+   "code_before": null,
+   "spellings": [
+    [
+     "Data Analyst",
+     56
+    ],
+    [
+     "Data analyst",
+     1
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dhcp",
+   "postings": 57,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "DHCP",
+     57
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "github",
+   "postings": 57,
+   "code_before": "git",
+   "spellings": [
+    [
+     "GitHub",
+     44
+    ],
+    [
+     "Github",
+     12
+    ],
+    [
+     "github",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kiem thu",
+   "postings": 57,
+   "code_before": "software_testing",
+   "spellings": [
+    [
+     "kiểm thử",
+     46
+    ],
+    [
+     "Kiểm thử",
+     10
+    ],
+    [
+     "Kiểm Thử",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tableau",
+   "postings": 57,
+   "code_before": "tableau",
+   "spellings": [
+    [
+     "Tableau",
+     57
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "crm",
+   "postings": 56,
+   "code_before": "erp",
+   "spellings": [
+    [
+     "CRM",
+     56
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "elk",
+   "postings": 56,
+   "code_before": "elk",
+   "spellings": [
+    [
+     "ELK",
+     56
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "iam",
+   "postings": 56,
+   "code_before": "iam",
+   "spellings": [
+    [
+     "IAM",
+     56
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "iso 27001",
+   "postings": 56,
+   "code_before": "iso27001",
+   "spellings": [
+    [
+     "ISO 27001",
+     56
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "market research and analysis",
+   "postings": 56,
+   "code_before": null,
+   "spellings": [
+    [
+     "Market Research and Analysis",
+     55
+    ],
+    [
+     "market research and analysis",
+     1
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "automation",
+   "postings": 55,
+   "code_before": null,
+   "spellings": [
+    [
+     "Automation",
+     28
+    ],
+    [
+     "automation",
+     27
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "gitlab",
+   "postings": 55,
+   "code_before": "git",
+   "spellings": [
+    [
+     "GitLab",
+     33
+    ],
+    [
+     "Gitlab",
+     20
+    ],
+    [
+     "gitlab",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "infrastructure as code",
+   "postings": 55,
+   "code_before": "terraform",
+   "spellings": [
+    [
+     "Infrastructure as Code",
+     42
+    ],
+    [
+     "infrastructure as code",
+     9
+    ],
+    [
+     "Infrastructure As Code",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ky nang giao tiep",
+   "postings": 55,
+   "code_before": "communication",
+   "spellings": [
+    [
+     "Kỹ năng giao tiếp",
+     28
+    ],
+    [
+     "kỹ năng giao tiếp",
+     25
+    ],
+    [
+     "Kỹ năng giao tiêp",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "leadership",
+   "postings": 55,
+   "code_before": "leadership",
+   "spellings": [
+    [
+     "Leadership",
+     39
+    ],
+    [
+     "leadership",
+     16
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "switch",
+   "postings": 55,
+   "code_before": null,
+   "spellings": [
+    [
+     "Switch",
+     43
+    ],
+    [
+     "switch",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tester",
+   "postings": 55,
+   "code_before": null,
+   "spellings": [
+    [
+     "Tester",
+     55
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topdev"
+   ]
+  },
+  {
+   "key": "unit testing",
+   "postings": 55,
+   "code_before": "unit_testing",
+   "spellings": [
+    [
+     "unit testing",
+     44
+    ],
+    [
+     "Unit Testing",
+     8
+    ],
+    [
+     "Unit testing",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "network",
+   "postings": 54,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "Network",
+     43
+    ],
+    [
+     "network",
+     11
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "solid",
+   "postings": 54,
+   "code_before": null,
+   "spellings": [
+    [
+     "SOLID",
+     54
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "bpmn",
+   "postings": 53,
+   "code_before": "bpmn_uml",
+   "spellings": [
+    [
+     "BPMN",
+     50
+    ],
+    [
+     "Bpmn",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "data warehouse",
+   "postings": 53,
+   "code_before": "data_warehouse",
+   "spellings": [
+    [
+     "Data Warehouse",
+     43
+    ],
+    [
+     "data warehouse",
+     6
+    ],
+    [
+     "Data warehouse",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "router",
+   "postings": 53,
+   "code_before": null,
+   "spellings": [
+    [
+     "Router",
+     44
+    ],
+    [
+     "router",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "embedded javascript (ejs)",
+   "postings": 52,
+   "code_before": null,
+   "spellings": [
+    [
+     "Embedded JavaScript (EJS)",
+     52
+    ]
+   ],
+   "sources": [
+    "itnavi"
+   ]
+  },
+  {
+   "key": "graphql",
+   "postings": 52,
+   "code_before": "graphql",
+   "spellings": [
+    [
+     "GraphQL",
+     52
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "jwt",
+   "postings": 52,
+   "code_before": "oauth",
+   "spellings": [
+    [
+     "JWT",
+     52
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong an khanh - ho chi minh",
+   "postings": 52,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường An Khánh - Hồ Chí Minh",
+     52
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "regression testing",
+   "postings": 52,
+   "code_before": "regression",
+   "spellings": [
+    [
+     "regression testing",
+     29
+    ],
+    [
+     "Regression Testing",
+     22
+    ],
+    [
+     "Regression testing",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "airflow",
+   "postings": 51,
+   "code_before": "airflow",
+   "spellings": [
+    [
+     "Airflow",
+     51
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "android",
+   "postings": 51,
+   "code_before": "android",
+   "spellings": [
+    [
+     "Android",
+     50
+    ],
+    [
+     "android",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "helm",
+   "postings": 51,
+   "code_before": "helm",
+   "spellings": [
+    [
+     "Helm",
+     51
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "jquery",
+   "postings": 51,
+   "code_before": "jquery",
+   "spellings": [
+    [
+     "jQuery",
+     28
+    ],
+    [
+     "JQuery",
+     13
+    ],
+    [
+     "Jquery",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "manual testing",
+   "postings": 51,
+   "code_before": "manual_testing",
+   "spellings": [
+    [
+     "Manual Testing",
+     31
+    ],
+    [
+     "manual testing",
+     18
+    ],
+    [
+     "Manual testing",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong hoan kiem - ha noi",
+   "postings": 51,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hoàn Kiếm - Hà Nội",
+     51
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "s3",
+   "postings": 51,
+   "code_before": "aws",
+   "spellings": [
+    [
+     "S3",
+     51
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "system design",
+   "postings": 51,
+   "code_before": "system_design",
+   "spellings": [
+    [
+     "system design",
+     39
+    ],
+    [
+     "System Design",
+     9
+    ],
+    [
+     "System design",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "tensorflow",
+   "postings": 51,
+   "code_before": "tensorflow",
+   "spellings": [
+    [
+     "TensorFlow",
+     46
+    ],
+    [
+     "Tensorflow",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "viec lam product owner tai ha noi",
+   "postings": 51,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Product Owner tại Hà Nội",
+     51
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "ai agent",
+   "postings": 50,
+   "code_before": "ai_agent",
+   "spellings": [
+    [
+     "AI Agent",
+     43
+    ],
+    [
+     "AI agent",
+     7
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "backup",
+   "postings": 50,
+   "code_before": "backup",
+   "spellings": [
+    [
+     "backup",
+     28
+    ],
+    [
+     "Backup",
+     22
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "clean code",
+   "postings": 50,
+   "code_before": "clean_architecture",
+   "spellings": [
+    [
+     "clean code",
+     28
+    ],
+    [
+     "Clean Code",
+     22
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "communication",
+   "postings": 50,
+   "code_before": "communication",
+   "spellings": [
+    [
+     "communication",
+     43
+    ],
+    [
+     "Communication",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "cypress",
+   "postings": 50,
+   "code_before": "cypress",
+   "spellings": [
+    [
+     "Cypress",
+     50
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "design pattern",
+   "postings": 50,
+   "code_before": "design_patterns",
+   "spellings": [
+    [
+     "Design Pattern",
+     26
+    ],
+    [
+     "design pattern",
+     21
+    ],
+    [
+     "Design pattern",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong lang - ha noi",
+   "postings": 50,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Láng - Hà Nội",
+     50
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "communication skills",
+   "postings": 49,
+   "code_before": "communication",
+   "spellings": [
+    [
+     "communication skills",
+     25
+    ],
+    [
+     "Communication skills",
+     20
+    ],
+    [
+     "Communication Skills",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "game design",
+   "postings": 49,
+   "code_before": "game_design",
+   "spellings": [
+    [
+     "Game Design",
+     49
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev"
+   ]
+  },
+  {
+   "key": "nestjs",
+   "postings": 49,
+   "code_before": "nestjs",
+   "spellings": [
+    [
+     "NestJS",
+     49
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong sai gon - ho chi minh",
+   "postings": 49,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Sài Gòn - Hồ Chí Minh",
+     49
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "software architecture",
+   "postings": 49,
+   "code_before": "software_architecture",
+   "spellings": [
+    [
+     "Software Architecture",
+     32
+    ],
+    [
+     "software architecture",
+     17
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "srs",
+   "postings": 49,
+   "code_before": "ba_docs",
+   "spellings": [
+    [
+     "SRS",
+     49
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "websocket",
+   "postings": 49,
+   "code_before": "websocket",
+   "spellings": [
+    [
+     "WebSocket",
+     41
+    ],
+    [
+     "Websocket",
+     7
+    ],
+    [
+     "websocket",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "azure devops",
+   "postings": 48,
+   "code_before": null,
+   "spellings": [
+    [
+     "Azure DevOps",
+     44
+    ],
+    [
+     "Azure Devops",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "deep learning",
+   "postings": 48,
+   "code_before": "deep_learning",
+   "spellings": [
+    [
+     "Deep Learning",
+     36
+    ],
+    [
+     "deep learning",
+     11
+    ],
+    [
+     "Deep learning",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "devsecops",
+   "postings": 48,
+   "code_before": "devsecops",
+   "spellings": [
+    [
+     "DevSecOps",
+     48
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "integration testing",
+   "postings": 48,
+   "code_before": null,
+   "spellings": [
+    [
+     "integration testing",
+     31
+    ],
+    [
+     "Integration Testing",
+     17
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "microservices architecture",
+   "postings": 48,
+   "code_before": "microservices",
+   "spellings": [
+    [
+     "Microservices Architecture",
+     21
+    ],
+    [
+     "microservices architecture",
+     20
+    ],
+    [
+     "Microservices architecture",
+     7
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "network engineer",
+   "postings": 48,
+   "code_before": null,
+   "spellings": [
+    [
+     "Network Engineer",
+     48
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "network security",
+   "postings": 48,
+   "code_before": "network_security",
+   "spellings": [
+    [
+     "Network Security",
+     30
+    ],
+    [
+     "network security",
+     14
+    ],
+    [
+     "Network security",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nghe thuat/hoat hinh/game",
+   "postings": 48,
+   "code_before": null,
+   "spellings": [
+    [
+     "Nghệ thuật/Hoạt hình/Game",
+     48
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "user stories",
+   "postings": 48,
+   "code_before": "ba_docs",
+   "spellings": [
+    [
+     "user stories",
+     32
+    ],
+    [
+     "User Stories",
+     16
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "wi-fi",
+   "postings": 48,
+   "code_before": null,
+   "spellings": [
+    [
+     "Wi-Fi",
+     48
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "claude code",
+   "postings": 47,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "Claude Code",
+     47
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "css3",
+   "postings": 47,
+   "code_before": "css",
+   "spellings": [
+    [
+     "CSS3",
+     47
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "etl/elt",
+   "postings": 47,
+   "code_before": null,
+   "spellings": [
+    [
+     "ETL/ELT",
+     46
+    ],
+    [
+     "Etl/Elt",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "integration test",
+   "postings": 47,
+   "code_before": null,
+   "spellings": [
+    [
+     "integration test",
+     20
+    ],
+    [
+     "Integration Test",
+     14
+    ],
+    [
+     "Integration test",
+     13
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "langchain",
+   "postings": 47,
+   "code_before": "langchain",
+   "spellings": [
+    [
+     "LangChain",
+     44
+    ],
+    [
+     "Langchain",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nginx",
+   "postings": 47,
+   "code_before": "nginx",
+   "spellings": [
+    [
+     "Nginx",
+     42
+    ],
+    [
+     "NGINX",
+     4
+    ],
+    [
+     "nginx",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": ".net core",
+   "postings": 46,
+   "code_before": "dotnet",
+   "spellings": [
+    [
+     ".NET Core",
+     31
+    ],
+    [
+     ".Net Core",
+     12
+    ],
+    [
+     ".Net core",
+     2
+    ],
+    [
+     ".NET core",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "k8s",
+   "postings": 46,
+   "code_before": "kubernetes",
+   "spellings": [
+    [
+     "K8s",
+     22
+    ],
+    [
+     "K8S",
+     13
+    ],
+    [
+     "k8s",
+     11
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "logging",
+   "postings": 46,
+   "code_before": null,
+   "spellings": [
+    [
+     "logging",
+     34
+    ],
+    [
+     "Logging",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "uml",
+   "postings": 46,
+   "code_before": "bpmn_uml",
+   "spellings": [
+    [
+     "UML",
+     46
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "claude",
+   "postings": 45,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "Claude",
+     45
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "computer vision",
+   "postings": 45,
+   "code_before": "computer_vision",
+   "spellings": [
+    [
+     "Computer Vision",
+     32
+    ],
+    [
+     "computer vision",
+     12
+    ],
+    [
+     "Computer vision",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "functional testing",
+   "postings": 45,
+   "code_before": "manual_testing",
+   "spellings": [
+    [
+     "functional testing",
+     24
+    ],
+    [
+     "Functional Testing",
+     20
+    ],
+    [
+     "Functional testing",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "manual tester",
+   "postings": 45,
+   "code_before": null,
+   "spellings": [
+    [
+     "Manual Tester",
+     45
+    ]
+   ],
+   "sources": [
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "next.js",
+   "postings": 45,
+   "code_before": "nextjs",
+   "spellings": [
+    [
+     "Next.js",
+     44
+    ],
+    [
+     "Next.Js",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "spark",
+   "postings": 45,
+   "code_before": "spark",
+   "spellings": [
+    [
+     "Spark",
+     45
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "viec lam truong nhom tai ha noi",
+   "postings": 45,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Trưởng Nhóm tại Hà Nội",
+     45
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "cursor",
+   "postings": 44,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "Cursor",
+     44
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "microservice",
+   "postings": 44,
+   "code_before": "microservices",
+   "spellings": [
+    [
+     "Microservice",
+     25
+    ],
+    [
+     "microservice",
+     19
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong tan thuan - ho chi minh",
+   "postings": 44,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Thuận - Hồ Chí Minh",
+     44
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong vinh tuy - ha noi",
+   "postings": 44,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Vĩnh Tuy - Hà Nội",
+     44
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "test plan",
+   "postings": 44,
+   "code_before": "test_design",
+   "spellings": [
+    [
+     "Test Plan",
+     26
+    ],
+    [
+     "test plan",
+     16
+    ],
+    [
+     "Test plan",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "use case",
+   "postings": 44,
+   "code_before": "ba_docs",
+   "spellings": [
+    [
+     "Use Case",
+     31
+    ],
+    [
+     "use case",
+     9
+    ],
+    [
+     "Use case",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "vue.js",
+   "postings": 44,
+   "code_before": "vue",
+   "spellings": [
+    [
+     "Vue.js",
+     44
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "debugging",
+   "postings": 43,
+   "code_before": null,
+   "spellings": [
+    [
+     "debugging",
+     36
+    ],
+    [
+     "Debugging",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "grpc",
+   "postings": 43,
+   "code_before": "grpc",
+   "spellings": [
+    [
+     "gRPC",
+     42
+    ],
+    [
+     "GRPC",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "incident response",
+   "postings": 43,
+   "code_before": "incident_response",
+   "spellings": [
+    [
+     "incident response",
+     24
+    ],
+    [
+     "Incident Response",
+     15
+    ],
+    [
+     "Incident response",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "iot/embedded engineer",
+   "postings": 43,
+   "code_before": null,
+   "spellings": [
+    [
+     "IoT/Embedded Engineer",
+     43
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "message queue",
+   "postings": 43,
+   "code_before": "message_queue",
+   "spellings": [
+    [
+     "Message Queue",
+     22
+    ],
+    [
+     "message queue",
+     18
+    ],
+    [
+     "message Queue",
+     2
+    ],
+    [
+     "Message queue",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ms sql",
+   "postings": 43,
+   "code_before": "sql_server",
+   "spellings": [
+    [
+     "MS SQL",
+     42
+    ],
+    [
+     "MS SQl",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong tay ho - ha noi",
+   "postings": 43,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tây Hồ - Hà Nội",
+     43
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong trung my tay - ho chi minh",
+   "postings": 43,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Trung Mỹ Tây - Hồ Chí Minh",
+     43
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "system administrator",
+   "postings": 43,
+   "code_before": null,
+   "spellings": [
+    [
+     "System Administrator",
+     43
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "azure sql data warehouse",
+   "postings": 42,
+   "code_before": null,
+   "spellings": [
+    [
+     "Azure SQL Data Warehouse",
+     42
+    ]
+   ],
+   "sources": [
+    "itnavi"
+   ]
+  },
+  {
+   "key": "cybersecurity",
+   "postings": 42,
+   "code_before": "cybersecurity",
+   "spellings": [
+    [
+     "Cybersecurity",
+     34
+    ],
+    [
+     "cybersecurity",
+     7
+    ],
+    [
+     "CyberSecurity",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "etl",
+   "postings": 42,
+   "code_before": "etl",
+   "spellings": [
+    [
+     "ETL",
+     42
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "penetration testing",
+   "postings": 42,
+   "code_before": "penetration_testing",
+   "spellings": [
+    [
+     "Penetration Testing",
+     27
+    ],
+    [
+     "penetration testing",
+     13
+    ],
+    [
+     "Penetration testing",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong giang vo - ha noi",
+   "postings": 42,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Giảng Võ - Hà Nội",
+     42
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong xuan dinh - ha noi",
+   "postings": 42,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Xuân Đỉnh - Hà Nội",
+     42
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "vuejs",
+   "postings": 42,
+   "code_before": "vue",
+   "spellings": [
+    [
+     "VueJS",
+     37
+    ],
+    [
+     "Vuejs",
+     3
+    ],
+    [
+     "VueJs",
+     1
+    ],
+    [
+     "vuejs",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "it support",
+   "postings": 41,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Support",
+     28
+    ],
+    [
+     "IT support",
+     8
+    ],
+    [
+     "It Support",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "javascript/typescript",
+   "postings": 41,
+   "code_before": null,
+   "spellings": [
+    [
+     "JavaScript/TypeScript",
+     38
+    ],
+    [
+     "Javascript/Typescript",
+     2
+    ],
+    [
+     "JavaScript/Typescript",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "quan tri he thong",
+   "postings": 41,
+   "code_before": null,
+   "spellings": [
+    [
+     "quản trị hệ thống",
+     22
+    ],
+    [
+     "Quản Trị Hệ Thống",
+     10
+    ],
+    [
+     "Quản trị hệ thống",
+     9
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "appium",
+   "postings": 40,
+   "code_before": "appium",
+   "spellings": [
+    [
+     "Appium",
+     40
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "automation testing",
+   "postings": 40,
+   "code_before": "automation_testing",
+   "spellings": [
+    [
+     "Automation Testing",
+     23
+    ],
+    [
+     "automation testing",
+     15
+    ],
+    [
+     "Automation testing",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dien tu/phan cung",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "Điện tử/Phần cứng",
+     40
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "lap trinh",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "lập trình",
+     27
+    ],
+    [
+     "Lập Trình",
+     7
+    ],
+    [
+     "Lập trình",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mvc",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "MVC",
+     40
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong phu nhuan - ho chi minh",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Phú Nhuận - Hồ Chí Minh",
+     40
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong xuan hoa - ho chi minh",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Xuân Hòa - Hồ Chí Minh",
+     40
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "prototype",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "prototype",
+     23
+    ],
+    [
+     "Prototype",
+     17
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "rest",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "REST",
+     40
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "technical leader",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "Technical Leader",
+     40
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "testing",
+   "postings": 40,
+   "code_before": null,
+   "spellings": [
+    [
+     "testing",
+     33
+    ],
+    [
+     "Testing",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ui/ux",
+   "postings": 40,
+   "code_before": "ui_design",
+   "spellings": [
+    [
+     "UI/UX",
+     40
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "argocd",
+   "postings": 39,
+   "code_before": "argocd",
+   "spellings": [
+    [
+     "ArgoCD",
+     39
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "chatgpt",
+   "postings": 39,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "ChatGPT",
+     39
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "doc hieu tai lieu tieng anh",
+   "postings": 39,
+   "code_before": null,
+   "spellings": [
+    [
+     "đọc hiểu tài liệu tiếng Anh",
+     22
+    ],
+    [
+     "Đọc hiểu tài liệu tiếng Anh",
+     9
+    ],
+    [
+     "đọc hiểu tài liệu tiếng anh",
+     2
+    ],
+    [
+     "Đọc hiểu tài liệu tiếng anh",
+     2
+    ],
+    [
+     "Đọc hiểu tài liệu Tiếng Anh",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "event-driven architecture",
+   "postings": 39,
+   "code_before": null,
+   "spellings": [
+    [
+     "event-driven architecture",
+     19
+    ],
+    [
+     "Event-driven Architecture",
+     9
+    ],
+    [
+     "Event-Driven Architecture",
+     7
+    ],
+    [
+     "Event-driven architecture",
+     3
+    ],
+    [
+     "Event-Driven architecture",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong tan son hoa - ho chi minh",
+   "postings": 39,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Sơn Hòa - Hồ Chí Minh",
+     39
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "ai tools",
+   "postings": 38,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "AI tools",
+     37
+    ],
+    [
+     "AI Tools",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "itil",
+   "postings": 38,
+   "code_before": "itil",
+   "spellings": [
+    [
+     "ITIL",
+     38
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "microsoft office",
+   "postings": 38,
+   "code_before": "ms_office",
+   "spellings": [
+    [
+     "Microsoft Office",
+     37
+    ],
+    [
+     "Microsoft office",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong ba dinh - ha noi",
+   "postings": 38,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Ba Đình - Hà Nội",
+     38
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong o cho dua - ha noi",
+   "postings": 38,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Ô Chợ Dừa - Hà Nội",
+     38
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "code reviews",
+   "postings": 37,
+   "code_before": null,
+   "spellings": [
+    [
+     "code reviews",
+     35
+    ],
+    [
+     "Code reviews",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "data governance",
+   "postings": 37,
+   "code_before": "data_governance",
+   "spellings": [
+    [
+     "Data Governance",
+     22
+    ],
+    [
+     "data governance",
+     14
+    ],
+    [
+     "Data governance",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ec2",
+   "postings": 37,
+   "code_before": "aws",
+   "spellings": [
+    [
+     "EC2",
+     37
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "flutter",
+   "postings": 37,
+   "code_before": "flutter",
+   "spellings": [
+    [
+     "Flutter",
+     37
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "giao tiep tot",
+   "postings": 37,
+   "code_before": null,
+   "spellings": [
+    [
+     "Giao tiếp tốt",
+     24
+    ],
+    [
+     "giao tiếp tốt",
+     13
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "indexing",
+   "postings": 37,
+   "code_before": "query_optimization",
+   "spellings": [
+    [
+     "indexing",
+     30
+    ],
+    [
+     "Indexing",
+     7
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "mvvm",
+   "postings": 37,
+   "code_before": "mvvm",
+   "spellings": [
+    [
+     "MVVM",
+     37
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "odoo",
+   "postings": 37,
+   "code_before": "odoo",
+   "spellings": [
+    [
+     "Odoo",
+     35
+    ],
+    [
+     "ODOO",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "performance tuning",
+   "postings": 37,
+   "code_before": "query_optimization",
+   "spellings": [
+    [
+     "performance tuning",
+     27
+    ],
+    [
+     "Performance Tuning",
+     10
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "powerpoint",
+   "postings": 37,
+   "code_before": "ms_office",
+   "spellings": [
+    [
+     "PowerPoint",
+     31
+    ],
+    [
+     "Powerpoint",
+     5
+    ],
+    [
+     "powerpoint",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "product owner",
+   "postings": 37,
+   "code_before": null,
+   "spellings": [
+    [
+     "Product Owner",
+     36
+    ],
+    [
+     "product owner",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "asp.net",
+   "postings": 36,
+   "code_before": "dotnet",
+   "spellings": [
+    [
+     "ASP.NET",
+     30
+    ],
+    [
+     "Asp.net",
+     4
+    ],
+    [
+     "ASP.Net",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "bao mat",
+   "postings": 36,
+   "code_before": null,
+   "spellings": [
+    [
+     "bảo mật",
+     33
+    ],
+    [
+     "Bảo mật",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "bgp",
+   "postings": 36,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "BGP",
+     36
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "business analyst",
+   "postings": 36,
+   "code_before": null,
+   "spellings": [
+    [
+     "Business Analyst",
+     34
+    ],
+    [
+     "business analyst",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "dam phan",
+   "postings": 36,
+   "code_before": "negotiation",
+   "spellings": [
+    [
+     "đàm phán",
+     35
+    ],
+    [
+     "Đàm phán",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "firebase",
+   "postings": 36,
+   "code_before": "firebase",
+   "spellings": [
+    [
+     "Firebase",
+     35
+    ],
+    [
+     "firebase",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "it consultant",
+   "postings": 36,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Consultant",
+     36
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "topcv"
+   ]
+  },
+  {
+   "key": "mlops",
+   "postings": 36,
+   "code_before": "mlops",
+   "spellings": [
+    [
+     "MLOps",
+     34
+    ],
+    [
+     "Mlops",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong tan binh - ho chi minh",
+   "postings": 36,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Bình - Hồ Chí Minh",
+     36
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "sap",
+   "postings": 36,
+   "code_before": "sap",
+   "spellings": [
+    [
+     "SAP",
+     32
+    ],
+    [
+     "Sap",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "svn",
+   "postings": 36,
+   "code_before": "git",
+   "spellings": [
+    [
+     "SVN",
+     33
+    ],
+    [
+     "svn",
+     2
+    ],
+    [
+     "Svn",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "trello",
+   "postings": 36,
+   "code_before": "jira",
+   "spellings": [
+    [
+     "Trello",
+     36
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "zabbix",
+   "postings": 36,
+   "code_before": "zabbix",
+   "spellings": [
+    [
+     "Zabbix",
+     36
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "backend",
+   "postings": 35,
+   "code_before": null,
+   "spellings": [
+    [
+     "Backend",
+     23
+    ],
+    [
+     "backend",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "caching",
+   "postings": 35,
+   "code_before": "caching",
+   "spellings": [
+    [
+     "caching",
+     22
+    ],
+    [
+     "Caching",
+     13
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "cloud security",
+   "postings": 35,
+   "code_before": null,
+   "spellings": [
+    [
+     "Cloud Security",
+     31
+    ],
+    [
+     "cloud security",
+     3
+    ],
+    [
+     "Cloud security",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data quality",
+   "postings": 35,
+   "code_before": "data_governance",
+   "spellings": [
+    [
+     "data quality",
+     23
+    ],
+    [
+     "Data Quality",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "data structures",
+   "postings": 35,
+   "code_before": "dsa",
+   "spellings": [
+    [
+     "data structures",
+     32
+    ],
+    [
+     "Data Structures",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "databases",
+   "postings": 35,
+   "code_before": null,
+   "spellings": [
+    [
+     "databases",
+     31
+    ],
+    [
+     "Databases",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "design system",
+   "postings": 35,
+   "code_before": "ui_design",
+   "spellings": [
+    [
+     "Design System",
+     23
+    ],
+    [
+     "design system",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "eks",
+   "postings": 35,
+   "code_before": "kubernetes",
+   "spellings": [
+    [
+     "EKS",
+     35
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "fortinet",
+   "postings": 35,
+   "code_before": "firewall",
+   "spellings": [
+    [
+     "Fortinet",
+     35
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "generative ai",
+   "postings": 35,
+   "code_before": "generative_ai",
+   "spellings": [
+    [
+     "Generative AI",
+     31
+    ],
+    [
+     "generative AI",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "github copilot",
+   "postings": 35,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "GitHub Copilot",
+     33
+    ],
+    [
+     "Github copilot",
+     1
+    ],
+    [
+     "Github Copilot",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "html/css",
+   "postings": 35,
+   "code_before": null,
+   "spellings": [
+    [
+     "HTML/CSS",
+     33
+    ],
+    [
+     "HTML/css",
+     1
+    ],
+    [
+     "Html/css",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "oauth2",
+   "postings": 35,
+   "code_before": "oauth",
+   "spellings": [
+    [
+     "OAuth2",
+     35
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "observability",
+   "postings": 35,
+   "code_before": "observability",
+   "spellings": [
+    [
+     "observability",
+     30
+    ],
+    [
+     "Observability",
+     5
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv"
+   ]
+  },
+  {
+   "key": "swift",
+   "postings": 35,
+   "code_before": "swift",
+   "spellings": [
+    [
+     "Swift",
+     34
+    ],
+    [
+     "SWIFT",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "system architecture",
+   "postings": 35,
+   "code_before": null,
+   "spellings": [
+    [
+     "System Architecture",
+     25
+    ],
+    [
+     "system architecture",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tu duy he thong",
+   "postings": 35,
+   "code_before": null,
+   "spellings": [
+    [
+     "tư duy hệ thống",
+     20
+    ],
+    [
+     "Tư duy hệ thống",
+     14
+    ],
+    [
+     "Tư Duy Hệ Thống",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "waf",
+   "postings": 35,
+   "code_before": "waf_ips",
+   "spellings": [
+    [
+     "WAF",
+     35
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "ccnp",
+   "postings": 34,
+   "code_before": "cisco",
+   "spellings": [
+    [
+     "CCNP",
+     34
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "chuyen vien cyber security",
+   "postings": 34,
+   "code_before": null,
+   "spellings": [
+    [
+     "Chuyên viên Cyber Security",
+     34
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "gitops",
+   "postings": 34,
+   "code_before": "argocd",
+   "spellings": [
+    [
+     "GitOps",
+     33
+    ],
+    [
+     "Gitops",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "istqb",
+   "postings": 34,
+   "code_before": "istqb",
+   "spellings": [
+    [
+     "ISTQB",
+     34
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "lap trinh huong doi tuong",
+   "postings": 34,
+   "code_before": "oop",
+   "spellings": [
+    [
+     "lập trình hướng đối tượng",
+     31
+    ],
+    [
+     "Lập trình hướng đối tượng",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "owasp",
+   "postings": 34,
+   "code_before": "owasp",
+   "spellings": [
+    [
+     "OWASP",
+     34
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong dinh cong - ha noi",
+   "postings": 34,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Định Công - Hà Nội",
+     34
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "storage",
+   "postings": 34,
+   "code_before": null,
+   "spellings": [
+    [
+     "Storage",
+     25
+    ],
+    [
+     "storage",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tieng nhat",
+   "postings": 34,
+   "code_before": "japanese",
+   "spellings": [
+    [
+     "tiếng Nhật",
+     23
+    ],
+    [
+     "Tiếng Nhật",
+     11
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "asp.net core",
+   "postings": 33,
+   "code_before": "dotnet",
+   "spellings": [
+    [
+     "ASP.NET Core",
+     30
+    ],
+    [
+     "ASP.Net Core",
+     2
+    ],
+    [
+     "ASP.NET CORE",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "big data",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Big Data",
+     29
+    ],
+    [
+     "big data",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "bigquery",
+   "postings": 33,
+   "code_before": "bigquery",
+   "spellings": [
+    [
+     "BigQuery",
+     32
+    ],
+    [
+     "Bigquery",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "embedded engineer/lap trinh nhung",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Embedded Engineer/Lập trình nhúng",
+     33
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "lap ke hoach",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "lập kế hoạch",
+     23
+    ],
+    [
+     "Lập kế hoạch",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nlp",
+   "postings": 33,
+   "code_before": "nlp",
+   "spellings": [
+    [
+     "NLP",
+     31
+    ],
+    [
+     "Nlp",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong kim lien - ha noi",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Kim Liên - Hà Nội",
+     33
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong ngoc ha - ha noi",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Ngọc Hà - Hà Nội",
+     33
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong phu dien - ha noi",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Phú Diễn - Hà Nội",
+     33
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "power automate",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Power Automate",
+     33
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "query optimization",
+   "postings": 33,
+   "code_before": "query_optimization",
+   "spellings": [
+    [
+     "query optimization",
+     25
+    ],
+    [
+     "Query Optimization",
+     6
+    ],
+    [
+     "Query optimization",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "redmine",
+   "postings": 33,
+   "code_before": "jira",
+   "spellings": [
+    [
+     "Redmine",
+     31
+    ],
+    [
+     "redmine",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "risk management",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "risk management",
+     18
+    ],
+    [
+     "Risk Management",
+     13
+    ],
+    [
+     "Risk management",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "server",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "Server",
+     23
+    ],
+    [
+     "server",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "software development",
+   "postings": 33,
+   "code_before": null,
+   "spellings": [
+    [
+     "software development",
+     18
+    ],
+    [
+     "Software Development",
+     12
+    ],
+    [
+     "Software development",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "spring framework",
+   "postings": 33,
+   "code_before": "spring",
+   "spellings": [
+    [
+     "Spring Framework",
+     26
+    ],
+    [
+     "Spring framework",
+     7
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "user flow",
+   "postings": 33,
+   "code_before": "ux_research",
+   "spellings": [
+    [
+     "User Flow",
+     19
+    ],
+    [
+     "user flow",
+     13
+    ],
+    [
+     "User flow",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "vector database",
+   "postings": 33,
+   "code_before": "vector_db",
+   "spellings": [
+    [
+     "Vector Database",
+     20
+    ],
+    [
+     "vector database",
+     12
+    ],
+    [
+     "Vector database",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "jmeter",
+   "postings": 32,
+   "code_before": "jmeter",
+   "spellings": [
+    [
+     "JMeter",
+     19
+    ],
+    [
+     "Jmeter",
+     13
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "kiem thu chuc nang",
+   "postings": 32,
+   "code_before": "manual_testing",
+   "spellings": [
+    [
+     "kiểm thử chức năng",
+     26
+    ],
+    [
+     "Kiểm thử chức năng",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kiem thu tu dong",
+   "postings": 32,
+   "code_before": "automation_testing",
+   "spellings": [
+    [
+     "kiểm thử tự động",
+     29
+    ],
+    [
+     "Kiểm thử tự động",
+     2
+    ],
+    [
+     "Kiểm thử Tự động",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "microsoft azure",
+   "postings": 32,
+   "code_before": "azure",
+   "spellings": [
+    [
+     "Microsoft Azure",
+     32
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "system admin",
+   "postings": 32,
+   "code_before": null,
+   "spellings": [
+    [
+     "System Admin",
+     32
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "test automation",
+   "postings": 32,
+   "code_before": "automation_testing",
+   "spellings": [
+    [
+     "test automation",
+     23
+    ],
+    [
+     "Test Automation",
+     6
+    ],
+    [
+     "Test automation",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viec lam devops engineer tai ha noi",
+   "postings": 32,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm DevOps Engineer tại Hà Nội",
+     27
+    ],
+    [
+     "Việc làm Devops Engineer tại Hà Nội",
+     5
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "viec lam project manager tai ha noi",
+   "postings": 32,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Project Manager tại Hà Nội",
+     32
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "container",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "Container",
+     17
+    ],
+    [
+     "container",
+     14
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "disaster recovery",
+   "postings": 31,
+   "code_before": "backup",
+   "spellings": [
+    [
+     "disaster recovery",
+     16
+    ],
+    [
+     "Disaster Recovery",
+     15
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "draw.io",
+   "postings": 31,
+   "code_before": "bpmn_uml",
+   "spellings": [
+    [
+     "Draw.io",
+     29
+    ],
+    [
+     "draw.io",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "ios",
+   "postings": 31,
+   "code_before": "ios",
+   "spellings": [
+    [
+     "iOS",
+     29
+    ],
+    [
+     "IOS",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "it infrastructure",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Infrastructure",
+     20
+    ],
+    [
+     "IT infrastructure",
+     11
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "junit",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "JUnit",
+     27
+    ],
+    [
+     "Junit",
+     3
+    ],
+    [
+     "jUnit",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "load balancer",
+   "postings": 31,
+   "code_before": "nginx",
+   "spellings": [
+    [
+     "Load Balancer",
+     23
+    ],
+    [
+     "load balancer",
+     5
+    ],
+    [
+     "Load balancer",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "load balancing",
+   "postings": 31,
+   "code_before": "nginx",
+   "spellings": [
+    [
+     "load balancing",
+     22
+    ],
+    [
+     "Load Balancing",
+     9
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "pandas",
+   "postings": 31,
+   "code_before": "pandas",
+   "spellings": [
+    [
+     "Pandas",
+     22
+    ],
+    [
+     "pandas",
+     9
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong hiep binh - ho chi minh",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hiệp Bình - Hồ Chí Minh",
+     31
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tan my - ho chi minh",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Mỹ - Hồ Chí Minh",
+     31
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "problem-solving skills",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "problem-solving skills",
+     27
+    ],
+    [
+     "Problem-solving skills",
+     3
+    ],
+    [
+     "Problem-Solving Skills",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "quy trinh phat trien phan mem",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "quy trình phát triển phần mềm",
+     31
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "react native",
+   "postings": 31,
+   "code_before": "react_native",
+   "spellings": [
+    [
+     "React Native",
+     29
+    ],
+    [
+     "react native",
+     1
+    ],
+    [
+     "React native",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "switching",
+   "postings": 31,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "Switching",
+     17
+    ],
+    [
+     "switching",
+     14
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "test scenario",
+   "postings": 31,
+   "code_before": "test_design",
+   "spellings": [
+    [
+     "Test Scenario",
+     22
+    ],
+    [
+     "test scenario",
+     9
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "uart",
+   "postings": 31,
+   "code_before": "protocols_hw",
+   "spellings": [
+    [
+     "UART",
+     31
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "word",
+   "postings": 31,
+   "code_before": null,
+   "spellings": [
+    [
+     "Word",
+     27
+    ],
+    [
+     "word",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "automated testing",
+   "postings": 30,
+   "code_before": "automation_testing",
+   "spellings": [
+    [
+     "automated testing",
+     27
+    ],
+    [
+     "Automated testing",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "bootstrap",
+   "postings": 30,
+   "code_before": "bootstrap",
+   "spellings": [
+    [
+     "Bootstrap",
+     27
+    ],
+    [
+     "bootstrap",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "doc hieu tai lieu ky thuat tieng anh",
+   "postings": 30,
+   "code_before": null,
+   "spellings": [
+    [
+     "đọc hiểu tài liệu kỹ thuật tiếng Anh",
+     17
+    ],
+    [
+     "Đọc hiểu tài liệu kỹ thuật tiếng Anh",
+     12
+    ],
+    [
+     "đọc hiểu tài liệu kỹ thuật Tiếng Anh",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "hibernate",
+   "postings": 30,
+   "code_before": "hibernate",
+   "spellings": [
+    [
+     "Hibernate",
+     30
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kinh doanh/ban hang",
+   "postings": 30,
+   "code_before": null,
+   "spellings": [
+    [
+     "Kinh doanh/Bán hàng",
+     30
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "mcsa",
+   "postings": 30,
+   "code_before": "windows_server",
+   "spellings": [
+    [
+     "MCSA",
+     30
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "owasp top 10",
+   "postings": 30,
+   "code_before": "owasp",
+   "spellings": [
+    [
+     "OWASP Top 10",
+     30
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong hai chau - da nang",
+   "postings": 30,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hải Châu - Đà Nẵng",
+     30
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong phuong liet - ha noi",
+   "postings": 30,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Phương Liệt - Hà Nội",
+     30
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tang nhon phu - ho chi minh",
+   "postings": 30,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tăng Nhơn Phú - Hồ Chí Minh",
+     30
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "tieng trung",
+   "postings": 30,
+   "code_before": "chinese",
+   "spellings": [
+    [
+     "tiếng Trung",
+     18
+    ],
+    [
+     "Tiếng Trung",
+     12
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "analytical skills",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "analytical skills",
+     21
+    ],
+    [
+     "Analytical Skills",
+     7
+    ],
+    [
+     "Analytical skills",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "bao mat he thong",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "bảo mật hệ thống",
+     23
+    ],
+    [
+     "Bảo Mật Hệ Thống",
+     4
+    ],
+    [
+     "Bảo mật hệ thống",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "biopython",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Biopython",
+     29
+    ]
+   ],
+   "sources": [
+    "itnavi"
+   ]
+  },
+  {
+   "key": "containerization",
+   "postings": 29,
+   "code_before": "docker",
+   "spellings": [
+    [
+     "containerization",
+     21
+    ],
+    [
+     "Containerization",
+     8
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "english communication",
+   "postings": 29,
+   "code_before": "english",
+   "spellings": [
+    [
+     "English communication",
+     26
+    ],
+    [
+     "English Communication",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "game developer",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Game Developer",
+     29
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "hyper-v",
+   "postings": 29,
+   "code_before": "virtualization",
+   "spellings": [
+    [
+     "Hyper-V",
+     29
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "langgraph",
+   "postings": 29,
+   "code_before": "langchain",
+   "spellings": [
+    [
+     "LangGraph",
+     29
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phat trien phan mem",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "phát triển phần mềm",
+     21
+    ],
+    [
+     "Phát Triển Phần Mềm",
+     6
+    ],
+    [
+     "Phát triển phần mềm",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong bay hien - ho chi minh",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Bảy Hiền - Hồ Chí Minh",
+     29
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong hoang mai - ha noi",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hoàng Mai - Hà Nội",
+     29
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong khuong dinh - ha noi",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Khương Đình - Hà Nội",
+     29
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong xom chieu - ho chi minh",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Xóm Chiếu - Hồ Chí Minh",
+     29
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "review code",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "review code",
+     24
+    ],
+    [
+     "Review code",
+     4
+    ],
+    [
+     "Review Code",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "scrum master",
+   "postings": 29,
+   "code_before": "scrum",
+   "spellings": [
+    [
+     "Scrum Master",
+     29
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "spi",
+   "postings": 29,
+   "code_before": "protocols_hw",
+   "spellings": [
+    [
+     "SPI",
+     29
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "spring security",
+   "postings": 29,
+   "code_before": "spring",
+   "spellings": [
+    [
+     "Spring Security",
+     28
+    ],
+    [
+     "spring security",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "team management",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "Team Management",
+     26
+    ],
+    [
+     "team management",
+     3
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "thuyet trinh",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "thuyết trình",
+     25
+    ],
+    [
+     "Thuyết trình",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tich hop he thong",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "tích hợp hệ thống",
+     26
+    ],
+    [
+     "Tích hợp hệ thống",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viet tai lieu",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "viết tài liệu",
+     26
+    ],
+    [
+     "Viết tài liệu",
+     2
+    ],
+    [
+     "Viết Tài Liệu",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "visio",
+   "postings": 29,
+   "code_before": "bpmn_uml",
+   "spellings": [
+    [
+     "Visio",
+     29
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "vpc",
+   "postings": 29,
+   "code_before": null,
+   "spellings": [
+    [
+     "VPC",
+     28
+    ],
+    [
+     "vPC",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "vue",
+   "postings": 29,
+   "code_before": "vue",
+   "spellings": [
+    [
+     "Vue",
+     28
+    ],
+    [
+     "VUE",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "agile methodologies",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "Agile methodologies",
+     15
+    ],
+    [
+     "Agile Methodologies",
+     10
+    ],
+    [
+     "agile methodologies",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "api gateway",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "API Gateway",
+     27
+    ],
+    [
+     "API gateway",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "backup/restore",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "backup/restore",
+     20
+    ],
+    [
+     "Backup/Restore",
+     8
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ceh",
+   "postings": 28,
+   "code_before": "sec_certs",
+   "spellings": [
+    [
+     "CEH",
+     28
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "django",
+   "postings": 28,
+   "code_before": "django",
+   "spellings": [
+    [
+     "Django",
+     28
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "firewalls",
+   "postings": 28,
+   "code_before": "firewall",
+   "spellings": [
+    [
+     "firewalls",
+     19
+    ],
+    [
+     "Firewalls",
+     9
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "fullstack",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "Fullstack",
+     27
+    ],
+    [
+     "fullstack",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "i2c",
+   "postings": 28,
+   "code_before": "protocols_hw",
+   "spellings": [
+    [
+     "I2C",
+     28
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kiem thu api",
+   "postings": 28,
+   "code_before": "api_testing",
+   "spellings": [
+    [
+     "kiểm thử API",
+     24
+    ],
+    [
+     "Kiểm thử API",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "mobile developer",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "Mobile Developer",
+     28
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "ms sql server",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "MS SQL Server",
+     27
+    ],
+    [
+     "MS SQL server",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ospf",
+   "postings": 28,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "OSPF",
+     28
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "performance testing",
+   "postings": 28,
+   "code_before": "jmeter",
+   "spellings": [
+    [
+     "performance testing",
+     21
+    ],
+    [
+     "Performance Testing",
+     4
+    ],
+    [
+     "Performance testing",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong ban co - ho chi minh",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Bàn Cờ - Hồ Chí Minh",
+     28
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong dong ngac - ha noi",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Đông Ngạc - Hà Nội",
+     28
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tan dinh - ho chi minh",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Định - Hồ Chí Minh",
+     28
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "relational databases",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "relational databases",
+     25
+    ],
+    [
+     "Relational Databases",
+     2
+    ],
+    [
+     "Relational databases",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "scala",
+   "postings": 28,
+   "code_before": "scala",
+   "spellings": [
+    [
+     "Scala",
+     28
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "zalo"
+   ]
+  },
+  {
+   "key": "solid principles",
+   "postings": 28,
+   "code_before": "solid",
+   "spellings": [
+    [
+     "SOLID principles",
+     22
+    ],
+    [
+     "SOLID Principles",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "system administration",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "System Administration",
+     24
+    ],
+    [
+     "system administration",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ubuntu",
+   "postings": 28,
+   "code_before": "linux",
+   "spellings": [
+    [
+     "Ubuntu",
+     24
+    ],
+    [
+     "ubuntu",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "web services",
+   "postings": 28,
+   "code_before": "rest_api",
+   "spellings": [
+    [
+     "web services",
+     16
+    ],
+    [
+     "Web Services",
+     8
+    ],
+    [
+     "Web services",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "wifi",
+   "postings": 28,
+   "code_before": null,
+   "spellings": [
+    [
+     "WiFi",
+     15
+    ],
+    [
+     "Wifi",
+     7
+    ],
+    [
+     "WIFI",
+     4
+    ],
+    [
+     "wifi",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ai/ml",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "AI/ML",
+     25
+    ],
+    [
+     "Ai/Ml",
+     2
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "cissp",
+   "postings": 27,
+   "code_before": "sec_certs",
+   "spellings": [
+    [
+     "CISSP",
+     27
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data pipeline",
+   "postings": 27,
+   "code_before": "etl",
+   "spellings": [
+    [
+     "Data Pipeline",
+     15
+    ],
+    [
+     "data pipeline",
+     12
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "debug",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "debug",
+     22
+    ],
+    [
+     "Debug",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dlp",
+   "postings": 27,
+   "code_before": "waf_ips",
+   "spellings": [
+    [
+     "DLP",
+     27
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "java core",
+   "postings": 27,
+   "code_before": "java",
+   "spellings": [
+    [
+     "Java Core",
+     24
+    ],
+    [
+     "Java core",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kanban",
+   "postings": 27,
+   "code_before": "agile",
+   "spellings": [
+    [
+     "Kanban",
+     27
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong tan hung - ho chi minh",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Hưng - Hồ Chí Minh",
+     27
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "solution architecture",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "Solution Architecture",
+     23
+    ],
+    [
+     "solution architecture",
+     4
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "system integration",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "system integration",
+     18
+    ],
+    [
+     "System Integration",
+     9
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "transaction",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "transaction",
+     16
+    ],
+    [
+     "Transaction",
+     11
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viec lam data engineer tai ha noi",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Data Engineer tại Hà Nội",
+     27
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "xu ly du lieu",
+   "postings": 27,
+   "code_before": null,
+   "spellings": [
+    [
+     "xử lý dữ liệu",
+     27
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "agentic ai",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "Agentic AI",
+     25
+    ],
+    [
+     "agentic AI",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev"
+   ]
+  },
+  {
+   "key": "ai agents",
+   "postings": 26,
+   "code_before": "ai_agent",
+   "spellings": [
+    [
+     "AI agents",
+     15
+    ],
+    [
+     "AI Agents",
+     11
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ao hoa",
+   "postings": 26,
+   "code_before": "virtualization",
+   "spellings": [
+    [
+     "ảo hóa",
+     21
+    ],
+    [
+     "Ảo hóa",
+     3
+    ],
+    [
+     "ảo hoá",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "authentication",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "authentication",
+     17
+    ],
+    [
+     "Authentication",
+     9
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "centos",
+   "postings": 26,
+   "code_before": "linux",
+   "spellings": [
+    [
+     "CentOS",
+     24
+    ],
+    [
+     "Centos",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "clickhouse",
+   "postings": 26,
+   "code_before": "clickhouse",
+   "spellings": [
+    [
+     "ClickHouse",
+     24
+    ],
+    [
+     "Clickhouse",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "cloudwatch",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "CloudWatch",
+     24
+    ],
+    [
+     "Cloudwatch",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "concurrency",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "concurrency",
+     22
+    ],
+    [
+     "Concurrency",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "copilot",
+   "postings": 26,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "Copilot",
+     26
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dbt",
+   "postings": 26,
+   "code_before": "dbt",
+   "spellings": [
+    [
+     "dbt",
+     24
+    ],
+    [
+     "DBT",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "he thong mang",
+   "postings": 26,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "hệ thống mạng",
+     24
+    ],
+    [
+     "Hệ Thống Mạng",
+     1
+    ],
+    [
+     "Hệ thống mạng",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "http",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "HTTP",
+     25
+    ],
+    [
+     "Http",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "http/https",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "HTTP/HTTPS",
+     26
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ids/ips",
+   "postings": 26,
+   "code_before": "waf_ips",
+   "spellings": [
+    [
+     "IDS/IPS",
+     26
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "jest",
+   "postings": 26,
+   "code_before": "jest",
+   "spellings": [
+    [
+     "Jest",
+     26
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "ky thuat it",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "Kỹ thuật IT",
+     26
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "lam viec doc lap",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "làm việc độc lập",
+     23
+    ],
+    [
+     "Làm việc độc lập",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "lan",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "LAN",
+     26
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nextjs",
+   "postings": 26,
+   "code_before": "nextjs",
+   "spellings": [
+    [
+     "NextJS",
+     22
+    ],
+    [
+     "nextjs",
+     2
+    ],
+    [
+     "NextJs",
+     1
+    ],
+    [
+     "Nextjs",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "quan ly rui ro",
+   "postings": 26,
+   "code_before": null,
+   "spellings": [
+    [
+     "quản lý rủi ro",
+     19
+    ],
+    [
+     "Quản lý rủi ro",
+     5
+    ],
+    [
+     "Quản Lý Rủi Ro",
+     2
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "restful",
+   "postings": 26,
+   "code_before": "rest_api",
+   "spellings": [
+    [
+     "RESTful",
+     23
+    ],
+    [
+     "Restful",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "test cases",
+   "postings": 26,
+   "code_before": "test_design",
+   "spellings": [
+    [
+     "test cases",
+     18
+    ],
+    [
+     "Test Cases",
+     5
+    ],
+    [
+     "Test cases",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "cau truc du lieu",
+   "postings": 25,
+   "code_before": "dsa",
+   "spellings": [
+    [
+     "cấu trúc dữ liệu",
+     24
+    ],
+    [
+     "Cấu trúc dữ liệu",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data analytics",
+   "postings": 25,
+   "code_before": "data_analysis",
+   "spellings": [
+    [
+     "Data Analytics",
+     18
+    ],
+    [
+     "data analytics",
+     5
+    ],
+    [
+     "Data analytics",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "entity framework",
+   "postings": 25,
+   "code_before": "entity_framework",
+   "spellings": [
+    [
+     "Entity Framework",
+     25
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "exception handling",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "exception handling",
+     17
+    ],
+    [
+     "Exception Handling",
+     7
+    ],
+    [
+     "Exception handling",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "hai duong",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Hải Dương",
+     25
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "hai phong",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Hải Phòng",
+     25
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "kiem thu tich hop",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "kiểm thử tích hợp",
+     23
+    ],
+    [
+     "Kiểm thử tích hợp",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "lap trinh huong doi tuong (oop)",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "lập trình hướng đối tượng (OOP)",
+     17
+    ],
+    [
+     "Lập trình hướng đối tượng (OOP)",
+     7
+    ],
+    [
+     "Lập trình Hướng đối tượng (OOP)",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "laravel",
+   "postings": 25,
+   "code_before": "laravel",
+   "spellings": [
+    [
+     "Laravel",
+     25
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mes",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "MES",
+     25
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ms project",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "MS Project",
+     25
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "n8n",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "n8n",
+     25
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "opentelemetry",
+   "postings": 25,
+   "code_before": "observability",
+   "spellings": [
+    [
+     "OpenTelemetry",
+     25
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "palo alto",
+   "postings": 25,
+   "code_before": "firewall",
+   "spellings": [
+    [
+     "Palo Alto",
+     25
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "photoshop",
+   "postings": 25,
+   "code_before": "photoshop",
+   "spellings": [
+    [
+     "Photoshop",
+     25
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong cau ong lanh - ho chi minh",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Cầu Ông Lãnh - Hồ Chí Minh",
+     25
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong duong noi - ha noi",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Dương Nội - Hà Nội",
+     25
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong thanh my tay - ho chi minh",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Thạnh Mỹ Tây - Hồ Chí Minh",
+     25
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "project manager",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Project Manager",
+     25
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev"
+   ]
+  },
+  {
+   "key": "viec lam engineer tai ha noi",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Engineer tại Hà Nội",
+     25
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "xml",
+   "postings": 25,
+   "code_before": null,
+   "spellings": [
+    [
+     "XML",
+     25
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "algorithms",
+   "postings": 24,
+   "code_before": "dsa",
+   "spellings": [
+    [
+     "algorithms",
+     15
+    ],
+    [
+     "Algorithms",
+     9
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "burp suite",
+   "postings": 24,
+   "code_before": "penetration_testing",
+   "spellings": [
+    [
+     "Burp Suite",
+     23
+    ],
+    [
+     "Burp suite",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "critical thinking",
+   "postings": 24,
+   "code_before": "problem_solving",
+   "spellings": [
+    [
+     "critical thinking",
+     17
+    ],
+    [
+     "Critical Thinking",
+     4
+    ],
+    [
+     "Critical thinking",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "dashboard",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "dashboard",
+     16
+    ],
+    [
+     "Dashboard",
+     8
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "google cloud",
+   "postings": 24,
+   "code_before": "gcp",
+   "spellings": [
+    [
+     "Google Cloud",
+     24
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "high availability",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "High Availability",
+     13
+    ],
+    [
+     "high availability",
+     10
+    ],
+    [
+     "High availability",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "incident management",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Incident Management",
+     15
+    ],
+    [
+     "incident management",
+     8
+    ],
+    [
+     "Incident management",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "kiem thu hoi quy",
+   "postings": 24,
+   "code_before": "regression",
+   "spellings": [
+    [
+     "kiểm thử hồi quy",
+     21
+    ],
+    [
+     "Kiểm thử hồi quy",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "lambda",
+   "postings": 24,
+   "code_before": "aws",
+   "spellings": [
+    [
+     "Lambda",
+     23
+    ],
+    [
+     "lambda",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mqtt",
+   "postings": 24,
+   "code_before": "iot",
+   "spellings": [
+    [
+     "MQTT",
+     23
+    ],
+    [
+     "Mqtt",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phan quyen",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "phân quyền",
+     23
+    ],
+    [
+     "Phân quyền",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong ben thanh - ho chi minh",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Bến Thành - Hồ Chí Minh",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong hoa hung - ho chi minh",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hòa Hưng - Hồ Chí Minh",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tan phu - ho chi minh",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Phú - Hồ Chí Minh",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tan son nhat - ho chi minh",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Sơn Nhất - Hồ Chí Minh",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong xuan phuong - ha noi",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Xuân Phương - Hà Nội",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "product backlog",
+   "postings": 24,
+   "code_before": "product_management",
+   "spellings": [
+    [
+     "Product Backlog",
+     19
+    ],
+    [
+     "product backlog",
+     5
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "quan tri mang",
+   "postings": 24,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "quản trị mạng",
+     10
+    ],
+    [
+     "Quản Trị Mạng",
+     10
+    ],
+    [
+     "Quản trị mạng",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "rdbms",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "RDBMS",
+     23
+    ],
+    [
+     "RDBMs",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "react.js",
+   "postings": 24,
+   "code_before": "react",
+   "spellings": [
+    [
+     "React.js",
+     24
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "scikit-learn",
+   "postings": 24,
+   "code_before": "scikit_learn",
+   "spellings": [
+    [
+     "scikit-learn",
+     15
+    ],
+    [
+     "Scikit-learn",
+     7
+    ],
+    [
+     "Scikit-Learn",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "usability testing",
+   "postings": 24,
+   "code_before": "ux_research",
+   "spellings": [
+    [
+     "usability testing",
+     19
+    ],
+    [
+     "Usability Testing",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viec lam backend developer tai ha noi",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Backend Developer tại Hà Nội",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "wireshark",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Wireshark",
+     24
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "xa gia lam - ha noi",
+   "postings": 24,
+   "code_before": null,
+   "spellings": [
+    [
+     "Xã Gia Lâm - Hà Nội",
+     24
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "agile scrum",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Agile Scrum",
+     23
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "api design",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "API design",
+     22
+    ],
+    [
+     "API Design",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "edr",
+   "postings": 23,
+   "code_before": "edr",
+   "spellings": [
+    [
+     "EDR",
+     23
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "embedded",
+   "postings": 23,
+   "code_before": "embedded",
+   "spellings": [
+    [
+     "Embedded",
+     23
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ethernet",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Ethernet",
+     23
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "it security",
+   "postings": 23,
+   "code_before": "cybersecurity",
+   "spellings": [
+    [
+     "IT Security",
+     18
+    ],
+    [
+     "It Security",
+     4
+    ],
+    [
+     "IT security",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ms office",
+   "postings": 23,
+   "code_before": "ms_office",
+   "spellings": [
+    [
+     "MS Office",
+     19
+    ],
+    [
+     "MS office",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mssql",
+   "postings": 23,
+   "code_before": "sql_server",
+   "spellings": [
+    [
+     "MSSQL",
+     22
+    ],
+    [
+     "MsSql",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "oracle database",
+   "postings": 23,
+   "code_before": "oracle_db",
+   "spellings": [
+    [
+     "Oracle Database",
+     23
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong binh thanh - ho chi minh",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Bình Thạnh - Hồ Chí Minh",
+     23
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong binh trung - ho chi minh",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Bình Trưng - Hồ Chí Minh",
+     23
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong gia dinh - ho chi minh",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Gia Định - Hồ Chí Minh",
+     23
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "postgres",
+   "postings": 23,
+   "code_before": "postgresql",
+   "spellings": [
+    [
+     "Postgres",
+     22
+    ],
+    [
+     "postgres",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "problem solving",
+   "postings": 23,
+   "code_before": "problem_solving",
+   "spellings": [
+    [
+     "Problem Solving",
+     14
+    ],
+    [
+     "problem solving",
+     5
+    ],
+    [
+     "Problem solving",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "r",
+   "postings": 23,
+   "code_before": "r",
+   "spellings": [
+    [
+     "R",
+     23
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv"
+   ]
+  },
+  {
+   "key": "rds",
+   "postings": 23,
+   "code_before": "aws",
+   "spellings": [
+    [
+     "RDS",
+     23
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "scripting",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "scripting",
+     19
+    ],
+    [
+     "Scripting",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "snowflake",
+   "postings": 23,
+   "code_before": "snowflake",
+   "spellings": [
+    [
+     "Snowflake",
+     23
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "vulnerability management",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Vulnerability Management",
+     14
+    ],
+    [
+     "vulnerability management",
+     8
+    ],
+    [
+     "Vulnerability management",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "xa hoa lac - ha noi",
+   "postings": 23,
+   "code_before": null,
+   "spellings": [
+    [
+     "Xã Hòa Lạc - Hà Nội",
+     23
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "an ninh mang",
+   "postings": 22,
+   "code_before": "cybersecurity",
+   "spellings": [
+    [
+     "an ninh mạng",
+     15
+    ],
+    [
+     "An Ninh Mạng",
+     6
+    ],
+    [
+     "An ninh mạng",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "can",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "CAN",
+     22
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "cau truc du lieu va giai thuat",
+   "postings": 22,
+   "code_before": "dsa",
+   "spellings": [
+    [
+     "cấu trúc dữ liệu và giải thuật",
+     20
+    ],
+    [
+     "Cấu trúc dữ liệu và Giải thuật",
+     1
+    ],
+    [
+     "Cấu trúc dữ liệu và giải thuật",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data pipelines",
+   "postings": 22,
+   "code_before": "etl",
+   "spellings": [
+    [
+     "data pipelines",
+     21
+    ],
+    [
+     "Data pipelines",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "endpoint security",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Endpoint Security",
+     15
+    ],
+    [
+     "endpoint security",
+     6
+    ],
+    [
+     "Endpoint security",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "infrastructure as code (iac)",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Infrastructure as Code (IaC)",
+     22
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "integration",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Integration",
+     12
+    ],
+    [
+     "integration",
+     10
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "llms",
+   "postings": 22,
+   "code_before": "llm",
+   "spellings": [
+    [
+     "LLMs",
+     22
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "may chu",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "máy chủ",
+     22
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nat",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "NAT",
+     22
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "nist",
+   "postings": 22,
+   "code_before": "iso27001",
+   "spellings": [
+    [
+     "NIST",
+     22
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "performance optimization",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "performance optimization",
+     18
+    ],
+    [
+     "Performance Optimization",
+     4
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phan tich log",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "phân tích log",
+     17
+    ],
+    [
+     "Phân tích log",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phan tich yeu cau nghiep vu",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "phân tích yêu cầu nghiệp vụ",
+     12
+    ],
+    [
+     "Phân tích yêu cầu nghiệp vụ",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong bach mai - ha noi",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Bạch Mai - Hà Nội",
+     22
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "process quality assurance (pqa)",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Process Quality Assurance (PQA)",
+     22
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "sast",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "SAST",
+     22
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "soc",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "SOC",
+     19
+    ],
+    [
+     "SoC",
+     3
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "splunk",
+   "postings": 22,
+   "code_before": "siem",
+   "spellings": [
+    [
+     "Splunk",
+     22
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "spring mvc",
+   "postings": 22,
+   "code_before": "spring",
+   "spellings": [
+    [
+     "Spring MVC",
+     22
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tich hop api",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "tích hợp API",
+     18
+    ],
+    [
+     "Tích hợp API",
+     3
+    ],
+    [
+     "Tích Hợp Api",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "tls",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "TLS",
+     22
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv"
+   ]
+  },
+  {
+   "key": "viec lam game designer tai ha noi",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Game Designer tại Hà Nội",
+     22
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "viec lam phan tich nghiep vu tai ha noi",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Phân Tích Nghiệp Vụ tại Hà Nội",
+     22
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "virtualization",
+   "postings": 22,
+   "code_before": "virtualization",
+   "spellings": [
+    [
+     "Virtualization",
+     12
+    ],
+    [
+     "virtualization",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "xa hoai duc - ha noi",
+   "postings": 22,
+   "code_before": null,
+   "spellings": [
+    [
+     "Xã Hoài Đức - Hà Nội",
+     22
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "access control",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "access control",
+     14
+    ],
+    [
+     "Access Control",
+     6
+    ],
+    [
+     "Access control",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "application security",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Application Security",
+     15
+    ],
+    [
+     "application security",
+     5
+    ],
+    [
+     "Application security",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "bac giang",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Bắc Giang",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "bac ninh",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Bắc Ninh",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "bitbucket",
+   "postings": 21,
+   "code_before": "git",
+   "spellings": [
+    [
+     "Bitbucket",
+     18
+    ],
+    [
+     "bitbucket",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "business intelligence",
+   "postings": 21,
+   "code_before": "business_intelligence",
+   "spellings": [
+    [
+     "Business Intelligence",
+     20
+    ],
+    [
+     "Business intelligence",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "change management",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Change Management",
+     12
+    ],
+    [
+     "change management",
+     8
+    ],
+    [
+     "Change management",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "cong cu ai",
+   "postings": 21,
+   "code_before": "ai_tools",
+   "spellings": [
+    [
+     "công cụ AI",
+     21
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "core banking",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Core Banking",
+     14
+    ],
+    [
+     "Core banking",
+     4
+    ],
+    [
+     "core banking",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dast",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "DAST",
+     21
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "design systems",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Design Systems",
+     16
+    ],
+    [
+     "design systems",
+     5
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "google sheets",
+   "postings": 21,
+   "code_before": "ms_office",
+   "spellings": [
+    [
+     "Google Sheets",
+     21
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "hadoop",
+   "postings": 21,
+   "code_before": "hadoop",
+   "spellings": [
+    [
+     "Hadoop",
+     21
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "he dieu hanh",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "hệ điều hành",
+     18
+    ],
+    [
+     "Hệ điều hành",
+     3
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "illustrator",
+   "postings": 21,
+   "code_before": "photoshop",
+   "spellings": [
+    [
+     "Illustrator",
+     17
+    ],
+    [
+     "illustrator",
+     4
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "iot",
+   "postings": 21,
+   "code_before": "iot",
+   "spellings": [
+    [
+     "IoT",
+     20
+    ],
+    [
+     "IOT",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "kien truc he thong",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "kiến trúc hệ thống",
+     17
+    ],
+    [
+     "Kiến trúc hệ thống",
+     4
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "mcp",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "MCP",
+     21
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mentoring",
+   "postings": 21,
+   "code_before": "leadership",
+   "spellings": [
+    [
+     "mentoring",
+     19
+    ],
+    [
+     "Mentoring",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "microsoft sql server",
+   "postings": 21,
+   "code_before": "sql_server",
+   "spellings": [
+    [
+     "Microsoft SQL Server",
+     20
+    ],
+    [
+     "Microsoft Sql Server",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mitre att&ck",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "MITRE ATT&CK",
+     21
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "phuong duc nhuan - ho chi minh",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Đức Nhuận - Hồ Chí Minh",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong go vap - ho chi minh",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Gò Vấp - Hồ Chí Minh",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong nhieu loc - ho chi minh",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Nhiêu Lộc - Hồ Chí Minh",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tan son nhi - ho chi minh",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tân Sơn Nhì - Hồ Chí Minh",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tay mo - ha noi",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tây Mỗ - Hà Nội",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "redux",
+   "postings": 21,
+   "code_before": "redux",
+   "spellings": [
+    [
+     "Redux",
+     20
+    ],
+    [
+     "redux",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "regression",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Regression",
+     15
+    ],
+    [
+     "regression",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "topdev"
+   ]
+  },
+  {
+   "key": "responsive design",
+   "postings": 21,
+   "code_before": "responsive",
+   "spellings": [
+    [
+     "responsive design",
+     14
+    ],
+    [
+     "Responsive Design",
+     6
+    ],
+    [
+     "Responsive design",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "sql co ban",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "SQL cơ bản",
+     20
+    ],
+    [
+     "SQL Cơ bản",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "topcv"
+   ]
+  },
+  {
+   "key": "ssl/tls",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "SSL/TLS",
+     21
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "tu dong hoa",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "tự động hóa",
+     15
+    ],
+    [
+     "Tự Động Hóa",
+     4
+    ],
+    [
+     "tự động hoá",
+     1
+    ],
+    [
+     "Tự động hóa",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "unit tests",
+   "postings": 21,
+   "code_before": "unit_testing",
+   "spellings": [
+    [
+     "unit tests",
+     16
+    ],
+    [
+     "Unit Tests",
+     4
+    ],
+    [
+     "Unit tests",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "viec lam fullstack developer tai ha noi",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm Fullstack Developer tại Hà Nội",
+     18
+    ],
+    [
+     "Việc làm FullStack Developer tại Hà Nội",
+     2
+    ],
+    [
+     "Việc làm FULLSTACK DEVELOPER tại Hà Nội",
+     1
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "wan",
+   "postings": 21,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "WAN",
+     21
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "webhook",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "webhook",
+     11
+    ],
+    [
+     "Webhook",
+     10
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "xa son dong - ha noi",
+   "postings": 21,
+   "code_before": null,
+   "spellings": [
+    [
+     "Xã Sơn Đồng - Hà Nội",
+     21
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "ajax",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "AJAX",
+     13
+    ],
+    [
+     "Ajax",
+     7
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "bi",
+   "postings": 20,
+   "code_before": "business_intelligence",
+   "spellings": [
+    [
+     "BI",
+     20
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "c#/.net",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "C#/.NET",
+     20
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "cassandra",
+   "postings": 20,
+   "code_before": "cassandra",
+   "spellings": [
+    [
+     "Cassandra",
+     20
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "momo",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "computer science",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Computer Science",
+     20
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "data visualization",
+   "postings": 20,
+   "code_before": "data_analysis",
+   "spellings": [
+    [
+     "data visualization",
+     11
+    ],
+    [
+     "Data Visualization",
+     8
+    ],
+    [
+     "Data visualization",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "datadog",
+   "postings": 20,
+   "code_before": "observability",
+   "spellings": [
+    [
+     "Datadog",
+     19
+    ],
+    [
+     "DataDog",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "dependency injection",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Dependency Injection",
+     13
+    ],
+    [
+     "dependency injection",
+     6
+    ],
+    [
+     "Dependency injection",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "documentation",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "documentation",
+     15
+    ],
+    [
+     "Documentation",
+     5
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "elk stack",
+   "postings": 20,
+   "code_before": "elk",
+   "spellings": [
+    [
+     "ELK Stack",
+     13
+    ],
+    [
+     "ELK stack",
+     7
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "enterprise architecture",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Enterprise Architecture",
+     14
+    ],
+    [
+     "enterprise architecture",
+     6
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "gitlab ci/cd",
+   "postings": 20,
+   "code_before": "gitlab_ci",
+   "spellings": [
+    [
+     "GitLab CI/CD",
+     20
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv"
+   ]
+  },
+  {
+   "key": "ibm rational functional tester",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "IBM Rational Functional Tester",
+     20
+    ]
+   ],
+   "sources": [
+    "itnavi"
+   ]
+  },
+  {
+   "key": "it operations",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "IT Operations",
+     15
+    ],
+    [
+     "It Operations",
+     4
+    ],
+    [
+     "IT operations",
+     1
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "japanese",
+   "postings": 20,
+   "code_before": "japanese",
+   "spellings": [
+    [
+     "Japanese",
+     20
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "topdev",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "lan/wan",
+   "postings": 20,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "LAN/WAN",
+     20
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "logical thinking",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "logical thinking",
+     14
+    ],
+    [
+     "Logical thinking",
+     3
+    ],
+    [
+     "Logical Thinking",
+     3
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "loki",
+   "postings": 20,
+   "code_before": "elk",
+   "spellings": [
+    [
+     "Loki",
+     20
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "macos",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "macOS",
+     14
+    ],
+    [
+     "MacOS",
+     6
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "mang may tinh",
+   "postings": 20,
+   "code_before": "networking",
+   "spellings": [
+    [
+     "mạng máy tính",
+     18
+    ],
+    [
+     "Mạng Máy Tính",
+     1
+    ],
+    [
+     "Mạng máy tính",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "memory management",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "memory management",
+     15
+    ],
+    [
+     "Memory Management",
+     5
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "zalo"
+   ]
+  },
+  {
+   "key": "middleware",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Middleware",
+     10
+    ],
+    [
+     "middleware",
+     10
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "numpy",
+   "postings": 20,
+   "code_before": "pandas",
+   "spellings": [
+    [
+     "NumPy",
+     13
+    ],
+    [
+     "numpy",
+     5
+    ],
+    [
+     "Numpy",
+     2
+    ]
+   ],
+   "sources": [
+    "itviec",
+    "momo",
+    "topcv",
+    "topdev",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "opencv",
+   "postings": 20,
+   "code_before": "computer_vision",
+   "spellings": [
+    [
+     "OpenCV",
+     19
+    ],
+    [
+     "openCV",
+     1
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "openstack",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "OpenStack",
+     12
+    ],
+    [
+     "Openstack",
+     8
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itviec",
+    "momo",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "phuong hanh thong - ho chi minh",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hạnh Thông - Hồ Chí Minh",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong hoang liet - ha noi",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Hoàng Liệt - Hà Nội",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong khanh hoi - ho chi minh",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Khánh Hội - Hồ Chí Minh",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong long bien - ha noi",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Long Biên - Hà Nội",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong thu duc - ho chi minh",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Thủ Đức - Hồ Chí Minh",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "phuong tuong mai - ha noi",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Phường Tương Mai - Hà Nội",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "pl/sql",
+   "postings": 20,
+   "code_before": "sql",
+   "spellings": [
+    [
+     "PL/SQL",
+     20
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "qa engineer",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "QA Engineer",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "rtos",
+   "postings": 20,
+   "code_before": "rtos",
+   "spellings": [
+    [
+     "RTOS",
+     20
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "sales it phan mem",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Sales IT Phần mềm",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "technical documentation",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "technical documentation",
+     16
+    ],
+    [
+     "Technical Documentation",
+     3
+    ],
+    [
+     "Technical documentation",
+     1
+    ]
+   ],
+   "sources": [
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "thiet ke he thong",
+   "postings": 20,
+   "code_before": "system_design",
+   "spellings": [
+    [
+     "thiết kế hệ thống",
+     16
+    ],
+    [
+     "Thiết Kế Hệ Thống",
+     2
+    ],
+    [
+     "Thiết kế hệ thống",
+     2
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks"
+   ]
+  },
+  {
+   "key": "ux/ui",
+   "postings": 20,
+   "code_before": "ui_design",
+   "spellings": [
+    [
+     "UX/UI",
+     20
+    ]
+   ],
+   "sources": [
+    "careerlink",
+    "itnavi",
+    "itviec",
+    "topcv",
+    "vietnamworks",
+    "zalo"
+   ]
+  },
+  {
+   "key": "viec lam ai engineer tai ha noi",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Việc làm AI Engineer tại Hà Nội",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  },
+  {
+   "key": "xa thach that - ha noi",
+   "postings": 20,
+   "code_before": null,
+   "spellings": [
+    [
+     "Xã Thạch Thất - Hà Nội",
+     20
+    ]
+   ],
+   "sources": [
+    "topcv"
+   ]
+  }
+ ]
+}

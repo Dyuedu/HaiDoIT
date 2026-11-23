@@ -62,3 +62,9 @@ Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (
 Lý do: #330 thêm thanh vào danh sách người mới, lollipop vào danh sách kỹ năng theo vai trò, bảng số cho cả hai và biểu đồ cơ cấu cấp bậc (`web/lib/newcomer-roles-view.ts`, `skill-roles-view.ts`, `market-overview-view.ts`, các component trong `web/app/components/insights/`). Chữ, số, thứ tự và luật ẩn số không đổi. Bộ quét DEC-6 trong `web/tests/fr37-newcomer-list.test.tsx` miễn thêm `table` (bảng số là ô số theo thiết kế).
 
 - RED và GREEN: `specs/330-bieu-do-nguoi-moi-ky-nang/tdd.md` (`npx vitest run` → 373 passed).
+
+## Đợt #278 (2026-11-23): từ vựng lớn lên, AC của issue này không đổi
+
+Lý do: #278 thêm 40 mã vào từ vựng nên `GET /api/v1/skills` trả 265 mã và `vocab_version` `seed-2026-11-23`; fixture `web/tests/fixtures/skills.json` (đã nêu ở `plan.md` của issue này) được sinh lại từ chính response, hình dạng không đổi. Ô tìm kiếm song ngữ thấy thêm mã mới (ví dụ "Cơ sở dữ liệu" ra `databases`); `npx vitest run` → 385 passed, `test_ad17_fixture_web_khop_response_skills` xanh sau khi sinh lại.
+
+RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.

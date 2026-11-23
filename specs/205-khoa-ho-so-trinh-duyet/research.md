@@ -29,3 +29,7 @@ Hải Đồ chỉ cần ba khóa và một hàm xóa theo tiền tố. Thêm zus
 ## Vì sao mã là snake_case
 
 Mã đi thẳng vào `?have=a,b,c` của link chia sẻ (FR-15) và của AD-22. Chữ thường, số và gạch dưới không cần mã hóa URL và không chứa dấu phẩy. Mã vai trò trong `config/rules.toml` cũng là snake_case, nên một quy ước dùng cho cả hai. Ký hiệu như C++, C#, .NET đổi thành `cpp`, `csharp`, `dotnet`; tên hiển thị giữ ký hiệu.
+
+## Ghi chú 2026-11-23 (#278)
+
+Từ #278 từ vựng có thêm các khóa `ai` (mã `artificial_intelligence`), `cloud` (`cloud_computing`), `api` (`api`) và `database` (`databases`) chỉ để tra thẻ của site, không quét trong JD (nằm trong `scan_skip`). `it support` (từng nằm trong danh sách "không đặt tên vai trò làm bí danh") nay là bí danh chỉ-tra-thẻ của `helpdesk`, cũng trong `scan_skip`, nên không khớp tên vai trò trong văn bản JD. Chi tiết: `specs/278-ma-ky-nang-thuong-gap/`.

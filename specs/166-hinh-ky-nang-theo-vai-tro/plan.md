@@ -69,3 +69,7 @@ tests/steps/test_gh284_aggregate_vai_tro_moi.py            (create_app đòi th�
 ```
 
 **Structure Decision**: Cùng khuôn với `newcomer_roles` (#144) và `learning_path` (#212): một phép trong `MarketReadModel`, một mục `SOURCE_ENV`, một route, một mục fixture; không cơ chế song song.
+
+## Ghi chú 2026-11-23 (#278)
+
+`haido_core/vocab/skills.py` (liệt kê ở trên với `find_seed_skill`) đổi ở #278: thêm `ExcludedSkill`, `ExclusionList`, `parse_exclusions`, `load_exclusions`, và `load_vocabulary` từ chối mã ghép có phần không nằm trong cụm. `find_seed_skill` không đổi. Từ vựng lớn lên 265 mã nên `web/tests/fixtures/skills.json` được sinh lại. Chi tiết: `specs/278-ma-ky-nang-thuong-gap/`.

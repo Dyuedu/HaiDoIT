@@ -2,6 +2,7 @@
 
 import re
 
+from haido_core.domain.posting_text import fold
 from haido_core.vocab.skills import (
     MAX_PROFILE_SKILLS,
     MAX_SKILL_CODE_LEN,
@@ -9,6 +10,7 @@ from haido_core.vocab.skills import (
     VOCAB_VERSION,
     is_skill_code,
     load_seed_skills,
+    load_vocabulary,
     normalize_term,
 )
 
@@ -64,11 +66,25 @@ def test_fr13_tim_hoc_may_ra_machine_learning() -> None:
 
 
 def test_fr13_khong_co_ten_vai_tro_trong_danh_sach() -> None:
-    roles = {"tester", "it support", "fullstack", "data engineer", "công nghệ thông tin"}
+    # Quy tắc: tên vai trò không được là tên hay bí danh của kỹ năng nào, trừ `it support` (#278): đó là bí danh tra
+    # thẻ của `helpdesk` và nằm trong `scan_skip`, nên không bao giờ khớp tên vai trò trong văn bản JD
+    # (xem test_fr13_ten_vai_tro_duoc_giu_lam_bi_danh_phai_nam_trong_scan_skip).
+    roles = {"tester", "fullstack", "data engineer", "công nghệ thông tin"}
     terms = {
         normalize_term(t) for s in load_seed_skills() for t in (s.name_en, s.name_vi, *s.aliases)
     }
     assert not {normalize_term(r) for r in roles} & terms
+
+
+def test_fr13_ten_vai_tro_duoc_giu_lam_bi_danh_phai_nam_trong_scan_skip() -> None:
+    kept = {"it support"}
+    vocab = load_vocabulary()
+    assert kept <= set(vocab.lookup)  # còn là bí danh để tra thẻ
+    assert not kept & set(vocab.scan_terms)  # nhưng không được quét trong JD
+    terms = {fold(t) for s in load_seed_skills() for t in (s.name_en, s.name_vi, *s.aliases)}
+    for role in ("tester", "fullstack", "data engineer", "công nghệ thông tin", "it support"):
+        if fold(role) in terms:
+            assert fold(role) in kept, role
 
 
 def test_fr13_chuan_hoa_tu_tim() -> None:

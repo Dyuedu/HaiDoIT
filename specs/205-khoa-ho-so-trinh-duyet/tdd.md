@@ -139,3 +139,11 @@ Giá trị θ không đổi nên số, nhóm và hành vi của issue này khôn
 Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
 
 - RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #278 (2026-11-23): danh sách mồi lớn lên 265 mã, AC của issue này không đổi
+
+Lý do: #278 thêm 40 mã vào `haido_core/vocab/skills_seed.json` (225 → 265, `version` `seed-2026-11-23`) và thêm bộ nạp danh sách loại trừ vào `haido_core/vocab/skills.py`, hai file mà issue này từng đụng. 225 mã cũ còn nguyên; định dạng mã, tên song ngữ, "học máy" → `machine_learning`, "C#" → `csharp`, "ReactJS" → `react` không đổi.
+
+Một test đổi: `tests/core/test_fr13_skill_seed.py::test_fr13_khong_co_ten_vai_tro_trong_danh_sach` không còn cấm `it support` làm bí danh. Quy tắc thật (đợt review 2026-11-23): `it support` là bí danh **chỉ để tra thẻ** của `helpdesk` (thẻ "IT Support", 41 tin) và nằm trong `scan_skip`, nên không bao giờ khớp tên vai trò trong văn bản JD. Các tên `tester`, `fullstack`, `data engineer`, `công nghệ thông tin` vẫn bị cấm hoàn toàn; test mới `test_fr13_ten_vai_tro_duoc_giu_lam_bi_danh_phai_nam_trong_scan_skip` đòi mọi tên vai trò còn là bí danh phải nằm trong `scan_skip`. (Bản đầu của đợt này và comment trong test nói người dùng đã duyệt việc bỏ `it support` khỏi danh sách cấm; điều đó không đúng.)
+
+RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.

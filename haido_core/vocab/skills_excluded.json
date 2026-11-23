@@ -1,0 +1,955 @@
+{
+  "version": "excluded-2026-11-23",
+  "snapshot": "2026-11-20",
+  "note": "Thẻ có từ 20 tin trở lên ở snapshot 2026-11-20 mà cố ý không gán mã kỹ năng (#278). Mỗi dòng có lý do và số tin làm bằng chứng.",
+  "entries": [
+    {
+      "key": "cong nghe thong tin",
+      "spelling": "Công nghệ Thông tin",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 2037
+    },
+    {
+      "key": "viec lam it",
+      "spelling": "Việc làm IT",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 2003
+    },
+    {
+      "key": "ha noi",
+      "spelling": "Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 1426
+    },
+    {
+      "key": "ba ria-vung tau",
+      "spelling": "Bà Rịa-Vũng Tàu",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 519
+    },
+    {
+      "key": "binh duong",
+      "spelling": "Bình Dương",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 519
+    },
+    {
+      "key": "ho chi minh",
+      "spelling": "Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 519
+    },
+    {
+      "key": "it infrastructure and operations",
+      "spelling": "IT Infrastructure and Operations",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 365
+    },
+    {
+      "key": "software engineering",
+      "spelling": "Software Engineering",
+      "reason": "lĩnh vực, không phải một kỹ năng",
+      "postings": 359
+    },
+    {
+      "key": "phuong cau giay - ha noi",
+      "spelling": "Phường Cầu Giấy - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 290
+    },
+    {
+      "key": "phuong thanh xuan - ha noi",
+      "spelling": "Phường Thanh Xuân - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 184
+    },
+    {
+      "key": "phuong tu liem - ha noi",
+      "spelling": "Phường Từ Liêm - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 183
+    },
+    {
+      "key": "cong nghe thong tin khac",
+      "spelling": "Công nghệ thông tin khác",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 151
+    },
+    {
+      "key": "business analyst (phan tich nghiep vu)",
+      "spelling": "Business Analyst (Phân tích nghiệp vụ)",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 146
+    },
+    {
+      "key": "phuong yen hoa - ha noi",
+      "spelling": "Phường Yên Hòa - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 146
+    },
+    {
+      "key": "thiet ke",
+      "spelling": "Thiết kế",
+      "reason": "quá chung (thiết kế gì?)",
+      "postings": 122
+    },
+    {
+      "key": "product owner/product manager",
+      "spelling": "Product Owner/Product Manager",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 117
+    },
+    {
+      "key": "software engineer",
+      "spelling": "Software Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 111
+    },
+    {
+      "key": "chuyen mon cong nghe thong tin khac",
+      "spelling": "Chuyên môn Công nghệ thông tin khác",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 108
+    },
+    {
+      "key": "phuong dong da - ha noi",
+      "spelling": "Phường Đống Đa - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 97
+    },
+    {
+      "key": "backend developer",
+      "spelling": "Backend Developer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 96
+    },
+    {
+      "key": "phuong hai ba trung - ha noi",
+      "spelling": "Phường Hai Bà Trưng - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 85
+    },
+    {
+      "key": "phuong nghia do - ha noi",
+      "spelling": "Phường Nghĩa Đô - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 85
+    },
+    {
+      "key": "dien/dien tu/vien thong",
+      "spelling": "Điện/Điện tử/Viễn thông",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 84
+    },
+    {
+      "key": "it helpdesk/it support",
+      "spelling": "IT Helpdesk/IT support",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 83
+    },
+    {
+      "key": "fullstack developer",
+      "spelling": "Fullstack Developer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 81
+    },
+    {
+      "key": "it management/specialist",
+      "spelling": "IT Management/Specialist",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 80
+    },
+    {
+      "key": "data engineer",
+      "spelling": "Data Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 78
+    },
+    {
+      "key": "it project manager",
+      "spelling": "IT Project Manager",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 78
+    },
+    {
+      "key": "software tester (automation & manual)",
+      "spelling": "Software Tester (Automation & Manual)",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 77
+    },
+    {
+      "key": "marketing/pr/quang cao",
+      "spelling": "Marketing/PR/Quảng cáo",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 76
+    },
+    {
+      "key": "ai engineer",
+      "spelling": "AI Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 74
+    },
+    {
+      "key": "devops engineer",
+      "spelling": "DevOps Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 74
+    },
+    {
+      "key": "da nang",
+      "spelling": "Đà Nẵng",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 71
+    },
+    {
+      "key": "quang nam",
+      "spelling": "Quảng Nam",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 71
+    },
+    {
+      "key": "viec lam business analyst tai ha noi",
+      "spelling": "Việc làm Business Analyst tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 69
+    },
+    {
+      "key": "thiet ke do hoa/giao dien/trai nghiem",
+      "spelling": "Thiết kế Đồ hoạ/Giao diện/Trải nghiệm",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 68
+    },
+    {
+      "key": "phuong cua nam - ha noi",
+      "spelling": "Phường Cửa Nam - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 66
+    },
+    {
+      "key": "phuong dai mo - ha noi",
+      "spelling": "Phường Đại Mỗ - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 62
+    },
+    {
+      "key": "phuong ha dong - ha noi",
+      "spelling": "Phường Hà Đông - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 62
+    },
+    {
+      "key": "system engineer",
+      "spelling": "System Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 59
+    },
+    {
+      "key": "data analyst",
+      "spelling": "Data Analyst",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 57
+    },
+    {
+      "key": "automation",
+      "spelling": "Automation",
+      "reason": "quá chung (kiểm thử tự động hay tự động hóa quy trình?)",
+      "postings": 55
+    },
+    {
+      "key": "tester",
+      "spelling": "Tester",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 55
+    },
+    {
+      "key": "embedded javascript (ejs)",
+      "spelling": "Embedded JavaScript (EJS)",
+      "reason": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác",
+      "postings": 52
+    },
+    {
+      "key": "phuong an khanh - ho chi minh",
+      "spelling": "Phường An Khánh - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 52
+    },
+    {
+      "key": "phuong hoan kiem - ha noi",
+      "spelling": "Phường Hoàn Kiếm - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 51
+    },
+    {
+      "key": "viec lam product owner tai ha noi",
+      "spelling": "Việc làm Product Owner tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 51
+    },
+    {
+      "key": "phuong lang - ha noi",
+      "spelling": "Phường Láng - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 50
+    },
+    {
+      "key": "phuong sai gon - ho chi minh",
+      "spelling": "Phường Sài Gòn - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 49
+    },
+    {
+      "key": "network engineer",
+      "spelling": "Network Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 48
+    },
+    {
+      "key": "nghe thuat/hoat hinh/game",
+      "spelling": "Nghệ thuật/Hoạt hình/Game",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 48
+    },
+    {
+      "key": "manual tester",
+      "spelling": "Manual Tester",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 45
+    },
+    {
+      "key": "viec lam truong nhom tai ha noi",
+      "spelling": "Việc làm Trưởng Nhóm tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 45
+    },
+    {
+      "key": "phuong tan thuan - ho chi minh",
+      "spelling": "Phường Tân Thuận - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 44
+    },
+    {
+      "key": "phuong vinh tuy - ha noi",
+      "spelling": "Phường Vĩnh Tuy - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 44
+    },
+    {
+      "key": "iot/embedded engineer",
+      "spelling": "IoT/Embedded Engineer",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 43
+    },
+    {
+      "key": "phuong tay ho - ha noi",
+      "spelling": "Phường Tây Hồ - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 43
+    },
+    {
+      "key": "phuong trung my tay - ho chi minh",
+      "spelling": "Phường Trung Mỹ Tây - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 43
+    },
+    {
+      "key": "system administrator",
+      "spelling": "System Administrator",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 43
+    },
+    {
+      "key": "azure sql data warehouse",
+      "spelling": "Azure SQL Data Warehouse",
+      "reason": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác",
+      "postings": 42
+    },
+    {
+      "key": "phuong giang vo - ha noi",
+      "spelling": "Phường Giảng Võ - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 42
+    },
+    {
+      "key": "phuong xuan dinh - ha noi",
+      "spelling": "Phường Xuân Đỉnh - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 42
+    },
+    {
+      "key": "dien tu/phan cung",
+      "spelling": "Điện tử/Phần cứng",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 40
+    },
+    {
+      "key": "lap trinh",
+      "spelling": "lập trình",
+      "reason": "quá chung",
+      "postings": 40
+    },
+    {
+      "key": "phuong phu nhuan - ho chi minh",
+      "spelling": "Phường Phú Nhuận - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 40
+    },
+    {
+      "key": "phuong xuan hoa - ho chi minh",
+      "spelling": "Phường Xuân Hòa - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 40
+    },
+    {
+      "key": "technical leader",
+      "spelling": "Technical Leader",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 40
+    },
+    {
+      "key": "testing",
+      "spelling": "testing",
+      "reason": "quá chung; kiểm thử cụ thể đã có mã",
+      "postings": 40
+    },
+    {
+      "key": "phuong tan son hoa - ho chi minh",
+      "spelling": "Phường Tân Sơn Hòa - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 39
+    },
+    {
+      "key": "phuong ba dinh - ha noi",
+      "spelling": "Phường Ba Đình - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 38
+    },
+    {
+      "key": "phuong o cho dua - ha noi",
+      "spelling": "Phường Ô Chợ Dừa - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 38
+    },
+    {
+      "key": "product owner",
+      "spelling": "Product Owner",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 37
+    },
+    {
+      "key": "business analyst",
+      "spelling": "Business Analyst",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 36
+    },
+    {
+      "key": "it consultant",
+      "spelling": "IT Consultant",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 36
+    },
+    {
+      "key": "phuong tan binh - ho chi minh",
+      "spelling": "Phường Tân Bình - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 36
+    },
+    {
+      "key": "backend",
+      "spelling": "Backend",
+      "reason": "mảng việc, trùng với vai trò Backend",
+      "postings": 35
+    },
+    {
+      "key": "chuyen vien cyber security",
+      "spelling": "Chuyên viên Cyber Security",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 34
+    },
+    {
+      "key": "phuong dinh cong - ha noi",
+      "spelling": "Phường Định Công - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 34
+    },
+    {
+      "key": "storage",
+      "spelling": "Storage",
+      "reason": "quá chung",
+      "postings": 34
+    },
+    {
+      "key": "embedded engineer/lap trinh nhung",
+      "spelling": "Embedded Engineer/Lập trình nhúng",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 33
+    },
+    {
+      "key": "phuong kim lien - ha noi",
+      "spelling": "Phường Kim Liên - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 33
+    },
+    {
+      "key": "phuong ngoc ha - ha noi",
+      "spelling": "Phường Ngọc Hà - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 33
+    },
+    {
+      "key": "phuong phu dien - ha noi",
+      "spelling": "Phường Phú Diễn - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 33
+    },
+    {
+      "key": "server",
+      "spelling": "Server",
+      "reason": "quá chung",
+      "postings": 33
+    },
+    {
+      "key": "software development",
+      "spelling": "software development",
+      "reason": "quá chung",
+      "postings": 33
+    },
+    {
+      "key": "viec lam devops engineer tai ha noi",
+      "spelling": "Việc làm DevOps Engineer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 32
+    },
+    {
+      "key": "viec lam project manager tai ha noi",
+      "spelling": "Việc làm Project Manager tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 32
+    },
+    {
+      "key": "phuong hiep binh - ho chi minh",
+      "spelling": "Phường Hiệp Bình - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 31
+    },
+    {
+      "key": "phuong tan my - ho chi minh",
+      "spelling": "Phường Tân Mỹ - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 31
+    },
+    {
+      "key": "kinh doanh/ban hang",
+      "spelling": "Kinh doanh/Bán hàng",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 30
+    },
+    {
+      "key": "phuong hai chau - da nang",
+      "spelling": "Phường Hải Châu - Đà Nẵng",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 30
+    },
+    {
+      "key": "phuong phuong liet - ha noi",
+      "spelling": "Phường Phương Liệt - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 30
+    },
+    {
+      "key": "phuong tang nhon phu - ho chi minh",
+      "spelling": "Phường Tăng Nhơn Phú - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 30
+    },
+    {
+      "key": "biopython",
+      "spelling": "Biopython",
+      "reason": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác",
+      "postings": 29
+    },
+    {
+      "key": "game developer",
+      "spelling": "Game Developer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 29
+    },
+    {
+      "key": "phat trien phan mem",
+      "spelling": "phát triển phần mềm",
+      "reason": "quá chung",
+      "postings": 29
+    },
+    {
+      "key": "phuong bay hien - ho chi minh",
+      "spelling": "Phường Bảy Hiền - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 29
+    },
+    {
+      "key": "phuong hoang mai - ha noi",
+      "spelling": "Phường Hoàng Mai - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 29
+    },
+    {
+      "key": "phuong khuong dinh - ha noi",
+      "spelling": "Phường Khương Đình - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 29
+    },
+    {
+      "key": "phuong xom chieu - ho chi minh",
+      "spelling": "Phường Xóm Chiếu - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 29
+    },
+    {
+      "key": "fullstack",
+      "spelling": "Fullstack",
+      "reason": "mảng việc, trùng với vai trò Fullstack",
+      "postings": 28
+    },
+    {
+      "key": "mobile developer",
+      "spelling": "Mobile Developer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 28
+    },
+    {
+      "key": "phuong ban co - ho chi minh",
+      "spelling": "Phường Bàn Cờ - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 28
+    },
+    {
+      "key": "phuong dong ngac - ha noi",
+      "spelling": "Phường Đông Ngạc - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 28
+    },
+    {
+      "key": "phuong tan dinh - ho chi minh",
+      "spelling": "Phường Tân Định - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 28
+    },
+    {
+      "key": "phuong tan hung - ho chi minh",
+      "spelling": "Phường Tân Hưng - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 27
+    },
+    {
+      "key": "transaction",
+      "spelling": "transaction",
+      "reason": "quá chung",
+      "postings": 27
+    },
+    {
+      "key": "viec lam data engineer tai ha noi",
+      "spelling": "Việc làm Data Engineer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 27
+    },
+    {
+      "key": "ky thuat it",
+      "spelling": "Kỹ thuật IT",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 26
+    },
+    {
+      "key": "exception handling",
+      "spelling": "exception handling",
+      "reason": "quá hẹp, thuộc kỹ năng lập trình cơ bản",
+      "postings": 25
+    },
+    {
+      "key": "hai duong",
+      "spelling": "Hải Dương",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 25
+    },
+    {
+      "key": "hai phong",
+      "spelling": "Hải Phòng",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 25
+    },
+    {
+      "key": "phuong cau ong lanh - ho chi minh",
+      "spelling": "Phường Cầu Ông Lãnh - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 25
+    },
+    {
+      "key": "phuong duong noi - ha noi",
+      "spelling": "Phường Dương Nội - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 25
+    },
+    {
+      "key": "phuong thanh my tay - ho chi minh",
+      "spelling": "Phường Thạnh Mỹ Tây - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 25
+    },
+    {
+      "key": "project manager",
+      "spelling": "Project Manager",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 25
+    },
+    {
+      "key": "viec lam engineer tai ha noi",
+      "spelling": "Việc làm Engineer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 25
+    },
+    {
+      "key": "dashboard",
+      "spelling": "dashboard",
+      "reason": "quá chung (công cụ BI cụ thể đã có mã)",
+      "postings": 24
+    },
+    {
+      "key": "phuong ben thanh - ho chi minh",
+      "spelling": "Phường Bến Thành - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "phuong hoa hung - ho chi minh",
+      "spelling": "Phường Hòa Hưng - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "phuong tan phu - ho chi minh",
+      "spelling": "Phường Tân Phú - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "phuong tan son nhat - ho chi minh",
+      "spelling": "Phường Tân Sơn Nhất - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "phuong xuan phuong - ha noi",
+      "spelling": "Phường Xuân Phương - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "viec lam backend developer tai ha noi",
+      "spelling": "Việc làm Backend Developer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "xa gia lam - ha noi",
+      "spelling": "Xã Gia Lâm - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 24
+    },
+    {
+      "key": "phuong binh thanh - ho chi minh",
+      "spelling": "Phường Bình Thạnh - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 23
+    },
+    {
+      "key": "phuong binh trung - ho chi minh",
+      "spelling": "Phường Bình Trưng - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 23
+    },
+    {
+      "key": "phuong gia dinh - ho chi minh",
+      "spelling": "Phường Gia Định - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 23
+    },
+    {
+      "key": "xa hoa lac - ha noi",
+      "spelling": "Xã Hòa Lạc - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 23
+    },
+    {
+      "key": "integration",
+      "spelling": "Integration",
+      "reason": "quá chung",
+      "postings": 22
+    },
+    {
+      "key": "may chu",
+      "spelling": "máy chủ",
+      "reason": "quá chung",
+      "postings": 22
+    },
+    {
+      "key": "phuong bach mai - ha noi",
+      "spelling": "Phường Bạch Mai - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 22
+    },
+    {
+      "key": "viec lam game designer tai ha noi",
+      "spelling": "Việc làm Game Designer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 22
+    },
+    {
+      "key": "viec lam phan tich nghiep vu tai ha noi",
+      "spelling": "Việc làm Phân Tích Nghiệp Vụ tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 22
+    },
+    {
+      "key": "xa hoai duc - ha noi",
+      "spelling": "Xã Hoài Đức - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 22
+    },
+    {
+      "key": "bac giang",
+      "spelling": "Bắc Giang",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "bac ninh",
+      "spelling": "Bắc Ninh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "phuong duc nhuan - ho chi minh",
+      "spelling": "Phường Đức Nhuận - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "phuong go vap - ho chi minh",
+      "spelling": "Phường Gò Vấp - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "phuong nhieu loc - ho chi minh",
+      "spelling": "Phường Nhiêu Lộc - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "phuong tan son nhi - ho chi minh",
+      "spelling": "Phường Tân Sơn Nhì - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "phuong tay mo - ha noi",
+      "spelling": "Phường Tây Mỗ - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "tu dong hoa",
+      "spelling": "tự động hóa",
+      "reason": "quá chung (kiểm thử tự động hay tự động hóa quy trình?)",
+      "postings": 21
+    },
+    {
+      "key": "viec lam fullstack developer tai ha noi",
+      "spelling": "Việc làm Fullstack Developer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "xa son dong - ha noi",
+      "spelling": "Xã Sơn Đồng - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 21
+    },
+    {
+      "key": "computer science",
+      "spelling": "Computer Science",
+      "reason": "nền tảng học vấn, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "ibm rational functional tester",
+      "spelling": "IBM Rational Functional Tester",
+      "reason": "chỉ một nguồn (ITnavi) gắn, nghi là thẻ gắn tự động; xem lại khi có nguồn khác",
+      "postings": 20
+    },
+    {
+      "key": "middleware",
+      "spelling": "Middleware",
+      "reason": "quá chung",
+      "postings": 20
+    },
+    {
+      "key": "phuong hanh thong - ho chi minh",
+      "spelling": "Phường Hạnh Thông - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "phuong hoang liet - ha noi",
+      "spelling": "Phường Hoàng Liệt - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "phuong khanh hoi - ho chi minh",
+      "spelling": "Phường Khánh Hội - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "phuong long bien - ha noi",
+      "spelling": "Phường Long Biên - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "phuong thu duc - ho chi minh",
+      "spelling": "Phường Thủ Đức - Hồ Chí Minh",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "phuong tuong mai - ha noi",
+      "spelling": "Phường Tương Mai - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "qa engineer",
+      "spelling": "QA Engineer",
+      "reason": "chức danh; thêm làm bí danh sẽ khớp tên vai trò trong JD và thổi phồng tỷ lệ",
+      "postings": 20
+    },
+    {
+      "key": "sales it phan mem",
+      "spelling": "Sales IT Phần mềm",
+      "reason": "thẻ ngành nghề hoặc danh mục của site, không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "viec lam ai engineer tai ha noi",
+      "spelling": "Việc làm AI Engineer tại Hà Nội",
+      "reason": "thẻ danh mục của TopCV (\"Việc làm … tại …\"), không phải kỹ năng",
+      "postings": 20
+    },
+    {
+      "key": "xa thach that - ha noi",
+      "spelling": "Xã Thạch Thất - Hà Nội",
+      "reason": "địa điểm, không phải kỹ năng",
+      "postings": 20
+    }
+  ]
+}

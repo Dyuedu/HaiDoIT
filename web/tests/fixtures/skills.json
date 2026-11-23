@@ -1,6 +1,6 @@
 {
   "data": {
-    "vocab_version": "seed-2026-11-13",
+    "vocab_version": "seed-2026-11-23",
     "skills": [
       {
         "code": "ab_testing",
@@ -22,7 +22,8 @@
         "name_en": "Agile",
         "name_vi": "Agile",
         "aliases": [
-          "kanban"
+          "kanban",
+          "Agile methodologies"
         ]
       },
       {
@@ -30,7 +31,9 @@
         "name_en": "AI agents",
         "name_vi": "AI agent",
         "aliases": [
-          "multi-agent"
+          "multi-agent",
+          "Agentic AI",
+          "MCP"
         ]
       },
       {
@@ -53,6 +56,17 @@
         "name_vi": "Apache Airflow",
         "aliases": [
           "airflow"
+        ]
+      },
+      {
+        "code": "analytical_thinking",
+        "name_en": "Analytical thinking",
+        "name_vi": "Tư duy phân tích",
+        "aliases": [
+          "tư duy hệ thống",
+          "analytical skills",
+          "logical thinking",
+          "tu duy logic"
         ]
       },
       {
@@ -82,6 +96,19 @@
         ]
       },
       {
+        "code": "api",
+        "name_en": "API development",
+        "name_vi": "Phát triển API",
+        "aliases": [
+          "API",
+          "APIs",
+          "API Gateway",
+          "API design",
+          "tích hợp API",
+          "webhook"
+        ]
+      },
+      {
         "code": "api_testing",
         "name_en": "API testing",
         "name_vi": "Kiểm thử API",
@@ -104,6 +131,15 @@
         "aliases": [
           "argocd",
           "gitops"
+        ]
+      },
+      {
+        "code": "artificial_intelligence",
+        "name_en": "Artificial intelligence",
+        "name_vi": "Trí tuệ nhân tạo",
+        "aliases": [
+          "AI",
+          "Artificial Intelligence (AI)"
         ]
       },
       {
@@ -169,7 +205,8 @@
           "sao luu",
           "disaster recovery",
           "restore",
-          "veeam"
+          "veeam",
+          "backup/restore"
         ]
       },
       {
@@ -181,6 +218,12 @@
           "shell scripting",
           "bash script"
         ]
+      },
+      {
+        "code": "big_data",
+        "name_en": "Big data",
+        "name_vi": "Dữ liệu lớn",
+        "aliases": []
       },
       {
         "code": "bigquery",
@@ -232,7 +275,8 @@
           "requirements gathering",
           "thu thap yeu cau",
           "khao sat yeu cau",
-          "elicitation"
+          "elicitation",
+          "phân tích yêu cầu nghiệp vụ"
         ]
       },
       {
@@ -262,6 +306,14 @@
         "aliases": []
       },
       {
+        "code": "can_bus",
+        "name_en": "CAN bus",
+        "name_vi": "CAN bus",
+        "aliases": [
+          "CAN"
+        ]
+      },
+      {
         "code": "cassandra",
         "name_en": "Cassandra",
         "name_vi": "Cassandra",
@@ -285,7 +337,9 @@
           "ci cd",
           "continuous integration",
           "continuous delivery",
-          "continuous deployment"
+          "continuous deployment",
+          "CI/CD pipelines",
+          "Azure DevOps"
         ]
       },
       {
@@ -313,6 +367,14 @@
         "aliases": []
       },
       {
+        "code": "cloud_computing",
+        "name_en": "Cloud computing",
+        "name_vi": "Điện toán đám mây",
+        "aliases": [
+          "Cloud"
+        ]
+      },
+      {
         "code": "cocos",
         "name_en": "Cocos",
         "name_vi": "Cocos",
@@ -322,12 +384,21 @@
         ]
       },
       {
+        "code": "code_review",
+        "name_en": "Code review",
+        "name_vi": "Review code",
+        "aliases": [
+          "code reviews"
+        ]
+      },
+      {
         "code": "communication",
         "name_en": "Communication",
         "name_vi": "Giao tiếp",
         "aliases": [
           "communication skills",
-          "kỹ năng giao tiếp"
+          "kỹ năng giao tiếp",
+          "Giao tiếp tốt"
         ]
       },
       {
@@ -340,6 +411,18 @@
           "image processing",
           "xu ly anh"
         ]
+      },
+      {
+        "code": "concurrency",
+        "name_en": "Concurrency",
+        "name_vi": "Lập trình đồng thời",
+        "aliases": []
+      },
+      {
+        "code": "core_banking",
+        "name_en": "Core banking",
+        "name_vi": "Core banking",
+        "aliases": []
       },
       {
         "code": "cpp",
@@ -384,7 +467,13 @@
           "bảo mật thông tin",
           "an ninh thông tin",
           "an ninh mang",
-          "cyber security"
+          "cyber security",
+          "Security",
+          "bảo mật",
+          "Cloud Security",
+          "bảo mật hệ thống",
+          "Vulnerability Management",
+          "Application Security"
         ]
       },
       {
@@ -406,7 +495,8 @@
         "aliases": [
           "data analytics",
           "data visualization",
-          "truc quan hoa du lieu"
+          "truc quan hoa du lieu",
+          "xử lý dữ liệu"
         ]
       },
       {
@@ -429,6 +519,12 @@
         ]
       },
       {
+        "code": "data_science",
+        "name_en": "Data science",
+        "name_vi": "Khoa học dữ liệu",
+        "aliases": []
+      },
+      {
         "code": "data_warehouse",
         "name_en": "Data warehouse",
         "name_vi": "Kho dữ liệu",
@@ -437,6 +533,16 @@
           "data lake",
           "lakehouse",
           "data mart"
+        ]
+      },
+      {
+        "code": "databases",
+        "name_en": "Databases",
+        "name_vi": "Cơ sở dữ liệu",
+        "aliases": [
+          "Database",
+          "relational databases",
+          "RDBMS"
         ]
       },
       {
@@ -450,6 +556,14 @@
         "name_en": "dbt",
         "name_vi": "dbt",
         "aliases": []
+      },
+      {
+        "code": "debugging",
+        "name_en": "Debugging",
+        "name_vi": "Gỡ lỗi",
+        "aliases": [
+          "debug"
+        ]
       },
       {
         "code": "deep_learning",
@@ -466,8 +580,16 @@
         "name_en": "Design patterns",
         "name_vi": "Design patterns",
         "aliases": [
-          "design pattern"
+          "design pattern",
+          "MVC",
+          "Dependency Injection"
         ]
+      },
+      {
+        "code": "devops",
+        "name_en": "DevOps",
+        "name_vi": "DevOps",
+        "aliases": []
       },
       {
         "code": "devsecops",
@@ -487,7 +609,8 @@
         "name_vi": "Docker",
         "aliases": [
           "containerization",
-          "docker compose"
+          "docker compose",
+          "Container"
         ]
       },
       {
@@ -523,7 +646,8 @@
         "name_vi": "EDR",
         "aliases": [
           "xdr",
-          "antivirus"
+          "antivirus",
+          "Endpoint Security"
         ]
       },
       {
@@ -567,7 +691,9 @@
           "english fluency",
           "toeic",
           "ielts",
-          "toefl"
+          "toefl",
+          "đọc hiểu tài liệu tiếng Anh",
+          "đọc hiểu tài liệu kỹ thuật tiếng Anh"
         ]
       },
       {
@@ -597,7 +723,8 @@
         "aliases": [
           "elt",
           "data pipeline",
-          "data pipelines"
+          "data pipelines",
+          "ETL/ELT"
         ]
       },
       {
@@ -719,6 +846,12 @@
         ]
       },
       {
+        "code": "game_development",
+        "name_en": "Game development",
+        "name_vi": "Phát triển game",
+        "aliases": []
+      },
+      {
         "code": "gcp",
         "name_en": "Google Cloud",
         "name_vi": "Google Cloud",
@@ -812,7 +945,8 @@
           "ho tro ky thuat",
           "cai dat phan mem",
           "sua chua may tinh",
-          "phan cung may tinh"
+          "phan cung may tinh",
+          "IT Support"
         ]
       },
       {
@@ -833,6 +967,14 @@
         ]
       },
       {
+        "code": "http",
+        "name_en": "HTTP",
+        "name_vi": "HTTP",
+        "aliases": [
+          "HTTP/HTTPS"
+        ]
+      },
+      {
         "code": "huggingface",
         "name_en": "Hugging Face",
         "name_vi": "Hugging Face",
@@ -847,7 +989,10 @@
         "name_vi": "Quản lý định danh và truy cập",
         "aliases": [
           "iam",
-          "pam"
+          "pam",
+          "authentication",
+          "phân quyền",
+          "access control"
         ]
       },
       {
@@ -857,6 +1002,28 @@
         "aliases": [
           "threat hunting",
           "malware analysis"
+        ]
+      },
+      {
+        "code": "independent_work",
+        "name_en": "Working independently",
+        "name_vi": "Làm việc độc lập",
+        "aliases": []
+      },
+      {
+        "code": "infrastructure_as_code",
+        "name_en": "Infrastructure as code",
+        "name_vi": "Hạ tầng dưới dạng mã (IaC)",
+        "aliases": [
+          "Infrastructure as Code (IaC)"
+        ]
+      },
+      {
+        "code": "integration_testing",
+        "name_en": "Integration testing",
+        "name_vi": "Kiểm thử tích hợp",
+        "aliases": [
+          "integration test"
         ]
       },
       {
@@ -902,7 +1069,10 @@
         "code": "itil",
         "name_en": "ITIL",
         "name_vi": "ITIL",
-        "aliases": []
+        "aliases": [
+          "Incident Management",
+          "Change Management"
+        ]
       },
       {
         "code": "japanese",
@@ -934,7 +1104,8 @@
         "aliases": [
           "js",
           "ecmascript",
-          "es6"
+          "es6",
+          "AJAX"
         ]
       },
       {
@@ -976,6 +1147,12 @@
         "code": "jquery",
         "name_en": "jQuery",
         "name_vi": "jQuery",
+        "aliases": []
+      },
+      {
+        "code": "json",
+        "name_en": "JSON",
+        "name_vi": "JSON",
         "aliases": []
       },
       {
@@ -1038,7 +1215,8 @@
           "quan ly doi",
           "quan ly nhom",
           "mentoring",
-          "coaching"
+          "coaching",
+          "Team Management"
         ]
       },
       {
@@ -1092,6 +1270,12 @@
         ]
       },
       {
+        "code": "macos",
+        "name_en": "macOS",
+        "name_vi": "macOS",
+        "aliases": []
+      },
+      {
         "code": "manual_testing",
         "name_en": "Manual testing",
         "name_vi": "Kiểm thử thủ công",
@@ -1100,6 +1284,14 @@
           "test thu cong",
           "functional testing",
           "kiem thu chuc nang"
+        ]
+      },
+      {
+        "code": "market_research",
+        "name_en": "Market research",
+        "name_vi": "Nghiên cứu thị trường",
+        "aliases": [
+          "Market Research and Analysis"
         ]
       },
       {
@@ -1123,6 +1315,20 @@
           "arduino",
           "raspberry pi",
           "8051"
+        ]
+      },
+      {
+        "code": "memory_management",
+        "name_en": "Memory management",
+        "name_vi": "Quản lý bộ nhớ",
+        "aliases": []
+      },
+      {
+        "code": "mes",
+        "name_en": "Manufacturing execution system (MES)",
+        "name_vi": "Hệ thống điều hành sản xuất (MES)",
+        "aliases": [
+          "MES"
         ]
       },
       {
@@ -1174,7 +1380,8 @@
           "powerpoint",
           "ms office",
           "google sheets",
-          "google workspace"
+          "google workspace",
+          "Word"
         ]
       },
       {
@@ -1234,7 +1441,16 @@
           "bgp",
           "ospf",
           "he thong mang",
-          "vpn"
+          "vpn",
+          "Switch",
+          "Router",
+          "Wi-Fi",
+          "VPC",
+          "WiFi",
+          "LAN",
+          "Wireshark",
+          "Ethernet",
+          "NAT"
         ]
       },
       {
@@ -1308,7 +1524,10 @@
         "aliases": [
           "opentelemetry",
           "datadog",
-          "new relic"
+          "new relic",
+          "monitoring",
+          "logging",
+          "CloudWatch"
         ]
       },
       {
@@ -1325,8 +1544,15 @@
           "oop",
           "object-oriented",
           "object oriented",
-          "huong doi tuong"
+          "huong doi tuong",
+          "lập trình hướng đối tượng (OOP)"
         ]
+      },
+      {
+        "code": "operating_systems",
+        "name_en": "Operating systems",
+        "name_vi": "Hệ điều hành",
+        "aliases": []
       },
       {
         "code": "oracle_db",
@@ -1365,6 +1591,12 @@
           "metasploit",
           "nmap"
         ]
+      },
+      {
+        "code": "performance_optimization",
+        "name_en": "Performance optimization",
+        "name_vi": "Tối ưu hiệu năng",
+        "aliases": []
       },
       {
         "code": "photoshop",
@@ -1435,14 +1667,27 @@
         "aliases": []
       },
       {
+        "code": "presentation",
+        "name_en": "Presentation",
+        "name_vi": "Thuyết trình",
+        "aliases": []
+      },
+      {
         "code": "problem_solving",
         "name_en": "Problem solving",
         "name_vi": "Giải quyết vấn đề",
         "aliases": [
           "problem-solving",
-          "tu duy logic",
           "critical thinking",
-          "tu duy phan tich"
+          "problem-solving skills"
+        ]
+      },
+      {
+        "code": "process_quality_assurance",
+        "name_en": "Process quality assurance",
+        "name_vi": "Đảm bảo chất lượng quy trình (PQA)",
+        "aliases": [
+          "Process Quality Assurance (PQA)"
         ]
       },
       {
@@ -1461,7 +1706,10 @@
         "name_vi": "Quản lý dự án",
         "aliases": [
           "pmp",
-          "prince2"
+          "prince2",
+          "IT Project Management",
+          "lập kế hoạch",
+          "MS Project"
         ]
       },
       {
@@ -1489,7 +1737,6 @@
           "uart",
           "spi",
           "i2c",
-          "can bus",
           "lin bus",
           "modbus",
           "can/lin",
@@ -1588,7 +1835,8 @@
         "name_en": "Regression testing",
         "name_vi": "Kiểm thử hồi quy",
         "aliases": [
-          "regression test"
+          "regression test",
+          "Regression"
         ]
       },
       {
@@ -1610,8 +1858,15 @@
           "rest apis",
           "web api",
           "web service",
-          "web services"
+          "web services",
+          "REST"
         ]
+      },
+      {
+        "code": "risk_management",
+        "name_en": "Risk management",
+        "name_vi": "Quản lý rủi ro",
+        "aliases": []
       },
       {
         "code": "rtos",
@@ -1658,6 +1913,15 @@
         ]
       },
       {
+        "code": "sast_dast",
+        "name_en": "SAST/DAST",
+        "name_vi": "Kiểm thử bảo mật SAST/DAST",
+        "aliases": [
+          "SAST",
+          "DAST"
+        ]
+      },
+      {
         "code": "scala",
         "name_en": "Scala",
         "name_vi": "Scala",
@@ -1674,12 +1938,24 @@
         ]
       },
       {
+        "code": "scripting",
+        "name_en": "Scripting",
+        "name_vi": "Viết script",
+        "aliases": []
+      },
+      {
         "code": "scrum",
         "name_en": "Scrum",
         "name_vi": "Scrum",
         "aliases": [
           "scrum master"
         ]
+      },
+      {
+        "code": "sdlc",
+        "name_en": "SDLC",
+        "name_vi": "Quy trình phát triển phần mềm",
+        "aliases": []
       },
       {
         "code": "sec_certs",
@@ -1725,7 +2001,9 @@
           "trung tam soc",
           "soc l1",
           "soc l2",
-          "soc/siem"
+          "soc/siem",
+          "SOC",
+          "MITRE ATT&CK"
         ]
       },
       {
@@ -1738,14 +2016,22 @@
         "code": "software_architecture",
         "name_en": "Software architecture",
         "name_vi": "Kiến trúc phần mềm",
-        "aliases": []
+        "aliases": [
+          "Software Design",
+          "event-driven architecture",
+          "System Architecture",
+          "Solution Architecture",
+          "kiến trúc hệ thống",
+          "Enterprise Architecture"
+        ]
       },
       {
         "code": "software_testing",
         "name_en": "Software testing",
         "name_vi": "Kiểm thử phần mềm",
         "aliases": [
-          "kiem thu"
+          "kiem thu",
+          "QA QC"
         ]
       },
       {
@@ -1753,7 +2039,7 @@
         "name_en": "SOLID principles",
         "name_vi": "Nguyên tắc SOLID",
         "aliases": [
-          "solid, "
+          "solid"
         ]
       },
       {
@@ -1805,7 +2091,8 @@
           "pl/sql",
           "plsql",
           "truy van sql",
-          "cau lenh sql"
+          "cau lenh sql",
+          "SQL cơ bản"
         ]
       },
       {
@@ -1815,7 +2102,8 @@
         "aliases": [
           "sql server",
           "ms sql",
-          "mssql"
+          "mssql",
+          "MS SQL Server"
         ]
       },
       {
@@ -1825,6 +2113,12 @@
         "aliases": [
           "site reliability"
         ]
+      },
+      {
+        "code": "stakeholder_management",
+        "name_en": "Stakeholder management",
+        "name_vi": "Quản lý các bên liên quan",
+        "aliases": []
       },
       {
         "code": "statistics",
@@ -1850,14 +2144,31 @@
         "aliases": []
       },
       {
+        "code": "system_administration",
+        "name_en": "System administration",
+        "name_vi": "Quản trị hệ thống",
+        "aliases": [
+          "System Admin",
+          "IT Infrastructure",
+          "IT Operations"
+        ]
+      },
+      {
         "code": "system_design",
         "name_en": "System design",
         "name_vi": "Thiết kế hệ thống",
         "aliases": [
           "distributed system",
           "distributed systems",
-          "he thong phan tan"
+          "he thong phan tan",
+          "High Availability"
         ]
+      },
+      {
+        "code": "system_integration",
+        "name_en": "System integration",
+        "name_vi": "Tích hợp hệ thống",
+        "aliases": []
       },
       {
         "code": "tableau",
@@ -1884,6 +2195,16 @@
         ]
       },
       {
+        "code": "technical_writing",
+        "name_en": "Technical writing",
+        "name_vi": "Viết tài liệu kỹ thuật",
+        "aliases": [
+          "viết tài liệu",
+          "documentation",
+          "technical documentation"
+        ]
+      },
+      {
         "code": "tensorflow",
         "name_en": "TensorFlow",
         "name_vi": "TensorFlow",
@@ -1896,7 +2217,6 @@
         "name_en": "Terraform",
         "name_vi": "Terraform",
         "aliases": [
-          "infrastructure as code",
           "iac",
           "pulumi",
           "cloudformation"
@@ -1924,6 +2244,23 @@
         "aliases": [
           "chiu ap luc",
           "work under pressure"
+        ]
+      },
+      {
+        "code": "tls",
+        "name_en": "TLS/SSL",
+        "name_vi": "TLS/SSL",
+        "aliases": [
+          "TLS",
+          "SSL/TLS"
+        ]
+      },
+      {
+        "code": "troubleshooting",
+        "name_en": "Troubleshooting",
+        "name_vi": "Xử lý sự cố",
+        "aliases": [
+          "phân tích log"
         ]
       },
       {
@@ -1957,7 +2294,10 @@
           "wireframes",
           "prototyping",
           "mockup",
-          "mockups"
+          "mockups",
+          "UI/UX Design",
+          "prototype",
+          "Design Systems"
         ]
       },
       {
@@ -1967,7 +2307,8 @@
         "aliases": [
           "unit test",
           "unit tests",
-          "tdd"
+          "tdd",
+          "JUnit"
         ]
       },
       {
@@ -2032,7 +2373,8 @@
         "name_vi": "Ảo hóa",
         "aliases": [
           "hyper-v",
-          "proxmox"
+          "proxmox",
+          "OpenStack"
         ]
       },
       {
@@ -2094,6 +2436,12 @@
         ]
       },
       {
+        "code": "windows",
+        "name_en": "Windows",
+        "name_vi": "Windows",
+        "aliases": []
+      },
+      {
         "code": "windows_server",
         "name_en": "Windows Server",
         "name_vi": "Windows Server",
@@ -2107,6 +2455,21 @@
           "office 365",
           "o365"
         ]
+      },
+      {
+        "code": "workflow_automation",
+        "name_en": "Workflow automation",
+        "name_vi": "Tự động hóa quy trình",
+        "aliases": [
+          "Power Automate",
+          "n8n"
+        ]
+      },
+      {
+        "code": "xml",
+        "name_en": "XML",
+        "name_vi": "XML",
+        "aliases": []
       },
       {
         "code": "zabbix",
