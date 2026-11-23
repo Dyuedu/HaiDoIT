@@ -1,0 +1,11 @@
+{
+  "roles": [
+    "backend", "frontend", "fullstack", "mobile", "devops", "qa", "data_engineer", "data_analyst",
+    "data_scientist", "ai_ml", "embedded", "security", "it_infra", "ba_po_pm", "ui_ux", "game"
+  ],
+  "levels": ["all", "entry", "junior", "mid", "senior"],
+  "skills": [
+    "python", "java", "javascript", "typescript", "sql", "react", "nodejs", "docker", "aws", "git",
+    "linux", "agile", "angular", "android", "ansible", "airflow", "api_testing", "automation_testing", "appium", "argocd"
+  ]
+}
