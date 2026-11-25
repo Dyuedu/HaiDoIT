@@ -11,7 +11,12 @@ from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from haido_api.schemas.learning_path import PathResource, PathSkill, PathStage, order_key
+from haido_api.schemas.learning_path import (
+    PathResource,
+    PathSkill,
+    PathStage,
+    order_key,
+)
 from haido_core.domain.envelope import Stat
 
 

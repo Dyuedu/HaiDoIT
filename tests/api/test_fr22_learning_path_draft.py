@@ -4,7 +4,6 @@ Nguồn `draft` chỉ để demo trên máy: đồ thị là `fixtures/fake_lear
 """
 
 import json
-
 from pathlib import Path
 
 import pytest
@@ -14,13 +13,13 @@ from sqlalchemy import Engine
 
 from haido_api.draft_path import DRAFT_FIXTURE, DRAFT_NOTE_CODE, DraftPathMarket
 from haido_api.fake_market import FakeMarket
-from haido_core.vocab.skills import load_seed_skills
 from haido_api.learning_path import Topic, topic_stages
 from haido_api.main import create_app
 from haido_api.routes.market import IMPLEMENTATIONS, SOURCE_ENV, load_sources
 from haido_api.stat_market import StatMarket
 from haido_core.config import load_rules
 from haido_core.vocab.prepared_text import prepared_text_problems
+from haido_core.vocab.skills import load_seed_skills
 from tests.api.test_fr19_skill_rates_stat import _cell, _snapshot
 from tests.api.test_fr23_blurbs import FREQUENCY_CLAIMS
 from tests.steps.conftest import S

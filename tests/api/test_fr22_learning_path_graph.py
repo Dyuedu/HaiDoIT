@@ -10,7 +10,13 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from haido_api.learning_path import PathGraphError, Topic, foundation_targets, stage_numbers, topic_stages
+from haido_api.learning_path import (
+    PathGraphError,
+    Topic,
+    foundation_targets,
+    stage_numbers,
+    topic_stages,
+)
 from haido_api.schemas.learning_path import LearningPathData
 
 CELL = "vn.x"

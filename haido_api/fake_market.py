@@ -27,7 +27,12 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from haido_api.learning_path import apply_have, build_stages, foundation_targets, topics_of
+from haido_api.learning_path import (
+    apply_have,
+    build_stages,
+    foundation_targets,
+    topics_of,
+)
 from haido_api.market_overview import BIG_CITIES, OverviewCounts, build_market_overview
 from haido_api.market_source import UnknownCell
 from haido_api.schemas.learning_path import (

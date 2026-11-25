@@ -63,3 +63,7 @@ Lý do: người dùng thấy màn chưa giống roadmap.sh; chọn phương án
 - `uv run pytest -q` (Postgres thật) → 1879 passed; `check_gates.py` → 10 pass, 0 skip, 0 fail.
 - Mọi kỹ năng core/common của hai ô demo có trên nháp (so với DB `haido_demo`); 75 link tài liệu đã gọi thử: hai link không trả 200 (`dev.mysql.com`, `learnenglish.britishcouncil.org`) đã thay bằng link trả 200.
 - Image thật, Chrome headless: 360 (backend, data_engineer, ngăn mở), 1024, 1280px: không cuộn ngang, không ô bấm dưới 44px, không chữ bị cắt, 360px không đường nối.
+
+## Sau khi mở PR (2026-11-25)
+
+CI đỏ ở `ruff check .` (4 lỗi I001, chưa chạy lệnh này trước khi đẩy) và GitGuardian (mật khẩu mặc định của Postgres local lặp lại trong `compose.demo.yml`). Sửa import; `compose.demo.yml` đọc mật khẩu từ `HAIDO_LOCAL_DB_PASSWORD`, không có mặc định. Không đổi hành vi.

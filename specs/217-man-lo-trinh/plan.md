@@ -49,7 +49,7 @@ tests/api/test_fr22_learning_path_draft.py             # mới (dùng lại _cel
 
 1. Postgres của compose.local, tạo database `haido_demo`, chạy `alembic upgrade head` vào đó. Database `haido` không bị đụng.
 2. Trên VPS, trong giao dịch chỉ-đọc, `COPY` `snapshots`, `stat_cells`, `stat_city_shares`, `stat_sources`, `stat_skill_rates` của các snapshot `published` hoặc `partial` cần dùng, rồi nạp bằng `psql`. Không lấy `job_*`.
-3. `docker compose -f deploy/compose.local.yml -f deploy/compose.demo.yml up -d --build --wait`
+3. Đặt `HAIDO_LOCAL_DB_PASSWORD` bằng mật khẩu Postgres của compose.local (file demo không chứa mật khẩu mặc định), rồi `docker compose -f deploy/compose.local.yml -f deploy/compose.demo.yml up -d --build --wait`
 
 `DraftPathMarket` là lớp riêng, không vào `IMPLEMENTATIONS`, để không biến môi trường nào bật được nó trên prod. Phần dựng chặng dùng chung `build_stages` với `FakeMarket`.
 
