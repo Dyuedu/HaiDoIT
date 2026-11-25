@@ -393,10 +393,11 @@ def gate_fr24_loi_dan_khong_so():
         sys.path.pop(0)
 
     blurbs = ROOT / "haido_core" / "vocab" / "blurbs"
-    # Lộ trình giả (#212) và lộ trình nháp của app demo (#217): cùng hình, cùng luật.
+    # Lộ trình giả (#212) và nội dung lộ trình thật (#216): cùng hình, cùng luật.
+    api = ROOT / "haido_api"
     fixtures = [
         f
-        for f in (ROOT / "haido_api" / "fixtures" / n for n in ("fake_learning_path.json", "draft_learning_path.json"))
+        for f in (api / "fixtures" / "fake_learning_path.json", api / "content" / "learning_path.json")
         if f.is_file()
     ]
     if not blurbs.is_dir() and not fixtures:
@@ -433,7 +434,7 @@ def gate_fr24_loi_dan_khong_so():
                     hits.append("%s:%d: %s" % (rel, line_no, "; ".join(whole)))
     # Lời dẫn đang hiện ra hôm nay: blurb và resource.title của lộ trình giả (#138, quyết định 2026-11-16).
     for fixture in fixtures:
-        where_scanned.append("haido_api/fixtures/" + fixture.name)
+        where_scanned.append(fixture.relative_to(ROOT).as_posix())
         fx_hits, fx_count = _fr24_scan_fixture(fixture, prepared_text_problems)
         hits += fx_hits
         count += fx_count
@@ -445,7 +446,7 @@ def gate_fr24_loi_dan_khong_so():
 
 _FR24_KEYS = {
     "top": {"_note", "roles"},
-    "role": {"skills", "topics"},
+    "role": {"skills", "topics", "review"},
     "topic": {"title", "choose_one", "skills"},
     "node": {"skill", "requires", "foundation", "blurb", "resource"},
     "resource": {"title", "url"},

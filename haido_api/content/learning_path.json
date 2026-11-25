@@ -1,7 +1,8 @@
 {
-  "_note": "Lộ trình NHÁP của app demo (#217), đọc bởi haido_api/draft_path.py. Chưa được giảng viên rà soát (#96), không chạy trên prod. Nhóm tự soạn, không chép từ roadmap.sh. Kỹ năng: mọi kỹ năng core hoặc common của ô tỷ lệ vai trò đó ở snapshot 2026-11-25; mã lấy từ haido_core/vocab/skills_seed.json. `topics` theo thứ tự học, kỹ năng cần học trước (`requires`) luôn ở chủ đề trước; `choose_one` là các lựa chọn thay nhau. Lời dẫn không có chữ số ngoài tên công nghệ (FR-23) và không nói bao nhiêu tin đòi nó.",
+  "_note": "Nội dung lộ trình học (#216), đọc bởi haido_api/stat_path.py. `review` null là chưa có giảng viên rà soát (#96): API thật trả not_ready, chỉ app demo hiện kèm lưu ý bản nháp. Khi đã rà soát: {\"reviewed_on\": \"YYYY-MM-DD\", \"record\": \"docs/...\"} trỏ tới biên bản có trong repo; sửa nội dung sau đó thì phải rà soát lại. Nhóm tự soạn, không chép từ roadmap.sh. Kỹ năng: mọi kỹ năng core hoặc common của ô tỷ lệ vai trò đó ở snapshot 2026-11-25; mã lấy từ haido_core/vocab/skills_seed.json. `topics` theo thứ tự học, kỹ năng cần học trước (`requires`) luôn ở chủ đề trước; `choose_one` là các lựa chọn thay nhau. Lời dẫn không có chữ số ngoài tên công nghệ (FR-23) và không nói bao nhiêu tin đòi nó.",
   "roles": {
     "backend": {
+      "review": null,
       "topics": [
         {
           "title": "Công cụ làm việc",
@@ -701,6 +702,7 @@
       ]
     },
     "data_engineer": {
+      "review": null,
       "topics": [
         {
           "title": "Công cụ làm việc",

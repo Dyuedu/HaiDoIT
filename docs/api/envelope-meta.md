@@ -465,7 +465,7 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 | `HAIDO_MARKET_SOURCE_CITY_SHARES` | `/api/v1/city-shares` | `stat` (#93); `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_SKILL_RATES` | `/api/v1/skill-rates` | `stat` (#151): `stat_skill_rates` của snapshot đọc được mới nhất, quay về qua phép 2 (#106); `deploy/compose.prod.yml` đặt `stat` |
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles`, `/api/v1/market-overview` (#327) | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
-| `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | #216; `stat` hiện trả 404 `unknown_cell`. `deploy/compose.prod.yml` đặt `stat` (#309) |
+| `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | `stat` (#216): vai trò có `review` trong `haido_api/content/learning_path.json` (giảng viên đã rà soát, #96) trả lộ trình với tỷ lệ của `skill-rates`; vai trò khác 200 `not_ready`; chưa có snapshot thì 404. `deploy/compose.prod.yml` đặt `stat` (#309). App demo (`haido_api.demo`) hiện cả lộ trình chưa rà soát, kèm lưu ý `draft_path` |
 | `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | `stat` (#168): `stat_skill_rates` hàng entry của kỹ năng và `stat_cells` ô `vn.<role>.entry` của snapshot đọc được mới nhất; `deploy/compose.prod.yml` đặt `stat` (#166) |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.

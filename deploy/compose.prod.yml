@@ -17,7 +17,7 @@ services:
       HAIDO_MARKET_SOURCE_SKILL_RATES: stat
       # Màn kỹ năng theo vai trò đọc `stat_skill_rates` của snapshot đã công bố (#168); chưa có snapshot thì 404 `unknown_cell`, không số giả.
       HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
-      # Lộ trình (#309): `stat` trả 404 `unknown_cell` đến khi #216 có số thật. Mọi khóa của SOURCE_ENV phải có ở đây
+      # Lộ trình (#309, #216): `stat` chỉ hiện lộ trình đã rà soát (#96), vai trò khác trả `not_ready`. Mọi khóa của SOURCE_ENV phải có ở đây
       # (tests/deploy/test_gh309_*), vì mã mặc định là `fake`.
       HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
       # Cache response theo snapshot (#343): mỗi request vẫn hỏi bảng snapshots, nên snapshot mới lên ngay.

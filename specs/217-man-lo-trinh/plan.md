@@ -62,3 +62,7 @@ Sửa hợp đồng #212 (xem `specs/212-hinh-lo-trinh-hoc/plan.md`) và cổng 
 
 - `learning-path.ts` thuộc #212; `skill-profile-view.ts` thuộc #151, #152, #153, #324; `co-van/page.tsx` và `fr22-mo-lo-trinh-tu-ky-nang.test.tsx` thuộc #153 (và #1, không có `specs/`: ghi trong mô tả PR).
 - Commit của `co-van/page.tsx` còn nhắc #154, #206, #207: hành vi của ba issue đó không đổi.
+
+## Thay đổi sau merge (2026-11-25, #216)
+
+Phần ghép của `DraftPathMarket` chuyển vào `haido_api/stat_path.py` và `StatMarket`; nội dung nháp chuyển sang `haido_api/content/learning_path.json`. App demo và màn không đổi.

@@ -54,7 +54,7 @@ Kiểu roadmap.sh: bấm một nút mở ngăn chi tiết. Phần màn của AC 
 ### Edge Cases
 
 - `not_ready`: "Lộ trình học có thứ tự cho vai trò này đang được biên soạn." và lối sang hồ sơ kỹ năng (AC 2 của #121).
-- 404 `unknown_cell` (prod tới khi có #216): câu của API, không "Thử lại", vẫn có lối sang hồ sơ kỹ năng. Mạng hỏng: có "Thử lại".
+- 404 `unknown_cell` (chưa có snapshot; prod trước #216): câu của API, không "Thử lại", vẫn có lối sang hồ sơ kỹ năng. Mạng hỏng: có "Thử lại".
 - Mọi tỷ lệ `null_data`: mỗi nút ghi "chưa đủ dữ liệu", không %, không nhóm, không câu "Tính trên … tin".
 - Cụm một kỹ năng: một cột hẹp; cụm lẻ: ô cuối chiếm cả hàng.
 - Không có `role`: dùng vai trò mục tiêu đã lưu (FR-14); chưa có thì mời chọn, không gọi API lộ trình.
@@ -68,7 +68,7 @@ Kiểu roadmap.sh: bấm một nút mở ngăn chi tiết. Phần màn của AC 
 - **FR-002**: Hồ sơ đọc và ghi qua `profile-store.ts` (AD-23); đánh dấu giữ nguyên vai trò và cấp đã lưu.
 - **FR-003**: Câu trên màn không chứa số; số ở ô riêng (DEC-6). Số chặng là thứ tự, không phải số thống kê.
 - **FR-004**: `fetchLearningPath` từ chối envelope sai hợp đồng, link tài liệu không phải https, hoặc của vai trò hay cấp khác.
-- **FR-007**: Nội dung nháp (`haido_api/fixtures/draft_learning_path.json`) do nhóm tự soạn, không chép từ roadmap.sh; phủ mọi kỹ năng core và common của Backend (entry) và Data Engineer (mọi cấp) ở snapshot 2026-11-25; snapshot sau có thể thêm kỹ năng chưa có trong nháp.
+- **FR-007**: Nội dung nháp (`haido_api/content/learning_path.json` (chuyển chỗ ở #216)) do nhóm tự soạn, không chép từ roadmap.sh; phủ mọi kỹ năng core và common của Backend (entry) và Data Engineer (mọi cấp) ở snapshot 2026-11-25; snapshot sau có thể thêm kỹ năng chưa có trong nháp.
 - **FR-005**: Nút, liên kết và ô tick cao tối thiểu 44px.
 
 - **FR-006** (demo): `haido_api.demo:app` đọc mọi phép từ snapshot thật; lộ trình lấy tỷ lệ, nhóm và ô của `skill-rates` thật, ghép với đồ thị chưa rà soát, kèm lưu ý "bản nháp". Chỉ `deploy/compose.demo.yml` chạy app này; `main:app`, prod và compose.local không đổi (#96, #309).

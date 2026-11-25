@@ -1,6 +1,6 @@
-"""FR-20, FR-22, AD-7, AD-17 — lộ trình nháp ghép tỷ lệ thật của snapshot với đồ thị chưa rà soát (#216, một phần).
+"""FR-20, FR-22, AD-7, AD-17 — lộ trình nháp ghép tỷ lệ thật của snapshot với đồ thị chưa rà soát (#217, #216).
 
-Nguồn `draft` chỉ để demo trên máy: đồ thị là `fixtures/fake_learning_path.json`, tỷ lệ và nhóm là của `skill-rates` thật.
+`DraftPathMarket` chỉ để demo trên máy: hiện cả lộ trình chưa rà soát của `haido_api/content/learning_path.json`.
 """
 
 import json
@@ -11,12 +11,13 @@ import yaml
 from fastapi.testclient import TestClient
 from sqlalchemy import Engine
 
-from haido_api.draft_path import DRAFT_FIXTURE, DRAFT_NOTE_CODE, DraftPathMarket
+from haido_api.draft_path import DraftPathMarket
 from haido_api.fake_market import FakeMarket
 from haido_api.learning_path import Topic, topic_stages
 from haido_api.main import create_app
 from haido_api.routes.market import IMPLEMENTATIONS, SOURCE_ENV, load_sources
 from haido_api.stat_market import StatMarket
+from haido_api.stat_path import DRAFT_NOTE, PATH_FILE
 from haido_core.config import load_rules
 from haido_core.vocab.prepared_text import prepared_text_problems
 from haido_core.vocab.skills import load_seed_skills
@@ -28,7 +29,7 @@ RULES = load_rules()
 ROOT_DEPLOY = Path(__file__).resolve().parents[2] / "deploy"
 GRAPH = {
     role: {n["skill"]: n["requires"] for n in entry["skills"]}
-    for role, entry in json.loads(DRAFT_FIXTURE.read_text(encoding="utf-8"))["roles"].items()
+    for role, entry in json.loads(PATH_FILE.read_text(encoding="utf-8"))["roles"].items()
 }
 ALL_BACKEND = dict.fromkeys(GRAPH["backend"], 30)
 
@@ -119,7 +120,7 @@ def test_fr22_vai_tro_chua_co_do_thi_la_not_ready_kem_so_tin_entry(pg_engine: En
     body = _get(pg_engine, role="frontend")
     assert body["data"]["status"] == "not_ready" and body["data"]["stages"] == []
     assert body["meta"]["cells"]["vn.frontend.entry"]["n"] == 16
-    assert DRAFT_NOTE_CODE not in {n["code"] for n in body["meta"]["coverage_notes"]}  # không có lộ trình để gọi là nháp
+    assert DRAFT_NOTE.code not in {n["code"] for n in body["meta"]["coverage_notes"]}  # không có lộ trình để gọi là nháp
 
 
 def test_fr22_luu_y_noi_ro_ban_nhap(pg_engine: Engine) -> None:
@@ -127,9 +128,9 @@ def test_fr22_luu_y_noi_ro_ban_nhap(pg_engine: Engine) -> None:
     _cell(pg_engine, "backend", "entry", 80, 60, ALL_BACKEND)
     body = _get(pg_engine)
     notes = {n["code"]: n["text"] for n in body["meta"]["coverage_notes"]}
-    assert "chưa được giảng viên rà soát" in notes[DRAFT_NOTE_CODE]
+    assert "chưa được giảng viên rà soát" in notes[DRAFT_NOTE.code]
     rates = _client(pg_engine).get("/api/v1/skill-rates", params={"role": "backend", "level": "entry"}).json()
-    assert DRAFT_NOTE_CODE not in {n["code"] for n in rates["meta"]["coverage_notes"]}
+    assert DRAFT_NOTE.code not in {n["code"] for n in rates["meta"]["coverage_notes"]}
 
 
 def test_fr22_chua_co_snapshot_thi_404(pg_engine: Engine) -> None:
@@ -162,7 +163,7 @@ def test_gh216_app_demo_dung_ban_nhap_cho_lo_trinh(monkeypatch: pytest.MonkeyPat
 
 @pytest.mark.parametrize("role", sorted(GRAPH))
 def test_fr22_do_thi_nhap_hop_le(role: str) -> None:
-    raw = json.loads(DRAFT_FIXTURE.read_text(encoding="utf-8"))["roles"][role]
+    raw = json.loads(PATH_FILE.read_text(encoding="utf-8"))["roles"][role]
     topics = [Topic(t["title"], t["choose_one"], tuple(t["skills"])) for t in raw["topics"]]
     stages = topic_stages(topics, GRAPH[role])
     assert sum(len(s.skills) for s in stages) == len(GRAPH[role]) == len(raw["skills"])
@@ -171,7 +172,7 @@ def test_fr22_do_thi_nhap_hop_le(role: str) -> None:
 
 
 def test_fr23_loi_dan_nhap_dung_quy_tac() -> None:
-    raw = json.loads(DRAFT_FIXTURE.read_text(encoding="utf-8"))
+    raw = json.loads(PATH_FILE.read_text(encoding="utf-8"))
     for role, entry in raw["roles"].items():
         for topic in entry["topics"]:
             assert prepared_text_problems(topic["title"]) == [], topic["title"]

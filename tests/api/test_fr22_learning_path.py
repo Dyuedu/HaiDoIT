@@ -539,17 +539,6 @@ def test_ad17_fake_nem_unknown_cell_co_ngay_snapshot() -> None:
     assert info.value.snapshot_date is not None
 
 
-def test_ad17_stat_market_chua_co_so_that_nen_la_unknown_cell() -> None:
-    from haido_api.stat_market import StatMarket
-
-    with pytest.raises(UnknownCell):
-        StatMarket(
-            engine_factory=lambda: (_ for _ in ()).throw(
-                AssertionError("không mở kết nối")
-            )
-        ).learning_path(role="backend", level="entry", have=())
-
-
 # ---------------------------------------------------------------- validator của schema
 
 
