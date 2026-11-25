@@ -9,8 +9,18 @@
  * - `status = not_ready`: không có chặng; gợi ý hồ sơ kỹ năng của vai trò.
  */
 
-import type { ErrorEnvelope, Meta, Stat } from "./city-shares";
+import {
+  type ErrorEnvelope,
+  type Meta,
+  type Stat,
+  isCount,
+  isMeta,
+  isNonEmptyString,
+  isRecord,
+  isStringArray,
+} from "./city-shares";
 import { isSkillCode, MAX_PROFILE_SKILLS } from "./haido-keys";
+import type { SkillGroup } from "./skill-rates";
 
 export interface SkillRateStat extends Stat {
   kind: "skill_rate";
@@ -26,7 +36,7 @@ export interface PathSkill {
   skill: string;
   rate: SkillRateStat;
   /** `core`, `common`, `company_specific`; `null` khi `rate` là `null_data`. */
-  group: string | null;
+  group: SkillGroup | null;
   /** Không rỗng khi là kỹ năng nền tảng: ghi "Kỹ năng nền tảng (cần cho X)". */
   foundation_for: string[];
   prerequisite_for: string[];
@@ -39,6 +49,10 @@ export interface PathSkill {
 export interface PathStage {
   /** Từ 1, liền nhau. */
   stage: number;
+  /** Tên chủ đề của chặng. */
+  title: string;
+  /** Các kỹ năng là lựa chọn thay nhau: API coi chặng là xong khi đã có một kỹ năng. */
+  choose_one: boolean;
   skills: PathSkill[];
 }
 
@@ -52,7 +66,7 @@ export interface LearningPathData {
   cell_id: string | null;
   entry_cell_id: string;
   stages: PathStage[];
-  /** Chặng đầu còn kỹ năng chưa có; `null` khi đã có hết hoặc `not_ready`. */
+  /** Chặng đầu chưa xong; `null` khi mọi chặng đã xong hoặc `not_ready`. */
   current_stage: number | null;
   have_on_path: number;
   path_size: number;
@@ -79,18 +93,65 @@ export function learningPathUrl(role: string, level: string, have: readonly stri
   return codes.length === 0 ? base : `${base}&have=${encodeURIComponent(codes.join(","))}`;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+const GROUPS: readonly string[] = ["core", "common", "company_specific"];
+
+function isOrdinal(value: unknown): value is number {
+  return typeof value === "number" && Number.isInteger(value) && value > 0;
 }
 
-function isEnvelope(body: unknown): body is LearningPathEnvelope {
-  if (!isRecord(body) || !isRecord(body.data) || !isRecord(body.meta)) return false;
-  const { data } = body;
+function isPathSkill(value: unknown, cellId: string): value is PathSkill {
+  if (!isRecord(value) || !isRecord(value.rate) || !isRecord(value.resource)) return false;
+  const { rate, resource } = value;
+  if (typeof value.skill !== "string" || !isSkillCode(value.skill)) return false;
+  if (typeof value.have !== "boolean" || !isNonEmptyString(value.blurb)) return false;
+  if (!isStringArray(value.foundation_for) || !isStringArray(value.prerequisite_for)) return false;
+  // Link đi thẳng vào `href`: chỉ nhận https.
+  if (!isNonEmptyString(resource.title) || typeof resource.url !== "string" || !/^https:\/\/\S+$/.test(resource.url)) {
+    return false;
+  }
+  if (rate.kind !== "skill_rate" || rate.cell_id !== cellId) return false;
+  if (rate.display === "null_data") return rate.value === null && value.group === null;
   return (
-    (data.status === "ready" || data.status === "not_ready") &&
-    typeof data.entry_cell_id === "string" &&
-    Array.isArray(data.stages) &&
-    isRecord(body.meta.cells)
+    rate.display === "shown" &&
+    typeof rate.value === "number" &&
+    rate.value >= 0 &&
+    rate.value <= 1 &&
+    typeof value.group === "string" &&
+    GROUPS.includes(value.group)
+  );
+}
+
+function hasCell(meta: Meta, id: string): boolean {
+  const cell: unknown = Object.hasOwn(meta.cells, id) ? meta.cells[id] : undefined;
+  return isRecord(cell) && isCount(cell.n) && (cell.fallback_label === null || isNonEmptyString(cell.fallback_label));
+}
+
+/**
+ * Kiểm phần hợp đồng mà màn đọc. Sai một chỗ là cả envelope không dùng: màn không đoán, không vá số. Không đếm lại
+ * `have_on_path`, `current_stage` (AD-22), chỉ kiểm kiểu và miền.
+ */
+function isEnvelope(body: unknown): body is LearningPathEnvelope {
+  if (!isRecord(body) || !isRecord(body.data) || !isMeta(body.meta)) return false;
+  const { data, meta } = body;
+  if (!isNonEmptyString(data.role) || !isNonEmptyString(data.level)) return false;
+  if (!isNonEmptyString(data.entry_cell_id) || !hasCell(meta, data.entry_cell_id)) return false;
+  if (!Array.isArray(data.stages) || !isCount(data.have_on_path) || !isCount(data.path_size)) return false;
+  if (data.have_on_path > data.path_size || !isStringArray(data.have_ignored)) return false;
+  if (data.current_stage !== null && !isOrdinal(data.current_stage)) return false;
+  if (data.status === "not_ready") return data.stages.length === 0;
+  if (data.status !== "ready" || data.stages.length === 0) return false;
+  const cellId = data.cell_id;
+  if (!isNonEmptyString(cellId) || !hasCell(meta, cellId)) return false;
+  return data.stages.every(
+    (stage, index) =>
+      isRecord(stage) &&
+      stage.stage === index + 1 &&
+      Array.isArray(stage.skills) &&
+      typeof stage.title === "string" &&
+      stage.title.trim() !== "" &&
+      typeof stage.choose_one === "boolean" &&
+      stage.skills.length >= (stage.choose_one ? 2 : 1) &&
+      stage.skills.every((skill) => isPathSkill(skill, cellId)),
   );
 }
 
@@ -126,5 +187,8 @@ export async function fetchLearningPath(
       retryable: error.code !== "unknown_cell" && error.code !== "invalid_query",
     };
   }
-  return isEnvelope(body) ? { kind: "ok", envelope: body } : { kind: "unreadable" };
+  // API trả lại đúng vai trò và cấp đã hỏi; lệch thì số không phải của lộ trình đang xem.
+  return isEnvelope(body) && body.data.role === role && body.data.level === level
+    ? { kind: "ok", envelope: body }
+    : { kind: "unreadable" };
 }

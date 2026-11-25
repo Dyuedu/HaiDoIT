@@ -107,3 +107,9 @@ Sau kiểm đột biến: `cmp` với bản gốc khớp, không để file sao 
 **GREEN:** với ngày giả 2026-11-23, hạn `2099-12-31` cho ra `SKIP`. `uv run pytest -q tests/tools/test_fr24_loi_dan_khong_so.py` cho 56 passed.
 
 Bom hẹn giờ ở `test_fr22_tat_dinh.py` thuộc #139 và được sửa trên nhánh đó.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: cổng FR-24 quét thêm tên chủ đề và file lộ trình nháp (RED: 6 failed, 56 passed trong `tests/tools/test_fr24_loi_dan_khong_so.py`). Luật về chữ và AC không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

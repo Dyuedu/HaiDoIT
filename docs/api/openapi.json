@@ -988,7 +988,7 @@
               }
             ],
             "title": "Current Stage",
-            "description": "Chặng đầu tiên còn kỹ năng `have = false`; `null` khi đã có hết hoặc `not_ready`."
+            "description": "Chặng đầu tiên chưa xong (chặng chọn một xong khi có một kỹ năng); `null` khi mọi chặng đã xong hoặc `not_ready`."
           },
           "have_on_path": {
             "type": "integer",
@@ -1497,6 +1497,17 @@
             "title": "Stage",
             "description": "Số chặng, từ 1, liền nhau."
           },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Title",
+            "description": "Tên chủ đề, viết sẵn: không chữ số ngoài tên công nghệ, không `%` (FR-23)."
+          },
+          "choose_one": {
+            "type": "boolean",
+            "title": "Choose One",
+            "description": "Các kỹ năng là lựa chọn thay nhau (ví dụ ngôn ngữ): chặng xong khi đã có một kỹ năng. Cần ít nhất hai kỹ năng.\n`prerequisite_for` của một kỹ năng ở đây là gợi ý cho người đã chọn nó, không khóa chặng sau."
+          },
           "skills": {
             "items": {
               "$ref": "#/components/schemas/PathSkill"
@@ -1511,10 +1522,12 @@
         "type": "object",
         "required": [
           "stage",
+          "title",
+          "choose_one",
           "skills"
         ],
         "title": "PathStage",
-        "description": "Một chặng: các kỹ năng đã xếp thứ tự."
+        "description": "Một chặng: một chủ đề và các kỹ năng của nó đã xếp thứ tự."
       },
       "PathStatus": {
         "type": "string",

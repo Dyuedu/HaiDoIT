@@ -192,3 +192,9 @@ Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà iss
 Lý do: #278 sửa `haido_core/vocab/skills.py` (thêm `ExcludedSkill`, `ExclusionList`, `parse_exclusions`, `load_exclusions`), file mà issue này từng đụng. `find_seed_skill`, `load_seed_skills` và hình dạng response không đổi; chỉ có thêm 40 mã trong từ vựng.
 
 RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

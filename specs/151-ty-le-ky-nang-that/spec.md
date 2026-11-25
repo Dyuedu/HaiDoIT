@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-17
 
-**Status**: Implemented, chờ merge. #102 (2026-11-19) đổi nguồn θ của FR-003: từ `config/rules.toml` sang `snapshots.theta_version` và `config/theta.toml`.
+**Status**: Implemented, chờ merge. #102 (2026-11-19) đổi nguồn θ của FR-003: từ `config/rules.toml` sang `snapshots.theta_version` và `config/theta.toml`. 2026-11-25 (#217): `learningPathHref` nhận `skill` tùy chọn, hành vi không đổi.
 
 **Input**: GitHub issue [#151](https://github.com/Dyuedu/HaiDoIT/issues/151) — Return real skill rates for a role and level. Phục vụ story #111 (US-A2). Đọc #101 (bảng), #103 (ràng buộc lớp đọc), #106 (phép 2).
 

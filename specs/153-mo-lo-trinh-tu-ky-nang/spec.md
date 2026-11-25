@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented. 2026-11-25 (#217): trang giữ chỗ được thay bằng màn lộ trình thật; AC của issue giữ nguyên.
 
 **Input**: GitHub issue [#153](https://github.com/Dyuedu/HaiDoIT/issues/153) — Open the learning path from a missing skill. Phục vụ story #111 (US-A2), AC 7. Màn lộ trình (#121, các task #213–#219) đã dời sang Sprint 4 trong lần re-plan 16/11.
 
@@ -23,12 +23,12 @@ Một sinh viên xem hồ sơ Backend · Mới vào nghề, thấy Spring Boot c
 1. **Given** kỹ năng chưa tick, **When** xem dòng, **Then** tên kỹ năng là liên kết tới `/co-van?role=backend&level=entry&skill=spring_boot`. (AC)
 2. **Given** kỹ năng đã tick, **When** xem dòng, **Then** tên không phải liên kết tới lộ trình và dòng ghi "Đã có".
 3. **Given** người dùng tick một kỹ năng, **When** dòng cập nhật, **Then** liên kết lộ trình của dòng đó biến mất; bỏ tick thì liên kết trở lại.
-4. **Given** mở `/co-van?role=backend&level=entry&skill=spring_boot` khi #121 chưa có, **When** xem, **Then** tiêu đề gọi tên vai trò, trang gọi tên kỹ năng ("Spring Boot") và cấp, nói lộ trình học có ở sprint sau, có nút quay lại hồ sơ kỹ năng của vai trò và cấp đó. Câu không có chữ số (DEC-6).
+4. **Given** mở `/co-van?role=backend&level=entry&skill=spring_boot`, **When** xem, **Then** tiêu đề gọi tên vai trò, màn lộ trình mở ngăn chi tiết của Spring Boot, có lối về hồ sơ kỹ năng của vai trò và cấp đó. Câu không có chữ số (DEC-6). *(Từ #217, 2026-11-25; trước đó là trang giữ chỗ nói lộ trình có ở sprint sau.)*
 5. **Given** mã vai trò hoặc mã kỹ năng lạ, **When** mở `/co-van`, **Then** không in mã như một tên.
 
 ### Edge Cases
 
-- Mở `/co-van` không có tham số: giữ câu giới thiệu chung của Cố vấn.
+- Mở `/co-van` không có tham số: tiêu đề "Cố vấn", mời chọn vai trò (#217), hoặc dùng vai trò đã lưu.
 - Sprint 4 (#121) thay trang giữ chỗ bằng lộ trình thật mà không đổi liên kết `learningPathHref`.
 
 ## Requirements *(mandatory)*

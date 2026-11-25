@@ -202,3 +202,17 @@ Giá trị θ không đổi nên số, nhóm và hành vi của issue này khôn
 Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà issue này từng đụng (`haido_api/schemas/market.py`, `fake_market.py`, `market_source.py`, `routes/market.py`, `stat_market.py`, `fixtures/fake_market.json`, `docs/api/envelope-meta.md`, `tests/api/test_ad17_routes.py`). Thay đổi chỉ thêm: schema, phương thức, route, một mục fixture, một dòng `SAMPLE_QUERY`; route cũ và số của chúng không đổi.
 
 - RED và GREEN: `specs/327-tong-quan-thi-truong-api/tdd.md`. `uv run pytest -q` → 1336 passed, 304 skipped.
+
+## Đợt #217 (2026-11-25): web kiểm envelope chặt hơn
+
+Lý do: màn lộ trình (#217) đọc từng kỹ năng và đưa link tài liệu vào `href`. Envelope sai hợp đồng, link không phải https, hay của vai trò hoặc cấp khác là "không đọc được". Hình response, fixture và AC không đổi; `fr22-learning-path-fixture.test.ts` xanh, không sửa.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` (`npx vitest run` → 432 passed).
+
+## Đợt B của #217 (2026-11-25): chặng là chủ đề, có chặng chọn một
+
+Lý do: màn kiểu roadmap.sh cần tên chủ đề và cụm lựa chọn; API trước đó chỉ có số chặng.
+
+- RED: `test_fr22_learning_path.py`, `_graph.py`, `_draft.py`, `_review.py` → 14 failed, 85 passed, 2 errors (`Topic`, `topic_stages`, `DRAFT_FIXTURE` chưa có; schema từ chối `title`, `choose_one`).
+- Sau khi viết schema còn 12 failed: hai helper dựng chặng trong `test_fr22_learning_path.py` chưa có `title`; sửa helper, không đổi kỳ vọng.
+- GREEN và kết quả cuối: `specs/217-man-lo-trinh/tdd.md` đợt 4.

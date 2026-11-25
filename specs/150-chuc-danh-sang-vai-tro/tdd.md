@@ -112,3 +112,9 @@ Lý do: commit `fecab28` (#149, #150) tạo `web/tests/fixtures/skills.json`; #2
 Lý do: #343 sửa `haido_api/main.py` để thêm middleware cache response cho `GET /api/v1/*`. Request có tham số `title` không bao giờ đi qua cache, nên máy chủ vẫn không giữ chức danh người dùng gõ; response của `role-for-title` không có header `x-cache`.
 
 - RED và GREEN: `specs/343-cache-response/tdd.md` (`test_gh343_khong_cache_du_lieu_nguoi_dung_go`, `test_gh343_khong_giu_ban_sao_nao_cua_chuc_danh`).
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

@@ -12,7 +12,7 @@
 
 Cổng FR-24 trong `tools/gates/check_gates.py` có regex riêng `[A-Za-z][A-Za-z+#.]*\s?\d+` để miễn "tên công nghệ". Regex này xóa mọi "chữ + số", nên "Hơn 30 tin cần Python", "Top 5 kỹ năng", "Cần 3 năm kinh nghiệm" đều qua (đã chạy thử); chỉ số đứng đầu dòng bị bắt, và "phần trăm" không được kiểm. Quy tắc đúng đã có một chỗ ở `haido_core/vocab/prepared_text.py` (`prepared_text_problems`) và test FR-23 đang dùng nó. Cổng phải dùng đúng hàm đó, không giữ bản thứ hai.
 
-Thư mục `haido_core/vocab/blurbs` chỉ có cùng #218 (Sprint 4), sau hạn hoãn 2026-11-22. Lời dẫn đang hiện ra hôm nay là các trường `blurb` và `resource.title` của `haido_api/fixtures/fake_learning_path.json`.
+Thư mục `haido_core/vocab/blurbs` chỉ có cùng #218 (Sprint 4), sau hạn hoãn 2026-11-22. Lời dẫn đang hiện ra hôm nay là các trường `blurb` và `resource.title` của `haido_api/fixtures/fake_learning_path.json`. Từ 2026-11-25 (#217 đợt 4) cổng còn quét tên chủ đề (`topics[].title`) và `haido_api/fixtures/draft_learning_path.json` (lộ trình nháp của app demo), cùng luật.
 
 ## Quyết định của người dùng (2026-11-16, phương án A)
 

@@ -8,50 +8,9 @@
     "stages": [
       {
         "stage": 1,
+        "title": "Công cụ làm việc",
+        "choose_one": false,
         "skills": [
-          {
-            "skill": "sql",
-            "rate": {
-              "value": 0.6369426751592356,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "core",
-            "foundation_for": [],
-            "prerequisite_for": [
-              "mysql",
-              "postgresql"
-            ],
-            "have": false,
-            "blurb": "Truy vấn dữ liệu là việc hằng ngày của backend; bắt đầu từ SELECT, JOIN và nhóm dữ liệu.",
-            "resource": {
-              "title": "Hướng dẫn SQL của PostgreSQL",
-              "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
-            }
-          },
-          {
-            "skill": "java",
-            "rate": {
-              "value": 0.6242038216560509,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "core",
-            "foundation_for": [],
-            "prerequisite_for": [
-              "rest_api",
-              "spring_boot",
-              "unit_testing"
-            ],
-            "have": false,
-            "blurb": "Ngôn ngữ để viết dịch vụ phía máy chủ; nắm cú pháp, hướng đối tượng và bộ sưu tập trước khi học framework.",
-            "resource": {
-              "title": "Học Java (dev.java)",
-              "url": "https://dev.java/learn/"
-            }
-          },
           {
             "skill": "git",
             "rate": {
@@ -70,24 +29,6 @@
             "resource": {
               "title": "Sách Pro Git",
               "url": "https://git-scm.com/book/en/v2"
-            }
-          },
-          {
-            "skill": "nodejs",
-            "rate": {
-              "value": 0.25477707006369427,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "common",
-            "foundation_for": [],
-            "prerequisite_for": [],
-            "have": false,
-            "blurb": "Chạy JavaScript phía máy chủ; học nếu hướng tới các công ty dùng stack này.",
-            "resource": {
-              "title": "Làm quen với Node.js",
-              "url": "https://nodejs.org/learn/getting-started/introduction-to-nodejs"
             }
           },
           {
@@ -118,6 +59,110 @@
       },
       {
         "stage": 2,
+        "title": "Ngôn ngữ lập trình",
+        "choose_one": false,
+        "skills": [
+          {
+            "skill": "java",
+            "rate": {
+              "value": 0.6242038216560509,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "core",
+            "foundation_for": [],
+            "prerequisite_for": [
+              "rest_api",
+              "spring_boot",
+              "unit_testing"
+            ],
+            "have": false,
+            "blurb": "Ngôn ngữ để viết dịch vụ phía máy chủ; nắm cú pháp, hướng đối tượng và bộ sưu tập trước khi học framework.",
+            "resource": {
+              "title": "Học Java (dev.java)",
+              "url": "https://dev.java/learn/"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "title": "Truy vấn dữ liệu",
+        "choose_one": false,
+        "skills": [
+          {
+            "skill": "sql",
+            "rate": {
+              "value": 0.6369426751592356,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "core",
+            "foundation_for": [],
+            "prerequisite_for": [
+              "mysql",
+              "postgresql"
+            ],
+            "have": false,
+            "blurb": "Truy vấn dữ liệu là việc hằng ngày của backend; bắt đầu từ SELECT, JOIN và nhóm dữ liệu.",
+            "resource": {
+              "title": "Hướng dẫn SQL của PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 4,
+        "title": "Hệ quản trị cơ sở dữ liệu",
+        "choose_one": true,
+        "skills": [
+          {
+            "skill": "postgresql",
+            "rate": {
+              "value": 0.3503184713375796,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "core",
+            "foundation_for": [],
+            "prerequisite_for": [
+              "redis"
+            ],
+            "have": false,
+            "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở; học sau khi đã quen SQL cơ bản.",
+            "resource": {
+              "title": "Hướng dẫn PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/tutorial.html"
+            }
+          },
+          {
+            "skill": "mysql",
+            "rate": {
+              "value": 0.24203821656050956,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "common",
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Cơ sở dữ liệu quan hệ khác cùng họ SQL; kiến thức SQL chuyển sang được, khác ở công cụ và cấu hình.",
+            "resource": {
+              "title": "Hướng dẫn MySQL",
+              "url": "https://dev.mysql.com/doc/refman/8.4/en/tutorial.html"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 5,
+        "title": "Framework phía máy chủ",
+        "choose_one": true,
         "skills": [
           {
             "skill": "spring_boot",
@@ -140,6 +185,31 @@
             }
           },
           {
+            "skill": "nodejs",
+            "rate": {
+              "value": 0.25477707006369427,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "common",
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Chạy JavaScript phía máy chủ; học nếu hướng tới các công ty dùng stack này.",
+            "resource": {
+              "title": "Làm quen với Node.js",
+              "url": "https://nodejs.org/learn/getting-started/introduction-to-nodejs"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 6,
+        "title": "API và kiểm thử",
+        "choose_one": false,
+        "skills": [
+          {
             "skill": "rest_api",
             "rate": {
               "value": 0.445859872611465,
@@ -157,65 +227,6 @@
             "resource": {
               "title": "Tổng quan HTTP (MDN)",
               "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
-            }
-          },
-          {
-            "skill": "postgresql",
-            "rate": {
-              "value": 0.3503184713375796,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "core",
-            "foundation_for": [],
-            "prerequisite_for": [
-              "redis"
-            ],
-            "have": false,
-            "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở; học sau khi đã quen SQL cơ bản.",
-            "resource": {
-              "title": "Hướng dẫn PostgreSQL",
-              "url": "https://www.postgresql.org/docs/current/tutorial.html"
-            }
-          },
-          {
-            "skill": "docker",
-            "rate": {
-              "value": 0.3184713375796178,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "core",
-            "foundation_for": [],
-            "prerequisite_for": [
-              "ci_cd",
-              "microservices"
-            ],
-            "have": false,
-            "blurb": "Đóng gói ứng dụng để chạy giống nhau ở mọi máy; cần quen dòng lệnh Linux.",
-            "resource": {
-              "title": "Docker: Get started",
-              "url": "https://docs.docker.com/get-started/"
-            }
-          },
-          {
-            "skill": "mysql",
-            "rate": {
-              "value": 0.24203821656050956,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "common",
-            "foundation_for": [],
-            "prerequisite_for": [],
-            "have": false,
-            "blurb": "Cơ sở dữ liệu quan hệ khác cùng họ SQL; kiến thức SQL chuyển sang được, khác ở công cụ và cấu hình.",
-            "resource": {
-              "title": "Hướng dẫn MySQL",
-              "url": "https://dev.mysql.com/doc/refman/8.4/en/tutorial.html"
             }
           },
           {
@@ -239,7 +250,55 @@
         ]
       },
       {
-        "stage": 3,
+        "stage": 7,
+        "title": "Đóng gói và bộ nhớ đệm",
+        "choose_one": false,
+        "skills": [
+          {
+            "skill": "docker",
+            "rate": {
+              "value": 0.3184713375796178,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "core",
+            "foundation_for": [],
+            "prerequisite_for": [
+              "ci_cd",
+              "microservices"
+            ],
+            "have": false,
+            "blurb": "Đóng gói ứng dụng để chạy giống nhau ở mọi máy; cần quen dòng lệnh Linux.",
+            "resource": {
+              "title": "Docker: Get started",
+              "url": "https://docs.docker.com/get-started/"
+            }
+          },
+          {
+            "skill": "redis",
+            "rate": {
+              "value": 0.17834394904458598,
+              "kind": "skill_rate",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "group": "common",
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Kho dữ liệu trong bộ nhớ dùng làm bộ đệm; học sau khi hiểu cơ sở dữ liệu chính.",
+            "resource": {
+              "title": "Bắt đầu với Redis",
+              "url": "https://redis.io/docs/latest/develop/get-started/"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 8,
+        "title": "Tự động hóa và hệ thống lớn",
+        "choose_one": false,
         "skills": [
           {
             "skill": "microservices",
@@ -275,24 +334,6 @@
             "resource": {
               "title": "Tài liệu GitHub Actions",
               "url": "https://docs.github.com/en/actions"
-            }
-          },
-          {
-            "skill": "redis",
-            "rate": {
-              "value": 0.17834394904458598,
-              "kind": "skill_rate",
-              "display": "shown",
-              "cell_id": "vn.backend"
-            },
-            "group": "common",
-            "foundation_for": [],
-            "prerequisite_for": [],
-            "have": false,
-            "blurb": "Kho dữ liệu trong bộ nhớ dùng làm bộ đệm; học sau khi hiểu cơ sở dữ liệu chính.",
-            "resource": {
-              "title": "Bắt đầu với Redis",
-              "url": "https://redis.io/docs/latest/develop/get-started/"
             }
           }
         ]

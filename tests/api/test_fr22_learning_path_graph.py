@@ -10,7 +10,13 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from haido_api.learning_path import PathGraphError, foundation_targets, stage_numbers
+from haido_api.learning_path import (
+    PathGraphError,
+    Topic,
+    foundation_targets,
+    stage_numbers,
+    topic_stages,
+)
 from haido_api.schemas.learning_path import LearningPathData
 
 CELL = "vn.x"
@@ -64,6 +70,44 @@ def test_fr20_foundation_targets_bao_loi_khi_do_thi_hong() -> None:
         foundation_targets({"a": ["ghost"]}, {"a": "core"})
 
 
+# ---------------------------------------------------------------- chủ đề (#212 đợt B)
+
+TOPICS = [Topic("Nền", False, ("a", "b")), Topic("Chọn", True, ("c", "d")), Topic("Cuối", False, ("e",))]
+
+
+def test_fr22_chang_la_chu_de_theo_thu_tu_khai_bao() -> None:
+    requires = {"a": [], "b": [], "c": ["a"], "d": ["a"], "e": ["c", "b"]}
+    got = topic_stages(TOPICS, requires)
+    assert [(t.title, t.choose_one, t.skills) for t in got] == [
+        ("Nền", False, ("a", "b")),
+        ("Chọn", True, ("c", "d")),
+        ("Cuối", False, ("e",)),
+    ]
+
+
+def test_fr22_chu_de_rong_bi_bo_va_chon_mot_con_mot_thi_thanh_thuong() -> None:
+    got = topic_stages(TOPICS, {"c": [], "e": ["c"]})
+    assert [(t.title, t.choose_one, t.skills) for t in got] == [("Chọn", False, ("c",)), ("Cuối", False, ("e",))]
+
+
+@pytest.mark.parametrize(
+    ("requires", "match"),
+    [
+        ({"a": [], "b": ["a"]}, "cùng hoặc trước"),  # cùng chủ đề
+        ({"a": ["e"], "e": []}, "cùng hoặc trước"),  # ngược thứ tự chủ đề
+        ({"a": [], "z": []}, "z"),  # không thuộc chủ đề nào
+    ],
+)
+def test_fr22_do_thi_trai_chu_de_la_loi_ro_rang(requires: dict[str, list[str]], match: str) -> None:
+    with pytest.raises(PathGraphError, match=match):
+        topic_stages(TOPICS, requires)
+
+
+def test_fr22_mot_ky_nang_o_hai_chu_de_la_loi() -> None:
+    with pytest.raises(PathGraphError, match="hai chủ đề"):
+        topic_stages([*TOPICS, Topic("Lặp", False, ("a",))], {"a": []})
+
+
 # ---------------------------------------------------------------- validator của schema (F5)
 
 
@@ -103,7 +147,10 @@ def _path(*stages: list[dict[str, Any]]) -> dict[str, Any]:
         "status": "ready",
         "cell_id": CELL,
         "entry_cell_id": CELL,
-        "stages": [{"stage": i, "skills": s} for i, s in enumerate(stages, start=1)],
+        "stages": [
+            {"stage": i, "title": f"Chủ đề {i}", "choose_one": False, "skills": s}
+            for i, s in enumerate(stages, start=1)
+        ],
         "current_stage": 1,
         "have_on_path": 0,
         "path_size": sum(len(s) for s in stages),

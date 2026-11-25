@@ -350,3 +350,41 @@ def test_fr24_real_fixture_has_only_known_keys_and_scans_texts():
     status, detail, hits = check_gates.gate_fr24_loi_dan_khong_so()
     assert (status, hits) == (check_gates.PASS, [])
     assert "scanned " in detail and "scanned 0 texts" not in detail
+
+
+def _topic_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, topic: object, name: str = "fake_learning_path.json"):
+    _fixture(tmp_path, monkeypatch, "Sạch")
+    fx = tmp_path / "haido_api" / "fixtures"
+    data = json.loads((fx / "fake_learning_path.json").read_text(encoding="utf-8"))
+    data["roles"]["backend"]["topics"] = [topic]
+    (fx / name).write_text(json.dumps(data), encoding="utf-8")
+
+
+def test_fr24_clean_topic_title_is_scanned_and_passes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    _topic_fixture(tmp_path, monkeypatch, {"title": "Ngôn ngữ", "choose_one": True, "skills": ["java"]})
+    status, detail, hits = check_gates.gate_fr24_loi_dan_khong_so()
+    assert status == check_gates.PASS and hits == []
+    assert "scanned 3 texts" in detail
+
+
+@pytest.mark.parametrize(
+    "topic",
+    [
+        {"title": "Top 5 ngôn ngữ", "skills": ["java"]},
+        {"skills": ["java"]},
+        {"title": "Ổn", "skills": ["java"], "intro": "chữ mới"},
+        "chuỗi",
+    ],
+)
+def test_fr24_bad_topic_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, topic: object):
+    _topic_fixture(tmp_path, monkeypatch, topic)
+    status, _detail, hits = check_gates.gate_fr24_loi_dan_khong_so()
+    assert status == check_gates.FAIL and len(hits) == 1
+    assert "topics[0]" in hits[0]
+
+
+def test_fr24_draft_path_is_scanned_too(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    _topic_fixture(tmp_path, monkeypatch, {"title": "Top 5", "skills": ["java"]}, "draft_learning_path.json")
+    status, detail, hits = check_gates.gate_fr24_loi_dan_khong_so()
+    assert status == check_gates.FAIL and len(hits) == 1
+    assert "draft_learning_path.json" in hits[0] and "draft_learning_path.json" in detail

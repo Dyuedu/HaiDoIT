@@ -30,7 +30,7 @@ Người dùng prod không bao giờ thấy số của fixture giả. Phép chư
 ### Edge Cases
 
 - Màn hồ sơ kỹ năng trên prod sẽ báo "Tỷ lệ kỹ năng chưa có số liệu thật." ở mọi vai trò và cấp tới khi #151 xong. Web không ghi dòng ngày khi `snapshot_date = null` (`web/app/components/map/load-error.tsx`).
-- `learning-path` chưa có màn gọi (`/co-van` là trang giữ chỗ), nhưng API công khai nên vẫn phải chặn.
+- `learning-path` chưa có màn gọi (`/co-van` là trang giữ chỗ), nhưng API công khai nên vẫn phải chặn. *(2026-11-25, #217: `/co-van` đã gọi `learning-path`; trên prod màn hiện câu 404 của API tới khi có #216.)*
 
 ## Requirements *(mandatory)*
 

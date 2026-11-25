@@ -32,3 +32,9 @@ Lý do: #102 (θ có phiên bản) vào main trước PR này, thêm `theta_vers
 Lý do: #343 thêm `version()` vào `MarketReadModel`, `FakeMarket`, `StatMarket` để cache response biết khi nào có snapshot mới. `version()` được hỏi ở mỗi request, nên `market-overview` vẫn đọc snapshot đọc được mới nhất ngay sau khi chốt (`test_gh343_snapshot_moi_duoc_phuc_vu_ngay_request_ke_tiep` kiểm đúng route này trên Postgres).
 
 - RED và GREEN: `specs/343-cache-response/tdd.md`.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

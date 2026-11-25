@@ -143,3 +143,9 @@ Chạy `uv run pytest -q tests/domain/test_gh278_vocab.py tests/tools/test_gh278
 - `uv run ruff check .` → lượt đầu 1 lỗi (duyệt tập hợp trong `for` của test mới; đổi sang tuple), đã sửa; lượt sau All checks passed.
 - `uv run python tools/gates/check_gates.py --require AD-1 AD-17 AD-25 AD-2 AD-7 FR-25/31/47 AD-11 FR-22 FR-24` → 10 pass, 0 skip, 0 fail.
 - `web/`: `npx vitest run` → 33 files, 385 passed; `npx tsc --noEmit` → không lỗi; `npx eslint .` → không lỗi (`tsconfig.tsbuildinfo` đã hoàn nguyên). `web/tests/fixtures/skills.json` không cần sinh lại (bí danh và mã không đổi, `test_ad17_fixture_web_khop_response_skills` xanh).
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

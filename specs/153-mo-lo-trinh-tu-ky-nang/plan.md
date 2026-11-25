@@ -29,3 +29,7 @@ web/tests/fr22-mo-lo-trinh-tu-ky-nang.test.tsx       # mới
 ## Complexity Tracking
 
 - `web/app/co-van/page.tsx` thuộc #1 (không có `specs/`): ghi trong mô tả PR.
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+`web/app/co-van/page.tsx` thành màn lộ trình; `web/app/components/advisor/path-placeholder.tsx` bị xóa; `learningPathHref` nhận `skill` tùy chọn. Chi tiết: `specs/217-man-lo-trinh/plan.md`.

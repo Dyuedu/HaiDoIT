@@ -56,3 +56,12 @@ Test trước, chạy đỏ, ghi `tdd.md` đợt 2.
 ## Thay đổi đợt 2 (2026-11-17, #166)
 
 #166 đợt 2 sửa thêm file dùng chung với issue này (`haido_core/domain/envelope.py` (cỡ mẫu của `skill_rate`, hook `check_against_meta`), `haido_api/fake_market.py`, `fixtures/fake_market.json`, `schemas/market.py`, `routes/market.py`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+- [x] `web/lib/learning-path.ts` kiểm envelope chặt hơn; chi tiết ở `specs/217-man-lo-trinh/`.
+
+## Đợt B của #217 (2026-11-25)
+
+- [x] Test chủ đề, chặng chọn một, validator
+- [x] Schema, `topic_stages`, `build_stages`, bản giả, fixture web, openapi

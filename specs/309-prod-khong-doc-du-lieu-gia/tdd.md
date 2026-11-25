@@ -51,3 +51,9 @@ Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà iss
 Lý do: #343 thêm biến `HAIDO_RESPONSE_CACHE: "on"` vào `deploy/compose.prod.yml` và phương thức `version()` vào `market_source.py`, `fake_market.py`, `stat_market.py`. Mọi khóa của `SOURCE_ENV` vẫn là `stat` trên prod; `compose.local.yml` vẫn giữ nguồn `fake` và không bật cache. Test của issue này không phải sửa.
 
 - RED và GREEN: `specs/343-cache-response/tdd.md`.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.
