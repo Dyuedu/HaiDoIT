@@ -35,3 +35,7 @@ web/tests/fr19-skill-profile.test.tsx                       # đợt 2
 
 - `haido_api/stat_market.py`, `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_core/domain/registry.py`, `haido_core/domain/REGISTRY.md` thuộc nhiều issue cũ: thêm đợt TDD vào `tdd.md` của từng issue có `specs/` (danh sách ở `tdd.md` đợt 2026-11-17 của #151). Không AC cũ nào đổi: `skill-rates` thật là hành vi mới; `learning-path` và `skill-roles` ở `StatMarket` vẫn `UnknownCell`.
 - `haido_api/routes/market.py` không sửa (docstring còn ghi "bản thật: #27", lỗi thời, để issue khác).
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+`web/lib/skill-profile-view.ts`: `learningPathHref` nhận `skill` tùy chọn. Hành vi của issue này không đổi.

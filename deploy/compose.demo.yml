@@ -1,0 +1,14 @@
+# Demo trên máy bằng snapshot thật (#217, #216). Phủ lên compose.local.yml:
+#   docker compose -f deploy/compose.local.yml -f deploy/compose.demo.yml up -d --build --wait
+# Database haido_demo phải có sẵn số (specs/217-man-lo-trinh/plan.md, mục Demo). Không chạy trên VPS.
+services:
+  api:
+    command: ["/app/.venv/bin/uvicorn", "haido_api.demo:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      HAIDO_DATABASE_URL: postgresql+psycopg://haido:${HAIDO_LOCAL_DB_PASSWORD:-haido_local}@postgres:5432/haido_demo
+      HAIDO_MARKET_SOURCE_CITY_SHARES: stat
+      HAIDO_MARKET_SOURCE_NEWCOMER_ROLES: stat
+      HAIDO_MARKET_SOURCE_SKILL_RATES: stat
+      HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
+      HAIDO_MARKET_SOURCE_LEARNING_PATH: stat  # haido_api.demo thay phép này bằng bản nháp
+      HAIDO_RESPONSE_CACHE: "on"

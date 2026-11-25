@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: Implemented, chờ merge. Đợt 2 (2026-11-12) sửa theo review; đợt 3 (2026-11-15) gộp main và đưa `spark`, `airflow`, `pandas` trở lại; đợt 4 (2026-11-16) fixture `skill_rates` mở rộng theo #149; đợt 5 (2026-11-16) `prepared_text.py` chuẩn hóa NFKC và bắt "phần trăm" mọi kiểu viết theo review #138: xem `tdd.md`.
+**Status**: Implemented, chờ merge. Đợt 2 (2026-11-12) sửa theo review; đợt 3 (2026-11-15) gộp main và đưa `spark`, `airflow`, `pandas` trở lại; đợt 4 (2026-11-16) fixture `skill_rates` mở rộng theo #149; đợt 5 (2026-11-16) `prepared_text.py` chuẩn hóa NFKC và bắt "phần trăm" mọi kiểu viết theo review #138; đợt #217 (2026-11-25) `fetchLearningPath` kiểm envelope chặt hơn, hình response không đổi; đợt B của #217 (2026-11-25) chặng thành chủ đề (`title`, `choose_one`): xem `tdd.md`.
 
 **Input**: GitHub issue [#212](https://github.com/Dyuedu/HaiDoIT/issues/212) — Agree the learning-path response shape and add fake data. Phục vụ story #121 (US-C1: biết nên học gì trước cho vai trò đã chọn) và cũng phải đủ cho story #122 (so sánh hai hướng: "N of M skills on this path", số tin entry-level của từng vai trò; task #220, #221).
 
@@ -20,10 +20,10 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 
 **Acceptance Scenarios**:
 
-1. **Given** API chạy nguồn giả, **When** gọi `learning-path?role=backend&level=entry`, **Then** body là `Envelope[LearningPathData]`, `data.status = ready`, `data.stages` đánh số 1..k, mỗi kỹ năng có `skill`, `rate`, `group`, `foundation_for`, `prerequisite_for`, `have`, `blurb`, `resource`.
+1. **Given** API chạy nguồn giả, **When** gọi `learning-path?role=backend&level=entry`, **Then** body là `Envelope[LearningPathData]`, `data.status = ready`, `data.stages` đánh số 1..k, mỗi chặng là một chủ đề có `title` và `choose_one`, mỗi kỹ năng có `skill`, `rate`, `group`, `foundation_for`, `prerequisite_for`, `have`, `blurb`, `resource`.
 2. **Given** một chặng, **When** đọc thứ tự kỹ năng, **Then** theo (nhóm cốt lõi trước thường gặp, tỷ lệ giảm dần, mã A–Z) (FR-22); không kỹ năng nào đứng ở chặng sớm hơn hoặc bằng chặng của kỹ năng nó cần.
 3. **Given** `rate` của mọi kỹ năng, **When** so với `skill-rates` cùng vai trò, cấp, ô, **Then** cùng giá trị, cùng `display`, cùng `group` (story #121: khớp hồ sơ kỹ năng #111).
-4. **Given** `have=java,sql`, **When** gọi, **Then** hai kỹ năng đó có `have = true`, `have_on_path = 2`, `path_size = M`, `current_stage` là chặng đầu còn kỹ năng `have = false`; thứ tự và số chặng không đổi.
+4. **Given** `have=java,sql`, **When** gọi, **Then** hai kỹ năng đó có `have = true`, `have_on_path = 2`, `path_size = M`, `current_stage` là chặng đầu chưa xong (chặng `choose_one` xong khi có một kỹ năng, chặng khác khi có mọi kỹ năng); thứ tự và số chặng không đổi.
 5. **Given** `have` chứa mã đúng định dạng nhưng không có trên lộ trình, **When** gọi, **Then** mã đó nằm ở `have_ignored` (xếp A–Z), không tính vào `have_on_path`; mã trùng chỉ tính một lần.
 6. **Given** `have` có mã sai định dạng, hoặc hơn 200 mã, hoặc phần tử rỗng, **When** gọi, **Then** 422 `invalid_query`. `have` rỗng coi như không gửi.
 7. **Given** vai trò chưa có lộ trình đã rà soát, **When** gọi, **Then** 200, `status = not_ready`, không có chặng, `current_stage = null`, `have_on_path = path_size = 0`, envelope và `meta` vẫn đủ (`entry_cell_id` có trong `meta.cells`).
@@ -43,7 +43,7 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 
 **Acceptance Scenarios**:
 
-1. **Given** dữ liệu giả, **When** liệt kê vai trò, **Then** `backend` entry sẵn sàng (n >= 30, ít nhất 3 chặng, 12–16 kỹ năng, có kỹ năng nền tảng, cốt lõi và thường gặp xen trong một chặng), `backend` intern sẵn sàng qua `vn.backend` (có số, nhãn ghi tỷ lệ Mid trở lên), `data_engineer` entry sẵn sàng nhưng mọi tỷ lệ `null_data`, mọi vai trò khác của `config/rules.toml` là `not_ready`. `ai_ml` entry là `not_ready` nhưng có `skill-rates` để mở hồ sơ kỹ năng (#111); `qa` là `not_ready` không có hồ sơ kỹ năng. *(2026-11-16, #149: mọi vai trò có `skill-rates` ở `entry` và `all`, nên `qa` · `entry` có hồ sơ kỹ năng; `qa` · `senior` vẫn không. `backend` · `all` có ô `vn.backend` nên lộ trình sẵn sàng, không còn 404.)*
+1. **Given** dữ liệu giả, **When** liệt kê vai trò, **Then** `backend` entry sẵn sàng (n >= 30, 8 chặng trong đó hai chặng chọn một, 12–16 kỹ năng, có kỹ năng nền tảng, cốt lõi và thường gặp xen trong một chặng), `backend` intern sẵn sàng qua `vn.backend` (có số, nhãn ghi tỷ lệ Mid trở lên), `data_engineer` entry sẵn sàng nhưng mọi tỷ lệ `null_data`, mọi vai trò khác của `config/rules.toml` là `not_ready`. `ai_ml` entry là `not_ready` nhưng có `skill-rates` để mở hồ sơ kỹ năng (#111); `qa` là `not_ready` không có hồ sơ kỹ năng. *(2026-11-16, #149: mọi vai trò có `skill-rates` ở `entry` và `all`, nên `qa` · `entry` có hồ sơ kỹ năng; `qa` · `senior` vẫn không. `backend` · `all` có ô `vn.backend` nên lộ trình sẵn sàng, không còn 404.)*
 2. **Given** mọi mã kỹ năng trong `skill-rates` và `learning-path` giả, **When** so với `haido_core/vocab/skills_seed.json`, **Then** đều thuộc danh sách mồi, và đều là snake_case.
 3. **Given** lời dẫn và tên tài liệu (`resource.title`) của mọi kỹ năng trong fixture, **When** quét bằng `haido_core/vocab/prepared_text.py`, **Then** không có chữ số ngoài tên công nghệ (khớp nguyên từ), không có `%`; lời dẫn không nói bao nhiêu tin đòi kỹ năng. Số viết bằng chữ ngoài phạm vi. Hàm kiểm trên văn bản đã chuẩn hóa NFKC (`％`, `²`, `①`, chữ số toàn chiều; "phần trăm" viết hoa, NFD, nhiều dấu cách, dấu cách không ngắt hay xuống dòng đều bị bắt). Cổng CI FR-24 của #138 dùng lại hàm này (đợt 5, 2026-11-16).
 4. **Given** `web/tests/fixtures/learning-path-*.json` (backend, backend có `have`, backend intern, data_engineer, data_engineer có `have` theo ví dụ FR-24, ai_ml, qa), **When** so với response của API giả, **Then** giống hệt.
@@ -66,9 +66,9 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 
 - **FR-001**: `GET /api/v1/learning-path?role=<mã>&level=<cấp>&have=<mã,mã,...>`; `level` dùng `LevelCode` như `city-shares`, mặc định `entry` (DEC-8, #134); `have` tùy chọn, tối đa 200 mã (AD-22), mỗi mã theo `SKILL_CODE_PATTERN`.
 - **FR-002**: `data` có `role`, `level`, `status` (`ready` hoặc `not_ready`), `cell_id` (null khi `not_ready`), `entry_cell_id`, `stages`, `current_stage`, `have_on_path`, `path_size`, `have_ignored`.
-- **FR-003**: Mỗi chặng `{stage, skills}`; mỗi kỹ năng `{skill, rate, group, foundation_for, prerequisite_for, have, blurb, resource{title,url}}`. `rate` là `Stat` `skill_rate` có `cell_id = data.cell_id`.
+- **FR-003**: Mỗi chặng `{stage, title, choose_one, skills}`; `choose_one` cần ít nhất hai kỹ năng; mỗi kỹ năng `{skill, rate, group, foundation_for, prerequisite_for, have, blurb, resource{title,url}}`. `rate` là `Stat` `skill_rate` có `cell_id = data.cell_id`.
 - **FR-004**: Máy chủ trả lộ trình đã xếp (AD-7) và tự đếm `have_on_path`, `path_size`, `current_stage`, `have_ignored` (AD-22). Web không sắp xếp, không đếm.
-- **FR-005**: **Hợp đồng cho #213: chặng là thuộc tính của nút kỹ năng**, không phụ thuộc `have`. Lọc theo `have` không bao giờ đổi chặng hay thứ tự của kỹ năng; chỉ đổi `have`, `current_stage`, `have_on_path`, `have_ignored`.
+- **FR-005**: **Hợp đồng cho #213: chặng là thuộc tính của nút kỹ năng**, không phụ thuộc `have`. Lọc theo `have` không bao giờ đổi chặng hay thứ tự của kỹ năng; chỉ đổi `have`, `current_stage`, `have_on_path`, `have_ignored`. Chặng là chủ đề khai báo trong file lộ trình (`topics`); kỹ năng cần học trước luôn ở chủ đề trước, sai thì `PathGraphError`. Chủ đề không còn kỹ năng thì bỏ, chủ đề chọn một chỉ còn một kỹ năng thì thành thường.
 - **FR-006**: Khóa xếp trong chặng theo FR-22: (nhóm: cốt lõi, thường gặp, riêng công ty, ẩn; tỷ lệ giảm dần; mã A–Z). Không kỹ năng nào ở chặng sớm hơn hoặc bằng chặng của kỹ năng nó cần.
 - **FR-007**: Lời dẫn là câu chữ viết sẵn, không có chữ số ngoài tên công nghệ, không `%` (FR-23, DEC-6 #132), không nói về tần suất trong tin tuyển dụng; tài nguyên là một link miễn phí, trung lập về nhà cung cấp khi kỹ năng trung lập.
 - **FR-008**: Phép có biến chọn nguồn `HAIDO_MARKET_SOURCE_LEARNING_PATH`, mặc định `fake`. `StatMarket.learning_path` trả `UnknownCell` cho tới #216.

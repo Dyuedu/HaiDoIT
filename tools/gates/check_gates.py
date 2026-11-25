@@ -393,8 +393,13 @@ def gate_fr24_loi_dan_khong_so():
         sys.path.pop(0)
 
     blurbs = ROOT / "haido_core" / "vocab" / "blurbs"
-    fixture = ROOT / "haido_api" / "fixtures" / "fake_learning_path.json"
-    if not blurbs.is_dir() and not fixture.is_file():
+    # Lộ trình giả (#212) và lộ trình nháp của app demo (#217): cùng hình, cùng luật.
+    fixtures = [
+        f
+        for f in (ROOT / "haido_api" / "fixtures" / n for n in ("fake_learning_path.json", "draft_learning_path.json"))
+        if f.is_file()
+    ]
+    if not blurbs.is_dir() and not fixtures:
         return check_deferred("FR-24")
 
     hits: list[str] = []
@@ -427,8 +432,8 @@ def gate_fr24_loi_dan_khong_so():
                     line_no = norm.count("\n", 0, m.start()) + 1 if m else 1
                     hits.append("%s:%d: %s" % (rel, line_no, "; ".join(whole)))
     # Lời dẫn đang hiện ra hôm nay: blurb và resource.title của lộ trình giả (#138, quyết định 2026-11-16).
-    if fixture.is_file():
-        where_scanned.append("haido_api/fixtures/fake_learning_path.json")
+    for fixture in fixtures:
+        where_scanned.append("haido_api/fixtures/" + fixture.name)
         fx_hits, fx_count = _fr24_scan_fixture(fixture, prepared_text_problems)
         hits += fx_hits
         count += fx_count
@@ -440,15 +445,16 @@ def gate_fr24_loi_dan_khong_so():
 
 _FR24_KEYS = {
     "top": {"_note", "roles"},
-    "role": {"skills"},
+    "role": {"skills", "topics"},
+    "topic": {"title", "choose_one", "skills"},
     "node": {"skill", "requires", "foundation", "blurb", "resource"},
     "resource": {"title", "url"},
 }
 
 
 def _fr24_scan_fixture(fixture: Path, prepared_text_problems) -> tuple[list[str], int]:
-    """Quét blurb và resource.title; khóa lạ hay kiểu sai là lỗi, để trường chữ mới không lọt qua cổng."""
-    name = "fake_learning_path.json"
+    """Quét blurb, resource.title và tên chủ đề; khóa lạ hay kiểu sai là lỗi, để trường chữ mới không lọt qua cổng."""
+    name = fixture.name
     try:
         data = json.loads(fixture.read_bytes().decode("utf-8"))
     except (OSError, ValueError) as exc:  # UnicodeDecodeError là ValueError
@@ -468,6 +474,24 @@ def _fr24_scan_fixture(fixture: Path, prepared_text_problems) -> tuple[list[str]
             hits.append("%s: %s: must be an object with a 'skills' list" % (name, role))
             continue
         unknown(entry, "role", role)
+        topics = entry.get("topics", [])
+        if not isinstance(topics, list):
+            hits.append("%s: %s.topics: must be a list" % (name, role))
+            topics = []
+        for idx, topic in enumerate(topics):
+            label = "%s.topics[%d]" % (role, idx)
+            if not isinstance(topic, dict):
+                hits.append("%s: %s: must be an object" % (name, label))
+                continue
+            unknown(topic, "topic", label)
+            title = topic.get("title")
+            if not isinstance(title, str):
+                hits.append("%s: %s.title: missing or not a string (%s)" % (name, label, type(title).__name__))
+                continue
+            count += 1
+            problems = prepared_text_problems(title)
+            if problems:
+                hits.append("%s: %s.title: %s: %s" % (name, label, "; ".join(problems), title.strip()[:90]))
         for idx, node in enumerate(entry["skills"]):
             if not isinstance(node, dict):
                 hits.append("%s: %s.skills[%d]: must be an object" % (name, role, idx))

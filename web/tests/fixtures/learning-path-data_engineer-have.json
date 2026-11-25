@@ -8,6 +8,8 @@
     "stages": [
       {
         "stage": 1,
+        "title": "Công cụ làm việc",
+        "choose_one": false,
         "skills": [
           {
             "skill": "git",
@@ -49,7 +51,14 @@
               "title": "Dòng lệnh Linux cho người mới (Ubuntu)",
               "url": "https://ubuntu.com/tutorials/command-line-for-beginners"
             }
-          },
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "title": "Ngôn ngữ và truy vấn",
+        "choose_one": false,
+        "skills": [
           {
             "skill": "python",
             "rate": {
@@ -99,7 +108,99 @@
         ]
       },
       {
-        "stage": 2,
+        "stage": 3,
+        "title": "Lưu trữ và mô hình hóa",
+        "choose_one": false,
+        "skills": [
+          {
+            "skill": "data_modeling",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "data_warehouse"
+            ],
+            "have": false,
+            "blurb": "Thiết kế bảng và quan hệ để truy vấn nhanh và dễ hiểu.",
+            "resource": {
+              "title": "Định nghĩa dữ liệu trong PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/ddl.html"
+            }
+          },
+          {
+            "skill": "postgresql",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở để lưu và truy vấn dữ liệu có cấu trúc.",
+            "resource": {
+              "title": "Hướng dẫn PostgreSQL",
+              "url": "https://www.postgresql.org/docs/current/tutorial.html"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 4,
+        "title": "Xử lý dữ liệu",
+        "choose_one": false,
+        "skills": [
+          {
+            "skill": "etl",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [
+              "data_warehouse"
+            ],
+            "have": false,
+            "blurb": "Quy trình lấy, biến đổi và nạp dữ liệu; cần Python và SQL.",
+            "resource": {
+              "title": "Extract, transform, load (Wikipedia)",
+              "url": "https://en.wikipedia.org/wiki/Extract,_transform,_load"
+            }
+          },
+          {
+            "skill": "spark",
+            "rate": {
+              "value": null,
+              "kind": "skill_rate",
+              "display": "null_data",
+              "cell_id": "vn.data_engineer"
+            },
+            "group": null,
+            "foundation_for": [],
+            "prerequisite_for": [],
+            "have": false,
+            "blurb": "Công cụ xử lý dữ liệu lớn phân tán; viết phép biến đổi bằng Python và SQL trên cụm hoặc máy cá nhân.",
+            "resource": {
+              "title": "Apache Spark: Quick Start",
+              "url": "https://spark.apache.org/docs/latest/quick-start.html"
+            }
+          }
+        ]
+      },
+      {
+        "stage": 5,
+        "title": "Điều phối và môi trường chạy",
+        "choose_one": false,
         "skills": [
           {
             "skill": "airflow",
@@ -138,26 +239,6 @@
             }
           },
           {
-            "skill": "data_modeling",
-            "rate": {
-              "value": null,
-              "kind": "skill_rate",
-              "display": "null_data",
-              "cell_id": "vn.data_engineer"
-            },
-            "group": null,
-            "foundation_for": [],
-            "prerequisite_for": [
-              "data_warehouse"
-            ],
-            "have": false,
-            "blurb": "Thiết kế bảng và quan hệ để truy vấn nhanh và dễ hiểu.",
-            "resource": {
-              "title": "Định nghĩa dữ liệu trong PostgreSQL",
-              "url": "https://www.postgresql.org/docs/current/ddl.html"
-            }
-          },
-          {
             "skill": "docker",
             "rate": {
               "value": null,
@@ -176,67 +257,13 @@
               "title": "Docker: Get started",
               "url": "https://docs.docker.com/get-started/"
             }
-          },
-          {
-            "skill": "etl",
-            "rate": {
-              "value": null,
-              "kind": "skill_rate",
-              "display": "null_data",
-              "cell_id": "vn.data_engineer"
-            },
-            "group": null,
-            "foundation_for": [],
-            "prerequisite_for": [
-              "data_warehouse"
-            ],
-            "have": false,
-            "blurb": "Quy trình lấy, biến đổi và nạp dữ liệu; cần Python và SQL.",
-            "resource": {
-              "title": "Extract, transform, load (Wikipedia)",
-              "url": "https://en.wikipedia.org/wiki/Extract,_transform,_load"
-            }
-          },
-          {
-            "skill": "postgresql",
-            "rate": {
-              "value": null,
-              "kind": "skill_rate",
-              "display": "null_data",
-              "cell_id": "vn.data_engineer"
-            },
-            "group": null,
-            "foundation_for": [],
-            "prerequisite_for": [],
-            "have": false,
-            "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở để lưu và truy vấn dữ liệu có cấu trúc.",
-            "resource": {
-              "title": "Hướng dẫn PostgreSQL",
-              "url": "https://www.postgresql.org/docs/current/tutorial.html"
-            }
-          },
-          {
-            "skill": "spark",
-            "rate": {
-              "value": null,
-              "kind": "skill_rate",
-              "display": "null_data",
-              "cell_id": "vn.data_engineer"
-            },
-            "group": null,
-            "foundation_for": [],
-            "prerequisite_for": [],
-            "have": false,
-            "blurb": "Công cụ xử lý dữ liệu lớn phân tán; viết phép biến đổi bằng Python và SQL trên cụm hoặc máy cá nhân.",
-            "resource": {
-              "title": "Apache Spark: Quick Start",
-              "url": "https://spark.apache.org/docs/latest/quick-start.html"
-            }
           }
         ]
       },
       {
-        "stage": 3,
+        "stage": 6,
+        "title": "Kho dữ liệu và tự động hóa",
+        "choose_one": false,
         "skills": [
           {
             "skill": "ci_cd",

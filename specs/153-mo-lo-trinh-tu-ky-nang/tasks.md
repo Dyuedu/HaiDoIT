@@ -13,3 +13,7 @@
 
 - [x] T003 `learningPathHref` và liên kết trong `skill-list.tsx`
 - [x] T004 `web/app/co-van/page.tsx`, `path-placeholder.tsx`
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+- [x] T005 Thay bốn test trang giữ chỗ bằng test màn lộ trình trong `web/tests/fr22-mo-lo-trinh-tu-ky-nang.test.tsx`

@@ -3,13 +3,16 @@
 Hàm thuần, dùng chung cho bản giả và bản thật (#216). Không đổi chặng, không đổi thứ tự (chặng là thuộc tính của
 nút kỹ năng). Web không làm các phép này.
 
-Cũng ở đây: tính chặng và `foundation_for` từ đồ thị `requires` (mã -> các mã cần học trước). Đồ thị lỗi (mã không có
+Chặng là chủ đề khai báo sẵn (`topic_stages`); cạnh tiên quyết luôn đi sang chặng sau. Cũng ở đây: độ sâu của đồ thị và `foundation_for` từ đồ thị `requires` (mã -> các mã cần học trước). Đồ thị lỗi (mã không có
 nút, chu trình) ra `PathGraphError`, không `KeyError` hay `RecursionError`.
 """
 
 from collections.abc import Collection, Mapping, Sequence
+from dataclasses import dataclass
+from typing import Any
 
-from haido_api.schemas.learning_path import PathSkill, PathStage
+from haido_api.schemas.learning_path import PathResource, PathSkill, PathStage, order_key
+from haido_core.domain.envelope import Stat
 
 
 class PathGraphError(ValueError):
@@ -56,6 +59,92 @@ def stage_numbers(requires: Mapping[str, Sequence[str]]) -> dict[str, int]:
     return {code: stage[code] for code in sorted(requires)}
 
 
+@dataclass(frozen=True)
+class Topic:
+    """Một chủ đề của lộ trình, theo thứ tự học khai báo."""
+
+    title: str
+    choose_one: bool
+    skills: tuple[str, ...]
+
+
+def topics_of(entry: Mapping[str, Any]) -> list[Topic]:
+    """Chủ đề của một vai trò trong file lộ trình (`topics`)."""
+    return [Topic(t["title"], t["choose_one"], tuple(t["skills"])) for t in entry["topics"]]
+
+
+def topic_stages(topics: Sequence[Topic], requires: Mapping[str, Sequence[str]]) -> list[Topic]:
+    """Các chặng của những nút trong `requires`: chủ đề theo thứ tự khai báo, bỏ nút không được chọn.
+
+    Chủ đề không còn nút nào thì bỏ; chủ đề chọn một chỉ còn một nút thì thành chủ đề thường (không còn gì để chọn).
+
+    Raises:
+        PathGraphError: như `stage_numbers`; nút không thuộc chủ đề nào hoặc thuộc hai chủ đề; hoặc kỹ năng cần học
+            trước ở cùng hoặc sau chủ đề của kỹ năng cần nó.
+    """
+    stage_numbers(requires)
+    topic_of: dict[str, int] = {}
+    for index, topic in enumerate(topics):
+        for code in topic.skills:
+            if code in topic_of:
+                raise PathGraphError(f"{code} nằm ở hai chủ đề: {topics[topic_of[code]].title} và {topic.title}.")
+            topic_of[code] = index
+    for code, needs in requires.items():
+        if code not in topic_of:
+            raise PathGraphError(f"{code} không thuộc chủ đề nào.")
+        for need in needs:
+            if topic_of.get(need, -1) >= topic_of[code]:
+                raise PathGraphError(f"{code} cần {need} nhưng chủ đề của {code} đứng cùng hoặc trước chủ đề của {need}.")
+    out = []
+    for topic in topics:
+        skills = tuple(code for code in topic.skills if code in requires)
+        if skills:
+            out.append(Topic(topic.title, topic.choose_one and len(skills) > 1, skills))
+    return out
+
+
+def build_stages(
+    topics: Sequence[Topic],
+    nodes: Mapping[str, Mapping[str, Any]],
+    stats: Mapping[str, Stat],
+    groups: Mapping[str, str | None],
+) -> list[PathStage]:
+    """Các chặng đã xếp của những nút trong `nodes` (mã -> nút của file lộ trình), mọi `have` là `False`.
+
+    Nút `foundation` và nút riêng công ty ghi `foundation_for` (FR-20). Dùng chung cho bản giả và bản nháp.
+    """
+    requires = {code: node["requires"] for code, node in nodes.items()}
+    stages = topic_stages(topics, requires)
+    targets = foundation_targets(requires, groups)
+    needed_by: dict[str, list[str]] = {code: [] for code in nodes}
+    for code, needs in requires.items():
+        for need in needs:
+            needed_by[need].append(code)
+
+    def skill(code: str) -> PathSkill:
+        node = nodes[code]
+        return PathSkill(
+            skill=code,
+            rate=stats[code],
+            group=groups[code],
+            foundation_for=targets[code] if node["foundation"] or groups[code] == "company_specific" else [],
+            prerequisite_for=sorted(needed_by[code]),
+            have=False,
+            blurb=node["blurb"],
+            resource=PathResource(**node["resource"]),
+        )
+
+    return [
+        PathStage(
+            stage=number,
+            title=topic.title,
+            choose_one=topic.choose_one,
+            skills=sorted((skill(code) for code in topic.skills), key=order_key),
+        )
+        for number, topic in enumerate(stages, start=1)
+    ]
+
+
 def foundation_targets(
     requires: Mapping[str, Sequence[str]], groups: Mapping[str, str | None]
 ) -> dict[str, list[str]]:
@@ -85,23 +174,22 @@ def foundation_targets(
 
 
 def apply_have(
-    stages: list[tuple[int, list[PathSkill]]], have: Collection[str]
+    stages: Sequence[PathStage], have: Collection[str]
 ) -> tuple[list[PathStage], int | None, int, int, list[str]]:
     """Trả `(stages, current_stage, have_on_path, path_size, have_ignored)`.
 
     `have` là tập mã đã loại trùng hoặc chuỗi có thể trùng; trùng chỉ tính một lần.
     """
     wanted = set(have)
-    on_path = {s.skill for _, skills in stages for s in skills}
+    on_path = {s.skill for st in stages for s in st.skills}
     out = [
-        PathStage(
-            stage=number,
-            skills=[s.model_copy(update={"have": s.skill in wanted}) for s in skills],
+        st.model_copy(
+            update={"skills": [s.model_copy(update={"have": s.skill in wanted}) for s in st.skills]}
         )
-        for number, skills in stages
+        for st in stages
     ]
     flat = [s for st in out for s in st.skills]
-    current = next((st.stage for st in out if any(not s.have for s in st.skills)), None)
+    current = next((st.stage for st in out if not st.is_done()), None)
     return (
         out,
         current,

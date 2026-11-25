@@ -201,3 +201,9 @@ Lý do: #278 sửa `skills_seed.json` (40 mã mới, bí danh, 6 thẻ ghép, `s
 Hành vi quét đổi theo dữ liệu: bốn khóa chuyển từ mã cũ sang mã mới (`infrastructure as code` từ `terraform` sang `infrastructure_as_code`, `can bus` từ `protocols_hw` sang `can_bus`, `tu duy phan tich` và `tu duy logic` từ `problem_solving` sang `analytical_thinking`), và tên Việt "Phát triển API" nay là một cụm quét được. Một test đổi kỳ vọng: `tests/domain/test_gh283_posting_text.py::test_gh283_giu_muc_yeu_cau_va_nhiem_vu_bo_quyen_loi_va_gioi_thieu` giữ nguyên câu mẫu gốc "Phát triển API bằng Docker" (lượt đầu của #278 đã đổi câu sang "Phát triển dịch vụ bằng Docker" để né; đợt review 2026-11-23 khôi phục lại). Kỳ vọng nay nói thẳng hành vi mới: `{"api": 1, "docker": 1, "python": 2}`, vì "Phát triển API" là tên Việt của mã `api` và mã được tìm thấy qua cụm đó (`api` đứng riêng vẫn trong `scan_skip`). RED: với câu gốc và kỳ vọng cũ `{"docker": 1, "python": 2}` test đỏ vì dư `api` (chạy thật `_skills(...)` ra `{'api': 1, 'docker': 1, 'python': 2}`); GREEN sau khi đổi kỳ vọng. Không AC nào của #283 đổi.
 
 RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

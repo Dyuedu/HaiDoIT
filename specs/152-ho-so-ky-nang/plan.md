@@ -38,3 +38,7 @@ web/tests/fixtures/skill-rates-*.json, skills.json      # mới, sinh từ API g
 
 - `web/app/ho-so-ky-nang/page.tsx` và `web/tests/fr37-newcomer-list.test.tsx` thuộc #147/#148 (có `specs/`): thêm đợt TDD; FR-005 của #147 đã báo trước trang này sẽ bị thay.
 - `web/lib/newcomer-roles-view.ts` thuộc #147: chỉ sửa chú thích.
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+`web/lib/skill-profile-view.ts`: `learningPathHref` nhận `skill` tùy chọn. Hành vi của issue này không đổi.

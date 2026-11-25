@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-19
 
-**Status**: Implemented, chờ merge.
+**Status**: Implemented, chờ merge. 2026-11-25 (#217): `learningPathHref` nhận `skill` tùy chọn, hành vi không đổi.
 
 **Input**: GitHub issue [#324](https://github.com/Dyuedu/HaiDoIT/issues/324) — Rewrite on-screen copy in plain Vietnamese. Task phục vụ #110, #111, #112, #113, #280.
 

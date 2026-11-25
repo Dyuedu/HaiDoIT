@@ -1,7 +1,71 @@
 {
-  "_note": "Dữ liệu giả của lộ trình học (#212), đọc bởi haido_api/fake_market.py. Mỗi kỹ năng có `requires` (mã kỹ năng cần học trước, cùng vai trò); chặng = 1 + chặng cao nhất của `requires`; prerequisite_for là các nút trực tiếp cần nó; foundation_for của nút `foundation: true` là các nút core hoặc common có nó là tổ tiên bắc cầu, và rỗng khi nhóm bị ẩn (FR-20). Tỷ lệ và nhóm lấy từ skill_rates của fake_market.json cho cùng (vai trò, cấp), nên bằng /skill-rates. Mã kỹ năng chỉ lấy từ haido_core/vocab/skills_seed.json. Lời dẫn không có chữ số ngoài tên công nghệ (FR-23). Vai trò của config/rules.toml không có ở đây là not_ready. Lời dẫn nói kỹ năng dùng để làm gì, không nói bao nhiêu tin đòi nó.",
+  "_note": "Dữ liệu giả của lộ trình học (#212), đọc bởi haido_api/fake_market.py. Mỗi kỹ năng có `requires` (mã kỹ năng cần học trước, cùng vai trò); chặng là chủ đề trong `topics`, theo thứ tự khai báo, kỹ năng cần học trước luôn ở chủ đề trước; chủ đề `choose_one` là các lựa chọn thay nhau; prerequisite_for là các nút trực tiếp cần nó; foundation_for của nút `foundation: true` là các nút core hoặc common có nó là tổ tiên bắc cầu, và rỗng khi nhóm bị ẩn (FR-20). Tỷ lệ và nhóm lấy từ skill_rates của fake_market.json cho cùng (vai trò, cấp), nên bằng /skill-rates. Mã kỹ năng chỉ lấy từ haido_core/vocab/skills_seed.json. Lời dẫn không có chữ số ngoài tên công nghệ (FR-23). Vai trò của config/rules.toml không có ở đây là not_ready. Lời dẫn nói kỹ năng dùng để làm gì, không nói bao nhiêu tin đòi nó.",
   "roles": {
     "backend": {
+      "topics": [
+        {
+          "title": "Công cụ làm việc",
+          "choose_one": false,
+          "skills": [
+            "git",
+            "linux"
+          ]
+        },
+        {
+          "title": "Ngôn ngữ lập trình",
+          "choose_one": false,
+          "skills": [
+            "java"
+          ]
+        },
+        {
+          "title": "Truy vấn dữ liệu",
+          "choose_one": false,
+          "skills": [
+            "sql"
+          ]
+        },
+        {
+          "title": "Hệ quản trị cơ sở dữ liệu",
+          "choose_one": true,
+          "skills": [
+            "mysql",
+            "postgresql"
+          ]
+        },
+        {
+          "title": "Framework phía máy chủ",
+          "choose_one": true,
+          "skills": [
+            "nodejs",
+            "spring_boot"
+          ]
+        },
+        {
+          "title": "API và kiểm thử",
+          "choose_one": false,
+          "skills": [
+            "rest_api",
+            "unit_testing"
+          ]
+        },
+        {
+          "title": "Đóng gói và bộ nhớ đệm",
+          "choose_one": false,
+          "skills": [
+            "docker",
+            "redis"
+          ]
+        },
+        {
+          "title": "Tự động hóa và hệ thống lớn",
+          "choose_one": false,
+          "skills": [
+            "ci_cd",
+            "microservices"
+          ]
+        }
+      ],
       "skills": [
         {
           "skill": "java",
@@ -167,6 +231,57 @@
       ]
     },
     "data_engineer": {
+      "topics": [
+        {
+          "title": "Công cụ làm việc",
+          "choose_one": false,
+          "skills": [
+            "git",
+            "linux"
+          ]
+        },
+        {
+          "title": "Ngôn ngữ và truy vấn",
+          "choose_one": false,
+          "skills": [
+            "python",
+            "sql"
+          ]
+        },
+        {
+          "title": "Lưu trữ và mô hình hóa",
+          "choose_one": false,
+          "skills": [
+            "data_modeling",
+            "postgresql"
+          ]
+        },
+        {
+          "title": "Xử lý dữ liệu",
+          "choose_one": false,
+          "skills": [
+            "etl",
+            "spark"
+          ]
+        },
+        {
+          "title": "Điều phối và môi trường chạy",
+          "choose_one": false,
+          "skills": [
+            "airflow",
+            "aws",
+            "docker"
+          ]
+        },
+        {
+          "title": "Kho dữ liệu và tự động hóa",
+          "choose_one": false,
+          "skills": [
+            "ci_cd",
+            "data_warehouse"
+          ]
+        }
+      ],
       "skills": [
         {
           "skill": "sql",

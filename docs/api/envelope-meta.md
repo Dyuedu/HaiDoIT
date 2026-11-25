@@ -350,7 +350,7 @@ trên số mã gửi lên, trước khi loại trùng (150 mã khác nhau cộng
     "role": "backend", "level": "entry", "status": "ready",
     "cell_id": "vn.backend.entry", "entry_cell_id": "vn.backend.entry",
     "stages": [
-      { "stage": 1, "skills": [
+      { "stage": 2, "title": "Ngôn ngữ lập trình", "choose_one": false, "skills": [
         { "skill": "java",
           "rate": { "value": 0.6538461538461539, "kind": "skill_rate", "display": "shown", "cell_id": "vn.backend.entry" },
           "group": "core", "foundation_for": [], "prerequisite_for": ["rest_api", "spring_boot", "unit_testing"],
@@ -364,6 +364,9 @@ trên số mã gửi lên, trước khi loại trùng (150 mã khác nhau cộng
 
 - Lộ trình đã xếp sẵn (AD-7). **Chặng là thuộc tính của từng kỹ năng**: `have` không đổi chặng hay thứ tự, chỉ đổi cờ
   `have`, `have_on_path`, `current_stage`, `have_ignored`. Web không sắp xếp, không đếm (AD-22).
+- Mỗi chặng là một chủ đề: `title` viết sẵn (luật như `blurb`), thứ tự chủ đề là thứ tự học. `choose_one = true`: các kỹ năng là
+  lựa chọn thay nhau (ít nhất hai), chặng xong khi đã có một kỹ năng; `prerequisite_for` của chúng là gợi ý cho người đã chọn, không khóa
+  chặng sau. Chặng khác xong khi có mọi kỹ năng. `have_on_path`, `path_size` luôn đếm kỹ năng, không đếm chặng.
 - Thứ tự trong một chặng (FR-22): nhóm (`core` trước `common`, rồi `company_specific`, rồi bị ẩn), tỷ lệ giảm dần, mã A–Z.
   Không kỹ năng nào ở chặng trước hoặc cùng chặng với kỹ năng nó cần (`prerequisite_for` luôn ở chặng sau).
 - Lộ trình **giữ kỹ năng đã có** (`have = true`) và tính vào `path_size` (khác chữ "không nằm trong lộ trình" của
@@ -380,8 +383,8 @@ trên số mã gửi lên, trước khi loại trùng (150 mã khác nhau cộng
   rỗng vì chưa biết nhóm của ai.
 - `blurb`: lời dẫn viết sẵn, không có chữ số ngoài tên công nghệ, không `%` (FR-23), không nói bao nhiêu tin đòi kỹ
   năng. Quy tắc kiểm nằm ở `haido_core/vocab/prepared_text.py` (cổng #138 dùng lại). `resource`: một link `https://` miễn phí.
-- `have_on_path`/`path_size` là "N of M skills on this path". `current_stage` là chặng đầu còn kỹ năng `have = false`,
-  `null` nếu đã có hết hoặc `not_ready`. `have_ignored`: mã hợp lệ không có trên lộ trình, A–Z.
+- `have_on_path`/`path_size` là "N of M skills on this path". `current_stage` là chặng đầu chưa xong,
+  `null` nếu mọi chặng đã xong hoặc `not_ready`. `have_ignored`: mã hợp lệ không có trên lộ trình, A–Z.
 - `status = not_ready` (200, không phải lỗi): không có chặng, `cell_id = null`, `current_stage = null`, hai số đếm bằng 0;
   `meta.cells` vẫn có `entry_cell_id`. Giao diện gợi ý hồ sơ kỹ năng (`skill-rates`).
 - `stage`, `current_stage`, `have_on_path`, `path_size` là số thứ tự và số đếm trên chính mã kỹ năng của người dùng,
@@ -436,7 +439,7 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `skill-rates?role=data_engineer&level=senior` | n = 18: mọi `rate` là `null_data`, `group = null` |
 | `city-shares?role=khong_ton_tai` | 404 `unknown_cell` |
 | `skill-rates?role=data_engineer` | 422 `invalid_query` |
-| `learning-path?role=backend&level=entry` | Sẵn sàng: 3 chặng, 14 kỹ năng, có kỹ năng nền tảng (`linux`), ô n = 52 |
+| `learning-path?role=backend&level=entry` | Sẵn sàng: 8 chặng (hai chặng chọn một), 14 kỹ năng, có kỹ năng nền tảng (`linux`), ô n = 52 |
 | `learning-path?role=backend&level=intern` | Sẵn sàng qua `vn.backend` (vai trò × mọi cấp, n = 157; ô Intern n = 13), mọi `rate` có số; `fallback_label` ghi 105 trên 157 tin (67%) là Mid trở lên |
 | `learning-path?role=data_engineer&level=entry` | Sẵn sàng nhưng mọi `rate` là `null_data`, `group = null`: ô entry n = 4 và `vn.data_engineer` n = 22 đều dưới 30; `cell_id = vn.data_engineer`, `fallback_label` giải thích |
 | `learning-path?role=qa` | 200 `not_ready` (mọi vai trò khác của config); `ai_ml&level=entry` cũng `not_ready` nhưng có `skill-rates` để mở hồ sơ |

@@ -32,3 +32,7 @@ Next.js, React, TypeScript, Vitest + Testing Library. Không đụng Python, DB.
 
 - Có `specs/`: #103, #106, #147, #151, #152, #153, #154, #163, #167, #169, #170, #206, #207, #280, #285, #314, #316. Mỗi thư mục thêm một đợt tdd; `spec.md` của issue có câu cũ trong scenario thì sửa câu đó.
 - Chưa có `specs/`: #1, #46 (ghi trong mô tả PR).
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+`web/lib/skill-profile-view.ts`: `learningPathHref` nhận `skill` tùy chọn. Hành vi của issue này không đổi.

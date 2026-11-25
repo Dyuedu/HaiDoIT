@@ -86,3 +86,11 @@ web/tests/fr22-learning-path-fixture.test.ts (mới)
 - Gộp `origin/main` bằng commit merge; chín xung đột giữ cả hai bên (xem `tdd.md` đợt 3). Thêm `learning_path` vào ba test dựng app của main: `tests/api/test_fr33_city_shares_years.py`, `tests/api/test_fr37_newcomer_roles_stat.py`, `tests/steps/test_gh284_aggregate_vai_tro_moi.py`.
 - File đổi thêm: `haido_api/fixtures/fake_market.json` (`skill_rates`), `haido_api/fixtures/fake_learning_path.json` (`spark`, `airflow`, tài nguyên `etl`), `web/tests/fixtures/learning-path-data_engineer.json`, `-have.json`, `docs/api/openapi.json`; test: `tests/api/test_fr22_learning_path.py` (quét 17 vai trò x cấp), `tests/api/test_fr22_learning_path_review.py`, `web/tests/fr22-learning-path-fixture.test.ts` (13 nút).
 - Kích thước lộ trình `data_engineer` là 13 nút.
+
+## Thay đổi sau merge (2026-11-25, #217)
+
+`web/lib/learning-path.ts`: kiểm từng kỹ năng, ô và số đếm, link https, đúng vai trò và cấp đã hỏi. Hình response không đổi.
+
+## Thay đổi sau merge (2026-11-25, #217 đợt B: chặng là chủ đề)
+
+`haido_api/schemas/learning_path.py`, `haido_api/learning_path.py` (`Topic`, `topic_stages`, `build_stages`, `apply_have`), `haido_api/fake_market.py`, `haido_api/fixtures/fake_learning_path.json` (`topics`), `web/lib/learning-path.ts`, `web/tests/fixtures/learning-path-*.json`, `docs/api/envelope-meta.md`, `docs/api/openapi.json`. Không đổi bảng hay migration.

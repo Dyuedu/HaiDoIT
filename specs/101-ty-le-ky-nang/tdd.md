@@ -105,3 +105,9 @@ Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_
 
 Lý do: #102 đóng băng θ (`config/theta.toml`, `theta-1` = 0,3/0,1), thêm `snapshots.theta_version` (migration 0010) và `meta.thresholds.theta_version`, sửa file mà issue này từng đụng: `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`, `haido_core/steps/aggregate.py`, `tests/db/test_ad4_snapshot_schema.py`, `tests/db/test_dat20_stat_tables.py`, `tests/db/test_dat29_stat_skill_rates.py`, `tests/db/test_fr33_stat_city_shares_level.py`, `tests/db/test_fr33_stat_years.py`, `tests/db/test_gh283_facts_labels.py`, `tests/db/test_gh285_fact_city.py`.
 Giá trị θ không đổi nên số, nhóm và hành vi của issue này không đổi; test chỉ thêm `theta_version` vào ngưỡng hoặc đổi head migration mong đợi sang 0010. RED, GREEN và đột biến: `specs/102-dong-bang-theta/tdd.md`.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

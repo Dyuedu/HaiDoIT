@@ -1,0 +1,1383 @@
+{
+  "_note": "Lộ trình NHÁP của app demo (#217), đọc bởi haido_api/draft_path.py. Chưa được giảng viên rà soát (#96), không chạy trên prod. Nhóm tự soạn, không chép từ roadmap.sh. Kỹ năng: mọi kỹ năng core hoặc common của ô tỷ lệ vai trò đó ở snapshot 2026-11-25; mã lấy từ haido_core/vocab/skills_seed.json. `topics` theo thứ tự học, kỹ năng cần học trước (`requires`) luôn ở chủ đề trước; `choose_one` là các lựa chọn thay nhau. Lời dẫn không có chữ số ngoài tên công nghệ (FR-23) và không nói bao nhiêu tin đòi nó.",
+  "roles": {
+    "backend": {
+      "topics": [
+        {
+          "title": "Công cụ làm việc",
+          "choose_one": false,
+          "skills": [
+            "git",
+            "linux",
+            "jira",
+            "ai_tools"
+          ]
+        },
+        {
+          "title": "Nền web",
+          "choose_one": false,
+          "skills": [
+            "html",
+            "css"
+          ]
+        },
+        {
+          "title": "Ngôn ngữ lập trình",
+          "choose_one": true,
+          "skills": [
+            "javascript",
+            "java",
+            "csharp",
+            "python"
+          ]
+        },
+        {
+          "title": "Nền tảng lập trình",
+          "choose_one": false,
+          "skills": [
+            "oop",
+            "dsa"
+          ]
+        },
+        {
+          "title": "Nền tảng dữ liệu",
+          "choose_one": false,
+          "skills": [
+            "databases",
+            "sql"
+          ]
+        },
+        {
+          "title": "Hệ quản trị cơ sở dữ liệu",
+          "choose_one": true,
+          "skills": [
+            "sql_server",
+            "mysql",
+            "postgresql",
+            "oracle_db"
+          ]
+        },
+        {
+          "title": "Framework phía máy chủ",
+          "choose_one": true,
+          "skills": [
+            "dotnet",
+            "spring",
+            "spring_boot",
+            "nodejs",
+            "entity_framework"
+          ]
+        },
+        {
+          "title": "API",
+          "choose_one": false,
+          "skills": [
+            "rest_api"
+          ]
+        },
+        {
+          "title": "Framework giao diện",
+          "choose_one": true,
+          "skills": [
+            "vue",
+            "angular",
+            "react"
+          ]
+        },
+        {
+          "title": "Chất lượng mã",
+          "choose_one": false,
+          "skills": [
+            "unit_testing",
+            "code_review",
+            "test_design"
+          ]
+        },
+        {
+          "title": "Thiết kế phần mềm",
+          "choose_one": false,
+          "skills": [
+            "design_patterns",
+            "clean_architecture",
+            "performance_optimization"
+          ]
+        },
+        {
+          "title": "Đóng gói và bộ nhớ đệm",
+          "choose_one": false,
+          "skills": [
+            "docker",
+            "redis"
+          ]
+        },
+        {
+          "title": "Triển khai và hệ thống lớn",
+          "choose_one": false,
+          "skills": [
+            "ci_cd",
+            "azure",
+            "microservices"
+          ]
+        },
+        {
+          "title": "Nghiệp vụ và phân tích",
+          "choose_one": false,
+          "skills": [
+            "business_analysis",
+            "data_analysis",
+            "erp",
+            "project_management"
+          ]
+        },
+        {
+          "title": "Ngoại ngữ",
+          "choose_one": true,
+          "skills": [
+            "english",
+            "japanese"
+          ]
+        },
+        {
+          "title": "Kỹ năng làm việc",
+          "choose_one": false,
+          "skills": [
+            "teamwork",
+            "communication",
+            "analytical_thinking",
+            "problem_solving",
+            "self_learning",
+            "independent_work"
+          ]
+        }
+      ],
+      "skills": [
+        {
+          "skill": "git",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Quản lý phiên bản mã; biết nhánh, commit và gộp mã là đủ để bắt đầu làm việc nhóm.",
+          "resource": {
+            "title": "Sách Pro Git",
+            "url": "https://git-scm.com/book/en/v2"
+          }
+        },
+        {
+          "skill": "linux",
+          "requires": [],
+          "foundation": true,
+          "blurb": "Dòng lệnh và quyền tệp trên Linux là nền để học container, máy chủ và triển khai.",
+          "resource": {
+            "title": "Dòng lệnh Linux cho người mới (Ubuntu)",
+            "url": "https://ubuntu.com/tutorials/command-line-for-beginners"
+          }
+        },
+        {
+          "skill": "jira",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Công cụ theo dõi công việc của nhóm; biết đọc thẻ việc, cập nhật trạng thái và ghi lại tiến độ.",
+          "resource": {
+            "title": "Hướng dẫn Jira của Atlassian",
+            "url": "https://www.atlassian.com/software/jira/guides"
+          }
+        },
+        {
+          "skill": "ai_tools",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Trợ lý AI khi viết mã; biết giao việc rõ ràng và tự kiểm lại kết quả trước khi dùng.",
+          "resource": {
+            "title": "Tài liệu GitHub Copilot",
+            "url": "https://docs.github.com/en/copilot"
+          }
+        },
+        {
+          "skill": "html",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cấu trúc của trang web; backend cũng cần đọc được trang mà API của mình phục vụ.",
+          "resource": {
+            "title": "Học HTML (MDN)",
+            "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content"
+          }
+        },
+        {
+          "skill": "css",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cách trình bày trang web; nắm bộ chọn, bố cục và kích thước đáp ứng.",
+          "resource": {
+            "title": "Học CSS (MDN)",
+            "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics"
+          }
+        },
+        {
+          "skill": "javascript",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ chạy trong trình duyệt và trên máy chủ; chọn hướng này thì học tiếp Node.js.",
+          "resource": {
+            "title": "Hướng dẫn JavaScript (MDN)",
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"
+          }
+        },
+        {
+          "skill": "java",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ để viết dịch vụ phía máy chủ; nắm cú pháp, hướng đối tượng và bộ sưu tập trước khi học framework.",
+          "resource": {
+            "title": "Học Java (dev.java)",
+            "url": "https://dev.java/learn/"
+          }
+        },
+        {
+          "skill": "csharp",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ của hệ sinh thái .NET; nắm kiểu dữ liệu, lớp và xử lý bất đồng bộ.",
+          "resource": {
+            "title": "Tài liệu C# của Microsoft",
+            "url": "https://learn.microsoft.com/en-us/dotnet/csharp/"
+          }
+        },
+        {
+          "skill": "python",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ gọn, dễ bắt đầu; bắt đầu từ kiểu dữ liệu, hàm và tệp.",
+          "resource": {
+            "title": "Hướng dẫn Python",
+            "url": "https://docs.python.org/3/tutorial/"
+          }
+        },
+        {
+          "skill": "oop",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cách tổ chức mã thành đối tượng; đóng gói, kế thừa và đa hình giúp đọc được mã của framework.",
+          "resource": {
+            "title": "Lập trình hướng đối tượng (MDN)",
+            "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Advanced_JavaScript_objects/Object-oriented_programming"
+          }
+        },
+        {
+          "skill": "dsa",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Chọn đúng cấu trúc dữ liệu và ước lượng chi phí của thuật toán; là nền để giải bài phỏng vấn và tối ưu mã.",
+          "resource": {
+            "title": "Sách Open Data Structures",
+            "url": "https://opendatastructures.org/"
+          }
+        },
+        {
+          "skill": "databases",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cách dữ liệu được lưu, liên kết và bảo toàn; hiểu khóa, chỉ mục và giao dịch.",
+          "resource": {
+            "title": "Cơ sở dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Database"
+          }
+        },
+        {
+          "skill": "sql",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ truy vấn dữ liệu; bắt đầu từ SELECT, JOIN và nhóm dữ liệu.",
+          "resource": {
+            "title": "Hướng dẫn SQL của PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
+          }
+        },
+        {
+          "skill": "sql_server",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Hệ quản trị cơ sở dữ liệu của Microsoft, kết hợp tốt với .NET; học công cụ quản trị và thủ tục lưu trữ.",
+          "resource": {
+            "title": "Tài liệu SQL Server",
+            "url": "https://learn.microsoft.com/en-us/sql/sql-server/"
+          }
+        },
+        {
+          "skill": "mysql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở; kiến thức SQL dùng lại được, khác ở công cụ và cấu hình.",
+          "resource": {
+            "title": "Học MySQL (MySQL Tutorial)",
+            "url": "https://www.mysqltutorial.org/"
+          }
+        },
+        {
+          "skill": "postgresql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở, nhiều kiểu dữ liệu; học sau khi đã quen SQL cơ bản.",
+          "resource": {
+            "title": "Hướng dẫn PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial.html"
+          }
+        },
+        {
+          "skill": "oracle_db",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu của Oracle, dùng trong hệ thống doanh nghiệp lớn; học SQL rồi tới thủ tục lưu trữ.",
+          "resource": {
+            "title": "Tài liệu Oracle Database",
+            "url": "https://docs.oracle.com/en/database/oracle/oracle-database/"
+          }
+        },
+        {
+          "skill": "dotnet",
+          "requires": [
+            "csharp"
+          ],
+          "foundation": false,
+          "blurb": "Nền tảng để dựng dịch vụ bằng C#; bắt đầu từ một API nhỏ rồi thêm cấu hình và kiểm thử.",
+          "resource": {
+            "title": "Học ASP.NET Core",
+            "url": "https://learn.microsoft.com/en-us/aspnet/core/"
+          }
+        },
+        {
+          "skill": "spring",
+          "requires": [
+            "java",
+            "oop"
+          ],
+          "foundation": false,
+          "blurb": "Framework Java với tiêm phụ thuộc và cấu hình; hiểu nó thì đọc được dự án Java doanh nghiệp.",
+          "resource": {
+            "title": "Các hướng dẫn của Spring",
+            "url": "https://spring.io/guides"
+          }
+        },
+        {
+          "skill": "spring_boot",
+          "requires": [
+            "java",
+            "oop"
+          ],
+          "foundation": false,
+          "blurb": "Cách dựng nhanh một dịch vụ Java chạy được; cần Java vững để đọc được cấu hình và chú thích.",
+          "resource": {
+            "title": "Bắt đầu với Spring Boot",
+            "url": "https://spring.io/guides/gs/spring-boot/"
+          }
+        },
+        {
+          "skill": "nodejs",
+          "requires": [
+            "javascript"
+          ],
+          "foundation": false,
+          "blurb": "Chạy JavaScript phía máy chủ; hiểu vòng lặp sự kiện và xử lý bất đồng bộ.",
+          "resource": {
+            "title": "Làm quen với Node.js",
+            "url": "https://nodejs.org/learn/getting-started/introduction-to-nodejs"
+          }
+        },
+        {
+          "skill": "entity_framework",
+          "requires": [
+            "csharp",
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Thư viện nối đối tượng C# với bảng dữ liệu; cần biết SQL để hiểu câu lệnh nó sinh ra.",
+          "resource": {
+            "title": "Tài liệu Entity Framework Core",
+            "url": "https://learn.microsoft.com/en-us/ef/core/"
+          }
+        },
+        {
+          "skill": "rest_api",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cách các dịch vụ và giao diện nói chuyện với nhau; nắm phương thức HTTP, mã trạng thái và định dạng JSON.",
+          "resource": {
+            "title": "Tổng quan HTTP (MDN)",
+            "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+          }
+        },
+        {
+          "skill": "vue",
+          "requires": [
+            "html",
+            "css",
+            "javascript"
+          ],
+          "foundation": false,
+          "blurb": "Framework giao diện gọn nhẹ; hiểu thành phần và dữ liệu phản ứng để sửa được màn quản trị.",
+          "resource": {
+            "title": "Giới thiệu Vue.js",
+            "url": "https://vuejs.org/guide/introduction.html"
+          }
+        },
+        {
+          "skill": "angular",
+          "requires": [
+            "html",
+            "css",
+            "javascript"
+          ],
+          "foundation": false,
+          "blurb": "Framework giao diện đủ bộ, hợp với hệ thống doanh nghiệp; cần HTML, CSS và JavaScript.",
+          "resource": {
+            "title": "Tài liệu Angular",
+            "url": "https://angular.dev/overview"
+          }
+        },
+        {
+          "skill": "react",
+          "requires": [
+            "html",
+            "css",
+            "javascript"
+          ],
+          "foundation": false,
+          "blurb": "Thư viện dựng giao diện bằng thành phần; hiểu trạng thái và luồng dữ liệu để làm việc với nhóm giao diện.",
+          "resource": {
+            "title": "Học React",
+            "url": "https://react.dev/learn"
+          }
+        },
+        {
+          "skill": "unit_testing",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Kiểm từng phần mã tự động để sửa mà không sợ hỏng; bắt đầu từ hàm thuần rồi tới lớp có phụ thuộc.",
+          "resource": {
+            "title": "Kiểm thử đơn vị (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Unit_testing"
+          }
+        },
+        {
+          "skill": "code_review",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đọc và góp ý mã của nhau; học cách nêu vấn đề rõ ràng và sửa theo góp ý.",
+          "resource": {
+            "title": "Cách review mã của Google",
+            "url": "https://google.github.io/eng-practices/review/"
+          }
+        },
+        {
+          "skill": "test_design",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Thiết kế ca kiểm thử từ yêu cầu; biết chia lớp tương đương và giá trị biên.",
+          "resource": {
+            "title": "Test case (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Test_case"
+          }
+        },
+        {
+          "skill": "design_patterns",
+          "requires": [
+            "oop"
+          ],
+          "foundation": false,
+          "blurb": "Các cách tổ chức mã đã được đặt tên; giúp nói cùng ngôn ngữ khi bàn thiết kế.",
+          "resource": {
+            "title": "Các mẫu thiết kế (Refactoring Guru)",
+            "url": "https://refactoring.guru/design-patterns"
+          }
+        },
+        {
+          "skill": "clean_architecture",
+          "requires": [
+            "oop"
+          ],
+          "foundation": false,
+          "blurb": "Tách nghiệp vụ khỏi framework và cơ sở dữ liệu để dễ kiểm thử và thay đổi.",
+          "resource": {
+            "title": "Các kiến trúc ứng dụng web (Microsoft)",
+            "url": "https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures"
+          }
+        },
+        {
+          "skill": "performance_optimization",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Tìm chỗ chậm bằng đo đạc rồi mới sửa; nắm chỉ mục, bộ nhớ đệm và độ phức tạp.",
+          "resource": {
+            "title": "Tối ưu hiệu năng (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Program_optimization"
+          }
+        },
+        {
+          "skill": "docker",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Đóng gói ứng dụng để chạy giống nhau ở mọi máy; cần quen dòng lệnh Linux.",
+          "resource": {
+            "title": "Docker: Get started",
+            "url": "https://docs.docker.com/get-started/"
+          }
+        },
+        {
+          "skill": "redis",
+          "requires": [
+            "databases"
+          ],
+          "foundation": false,
+          "blurb": "Kho khóa và giá trị trong bộ nhớ, dùng làm bộ nhớ đệm và hàng đợi đơn giản.",
+          "resource": {
+            "title": "Tài liệu Redis",
+            "url": "https://redis.io/docs/latest/develop/get-started/"
+          }
+        },
+        {
+          "skill": "ci_cd",
+          "requires": [
+            "git",
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Tự động kiểm thử và triển khai mỗi khi mã thay đổi; cần Git và cách đóng gói ứng dụng.",
+          "resource": {
+            "title": "Tài liệu GitHub Actions",
+            "url": "https://docs.github.com/en/actions"
+          }
+        },
+        {
+          "skill": "azure",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Nền tảng đám mây của Microsoft để chạy ứng dụng và lưu dữ liệu.",
+          "resource": {
+            "title": "Tài liệu Azure cho lập trình viên",
+            "url": "https://learn.microsoft.com/en-us/azure/developer/"
+          }
+        },
+        {
+          "skill": "microservices",
+          "requires": [
+            "rest_api",
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Chia hệ thống thành dịch vụ nhỏ nói chuyện qua API; học sau khi dựng và đóng gói được một dịch vụ.",
+          "resource": {
+            "title": "Microservices (Martin Fowler)",
+            "url": "https://martinfowler.com/articles/microservices.html"
+          }
+        },
+        {
+          "skill": "business_analysis",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Hiểu yêu cầu nghiệp vụ trước khi viết mã; biết hỏi, ghi lại và xác nhận lại với người dùng.",
+          "resource": {
+            "title": "Phân tích nghiệp vụ (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Business_analysis"
+          }
+        },
+        {
+          "skill": "data_analysis",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đọc số liệu để trả lời câu hỏi; biết làm sạch, gom nhóm và trình bày kết quả.",
+          "resource": {
+            "title": "Phân tích dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Data_analysis"
+          }
+        },
+        {
+          "skill": "erp",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Phần mềm quản lý kho, bán hàng, kế toán của doanh nghiệp; hiểu quy trình giúp đọc được yêu cầu.",
+          "resource": {
+            "title": "Hoạch định nguồn lực doanh nghiệp (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Enterprise_resource_planning"
+          }
+        },
+        {
+          "skill": "project_management",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Chia việc, ước lượng và theo dõi tiến độ; giúp báo sớm khi việc có nguy cơ trễ.",
+          "resource": {
+            "title": "Hướng dẫn quản lý dự án (Atlassian)",
+            "url": "https://www.atlassian.com/work-management/project-management"
+          }
+        },
+        {
+          "skill": "english",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đọc tài liệu kỹ thuật và trao đổi với khách hàng; luyện đọc tài liệu gốc mỗi ngày.",
+          "resource": {
+            "title": "Học tiếng Anh (BBC)",
+            "url": "https://www.bbc.co.uk/learningenglish/"
+          }
+        },
+        {
+          "skill": "japanese",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cần khi làm với khách hàng Nhật; bắt đầu từ bảng chữ và câu giao tiếp trong công việc.",
+          "resource": {
+            "title": "Học tiếng Nhật Irodori (Japan Foundation)",
+            "url": "https://www.irodori.jpf.go.jp/en/"
+          }
+        },
+        {
+          "skill": "teamwork",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Phối hợp với người khác trên cùng một sản phẩm; báo tiến độ, nhận và đưa góp ý.",
+          "resource": {
+            "title": "Cẩm nang làm việc nhóm (Atlassian)",
+            "url": "https://www.atlassian.com/team-playbook"
+          }
+        },
+        {
+          "skill": "communication",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Trình bày vấn đề ngắn gọn cho đồng đội và khách hàng, bằng lời nói và bằng văn bản.",
+          "resource": {
+            "title": "Viết tài liệu kỹ thuật (Google)",
+            "url": "https://developers.google.com/tech-writing"
+          }
+        },
+        {
+          "skill": "analytical_thinking",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Tách vấn đề thành phần nhỏ, xem bằng chứng rồi mới kết luận.",
+          "resource": {
+            "title": "Tư duy phản biện (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Critical_thinking"
+          }
+        },
+        {
+          "skill": "problem_solving",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đi từ triệu chứng tới nguyên nhân rồi thử từng giả thuyết; ghi lại điều đã thử.",
+          "resource": {
+            "title": "Giải quyết vấn đề (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Problem_solving"
+          }
+        },
+        {
+          "skill": "self_learning",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Tự tìm tài liệu, tự đặt mục tiêu và tự kiểm tra; công nghệ đổi nên việc học không dừng.",
+          "resource": {
+            "title": "Học cách học (Coursera)",
+            "url": "https://www.coursera.org/learn/learning-how-to-learn"
+          }
+        },
+        {
+          "skill": "independent_work",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Nhận việc, tự lên kế hoạch và báo kết quả đúng hẹn mà không cần nhắc từng bước.",
+          "resource": {
+            "title": "Quản lý thời gian (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Time_management"
+          }
+        }
+      ]
+    },
+    "data_engineer": {
+      "topics": [
+        {
+          "title": "Công cụ làm việc",
+          "choose_one": false,
+          "skills": [
+            "git",
+            "linux"
+          ]
+        },
+        {
+          "title": "Ngôn ngữ lập trình",
+          "choose_one": true,
+          "skills": [
+            "python",
+            "java",
+            "scala"
+          ]
+        },
+        {
+          "title": "Nền tảng dữ liệu",
+          "choose_one": false,
+          "skills": [
+            "databases",
+            "sql",
+            "dsa"
+          ]
+        },
+        {
+          "title": "Cơ sở dữ liệu quan hệ",
+          "choose_one": true,
+          "skills": [
+            "oracle_db",
+            "postgresql",
+            "sql_server",
+            "mysql"
+          ]
+        },
+        {
+          "title": "Dữ liệu phi quan hệ",
+          "choose_one": false,
+          "skills": [
+            "nosql",
+            "mongodb"
+          ]
+        },
+        {
+          "title": "Mô hình hóa và truy vấn",
+          "choose_one": false,
+          "skills": [
+            "data_modeling",
+            "query_optimization"
+          ]
+        },
+        {
+          "title": "Quy trình dữ liệu",
+          "choose_one": false,
+          "skills": [
+            "etl"
+          ]
+        },
+        {
+          "title": "Kho dữ liệu",
+          "choose_one": false,
+          "skills": [
+            "data_warehouse",
+            "data_governance"
+          ]
+        },
+        {
+          "title": "Kho dữ liệu đám mây",
+          "choose_one": true,
+          "skills": [
+            "bigquery",
+            "snowflake",
+            "databricks"
+          ]
+        },
+        {
+          "title": "Dữ liệu lớn và luồng",
+          "choose_one": false,
+          "skills": [
+            "big_data",
+            "hadoop",
+            "spark",
+            "kafka"
+          ]
+        },
+        {
+          "title": "Điều phối và biến đổi",
+          "choose_one": false,
+          "skills": [
+            "airflow",
+            "dbt"
+          ]
+        },
+        {
+          "title": "Đóng gói",
+          "choose_one": false,
+          "skills": [
+            "docker"
+          ]
+        },
+        {
+          "title": "Triển khai",
+          "choose_one": false,
+          "skills": [
+            "ci_cd",
+            "kubernetes"
+          ]
+        },
+        {
+          "title": "Nền tảng đám mây",
+          "choose_one": true,
+          "skills": [
+            "aws",
+            "azure",
+            "gcp"
+          ]
+        },
+        {
+          "title": "Vận hành",
+          "choose_one": false,
+          "skills": [
+            "troubleshooting",
+            "backup",
+            "performance_optimization",
+            "cybersecurity",
+            "system_design"
+          ]
+        },
+        {
+          "title": "Phân tích và máy học",
+          "choose_one": false,
+          "skills": [
+            "data_analysis",
+            "machine_learning"
+          ]
+        },
+        {
+          "title": "Ngoại ngữ và kỹ năng làm việc",
+          "choose_one": false,
+          "skills": [
+            "english",
+            "communication",
+            "problem_solving",
+            "analytical_thinking",
+            "teamwork",
+            "leadership"
+          ]
+        }
+      ],
+      "skills": [
+        {
+          "skill": "git",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Quản lý phiên bản cho mã xử lý dữ liệu và làm việc nhóm.",
+          "resource": {
+            "title": "Sách Pro Git",
+            "url": "https://git-scm.com/book/en/v2"
+          }
+        },
+        {
+          "skill": "linux",
+          "requires": [],
+          "foundation": true,
+          "blurb": "Máy chủ dữ liệu và công cụ dòng lệnh chạy trên Linux; là nền để học container và đám mây.",
+          "resource": {
+            "title": "Dòng lệnh Linux cho người mới (Ubuntu)",
+            "url": "https://ubuntu.com/tutorials/command-line-for-beginners"
+          }
+        },
+        {
+          "skill": "python",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ để viết các bước xử lý dữ liệu; bắt đầu từ kiểu dữ liệu, hàm và tệp.",
+          "resource": {
+            "title": "Hướng dẫn Python",
+            "url": "https://docs.python.org/3/tutorial/"
+          }
+        },
+        {
+          "skill": "java",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ của nhiều công cụ dữ liệu chạy trên máy ảo Java; hữu ích khi viết phần mở rộng cho chúng.",
+          "resource": {
+            "title": "Học Java (dev.java)",
+            "url": "https://dev.java/learn/"
+          }
+        },
+        {
+          "skill": "scala",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ chạy trên máy ảo Java, là ngôn ngữ gốc của Spark; học khi cần viết phép biến đổi phức tạp.",
+          "resource": {
+            "title": "Sách Scala",
+            "url": "https://docs.scala-lang.org/scala3/book/introduction.html"
+          }
+        },
+        {
+          "skill": "databases",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cách dữ liệu được lưu, liên kết và bảo toàn; hiểu khóa, chỉ mục và giao dịch.",
+          "resource": {
+            "title": "Cơ sở dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Database"
+          }
+        },
+        {
+          "skill": "sql",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ngôn ngữ truy vấn dữ liệu; bắt đầu từ SELECT, JOIN và nhóm dữ liệu.",
+          "resource": {
+            "title": "Hướng dẫn SQL của PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial-sql.html"
+          }
+        },
+        {
+          "skill": "dsa",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Chọn đúng cấu trúc dữ liệu và ước lượng chi phí của thuật toán; là nền để giải bài phỏng vấn và tối ưu mã.",
+          "resource": {
+            "title": "Sách Open Data Structures",
+            "url": "https://opendatastructures.org/"
+          }
+        },
+        {
+          "skill": "oracle_db",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu của Oracle, dùng trong hệ thống doanh nghiệp lớn; học SQL rồi tới thủ tục lưu trữ.",
+          "resource": {
+            "title": "Tài liệu Oracle Database",
+            "url": "https://docs.oracle.com/en/database/oracle/oracle-database/"
+          }
+        },
+        {
+          "skill": "postgresql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở, nhiều kiểu dữ liệu; học sau khi đã quen SQL cơ bản.",
+          "resource": {
+            "title": "Hướng dẫn PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/tutorial.html"
+          }
+        },
+        {
+          "skill": "sql_server",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Hệ quản trị cơ sở dữ liệu của Microsoft; là nguồn hoặc đích của nhiều quy trình dữ liệu.",
+          "resource": {
+            "title": "Tài liệu SQL Server",
+            "url": "https://learn.microsoft.com/en-us/sql/sql-server/"
+          }
+        },
+        {
+          "skill": "mysql",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu quan hệ mã nguồn mở; kiến thức SQL dùng lại được, khác ở công cụ và cấu hình.",
+          "resource": {
+            "title": "Học MySQL (MySQL Tutorial)",
+            "url": "https://www.mysqltutorial.org/"
+          }
+        },
+        {
+          "skill": "nosql",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Các kiểu kho dữ liệu không theo bảng; biết khi nào chọn tài liệu, khóa và giá trị hay cột rộng.",
+          "resource": {
+            "title": "NoSQL (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/NoSQL"
+          }
+        },
+        {
+          "skill": "mongodb",
+          "requires": [
+            "databases"
+          ],
+          "foundation": false,
+          "blurb": "Cơ sở dữ liệu lưu tài liệu giống JSON; học cách thiết kế tài liệu và đánh chỉ mục.",
+          "resource": {
+            "title": "Bắt đầu với MongoDB",
+            "url": "https://www.mongodb.com/docs/manual/tutorial/getting-started/"
+          }
+        },
+        {
+          "skill": "data_modeling",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Thiết kế bảng và quan hệ để truy vấn nhanh và dễ hiểu.",
+          "resource": {
+            "title": "Định nghĩa dữ liệu trong PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/ddl.html"
+          }
+        },
+        {
+          "skill": "query_optimization",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Đọc kế hoạch thực thi và đánh chỉ mục để truy vấn chạy nhanh hơn.",
+          "resource": {
+            "title": "Dùng EXPLAIN trong PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/using-explain.html"
+          }
+        },
+        {
+          "skill": "etl",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Quy trình lấy, biến đổi và nạp dữ liệu từ nhiều nguồn về một chỗ.",
+          "resource": {
+            "title": "Extract, transform, load (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Extract,_transform,_load"
+          }
+        },
+        {
+          "skill": "data_warehouse",
+          "requires": [
+            "etl",
+            "data_modeling"
+          ],
+          "foundation": false,
+          "blurb": "Kho dữ liệu tập trung phục vụ phân tích; cần quy trình ETL và mô hình dữ liệu.",
+          "resource": {
+            "title": "Kho dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Data_warehouse"
+          }
+        },
+        {
+          "skill": "data_governance",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Quy định ai được dùng dữ liệu nào, chất lượng và nguồn gốc ra sao.",
+          "resource": {
+            "title": "Quản trị dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Data_governance"
+          }
+        },
+        {
+          "skill": "bigquery",
+          "requires": [
+            "data_warehouse"
+          ],
+          "foundation": false,
+          "blurb": "Kho dữ liệu đám mây của Google, truy vấn bằng SQL mà không phải quản máy chủ.",
+          "resource": {
+            "title": "Tài liệu BigQuery",
+            "url": "https://cloud.google.com/bigquery/docs/introduction"
+          }
+        },
+        {
+          "skill": "snowflake",
+          "requires": [
+            "data_warehouse"
+          ],
+          "foundation": false,
+          "blurb": "Kho dữ liệu đám mây tách lưu trữ khỏi tính toán; thao tác chính bằng SQL.",
+          "resource": {
+            "title": "Tài liệu Snowflake",
+            "url": "https://docs.snowflake.com/en/user-guide-getting-started"
+          }
+        },
+        {
+          "skill": "databricks",
+          "requires": [
+            "data_warehouse"
+          ],
+          "foundation": false,
+          "blurb": "Nền tảng xử lý và lưu trữ dữ liệu dựa trên Spark; dùng sổ tay và bảng Delta.",
+          "resource": {
+            "title": "Tài liệu Databricks",
+            "url": "https://docs.databricks.com/aws/en/getting-started/"
+          }
+        },
+        {
+          "skill": "big_data",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Cách lưu và xử lý khối dữ liệu vượt sức một máy; hiểu chia phần và tính song song.",
+          "resource": {
+            "title": "Dữ liệu lớn (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Big_data"
+          }
+        },
+        {
+          "skill": "hadoop",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Hệ lưu trữ và xử lý phân tán; hiểu nó giúp đọc được các hệ dữ liệu đời trước.",
+          "resource": {
+            "title": "Apache Hadoop: bắt đầu",
+            "url": "https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html"
+          }
+        },
+        {
+          "skill": "spark",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Công cụ xử lý dữ liệu lớn phân tán; viết phép biến đổi trên cụm hoặc máy cá nhân.",
+          "resource": {
+            "title": "Apache Spark: Quick Start",
+            "url": "https://spark.apache.org/docs/latest/quick-start.html"
+          }
+        },
+        {
+          "skill": "kafka",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Hệ truyền sự kiện theo luồng giữa các dịch vụ; hiểu chủ đề, phân vùng và nhóm người đọc.",
+          "resource": {
+            "title": "Bắt đầu với Apache Kafka",
+            "url": "https://kafka.apache.org/quickstart"
+          }
+        },
+        {
+          "skill": "airflow",
+          "requires": [
+            "python",
+            "etl"
+          ],
+          "foundation": false,
+          "blurb": "Công cụ lập lịch và điều phối các bước xử lý dữ liệu thành một quy trình chạy đều đặn.",
+          "resource": {
+            "title": "Xây dựng pipeline dữ liệu với Apache Airflow",
+            "url": "https://airflow.apache.org/docs/apache-airflow/stable/tutorial/pipeline.html"
+          }
+        },
+        {
+          "skill": "dbt",
+          "requires": [
+            "sql",
+            "data_warehouse"
+          ],
+          "foundation": false,
+          "blurb": "Viết phép biến đổi trong kho dữ liệu bằng SQL, có kiểm thử và tài liệu đi kèm.",
+          "resource": {
+            "title": "Tài liệu dbt",
+            "url": "https://docs.getdbt.com/docs/introduction"
+          }
+        },
+        {
+          "skill": "docker",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Đóng gói các bước xử lý để chạy giống nhau ở mọi môi trường.",
+          "resource": {
+            "title": "Docker: Get started",
+            "url": "https://docs.docker.com/get-started/"
+          }
+        },
+        {
+          "skill": "ci_cd",
+          "requires": [
+            "git",
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Tự động kiểm thử và triển khai các bước xử lý dữ liệu.",
+          "resource": {
+            "title": "Tài liệu GitHub Actions",
+            "url": "https://docs.github.com/en/actions"
+          }
+        },
+        {
+          "skill": "kubernetes",
+          "requires": [
+            "docker"
+          ],
+          "foundation": false,
+          "blurb": "Điều phối nhiều container trên nhiều máy; học sau khi đóng gói được ứng dụng bằng Docker.",
+          "resource": {
+            "title": "Học Kubernetes cơ bản",
+            "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/"
+          }
+        },
+        {
+          "skill": "aws",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Nền tảng đám mây của Amazon; làm quen dịch vụ lưu trữ trước rồi tới dịch vụ xử lý.",
+          "resource": {
+            "title": "Bắt đầu với Amazon S3",
+            "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html"
+          }
+        },
+        {
+          "skill": "azure",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Nền tảng đám mây của Microsoft để lưu, xử lý và điều phối dữ liệu.",
+          "resource": {
+            "title": "Tài liệu Azure cho lập trình viên",
+            "url": "https://learn.microsoft.com/en-us/azure/developer/"
+          }
+        },
+        {
+          "skill": "gcp",
+          "requires": [
+            "linux"
+          ],
+          "foundation": false,
+          "blurb": "Nền tảng đám mây của Google; làm quen dự án, quyền truy cập và dịch vụ lưu trữ.",
+          "resource": {
+            "title": "Tài liệu Google Cloud",
+            "url": "https://cloud.google.com/docs/get-started"
+          }
+        },
+        {
+          "skill": "troubleshooting",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Lần theo nhật ký và số đo để tìm chỗ hỏng của quy trình dữ liệu.",
+          "resource": {
+            "title": "Xử lý sự cố (sách SRE của Google)",
+            "url": "https://sre.google/sre-book/effective-troubleshooting/"
+          }
+        },
+        {
+          "skill": "backup",
+          "requires": [
+            "databases"
+          ],
+          "foundation": false,
+          "blurb": "Sao lưu và thử khôi phục dữ liệu; bản sao chưa thử khôi phục thì chưa chắc dùng được.",
+          "resource": {
+            "title": "Sao lưu và khôi phục PostgreSQL",
+            "url": "https://www.postgresql.org/docs/current/backup.html"
+          }
+        },
+        {
+          "skill": "performance_optimization",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đo rồi mới tối ưu quy trình dữ liệu: chia phần, chỉ đọc cột cần, tránh xáo trộn thừa.",
+          "resource": {
+            "title": "Tối ưu hiệu năng (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Program_optimization"
+          }
+        },
+        {
+          "skill": "cybersecurity",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Bảo vệ dữ liệu: phân quyền, mã hóa và giữ bí mật kết nối.",
+          "resource": {
+            "title": "Các rủi ro hàng đầu của OWASP",
+            "url": "https://owasp.org/www-project-top-ten/"
+          }
+        },
+        {
+          "skill": "system_design",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Ghép các thành phần thành hệ thống chịu tải; biết nêu đánh đổi của từng lựa chọn.",
+          "resource": {
+            "title": "Thiết kế hệ thống (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Systems_design"
+          }
+        },
+        {
+          "skill": "data_analysis",
+          "requires": [
+            "sql"
+          ],
+          "foundation": false,
+          "blurb": "Đọc số liệu để trả lời câu hỏi; biết làm sạch, gom nhóm và trình bày kết quả.",
+          "resource": {
+            "title": "Phân tích dữ liệu (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Data_analysis"
+          }
+        },
+        {
+          "skill": "machine_learning",
+          "requires": [
+            "python"
+          ],
+          "foundation": false,
+          "blurb": "Hiểu dữ liệu huấn luyện và đặc trưng để chuẩn bị dữ liệu cho nhóm mô hình.",
+          "resource": {
+            "title": "Khóa học máy học (Google)",
+            "url": "https://developers.google.com/machine-learning/crash-course"
+          }
+        },
+        {
+          "skill": "english",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đọc tài liệu kỹ thuật và trao đổi với khách hàng; luyện đọc tài liệu gốc mỗi ngày.",
+          "resource": {
+            "title": "Học tiếng Anh (BBC)",
+            "url": "https://www.bbc.co.uk/learningenglish/"
+          }
+        },
+        {
+          "skill": "communication",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Trình bày vấn đề ngắn gọn cho đồng đội và khách hàng, bằng lời nói và bằng văn bản.",
+          "resource": {
+            "title": "Viết tài liệu kỹ thuật (Google)",
+            "url": "https://developers.google.com/tech-writing"
+          }
+        },
+        {
+          "skill": "problem_solving",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Đi từ triệu chứng tới nguyên nhân rồi thử từng giả thuyết; ghi lại điều đã thử.",
+          "resource": {
+            "title": "Giải quyết vấn đề (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Problem_solving"
+          }
+        },
+        {
+          "skill": "analytical_thinking",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Tách vấn đề thành phần nhỏ, xem bằng chứng rồi mới kết luận.",
+          "resource": {
+            "title": "Tư duy phản biện (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Critical_thinking"
+          }
+        },
+        {
+          "skill": "teamwork",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Phối hợp với người khác trên cùng một sản phẩm; báo tiến độ, nhận và đưa góp ý.",
+          "resource": {
+            "title": "Cẩm nang làm việc nhóm (Atlassian)",
+            "url": "https://www.atlassian.com/team-playbook"
+          }
+        },
+        {
+          "skill": "leadership",
+          "requires": [],
+          "foundation": false,
+          "blurb": "Dẫn dắt việc chung: nêu hướng, chia việc và hỗ trợ người khác hoàn thành.",
+          "resource": {
+            "title": "Cẩm nang làm việc nhóm (Atlassian)",
+            "url": "https://www.atlassian.com/team-playbook"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -17,12 +17,13 @@ import {
 import { levelLabel, roleLabel } from "./labels";
 import type { SkillGroup, SkillRatesEnvelope } from "./skill-rates";
 
-/** Đường dẫn Cố vấn (lộ trình học, #121). Tới khi có #213–#219 là trang giữ chỗ gọi tên kỹ năng (#153). */
+/** Đường dẫn Cố vấn: màn lộ trình học (#121, #217). */
 export const ADVISOR_PATH = "/co-van";
 
-/** Lộ trình học của vai trò ở cấp, mở tại một kỹ năng (#153). Nơi duy nhất dựng liên kết này. */
-export function learningPathHref(role: string, level: string, skill: string): string {
-  const params = new URLSearchParams({ role, level, skill });
+/** Lộ trình học của vai trò ở cấp, mở tại một kỹ năng nếu có (#153, #217). Nơi duy nhất dựng liên kết này. */
+export function learningPathHref(role: string, level: string, skill: string | null = null): string {
+  const params = new URLSearchParams({ role, level });
+  if (skill !== null) params.set("skill", skill);
   return `${ADVISOR_PATH}?${params.toString()}`;
 }
 

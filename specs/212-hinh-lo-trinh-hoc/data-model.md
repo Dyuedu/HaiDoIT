@@ -39,3 +39,7 @@ Không thêm bảng, cột hay revision Alembic (không đổi ở cả hai đ�
 - `haido_api/fixtures/fake_learning_path.json` (đợt 3): `data_engineer` thêm `spark`, `airflow` (cùng `requires` `python`, `sql`), lộ trình 13 nút; `etl` đổi tài nguyên sang Wikipedia. Không đổi bảng hay revision Alembic.
 - `haido_api/fixtures/fake_learning_path.json` (đợt 2): viết lại lời dẫn có nói tần suất; đổi link tài nguyên (JUnit, Linux, REST, ETL, kho dữ liệu, AWS, Node.js, Spring) sang link đã kiểm trả 200 ở đích cuối, trung lập hơn.
 - `haido_api/fixtures/fake_market.json` (đợt 1): mã `skill_rates` đổi sang snake_case; thêm hàng `backend/entry` (`linux`, `postgresql`, `mysql`, `unit_testing`, `ci_cd`, `redis`); thêm `data_engineer/entry` (ô `vn.all.entry`, có `fallback_label`); `data_engineer/senior` thay `airflow`, `spark`; `ai_ml/entry` thay `pandas`, `spark` (đợt 3, 2026-11-15: đã trả về `airflow`, `spark`, `pandas`, `spark` vì từ vựng #283 có đủ; `data_engineer/entry` thêm hàng null_data `airflow`, `spark`).
+
+## Đợt B của #217 (2026-11-25)
+
+Không đổi bảng. `PathStage` thêm `title` và `choose_one`; file lộ trình thêm `topics` (`title`, `choose_one`, `skills`) cho mỗi vai trò.

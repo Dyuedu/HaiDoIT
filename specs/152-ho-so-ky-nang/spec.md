@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-16
 
-**Status**: Implemented, chờ merge. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi.
+**Status**: Implemented, chờ merge. 2026-11-19 (#324): câu chữ trên màn viết lại bằng tiếng Việt dễ hiểu (bỏ nhãn `n = `, "snapshot"); số và hành vi không đổi. 2026-11-25 (#217): `learningPathHref` nhận `skill` tùy chọn, hành vi không đổi.
 
 **Input**: GitHub issue [#152](https://github.com/Dyuedu/HaiDoIT/issues/152) — Show the skill profile for a role and level. Phục vụ story #111 (US-A2), AC 3–6. Số giả của #149, số thật của #151. Cấp mặc định của #134 (DEC-8). Thay trang giữ chỗ `/ho-so-ky-nang` của #147.
 

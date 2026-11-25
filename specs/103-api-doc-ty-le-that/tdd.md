@@ -62,3 +62,9 @@ Lý do: #327 và #328 thêm `GET /api/v1/market-overview` và sửa file mà iss
 Lý do: #328 cài `StatMarket.market_overview`, nên `/api/v1/market-overview` đọc nguồn `stat` trả 200. `tests/api/test_ad17_meta_nguon_stat.py` thêm route này vào `REAL`. Hành vi và AC của issue này không đổi: route có số thật trả `data` và `meta`, route chưa có trả `unknown_cell`.
 
 - RED: CI của PR #331, `test_ad17_103_route_chua_co_so_that_tra_loi_chuan_khong_co_data` đỏ vì route mới trả 200. GREEN: xem `specs/328-tong-quan-thi-truong-that/tdd.md`.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

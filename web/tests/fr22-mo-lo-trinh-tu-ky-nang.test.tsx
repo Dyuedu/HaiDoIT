@@ -7,10 +7,10 @@ import SkillProfilePage from "@/app/ho-so-ky-nang/page";
 import { writeProfile } from "@/lib/haido-keys";
 import { learningPathHref } from "@/lib/skill-profile-view";
 
+import { routeLearningPath } from "./helpers/learning-path";
 import { routeSkillProfile } from "./helpers/skill-profile";
 
-// #153 — chạm một kỹ năng chưa có mở lộ trình học (#121) ở đúng kỹ năng đó. Màn lộ trình có ở Sprint 4; tới khi đó
-// `/co-van` là trang giữ chỗ gọi tên vai trò, cấp và kỹ năng.
+// #153 — chạm một kỹ năng chưa có mở lộ trình học (#121) ở đúng kỹ năng đó. Từ #217 `/co-van` là màn lộ trình thật.
 
 async function openProfile(params: Record<string, string>) {
   return render(await SkillProfilePage({ searchParams: Promise.resolve(params) }));
@@ -67,41 +67,43 @@ describe("fr22 #153 — liên kết từ kỹ năng chưa có", () => {
   });
 });
 
-describe("fr22 #153 — trang giữ chỗ /co-van", () => {
+describe("fr22 #153 #217 — /co-van mở lộ trình ở đúng kỹ năng", () => {
   async function openAdvisory(params: Record<string, string>) {
     return render(await AdvisoryPage({ searchParams: Promise.resolve(params) }));
   }
 
-  it("fr22: gọi tên vai trò, cấp và kỹ năng, nói lộ trình có ở sprint sau, có nút quay lại hồ sơ", async () => {
-    routeSkillProfile();
+  it("fr22: gọi tên vai trò, cấp và kỹ năng, ngăn của kỹ năng đó mở sẵn, có lối về hồ sơ", async () => {
+    routeLearningPath();
     await openAdvisory({ role: "backend", level: "entry", skill: "spring_boot" });
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain("Backend");
-    await screen.findByText(/Spring Boot/);
-    expect(screen.getByText(/Mới vào nghề/)).toBeTruthy();
-    expect(screen.getByText(/sprint sau/)).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Quay lại hồ sơ kỹ năng/ }).getAttribute("href")).toBe(
+    expect(await screen.findByRole("dialog", { name: "Spring Boot" })).toBeTruthy();
+    expect(screen.getByText("Mới vào nghề")).toBeTruthy();
+    expect(screen.getByRole("link", { name: /hồ sơ kỹ năng/ }).getAttribute("href")).toBe(
       "/ho-so-ky-nang?role=backend&level=entry",
+    );
+    expect(screen.queryByText(/sprint sau/)).toBeNull();
+  });
+
+  it("fr22: lối về hồ sơ giữ cấp mà người dùng đi từ đó sang", async () => {
+    routeLearningPath();
+    await openAdvisory({ role: "backend", level: "mid", skill: "spring_boot" });
+    expect(screen.getByRole("link", { name: /hồ sơ kỹ năng/ }).getAttribute("href")).toBe(
+      "/ho-so-ky-nang?role=backend&level=mid",
     );
   });
 
   it("fr22: mã vai trò hay kỹ năng lạ thì không in mã như một tên", async () => {
-    routeSkillProfile();
-    const { container } = await openAdvisory({ role: "khong_co", level: "entry", skill: "khong_co_ky_nang" });
-    await screen.findByRole("heading", { level: 1 });
-    expect(container.textContent).not.toContain("khong_co");
+    routeLearningPath();
+    const unknownRole = await openAdvisory({ role: "khong_co", level: "entry", skill: "khong_co_ky_nang" });
+    expect(unknownRole.container.textContent).not.toContain("khong_co");
+    unknownRole.unmount();
+    const unknownSkill = await openAdvisory({ role: "backend", level: "entry", skill: "khong_co_ky_nang" });
+    await screen.findByRole("list", { name: "Các chặng của lộ trình học" });
+    expect(unknownSkill.container.textContent).not.toContain("khong_co");
   });
 
-  it("fr22 ad8: câu của trang giữ chỗ không có chữ số (DEC-6)", async () => {
-    routeSkillProfile();
-    const { container } = await openAdvisory({ role: "backend", level: "entry", skill: "spring_boot" });
-    await screen.findByText(/Spring Boot/);
-    for (const node of container.querySelectorAll("h1, h2, p, a")) {
-      expect(node.textContent ?? "").not.toMatch(/\d/);
-    }
-  });
-
-  it("fr22: không có tham số thì giữ câu giới thiệu chung của Cố vấn", async () => {
-    routeSkillProfile();
+  it("fr22: không có tham số thì tiêu đề là Cố vấn", async () => {
+    routeLearningPath();
     await openAdvisory({});
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Cố vấn");
   });

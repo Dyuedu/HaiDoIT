@@ -62,3 +62,9 @@ Lý do: #324 viết lại chữ hiển thị bằng tiếng Việt dễ hiểu (
 Lý do: #330 thêm thanh vào danh sách người mới, lollipop vào danh sách kỹ năng theo vai trò, bảng số cho cả hai và biểu đồ cơ cấu cấp bậc (`web/lib/newcomer-roles-view.ts`, `skill-roles-view.ts`, `market-overview-view.ts`, các component trong `web/app/components/insights/`). Chữ, số, thứ tự và luật ẩn số không đổi. Bộ quét DEC-6 trong `web/tests/fr37-newcomer-list.test.tsx` miễn thêm `table` (bảng số là ô số theo thiết kế).
 
 - RED và GREEN: `specs/330-bieu-do-nguoi-moi-ky-nang/tdd.md` (`npx vitest run` → 373 passed).
+
+## Đợt #217 (2026-11-25): trang giữ chỗ thành màn lộ trình
+
+Lý do: #217 dựng màn lộ trình thật, đúng như Edge Cases của `spec.md` đã báo trước. Hành vi 5–7 thay bằng: `?skill=` mở ngăn của kỹ năng, lối về hồ sơ giữ cấp, mã lạ không in, không tham số thì tiêu đề "Cố vấn". Liên kết `learningPathHref` và AC của issue không đổi.
+
+- RED: 2 test trang giữ chỗ fail trên màn mới (không còn câu "sprint sau"). RED và GREEN: `specs/217-man-lo-trinh/tdd.md` (`npx vitest run` → 432 passed).

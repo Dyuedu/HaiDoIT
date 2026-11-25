@@ -27,15 +27,12 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from haido_api.learning_path import apply_have, foundation_targets, stage_numbers
+from haido_api.learning_path import apply_have, build_stages, foundation_targets, topics_of
 from haido_api.market_overview import BIG_CITIES, OverviewCounts, build_market_overview
 from haido_api.market_source import UnknownCell
 from haido_api.schemas.learning_path import (
     LearningPathData,
-    PathResource,
-    PathSkill,
     PathStatus,
-    order_key,
 )
 from haido_api.schemas.market import (
     SKILL_ROLES_LEVEL_GROUP,
@@ -101,6 +98,7 @@ class FakeMarket:
         self._paths: dict[str, list[dict[str, Any]]] = {
             role: entry["skills"] for role, entry in path_raw["roles"].items()
         }
+        self._topics = {role: topics_of(entry) for role, entry in path_raw["roles"].items()}
         self._roles: tuple[str, ...] = tuple(load_rules().roles)
         self._check_skill_roles()
 
@@ -287,8 +285,6 @@ class FakeMarket:
         # cho (vai trò, cấp) này, thay vì để `KeyError` thành 500.
         if not set(nodes) <= set(by_skill):
             raise no_cell
-        requires = {code: node["requires"] for code, node in nodes.items()}
-        stage_of = stage_numbers(requires)
         stats = {
             code: self._stat(by_skill[code]["rate"], MeasureKind.SKILL_RATE, cell_id)
             for code in nodes
@@ -299,33 +295,14 @@ class FakeMarket:
             else by_skill[code]["group"]
             for code in nodes
         }
+        requires = {code: node["requires"] for code, node in nodes.items()}
         targets = foundation_targets(requires, groups)
-        needed_by: dict[str, list[str]] = {code: [] for code in nodes}
-        for code, needs in requires.items():
-            for required in needs:
-                needed_by[required].append(code)
-        foundation_for = {
-            code: targets[code] if nodes[code]["foundation"] else [] for code in nodes
-        }
         if any(
-            groups[c] == "company_specific" and not foundation_for[c] for c in nodes
+            groups[c] == "company_specific" and not (nodes[c]["foundation"] and targets[c])
+            for c in nodes
         ):
             raise no_cell  # riêng công ty mà không phải nền tảng không được vào lộ trình (FR-20)
-        by_stage: dict[int, list[PathSkill]] = {}
-        for code, node in nodes.items():
-            by_stage.setdefault(stage_of[code], []).append(
-                PathSkill(
-                    skill=code,
-                    rate=stats[code],
-                    group=groups[code],
-                    foundation_for=foundation_for[code],
-                    prerequisite_for=sorted(needed_by[code]),
-                    have=False,
-                    blurb=node["blurb"],
-                    resource=PathResource(**node["resource"]),
-                )
-            )
-        stages = [(n, sorted(by_stage[n], key=order_key)) for n in sorted(by_stage)]
+        stages = build_stages(self._topics[role], nodes, stats, groups)
         out, current, have_on_path, path_size, ignored = apply_have(stages, set(have))
         data = LearningPathData(
             role=role, level=level, status=PathStatus.READY, cell_id=cell_id,

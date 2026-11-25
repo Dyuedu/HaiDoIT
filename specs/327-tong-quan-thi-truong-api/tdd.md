@@ -40,3 +40,9 @@ Lý do: màn #329 cần xếp vai trò theo cấp người dùng chọn trên bi
 - Hành vi thêm: (10) cấp nhiều tin trước, không gồm `unknown`; mỗi cấp một thứ tự vai trò đủ mọi vai trò, `other` cuối; vai trò có tỷ lệ người mới hiện được, tỷ lệ cao trước.
 - RED: `1 failed, 9 passed` — `AttributeError` vì `MarketOverviewData` chưa có `levels_by_size`. Kỳ vọng đầu của test viết sai (cho rằng `backend` đứng thứ hai ở cấp Intern, trong khi các vai trò cùng 0 tin xếp theo mã nên `ai_ml` đứng trước); sửa kỳ vọng thành chỉ kiểm vai trò đứng đầu.
 - GREEN: sau khi sinh lại `web/tests/fixtures/market-overview.json` và `docs/api/openapi.json`: `uv run pytest -q` → 1337 passed, 304 skipped; `ruff check .` sạch.
+
+## Đợt #217 (2026-11-25): lộ trình học thành chủ đề
+
+Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.

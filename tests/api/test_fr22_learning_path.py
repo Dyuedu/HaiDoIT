@@ -123,6 +123,59 @@ def test_fr22_hinh_response_backend(backend: dict[str, Any]) -> None:
         assert skill["resource"]["url"].startswith("https://")
 
 
+def test_fr22_moi_chang_la_mot_chu_de_co_ten(backend: dict[str, Any]) -> None:
+    stages = backend["data"]["stages"]
+    titles = [s["title"] for s in stages]
+    assert len(set(titles)) == len(titles)
+    assert all(t.strip() == t and t and not re.search(r"[0-9%]", t) for t in titles)
+    assert all(set(s) == {"stage", "title", "choose_one", "skills"} for s in stages)
+
+
+def test_fr22_backend_gia_co_chang_chon_mot(backend: dict[str, Any]) -> None:
+    choose = [s for s in backend["data"]["stages"] if s["choose_one"]]
+    assert [sorted(k["skill"] for k in s["skills"]) for s in choose] == [
+        ["mysql", "postgresql"],
+        ["nodejs", "spring_boot"],
+    ]
+
+
+def test_ad22_chang_chon_mot_xong_khi_da_co_mot_ky_nang(client: TestClient, backend: dict[str, Any]) -> None:
+    stages = backend["data"]["stages"]
+    first = next(s for s in stages if s["choose_one"])
+    before = [k["skill"] for s in stages if s["stage"] < first["stage"] for k in s["skills"]]
+    body = _get(client, role="backend", level="entry", have=",".join(before))
+    assert body["data"]["current_stage"] == first["stage"]
+    one = [*before, first["skills"][-1]["skill"]]
+    body = _get(client, role="backend", level="entry", have=",".join(one))
+    assert body["data"]["current_stage"] == first["stage"] + 1
+    assert body["data"]["have_on_path"] == len(one), "chặng chọn một không đổi cách đếm kỹ năng"
+
+
+def test_fr22_validator_chang_chon_mot_can_it_nhat_hai_ky_nang() -> None:
+    data = _data()
+    data["stages"][1]["choose_one"] = True
+    with pytest.raises(ValidationError, match="chọn một"):
+        LearningPathData.model_validate(data)
+
+
+def test_fr22_validator_current_stage_theo_chang_chon_mot() -> None:
+    data = _data(have_on_path=1, current_stage=2)
+    data["stages"][0]["choose_one"] = True
+    data["stages"][0]["skills"][0]["have"] = True
+    assert LearningPathData.model_validate(data).current_stage == 2
+    data["current_stage"] = 1
+    with pytest.raises(ValidationError, match="current_stage"):
+        LearningPathData.model_validate(data)
+
+
+@pytest.mark.parametrize("title", ["", "  "])
+def test_fr22_validator_chang_phai_co_ten(title: str) -> None:
+    data = _data()
+    data["stages"][0]["title"] = title
+    with pytest.raises(ValidationError):
+        LearningPathData.model_validate(data)
+
+
 def test_fr22_thu_tu_trong_chang_theo_khoa_fr22(backend: dict[str, Any]) -> None:
     for stage in backend["data"]["stages"]:
         keys = [
@@ -544,12 +597,14 @@ def _data(**override: Any) -> dict[str, Any]:
         "stages": [
             {
                 "stage": 1,
+                "title": "Nền tảng",
+                "choose_one": False,
                 "skills": [
                     _skill("java", 0.7, prereq=("spring_boot",)),
                     _skill("sql", 0.6),
                 ],
             },
-            {"stage": 2, "skills": [_skill("spring_boot", 0.5)]},
+            {"stage": 2, "title": "Framework", "choose_one": False, "skills": [_skill("spring_boot", 0.5)]},
         ],
         "current_stage": 1,
         "have_on_path": 0,
@@ -567,7 +622,7 @@ def test_fr22_schema_nhan_du_lieu_dung() -> None:
 
 def _with_stages(*stages: list[dict[str, Any]], **extra: Any) -> dict[str, Any]:
     base: dict[str, Any] = {
-        "stages": [{"stage": i, "skills": s} for i, s in enumerate(stages, start=1)],
+        "stages": [{"stage": i, "title": f"Chủ đề {i}", "choose_one": False, "skills": s} for i, s in enumerate(stages, start=1)],
         "path_size": sum(len(s) for s in stages),
     }
     return _data(**(base | extra))
@@ -593,7 +648,7 @@ BROKEN: list[tuple[str, dict[str, Any], str]] = [
     (
         "chặng bắt đầu từ 0",
         _with_stages([_skill("java", 0.7)])
-        | {"stages": [{"stage": 0, "skills": [_skill("java")]}]},
+        | {"stages": [{"stage": 0, "title": "Chủ đề", "choose_one": False, "skills": [_skill("java")]}]},
         "stage",
     ),
     ("chặng rỗng", _with_stages([_skill("java", 0.7)], [], path_size=1), "skills"),

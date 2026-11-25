@@ -1,6 +1,6 @@
 """Hình `data` của `GET /api/v1/learning-path` (#212). Envelope bọc ngoài nằm ở `haido_core.domain.envelope`.
 
-Lộ trình đã xếp sẵn (AD-7). **Chặng là thuộc tính của từng nút kỹ năng**, không phụ thuộc `have`: lọc theo
+Lộ trình đã xếp sẵn (AD-7). Mỗi chặng là một chủ đề có tên; chặng `choose_one` là các lựa chọn thay nhau. **Chặng là thuộc tính của từng nút kỹ năng**, không phụ thuộc `have`: lọc theo
 `have` không đổi chặng hay thứ tự, chỉ đổi cờ `have` và các số đếm (AD-22). Khóa xếp trong một chặng theo FR-22:
 (nhóm, tỷ lệ giảm dần, mã kỹ năng A–Z).
 """
@@ -107,15 +107,33 @@ class PathSkill(BaseModel):
 
 
 class PathStage(BaseModel):
-    """Một chặng: các kỹ năng đã xếp thứ tự."""
+    """Một chặng: một chủ đề và các kỹ năng của nó đã xếp thứ tự."""
 
     model_config = _CONFIG
 
     stage: Ordinal
     """Số chặng, từ 1, liền nhau."""
 
+    title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    """Tên chủ đề, viết sẵn: không chữ số ngoài tên công nghệ, không `%` (FR-23)."""
+
+    choose_one: bool
+    """Các kỹ năng là lựa chọn thay nhau (ví dụ ngôn ngữ): chặng xong khi đã có một kỹ năng. Cần ít nhất hai kỹ năng.
+    `prerequisite_for` của một kỹ năng ở đây là gợi ý cho người đã chọn nó, không khóa chặng sau."""
+
     skills: Annotated[list[PathSkill], Field(min_length=1)]
     """Theo khóa FR-22: nhóm (cốt lõi trước), tỷ lệ giảm dần, mã A–Z."""
+
+    @model_validator(mode="after")
+    def _chon_mot(self) -> Self:
+        if self.choose_one and len(self.skills) < 2:
+            raise ValueError(f"Chặng {self.stage} chọn một phải có ít nhất hai kỹ năng.")
+        return self
+
+    def is_done(self) -> bool:
+        """Đã có đủ kỹ năng của chặng: một kỹ năng ở chặng chọn một, mọi kỹ năng ở chặng khác."""
+        flags = [s.have for s in self.skills]
+        return any(flags) if self.choose_one else all(flags)
 
 
 def _reachable(direct: dict[str, list[str]], start: str) -> set[str]:
@@ -159,7 +177,7 @@ class LearningPathData(BaseModel):
     """Các chặng đã xếp. Rỗng khi `not_ready`."""
 
     current_stage: Ordinal | None
-    """Chặng đầu tiên còn kỹ năng `have = false`; `null` khi đã có hết hoặc `not_ready`."""
+    """Chặng đầu tiên chưa xong (chặng chọn một xong khi có một kỹ năng); `null` khi mọi chặng đã xong hoặc `not_ready`."""
 
     have_on_path: Ordinal
     """Số kỹ năng trên lộ trình mà người dùng đã có ("N" của "N of M skills on this path")."""
@@ -255,9 +273,7 @@ class LearningPathData(BaseModel):
             raise ValueError(f"path_size phải là {len(skills)}, nhận {self.path_size}.")
         if self.have_on_path != have:
             raise ValueError(f"have_on_path phải là {have}, nhận {self.have_on_path}.")
-        want = next(
-            (st.stage for st in self.stages if any(not s.have for s in st.skills)), None
-        )
+        want = next((st.stage for st in self.stages if not st.is_done()), None)
         if self.current_stage != want:
             raise ValueError(
                 f"current_stage phải là {want}, nhận {self.current_stage}."

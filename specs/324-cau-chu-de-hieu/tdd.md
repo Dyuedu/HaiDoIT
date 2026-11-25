@@ -47,3 +47,9 @@ Thêm `web/lib/source-labels.ts`; sửa bốn view và sáu component theo `plan
 Lý do: #330 thêm thanh vào danh sách người mới, lollipop vào danh sách kỹ năng theo vai trò, bảng số cho cả hai và biểu đồ cơ cấu cấp bậc (`web/lib/newcomer-roles-view.ts`, `skill-roles-view.ts`, `market-overview-view.ts`, các component trong `web/app/components/insights/`). Chữ, số, thứ tự và luật ẩn số không đổi. Bộ quét DEC-6 trong `web/tests/fr37-newcomer-list.test.tsx` miễn thêm `table` (bảng số là ô số theo thiết kế).
 
 - RED và GREEN: `specs/330-bieu-do-nguoi-moi-ky-nang/tdd.md` (`npx vitest run` → 373 passed).
+
+## Đợt #217 (2026-11-25): `learningPathHref` nhận `skill` tùy chọn
+
+Lý do: màn lộ trình (#217) dựng URL không có kỹ năng. File bị đụng: `web/lib/skill-profile-view.ts` (chỉ `learningPathHref` và chú thích). Hành vi, AC và câu chữ của issue này không đổi.
+
+RED và GREEN: `specs/217-man-lo-trinh/tdd.md` (`npx vitest run` → 432 passed).
