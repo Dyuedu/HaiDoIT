@@ -216,3 +216,9 @@ Lý do: màn kiểu roadmap.sh cần tên chủ đề và cụm lựa chọn; AP
 - RED: `test_fr22_learning_path.py`, `_graph.py`, `_draft.py`, `_review.py` → 14 failed, 85 passed, 2 errors (`Topic`, `topic_stages`, `DRAFT_FIXTURE` chưa có; schema từ chối `title`, `choose_one`).
 - Sau khi viết schema còn 12 failed: hai helper dựng chặng trong `test_fr22_learning_path.py` chưa có `title`; sửa helper, không đổi kỳ vọng.
 - GREEN và kết quả cuối: `specs/217-man-lo-trinh/tdd.md` đợt 4.
+
+## Đợt #216 (2026-11-25): lộ trình thật trong StatMarket
+
+Lý do: nguồn `stat` hết 404 cố định; test 404 đó bị thay bằng `test_fr22_learning_path_stat.py`. Hình response không đổi.
+
+RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.

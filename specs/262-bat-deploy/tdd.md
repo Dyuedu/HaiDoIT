@@ -150,3 +150,9 @@ GREEN: `uv run pytest tests/deploy -q` → 86 passed; `uv run ruff check .` sạ
 Chạy thử trên VPS, chỉ đọc (script qua stdin, không ghi file): giả lập lịch sử `sha-66c8087…, sha-NEXT`, `stale_tags` in đúng `api` và `warehouse` `sha-5c49037…`, `sha-5e4d9e6…`, `web` `sha-5e4d9e6…`. VPS có `tac` và `awk`.
 
 Trên VPS chưa có `.deploy-history`, nên lần deploy đầu có bản này chỉ ghi tag mới và chưa dọn; từ lần deploy thứ hai thì dọn.
+
+## Đợt #216 (2026-11-25): lộ trình thật trong StatMarket
+
+Lý do: sửa file mà issue này từng đụng (trong số `stat_market.py`, `check_gates.py`, `envelope-meta.md`, `compose.prod.yml`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.

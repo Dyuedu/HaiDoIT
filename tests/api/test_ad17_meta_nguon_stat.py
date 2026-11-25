@@ -1,8 +1,8 @@
 """AD-17, AD-7 — #103: response chứa số luôn có `meta`, kể cả khi mọi route đọc nguồn `stat`.
 
 `test_ad17_routes.py` đã duyệt mọi route dưới `/api/v1` với nguồn giả. Ở đây cùng danh sách route đó chạy với nguồn
-`stat` trên một snapshot dựng bằng hàng `stat_*`: route có số thật phải trả `{data, meta}`; route chưa có số thật (nguồn
-`stat` chưa cài) trả lỗi chuẩn, không có `data` và không có số.
+`stat` trên một snapshot dựng bằng hàng `stat_*`: mọi route trả `{data, meta}`. Chưa có snapshot nào
+thì mọi route trả lỗi chuẩn, không có `data` và không có số.
 """
 
 from fastapi.testclient import TestClient
@@ -21,6 +21,7 @@ REAL = {
     "/api/v1/skill-rates",
     "/api/v1/newcomer-roles",
     "/api/v1/skill-roles",
+    "/api/v1/learning-path",  # #216: `not_ready` khi chưa rà soát vẫn đủ `meta`
     "/api/v1/market-overview",  # #328: đọc cùng nguồn với newcomer-roles
 }
 
@@ -59,10 +60,13 @@ def test_ad17_103_moi_route_co_so_nguon_stat_tra_data_va_meta(pg_engine: Engine)
         assert body["meta"]["snapshot_date"] == S and body["meta"]["cells"], path
 
 
-def test_ad17_103_route_chua_co_so_that_tra_loi_chuan_khong_co_data(pg_engine: Engine) -> None:
-    _seed(pg_engine)
+def test_ad17_103_moi_route_deu_co_so_that() -> None:
+    assert set(SAMPLE_QUERY) == REAL
+
+
+def test_ad17_103_chua_co_snapshot_thi_moi_route_tra_loi_chuan_khong_co_data(pg_engine: Engine) -> None:
     client = _stat_client(pg_engine)
-    for path in sorted(set(SAMPLE_QUERY) - REAL):
+    for path in sorted(SAMPLE_QUERY):
         resp = client.get(path, params=SAMPLE_QUERY[path])
         assert resp.status_code == 404, (path, resp.text)
         body = resp.json()

@@ -383,8 +383,13 @@ def test_fr24_bad_topic_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, t
     assert "topics[0]" in hits[0]
 
 
-def test_fr24_draft_path_is_scanned_too(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    _topic_fixture(tmp_path, monkeypatch, {"title": "Top 5", "skills": ["java"]}, "draft_learning_path.json")
+def test_fr24_real_path_content_is_scanned_too(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    _fixture(tmp_path, monkeypatch, "Sạch")
+    content = tmp_path / "haido_api" / "content"
+    content.mkdir(parents=True)
+    role = {"review": None, "topics": [{"title": "Top 5", "skills": ["java"]}], "skills": []}
+    (content / "learning_path.json").write_text(json.dumps({"roles": {"backend": role}}), encoding="utf-8")
     status, detail, hits = check_gates.gate_fr24_loi_dan_khong_so()
     assert status == check_gates.FAIL and len(hits) == 1
-    assert "draft_learning_path.json" in hits[0] and "draft_learning_path.json" in detail
+    assert hits[0].startswith("learning_path.json: backend.topics[0].title")
+    assert "haido_api/content/learning_path.json" in detail

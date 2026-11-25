@@ -67,3 +67,9 @@ Lý do: người dùng thấy màn chưa giống roadmap.sh; chọn phương án
 ## Sau khi mở PR (2026-11-25)
 
 CI đỏ ở `ruff check .` (4 lỗi I001, chưa chạy lệnh này trước khi đẩy) và GitGuardian (mật khẩu mặc định của Postgres local lặp lại trong `compose.demo.yml`). Sửa import; `compose.demo.yml` đọc mật khẩu từ `HAIDO_LOCAL_DB_PASSWORD`, không có mặc định. Không đổi hành vi.
+
+## Đợt #216 (2026-11-25): lộ trình thật trong StatMarket
+
+Lý do: phần ghép và nội dung chuyển chỗ; màn và app demo không đổi.
+
+RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.

@@ -81,3 +81,9 @@ Cập nhật sau review (đợt 2, 2026-11-17): trong `StatMarket` chỉ `skill_
 
 Lý do: #168 cài `StatMarket.skill_roles` đọc `stat_skill_rates` (số thật cho `skill-roles`), sửa file mà issue này từng đụng: `deploy/compose.prod.yml`.
 Hành vi và AC của issue này không đổi; thay đổi chỉ thêm phương thức `skill_roles` thật và chữ mô tả. RED, GREEN và mutation: `specs/168-ky-nang-vai-tro-that/tdd.md`.
+
+## Đợt #216 (2026-11-25): lộ trình thật trong StatMarket
+
+Lý do: sửa file mà issue này từng đụng (trong số `stat_market.py`, `check_gates.py`, `envelope-meta.md`, `compose.prod.yml`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.

@@ -113,3 +113,9 @@ Bom hẹn giờ ở `test_fr22_tat_dinh.py` thuộc #139 và được sửa trê
 Lý do: cổng FR-24 quét thêm tên chủ đề và file lộ trình nháp (RED: 6 failed, 56 passed trong `tests/tools/test_fr24_loi_dan_khong_so.py`). Luật về chữ và AC không đổi.
 
 RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.
+
+## Đợt #216 (2026-11-25): lộ trình thật trong StatMarket
+
+Lý do: cổng FR-24 quét `haido_api/content/learning_path.json` và nhận khóa `review` (RED: 1 failed). Luật về chữ không đổi.
+
+RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.

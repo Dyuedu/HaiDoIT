@@ -38,10 +38,13 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   `all` ở cấp `all` (mọi cấp, AC 4 của #113). Kỹ năng không có hàng nào ở snapshot là `UnknownCell` kèm ngày.
   `n_scanned` lớn hơn `n` của ô, hoặc vai trò có `n_with > 0` ở cấp entry khi hàng `all` × `all` có `n_with = 0`, là dữ
   liệu hỏng (`RuntimeError`). Mã kỹ năng ngoài bộ từ vựng là `UnknownSkill`, kiểm trước khi mở kết nối. Chỉ đọc `stat_*` theo khóa (AD-7).
+- Lộ trình học (#216): cùng snapshot đọc được như tỷ lệ kỹ năng. Vai trò có lộ trình đã rà soát (`review` của
+  `content/learning_path.json`, #96) lấy ô, tỷ lệ và nhóm từ chính `skill_rates`, nên bằng `/skill-rates`; vai trò khác là
+  `not_ready` ở mọi cấp, kèm ô entry. Phần ghép ở `haido_api/stat_path.py`.
 """
 
 import threading
-from collections.abc import Callable, Collection
+from collections.abc import Callable, Collection, Mapping
 from datetime import date
 from typing import Any
 
@@ -62,6 +65,13 @@ from haido_api.schemas.market import (
     SkillRatesData,
     SkillRoleRow,
     SkillRolesData,
+)
+from haido_api.stat_path import (
+    DRAFT_NOTE,
+    RolePath,
+    load_paths,
+    not_ready,
+    ready,
 )
 from haido_core.config import PRE_FREEZE_THETA_VERSION, RulesConfig, load_rules
 from haido_core.db.engine import make_read_engine
@@ -110,13 +120,18 @@ UNKNOWN_LEVEL = "unknown"
 
 
 class StatMarket:
-    """Bản thật của `MarketReadModel` cho `city_shares`, `newcomer_roles` (#145, #146), `skill_rates` (#151) và `skill_roles` (#168). `learning_path` (#216) chưa có số thật."""
+    """Bản thật của `MarketReadModel` cho `city_shares`, `newcomer_roles` (#145, #146), `skill_rates` (#151), `skill_roles` (#168) và `learning_path` (#216)."""
 
     def __init__(
-        self, *, engine_factory: Callable[[], Engine] | None = None, rules: RulesConfig | None = None
+        self,
+        *,
+        engine_factory: Callable[[], Engine] | None = None,
+        rules: RulesConfig | None = None,
+        paths: Mapping[str, RolePath] | None = None,
     ) -> None:
         self._factory = engine_factory if engine_factory is not None else make_read_engine
         self._rules = rules if rules is not None else load_rules()
+        self._paths = paths if paths is not None else load_paths()
         self._engine: Engine | None = None
         self._lock = threading.Lock()
         self._names = _display_names(self._rules)
@@ -426,7 +441,60 @@ class StatMarket:
         return Envelope[MarketOverviewData](data=data, meta=meta)
 
     def learning_path(self, *, role: str, level: str, have: Collection[str]) -> Envelope[LearningPathData]:
-        raise UnknownCell("Lộ trình học chưa có số liệu thật.", snapshot_date=None)
+        path = self._path_for(role)
+        entry_cell_id = f"{NATIONWIDE}.{role}.{ENTRY}"
+        if path is None:
+            return self._path_not_ready(role, level, have, entry_cell_id)
+        rates = self.skill_rates(role=role, level=level)
+        day = rates.meta.snapshot_date
+        chosen_level = rates.data.cell_id.removeprefix(f"{NATIONWIDE}.{role}").removeprefix(".") or ALL
+        with self._db().connect() as conn:
+            entry = _national_cells(conn, day, ENTRY).get(role, (0, {}))
+            raw_rates = {skill: rate for skill, _, rate in _skill_rate_rows(conn, day, role, chosen_level)}
+        data = ready(
+            role=role, level=level, have=have, path=path, rates=rates.data, raw_rates=raw_rates, entry_cell_id=entry_cell_id
+        )
+        if data is None:
+            raise UnknownCell("Lộ trình của vai trò đã chọn chưa có số liệu ở cấp bậc này.", snapshot_date=day)
+        notes = list(rates.meta.coverage_notes)
+        if path.review is None:
+            notes.append(DRAFT_NOTE)
+        # Ô entry có thể chính là ô đã chọn: giữ `CellMeta` của `skill-rates` (có cỡ mẫu theo kỹ năng).
+        cells = {entry_cell_id: _cell_meta(*entry)} | rates.meta.cells
+        meta = rates.meta.model_copy(update={"cells": cells, "coverage_notes": notes})
+        return Envelope[LearningPathData](data=data, meta=meta)
+
+    def _path_for(self, role: str) -> RolePath | None:
+        """Lộ trình được hiện của `role`: chỉ lộ trình đã có giảng viên rà soát (#96)."""
+        path = self._paths.get(role)
+        return path if path is not None and path.review is not None else None
+
+    def _path_not_ready(
+        self, role: str, level: str, have: Collection[str], entry_cell_id: str
+    ) -> Envelope[LearningPathData]:
+        with self._db().connect() as conn:
+            latest = _latest_with_skill_rates(conn)
+            if latest is None:
+                raise UnknownCell("Chưa có snapshot nào đã công bố có tỷ lệ kỹ năng.", snapshot_date=None)
+            day: date = latest.snapshot_id
+            if role not in self._rules.roles:
+                raise UnknownCell("Không có ô thống kê nào cho vai trò đã chọn.", snapshot_date=day)
+            entry = _national_cells(conn, day, ENTRY).get(role, (0, {}))
+            sources = _sources(conn, day)
+        meta = Meta(
+            snapshot_date=day,
+            snapshot_status=SnapshotStatus(latest.status),
+            sources=sources,
+            sources_failed=list(latest.sources_failed),
+            thresholds=self._thresholds(latest),
+            coverage_notes=[
+                CoverageNote(code=n.code, text=n.text.replace("{n}", str(len(sources))))
+                for n in self._rules.coverage_notes
+            ],
+            cells={entry_cell_id: _cell_meta(*entry)},
+        )
+        data = not_ready(role=role, level=level, have=have, entry_cell_id=entry_cell_id)
+        return Envelope[LearningPathData](data=data, meta=meta)
 
     def skill_roles(self, *, skill: str) -> Envelope[SkillRolesData]:
         rules = self._rules

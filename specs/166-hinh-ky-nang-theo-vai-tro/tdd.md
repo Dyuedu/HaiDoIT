@@ -198,3 +198,9 @@ RED, GREEN và đột biến: `specs/278-ma-ky-nang-thuong-gap/tdd.md`.
 Lý do: sửa file mà issue này từng đụng (trong số `fake_market.py`, `docs/api/openapi.json`, `docs/api/envelope-meta.md`, `tools/gates/check_gates.py`, `web/lib/learning-path.ts`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
 
 RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.
+
+## Đợt #216 (2026-11-25): lộ trình thật trong StatMarket
+
+Lý do: sửa file mà issue này từng đụng (trong số `stat_market.py`, `check_gates.py`, `envelope-meta.md`, `compose.prod.yml`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
+
+RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.
