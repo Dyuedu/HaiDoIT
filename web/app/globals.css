@@ -48,6 +48,18 @@
   --color-band-pale: #a8eaf5;
   --color-icon-scan: #1a140c;
   --color-mask: #000;
+  --color-map-card: rgba(7, 11, 16, 0.94);
+  --color-map-grid: rgba(98, 217, 238, 0.13);
+  --color-map-glow: rgba(98, 217, 238, 0.38);
+  --color-map-glow-edge: rgba(98, 217, 238, 0);
+  --color-map-stage-aura: rgba(98, 217, 238, 0.08);
+  --color-map-depth-0: #04090d;
+  --color-map-depth-1: #0a1e28;
+  --color-map-depth-1-edge: #163a48;
+  --color-map-depth-2: #0c2532;
+  --color-map-depth-2-edge: #1a4555;
+  --color-map-depth-3: #0e2c3a;
+  --color-map-depth-3-edge: #1f5163;
 
   --text-logo: 16px;
   --text-logo--font-weight: 700;
@@ -136,12 +148,70 @@
     color-scheme: dark;
   }
 
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --color-canvas: #f4f7fa;
+    --color-header: #ffffff;
+    --color-panel: #ffffff;
+    --color-inset: #eef3f8;
+    --color-field: #f8fafc;
+    --color-notice: #fff8eb;
+    --color-text: #0f172a;
+    --color-text-muted: #475569;
+    --color-text-secondary: #334155;
+    --color-text-quiet: #4b5b6e;
+    --color-text-dim: #64748b;
+    --color-text-placeholder: #64748b;
+    --color-text-doc: #1e293b;
+    --color-border: #d5dfe9;
+    --color-border-strong: #becad7;
+    --color-border-chip: #b8c7d8;
+    --color-border-row: #e2e9f0;
+    --color-border-dashed: #94a3b8;
+    --color-track: #e2e8f0;
+    --color-track-alt: #dbe4ee;
+    --color-primary: #2d6a0c;
+    --color-primary-hover: #235409;
+    --color-primary-ink: #f8fafc;
+    --color-link-hover: #1b4305;
+    --color-selected: #0369a1;
+    --color-amber: #b45309;
+    --color-amber-deep: #d97706;
+    --color-amber-soft: #92400e;
+    --color-amber-softer: #78350f;
+    --color-amber-edge: #f59e0b;
+    --color-disabled: #cbd5e1;
+    --color-slate: #64748b;
+    --color-column-face: #0e7490;
+    --color-column-side: #155e75;
+    --color-map-land: #dbeafe;
+    --color-map-line: #38bdf8;
+    --color-meter-idle: #64748b;
+    --color-band-deep: #dff2fc;
+    --color-band-mid: #0284c7;
+    --color-band-pale: #0e7490;
+    --color-icon-scan: #78350f;
+    --color-map-card: rgba(255, 255, 255, 0.94);
+    --color-map-grid: rgba(3, 105, 161, 0.14);
+    --color-map-glow: rgba(3, 105, 161, 0.25);
+    --color-map-glow-edge: rgba(3, 105, 161, 0);
+    --color-map-stage-aura: rgba(3, 105, 161, 0.06);
+    --color-map-depth-0: rgba(148, 163, 184, 0.45);
+    --color-map-depth-1: #bae6fd;
+    --color-map-depth-1-edge: #7dd3fc;
+    --color-map-depth-2: #caeafa;
+    --color-map-depth-2-edge: #60c5f1;
+    --color-map-depth-3: #d6eefc;
+    --color-map-depth-3-edge: #38bdf8;
+  }
+
   body {
     margin: 0;
     min-height: 100vh;
     background-color: var(--color-canvas);
     color: var(--color-text);
     font-family: var(--font-sans);
+    transition: background-color 150ms ease, color 150ms ease;
   }
 
   :focus-visible {

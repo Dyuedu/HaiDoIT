@@ -84,3 +84,8 @@ Web lấy được danh sách kỹ năng song ngữ qua `GET /api/v1/skills` đ�
 
 - Mã vai trò là các mã trong `roles` của `config/rules.toml`. Mã cấp bậc là giá trị của `[labels.level]`. Module chỉ kiểm định dạng, không kiểm mã có trong danh sách: danh sách vai trò đổi theo config.
 - #96 sẽ thay `skills_seed.json` bằng bộ từ vựng v1. Mã đã có giữ nguyên để hồ sơ đã lưu và link đã chia sẻ không hỏng.
+
+
+## Cập nhật sau merge (2026-11-27): bổ sung khóa `haido:theme`
+
+- `HAIDO_KEYS` bổ sung khóa thứ tư `theme: "haido:theme"` cho chế độ Sáng/Tối toàn hệ thống; `clearHaidoData()` vẫn xóa theo tiền tố `haido:` và dọn kèm cookie `haido_theme`. Chi tiết: [specs/ui-theme-mode/spec.md](../ui-theme-mode/spec.md).

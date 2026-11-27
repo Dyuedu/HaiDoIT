@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type { BarRow, ButterflyRow, ColumnRow } from "@/lib/market-overview-view";
 
-import { BAR_COLOR, PLACE_COLORS } from "./palette";
+import { PLACE_COLORS } from "./palette";
 
 /**
  * Biểu đồ của phần toàn cảnh (#329) vẽ bằng HTML: thanh ngang, cột, hai phía. Độ dài và chiều cao là tỷ lệ vẽ view đã
@@ -16,7 +16,7 @@ interface BarChartProps {
 }
 
 /** Thanh ngang, mỗi dòng là liên kết sang hồ sơ kỹ năng của vai trò. Dòng ít tin mờ đi và ghi rõ số tin. */
-export function BarChart({ rows, label, color = BAR_COLOR }: BarChartProps) {
+export function BarChart({ rows, label, color = "var(--color-primary)" }: BarChartProps) {
   return (
     <ol aria-label={label} className="m-0 flex list-none flex-col gap-1 p-0">
       {rows.map((row) => (
@@ -56,7 +56,7 @@ export function ColumnChart({ rows, label, colorOf }: { rows: ColumnRow[]; label
           <span className="font-mono text-footer text-text">{row.countText}</span>
           <span
             aria-hidden="true"
-            className="w-3/4 rounded-t"
+            className="w-3/4 rounded-t ring-1 ring-inset ring-border/40"
             style={{ height: `${Math.max(row.height * 70, row.height > 0 ? 1 : 0).toFixed(2)}%`, background: colorOf(row.key) }}
           />
           <span className="min-h-8 text-center text-footer leading-tight text-text-secondary">

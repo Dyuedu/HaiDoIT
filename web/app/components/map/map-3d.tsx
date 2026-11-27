@@ -17,10 +17,10 @@ const DRAG_START = 6;
 
 /** Lớp nền của hình đất: độ sâu, màu nền, màu nét (prototype vẽ năm lớp để có bề dày). */
 const LAYERS: { z: number; fill: string; stroke?: string; opacity?: number }[] = [
-  { z: -36, fill: "#04090D", opacity: 0.85 },
-  { z: -12, fill: "#0A1E28", stroke: "#163A48" },
-  { z: -8, fill: "#0C2532", stroke: "#1A4555" },
-  { z: -4, fill: "#0E2C3A", stroke: "#1F5163" },
+  { z: -36, fill: "var(--color-map-depth-0)", opacity: 0.85 },
+  { z: -12, fill: "var(--color-map-depth-1)", stroke: "var(--color-map-depth-1-edge)" },
+  { z: -8, fill: "var(--color-map-depth-2)", stroke: "var(--color-map-depth-2-edge)" },
+  { z: -4, fill: "var(--color-map-depth-3)", stroke: "var(--color-map-depth-3-edge)" },
 ];
 
 interface Drag {
@@ -168,23 +168,23 @@ export function Map3D({ view }: { view: CitySharesView }) {
             <svg data-testid="map-3d-land" className={css.slab} viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} aria-hidden="true">
               <defs>
                 <pattern id="bd-dots" width="7" height="7" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="1.1" fill="#62D9EE" opacity=".5" />
+                  <circle cx="2" cy="2" r="1.1" fill="var(--color-selected)" opacity=".5" />
                 </pattern>
               </defs>
-              <path d={OUTLINE_PATH} fill="#0D2836" />
+              <path d={OUTLINE_PATH} fill="var(--color-map-land)" />
               <path d={OUTLINE_PATH} fill="url(#bd-dots)" />
-              <path d={OUTLINE_PATH} fill="none" stroke="#62D9EE" strokeWidth={1.6} strokeLinejoin="round" />
+              <path d={OUTLINE_PATH} fill="none" stroke="var(--color-selected)" strokeWidth={1.6} strokeLinejoin="round" />
               {ARCHIPELAGOS.map((group) => {
                 const at = toStage(group.labelAt);
                 return (
                   <g key={group.id}>
-                    <g fill="#62D9EE" opacity=".85">
+                    <g fill="var(--color-selected)" opacity=".85">
                       {group.islands.map((island) => {
                         const p = toStage(island);
                         return <circle key={island.name} cx={p.px} cy={p.py} r={2.2} />;
                       })}
                     </g>
-                    <text x={at.px - 40} y={at.py - 6} fill="#9FB0C2" fontSize={12} fontFamily="JetBrains Mono, monospace">
+                    <text x={at.px - 40} y={at.py - 6} fill="var(--color-text-muted)" fontSize={12} fontFamily="JetBrains Mono, monospace">
                       {group.shortLabel}
                     </text>
                   </g>
@@ -208,7 +208,11 @@ export function Map3D({ view }: { view: CitySharesView }) {
                   <span className={css.glow} style={{ opacity }} />
                   <span
                     className={`${css.face} ${css.top}`}
-                    style={{ transform: `translateZ(${h}px)`, background: isSelected ? "#E6EDF3" : "#62D9EE", opacity }}
+                    style={{
+                      transform: `translateZ(${h}px)`,
+                      background: isSelected ? "var(--color-text)" : "var(--color-selected)",
+                      opacity,
+                    }}
                   />
                   <span className={`${css.face} ${css.front}`} style={{ height: h, opacity }} />
                   <span className={`${css.face} ${css.back}`} style={{ height: h, opacity }} />

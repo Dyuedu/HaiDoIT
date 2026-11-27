@@ -33,7 +33,7 @@ export function FilterSelect({ label, value, options, onChange, note }: FilterSe
           value={value}
           aria-describedby={note ? noteId : undefined}
           onChange={(event) => onChange(event.target.value)}
-          className="min-h-target w-full min-w-0 cursor-pointer appearance-none truncate rounded-lg border border-border-chip bg-inset py-2 pl-3 pr-10 text-body-md text-text transition-[border-color] [color-scheme:dark] hover:border-selected"
+          className="min-h-target w-full min-w-0 cursor-pointer appearance-none truncate rounded-lg border border-border-chip bg-inset py-2 pl-3 pr-10 text-body-md text-text transition-[border-color] hover:border-selected"
         >
           {options.map((option) => (
             <option key={option.code} value={option.code}>
