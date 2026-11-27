@@ -38,4 +38,9 @@
 - [x] T018 `path-graph.tsx`, `path-node.tsx`, `skill-panel.tsx`, `learning-path-screen.tsx`, `learning-path-view.ts`
 - [x] T019 Chrome headless 360, 1024, 1280px trên image thật; cập nhật specs các issue bị đụng
 
+## Phase 6: Hướng B — CV Advisor & mở khóa chọn cấp bậc (2026-11-27)
+
+- [x] T020 Mở khóa chọn `level` trên `co-van/page.tsx`, `learning-path-view.ts`, `learning-path-screen.tsx` và cập nhật `web/tests/fr22-lo-trinh-hoc.test.tsx` (test `senior`)
+- [x] T021 Thêm `web/lib/advisor-roadmap.ts`, `cv-advisor-form.tsx`, `POST` proxy và `web/tests/advisor-cv-roadmap.test.tsx`
+
 - [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

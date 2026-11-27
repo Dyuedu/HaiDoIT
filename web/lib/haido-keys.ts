@@ -19,9 +19,15 @@ export const HAIDO_KEYS = {
   session: "haido:session",
   /** `"1"` khi vào bằng link thử nghiệm (FR-41, FR-45). */
   eval: "haido:eval",
+  /** Chế độ giao diện `"dark"` hoặc `"light"`. */
+  theme: "haido:theme",
 } as const;
 
 export type HaidoKey = (typeof HAIDO_KEYS)[keyof typeof HAIDO_KEYS];
+
+export type ThemeMode = "dark" | "light";
+export const DEFAULT_THEME: ThemeMode = "dark";
+export const THEME_COOKIE_NAME = "haido_theme";
 
 export const PROFILE_VERSION = 1;
 export const MAX_SKILL_CODE_LEN = 40;
@@ -129,6 +135,25 @@ export function writeProfile(profile: Profile): boolean {
   return setItem(HAIDO_KEYS.profile, JSON.stringify(sanitize(profile)));
 }
 
+/** Đọc lựa chọn chế độ sáng/tối đã lưu, hoặc `null` nếu người dùng chưa chọn. */
+export function readTheme(): ThemeMode | null {
+  const raw = getItem(HAIDO_KEYS.theme);
+  return raw === "light" || raw === "dark" ? raw : null;
+}
+
+/** Ghi lựa chọn chế độ sáng/tối và đồng bộ cookie phục vụ render đầu trang không nháy. */
+export function writeTheme(theme: ThemeMode): boolean {
+  if (theme !== "light" && theme !== "dark") return false;
+  try {
+    if (typeof document !== "undefined") {
+      document.cookie = `${THEME_COOKIE_NAME}=${theme}; path=/; max-age=31536000; samesite=lax`;
+    }
+  } catch {
+    // Bỏ qua nếu trình duyệt chặn cookie.
+  }
+  return setItem(HAIDO_KEYS.theme, theme);
+}
+
 /** Xóa mọi khóa có tiền tố `haido:`, kể cả khóa không còn trong danh sách. Giữ khóa của trang khác. */
 export function clearHaidoData(): void {
   try {
@@ -142,5 +167,12 @@ export function clearHaidoData(): void {
     for (const key of keys) store.removeItem(key);
   } catch {
     // Bộ nhớ bị chặn thì cũng không có gì để xóa.
+  }
+  try {
+    if (typeof document !== "undefined") {
+      document.cookie = `${THEME_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`;
+    }
+  } catch {
+    // Bỏ qua.
   }
 }

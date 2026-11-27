@@ -20,8 +20,17 @@ from haido_api.posting_read import PostingReadRefused
 from haido_api.schemas.error import ErrorBody, ErrorEnvelope
 from haido_api.schemas.posting import POSTING_READ_ERRORS, POSTING_READ_MESSAGES
 from haido_api.uploads import UploadRejected
+from haido_core.extract import AdvisorGenerationError, UnreadableCvError
 
 logger = logging.getLogger("haido_api")
+
+
+class MissingConsentError(ValueError):
+    """Người dùng chưa đồng ý điều kiện gửi văn bản CV tới dịch vụ AI."""
+
+    def __init__(self, message: str = "Hãy đánh dấu ô đồng ý trước khi phân tích CV.") -> None:
+        super().__init__(message)
+        self.message = message
 
 _HTTP_CODES: dict[int, tuple[str, str]] = {
     404: ("not_found", "Không có đường dẫn này."),
@@ -86,6 +95,18 @@ async def _upload_rejected(_: Request, exc: UploadRejected) -> JSONResponse:
     return error_response(exc.status_code, exc.code, exc.message, headers={"Connection": "close"})
 
 
+async def _missing_consent(_: Request, exc: MissingConsentError) -> JSONResponse:
+    return error_response(400, "cv_consent_required", exc.message)
+
+
+async def _unreadable_cv(_: Request, exc: UnreadableCvError) -> JSONResponse:
+    return error_response(422, "cv_unreadable", exc.message)
+
+
+async def _advisor_failed(_: Request, exc: AdvisorGenerationError) -> JSONResponse:
+    return error_response(502, "advisor_unavailable", str(exc))
+
+
 async def _invalid_query(_: Request, exc: RequestValidationError) -> JSONResponse:
     return error_response(422, "invalid_query", invalid_query_message(exc.errors()))
 
@@ -117,6 +138,9 @@ def install_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(CheckUnavailable, _check_unavailable)
     app.add_exception_handler(UploadRejected, _upload_rejected)
     app.add_exception_handler(PostingReadRefused, _posting_read_refused)
+    app.add_exception_handler(MissingConsentError, _missing_consent)
+    app.add_exception_handler(UnreadableCvError, _unreadable_cv)
+    app.add_exception_handler(AdvisorGenerationError, _advisor_failed)
     app.add_exception_handler(RequestValidationError, _invalid_query)
     app.add_exception_handler(StarletteHTTPException, _http_error)
     app.add_exception_handler(ResponseValidationError, _invalid_response)

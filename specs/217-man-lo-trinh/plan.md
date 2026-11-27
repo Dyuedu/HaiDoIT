@@ -59,12 +59,16 @@ Sửa hợp đồng #212 (xem `specs/212-hinh-lo-trinh-hoc/plan.md`) và cổng 
 
 ## Complexity Tracking
 
-
 - `learning-path.ts` thuộc #212; `skill-profile-view.ts` thuộc #151, #152, #153, #324; `co-van/page.tsx` và `fr22-mo-lo-trinh-tu-ky-nang.test.tsx` thuộc #153 (và #1, không có `specs/`: ghi trong mô tả PR).
 - Commit của `co-van/page.tsx` còn nhắc #154, #206, #207: hành vi của ba issue đó không đổi.
 
 ## Thay đổi sau merge (2026-11-25, #216)
 
 Phần ghép của `DraftPathMarket` chuyển vào `haido_api/stat_path.py` và `StatMarket`; nội dung nháp chuyển sang `haido_api/content/learning_path.json`. App demo và màn không đổi.
+
+## Thay đổi sau merge (2026-11-27, Hướng B — CV Advisor)
+
+- Mở rộng `web/app/api/[...path]/route.ts` với `POST` proxy multipart/JSON.
+- Thêm `web/lib/advisor-roadmap.ts`, `web/app/components/advisor/cv-advisor-form.tsx`; cập nhật `web/app/co-van/page.tsx`, `web/lib/learning-path-view.ts` (`DEFAULT_PATH_LEVEL`) và `web/app/components/advisor/learning-path-screen.tsx`. Chi tiết: [specs/cv-advisor-roadmap/plan.md](../cv-advisor-roadmap/plan.md).
 
 **Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.demo.yml`, `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fake_market.py`, `tests/api/test_fr22_learning_path_draft.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

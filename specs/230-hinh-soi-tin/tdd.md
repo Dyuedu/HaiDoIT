@@ -223,3 +223,12 @@ HAIDO_UPDATE_OPENAPI=1 uv run pytest tests/api/test_ad17_routes.py -q     # sinh
 | `npx vitest run` (web) | 36 file, **514 passed** |
 | `npx tsc --noEmit` (web) | không lỗi (đã revert `web/tsconfig.tsbuildinfo`) |
 | `npx eslint .` (web) | không lỗi |
+
+## Đợt merge `origin/main` (2026-11-27): PR #349 thêm `test_advisor_roadmap.py`
+
+Lý do: merge `origin/main` (ab91752, PR #349 CV advisor và chế độ sáng/tối) vào nhánh. Xung đột ở `haido_api/errors.py` (hai bên cùng thêm exception handler), `tests/api/test_ad17_routes.py` (route chữ dán của #230 và route POST advisor), `docs/api/envelope-meta.md` (bảng mã lỗi), ba file `specs/217-man-lo-trinh/` (hai đợt), `docs/api/openapi.json` (sinh lại). Giữ cả hai bên; tập route của `test_ad17_routes` là `SAMPLE_QUERY | POST_ROUTES` sau khi bỏ `NUMBERLESS_ROUTES | USER_TEXT_ROUTES`.
+
+- RED: toàn bộ sau merge `3 failed, 2232 passed`. Ba test mới `tests/api/test_advisor_roadmap.py` dựng `create_app` thiếu nguồn `posting_check` (`ValueError: Thiếu nguồn cho phép: posting_check`).
+- Sửa: thêm `"posting_check": fake` vào ba lần dựng app, cùng cách mười hai file test cũ đã sửa ở đợt đầu.
+- GREEN: `tests/api/test_advisor_roadmap.py` và `tests/api/test_ad17_routes.py` → 104 passed; toàn bộ trước đó 2232 passed cộng ba test này; vitest 38 file, 522 passed; ruff sạch.
+

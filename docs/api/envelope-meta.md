@@ -488,6 +488,9 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 | 413 | `cv_too_large` | Tệp CV lớn hơn `cv_max_bytes`, hoặc `Content-Length` vượt mức cho phép |
 | 415 | `cv_unsupported_type` | Yêu cầu không phải `multipart/form-data` có boundary, hoặc loại tệp CV không được nhận, hoặc byte đầu không khớp định dạng đã khai |
 | 400 | `cv_invalid_upload` | Tải CV sai cấu trúc: chưa chọn tệp, thiếu hoặc thừa tệp `cv`, thân bị cắt, `Content-Length` không hợp lệ. Mọi lỗi tải CV kèm `Connection: close` |
+| 400 | `cv_consent_required` | Người dùng chưa tích ô đồng ý xử lý văn bản CV |
+| 422 | `cv_unreadable` | File CV không có đủ chữ có nghĩa (PDF dạng ảnh scan, mã hóa hoặc rỗng) |
+| 502 | `advisor_unavailable` | Chế độ ép LLM gặp lỗi kết nối hoặc phản hồi không hợp lệ |
 | 413 | `text_too_long` | `posting-reads` (#230, AD-9): chữ dán dài hơn 20.000 ký tự hoặc thân vượt `posting_read.max_body_bytes`; từ chối trước khi phân tích và trước khi đọc, câu lỗi nêu giới hạn |
 | 429 | `rate_limited` | `posting-reads` (#231): quá nhiều lần đọc trong một khoảng thời gian |
 | 502 | `read_failed` | `posting-reads`: cổng model trả kết quả không dùng được, hoặc nguồn đọc gặp lỗi (route chỉ ghi tên kiểu của lỗi, AD-11) |

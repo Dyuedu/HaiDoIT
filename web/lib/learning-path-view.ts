@@ -19,8 +19,11 @@ import { levelLabel, roleLabel } from "./labels";
 import type { LearningPathEnvelope, PathSkill } from "./learning-path";
 import { GROUP_LABELS } from "./skill-profile-view";
 
-/** Lộ trình luôn tính trên nhóm mới vào nghề; màn không có ô Cấp bậc (#134, #121). */
-export const PATH_LEVEL = "entry";
+/** Cấp bậc mặc định khi URL và hồ sơ chưa chọn cấp bậc (#217, Hướng B). */
+export const DEFAULT_PATH_LEVEL = "entry";
+
+/** Bí danh tương thích ngược của `DEFAULT_PATH_LEVEL`. */
+export const PATH_LEVEL = DEFAULT_PATH_LEVEL;
 
 export const NOT_READY_TEXT = "Lộ trình học có thứ tự cho vai trò này đang được biên soạn.";
 export const NOT_READY_HINT = "Trong lúc chờ, hồ sơ kỹ năng cho biết tin tuyển dụng của vai trò này yêu cầu những gì.";

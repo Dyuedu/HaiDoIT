@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import type { Slice } from "@/lib/market-overview-view";
+import { getServerThemeSnapshot, getThemeSnapshot, subscribeTheme } from "@/lib/theme-store";
 
 import { levelColor } from "./palette";
 
@@ -48,6 +49,7 @@ export function Pie3D({ slices, selected, onSelect, label }: Pie3DProps) {
   const [hover, setHover] = useState<string | null>(null);
   const drag = useRef<{ x: number; start: number; moved: boolean } | null>(null);
   const [width, setWidth] = useState(320);
+  const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, getServerThemeSnapshot);
 
   const drawable = slices.filter((s) => s.value !== null && s.value > 0);
   const sum = drawable.reduce((acc, s) => acc + (s.value as number), 0);
@@ -103,6 +105,10 @@ export function Pie3D({ slices, selected, onSelect, label }: Pie3DProps) {
     };
     // Miếng phía sau vẽ trước để miếng phía trước che lên đúng chỗ.
     const ordered = arcs().sort((p, q) => Math.sin(p.mid) - Math.sin(q.mid));
+    const panelStroke =
+      (typeof getComputedStyle === "function"
+        ? getComputedStyle(canvas).getPropertyValue("--color-panel").trim()
+        : "") || (theme === "light" ? "#ffffff" : "#0d141c");
     for (const arc of ordered) {
       const { x, y } = offset(arc);
       const cx = g.cx + x;
@@ -118,7 +124,7 @@ export function Pie3D({ slices, selected, onSelect, label }: Pie3DProps) {
       sector(ctx, cx, cy, arc.a0, arc.a1);
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "#0d141c";
+      ctx.strokeStyle = panelStroke;
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
@@ -132,7 +138,7 @@ export function Pie3D({ slices, selected, onSelect, label }: Pie3DProps) {
       ctx.fillStyle = isLight(color) ? "#08131a" : "#f2f7fa";
       ctx.fillText(arc.slice.percent, g.cx + x + Math.cos(arc.mid) * g.rx * 0.62, g.cy + y + Math.sin(arc.mid) * g.ry * 0.62);
     }
-  }, [arcs, geometry, hover, selected, sum, width]);
+  }, [arcs, geometry, hover, selected, sum, theme, width]);
 
   const hit = (event: React.PointerEvent<HTMLCanvasElement>): string | null => {
     const rect = event.currentTarget.getBoundingClientRect();

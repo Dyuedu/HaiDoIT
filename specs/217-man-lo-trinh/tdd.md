@@ -74,6 +74,10 @@ Lý do: phần ghép và nội dung chuyển chỗ; màn và app demo không đ�
 
 RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.
 
+## Đợt 5 (2026-11-27, Hướng B): mở khóa chọn cấp bậc & lộ trình từ CV
+
+Chi tiết RED/GREEN cho chọn `level` và tải CV trên `/co-van`: [specs/cv-advisor-roadmap/tdd.md](../cv-advisor-roadmap/tdd.md).
+
 ## Đợt sửa 2026-11-27 (#230, hình tin dán "Soi tin")
 
 **Vì sao sửa**: #230 thêm nguồn `posting_check` vào `SOURCE_ENV`, bảng `[posting_match]` vào `config/rules.toml`, ô `vn.backend.junior` vào

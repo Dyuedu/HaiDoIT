@@ -83,3 +83,11 @@ Kiểu roadmap.sh: bấm một nút mở ngăn chi tiết. Phần màn của AC 
 - #121 AC 1 và AC 5 (số thật, thứ tự từ đồ thị đã rà soát) là việc của #213–#216, không phải của màn này.
 - "in stages, core before common" của #121: mỗi chủ đề là một chặng, cốt lõi đứng trước trong từng chặng (người dùng chọn 2026-11-25).
 - Kỹ năng đã có vẫn nằm trên lộ trình và được tô (FR-010 của #212).
+
+
+## Thay đổi sau merge (2026-11-27, Hướng B — CV Advisor)
+
+Người dùng chọn **Hướng B**: mở khóa chọn `Cấp bậc` (`level`) trên `/co-van` và tích hợp tải CV + đối chiếu JD + LLM:
+- `web/app/co-van/page.tsx` đọc `initialLevel` từ URL (`entry` chỉ là mặc định `DEFAULT_PATH_LEVEL` trong `web/lib/learning-path-view.ts`, bỏ khóa cứng `level = entry` của #134).
+- `web/app/components/advisor/learning-path-screen.tsx` thêm `<FilterSelect label="Cấp bậc" />` và nhúng `CvAdvisorForm` (`web/app/components/advisor/cv-advisor-form.tsx`) gọi `POST /api/v1/advisor/roadmap`.
+- Đánh dấu `have` trên `PathGraph` khi đang xem lộ trình sinh từ CV cập nhật trực tiếp trạng thái lộ trình & hồ sơ trình duyệt mà không phải upload lại CV. Chi tiết: [specs/cv-advisor-roadmap/spec.md](../cv-advisor-roadmap/spec.md).
