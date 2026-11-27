@@ -82,6 +82,7 @@ async def test_advisor_roadmap_tao_lo_trinh_tu_cv_va_jd_offline_fallback(monkeyp
             "newcomer_roles": fake,
             "learning_path": fake,
             "skill_roles": fake,
+            "posting_check": fake,
         }
     )
     resp = await _post_roadmap(app)
@@ -166,6 +167,7 @@ async def test_advisor_roadmap_dung_llm_va_gan_ty_le_jd_that_theo_role_level(
             "newcomer_roles": fake,
             "learning_path": fake,
             "skill_roles": fake,
+            "posting_check": fake,
         }
     )
     resp = await _post_roadmap(
@@ -203,6 +205,7 @@ async def test_advisor_roadmap_chan_khi_chua_dong_y_hoac_cv_scan(monkeypatch: py
             "newcomer_roles": fake,
             "learning_path": fake,
             "skill_roles": fake,
+            "posting_check": fake,
         }
     )
     no_consent = await _post_roadmap(app, data={"role": "backend", "level": "entry", "consent": "false"})

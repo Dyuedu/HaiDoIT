@@ -1,0 +1,126 @@
+{
+  "data": {
+    "role": "backend",
+    "branch": null,
+    "level": "unknown",
+    "cell_id": "vn.backend",
+    "has_profile": false,
+    "match": {
+      "status": "ready",
+      "skills": [
+        {
+          "skill": {
+            "code": "java",
+            "name_en": "Java",
+            "name_vi": "Java"
+          },
+          "group": "core",
+          "rate": {
+            "value": 0.62,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": null
+        }
+      ],
+      "groups": [
+        {
+          "group": "core",
+          "total": 1,
+          "had": null
+        },
+        {
+          "group": "common",
+          "total": 0,
+          "had": null
+        },
+        {
+          "group": "specific",
+          "total": 0,
+          "had": null
+        }
+      ],
+      "level": null,
+      "cv_first": [],
+      "config_version": "2026-11-27.2"
+    },
+    "market": {
+      "status": "not_ready",
+      "cell_id": null,
+      "years": null,
+      "skill_count": null,
+      "salary": null,
+      "note": null
+    },
+    "warnings": {
+      "status": "not_ready",
+      "checklist": [],
+      "signs": [],
+      "collected_match": null,
+      "salary_note": null,
+      "disclaimer": null
+    }
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1,
+      "theta_version": "theta-1"
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.backend": {
+        "n": 157,
+        "fallback_label": "Chưa có số riêng cho Backend ở cấp bậc này (tin không ghi cấp bậc, hoặc cấp chưa có ô), nên số dưới đây lấy từ Backend ở mọi cấp bậc (157 tin).",
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32,
+          "mid": 65,
+          "senior": 40
+        },
+        "n_by_measure": {
+          "skill_count": 157,
+          "experience_years": 110,
+          "salary": 35
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      }
+    }
+  }
+}

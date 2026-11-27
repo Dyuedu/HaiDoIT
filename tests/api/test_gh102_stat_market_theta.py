@@ -35,7 +35,7 @@ THETA_TEST = {"theta_version": "theta-test", "theta_core": 0.5, "theta_common": 
 def _client(engine: Engine, rules: RulesConfig = WITH_TEST) -> TestClient:
     stat = StatMarket(engine_factory=lambda: engine, rules=rules)
     app = create_app(
-        {"city_shares": stat, "skill_rates": stat, "newcomer_roles": stat, "learning_path": FakeMarket(), "skill_roles": stat}
+        {"city_shares": stat, "skill_rates": stat, "newcomer_roles": stat, "learning_path": FakeMarket(), "skill_roles": stat, "posting_check": FakeMarket()}
     )
     return TestClient(app, raise_server_exceptions=False)
 

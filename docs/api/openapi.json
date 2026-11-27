@@ -438,6 +438,420 @@
         }
       }
     },
+    "/api/v1/posting-check": {
+      "get": {
+        "tags": [
+          "market"
+        ],
+        "summary": "Soi một tin dán: mức khớp kỹ năng, so thị trường, dấu hiệu cần kiểm",
+        "description": "Bước hai của tin dán: chỉ mã và số, không bao giờ có chữ của tin (AD-22, AD-11).\n\n`data.match` có số: từng kỹ năng của tin kèm nhóm, tỷ lệ trong ô và cờ `have`; mức khớp theo trọng số thị trường (FR-28); đếm\ntheo nhóm; kỹ năng nên đặt đầu CV. Ô dưới ngưỡng quay về ô rộng hơn như `skill-rates` (`data.cell_id`, nhãn ở\n`meta.cells[data.cell_id].fallback_label`); cấp `unknown` (tin không ghi cấp) và cấp không có ô quay về ô mọi cấp của vai trò.\n`data.market` (#125, FR-30) và `data.warnings` (#126, FR-31) có `status = not_ready` và rỗng cho tới khi #240–#246 xong; hình\nkhi `ready` đã chốt đầy đủ trong schema (phân vị kèm khoảng tin cậy, lương đã quy đổi, bảy dấu hiệu D1 đến D7). Tham số lạ,\nnhánh không thuộc vai trò hoặc mã kỹ năng ngoài bộ từ vựng: 422. Chưa có số thật: 503 `check_unavailable`.",
+        "operationId": "get_posting_check_api_v1_posting_check_get",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z0-9_]+$",
+              "description": "Mã vai trò, snake_case: vai trò nhận diện được ở `POST /api/v1/posting-reads`, hoặc người dùng đổi.",
+              "title": "Role"
+            },
+            "description": "Mã vai trò, snake_case: vai trò nhận diện được ở `POST /api/v1/posting-reads`, hoặc người dùng đổi."
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "all",
+                "entry",
+                "intern",
+                "fresher",
+                "junior",
+                "mid",
+                "senior",
+                "lead",
+                "unknown"
+              ],
+              "type": "string",
+              "description": "Cấp bậc, như `skill-rates`: cấp nhận diện được ở bước một, hoặc người dùng đổi.",
+              "title": "Level"
+            },
+            "description": "Cấp bậc, như `skill-rates`: cấp nhận diện được ở bước một, hoặc người dùng đổi."
+          },
+          {
+            "name": "branch",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[a-z0-9_]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Mã nhánh của vai trò (FR-27, `branch` của bước một), phải thuộc `role` (`config/classify.toml`); được lặp lại ở `data.branch`.",
+              "title": "Branch"
+            },
+            "description": "Mã nhánh của vai trò (FR-27, `branch` của bước một), phải thuộc `role` (`config/classify.toml`); được lặp lại ở `data.branch`."
+          },
+          {
+            "name": "have",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Hồ sơ: mã kỹ năng người dùng đã có, ngăn bằng dấu phẩy, tối đa 200 mã (AD-22), cùng bộ đọc với `skill-rates`. Rỗng là không có hồ sơ: không có cờ `have`, mức khớp hay đếm theo nhóm.",
+              "title": "Have"
+            },
+            "description": "Hồ sơ: mã kỹ năng người dùng đã có, ngăn bằng dấu phẩy, tối đa 200 mã (AD-22), cùng bộ đọc với `skill-rates`. Rỗng là không có hồ sơ: không có cờ `have`, mức khớp hay đếm theo nhóm."
+          },
+          {
+            "name": "skills",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Mã kỹ năng của tin (`skills[].code` của bước một), ngăn bằng dấu phẩy, tối đa 200 mã. Mọi mã phải có trong bộ từ vựng (`GET /api/v1/skills`); cụm chưa nhận diện không bao giờ đi vào query.",
+              "title": "Skills"
+            },
+            "description": "Mã kỹ năng của tin (`skills[].code` của bước một), ngăn bằng dấu phẩy, tối đa 200 mã. Mọi mã phải có trong bộ từ vựng (`GET /api/v1/skills`); cụm chưa nhận diện không bao giờ đi vào query."
+          },
+          {
+            "name": "years_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 60,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`years_min` của bước một, cho #125. #230 chỉ kiểm định dạng.",
+              "title": "Years Min"
+            },
+            "description": "`years_min` của bước một, cho #125. #230 chỉ kiểm định dạng."
+          },
+          {
+            "name": "salary_min",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 10000000000,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`salary.min` của bước một, cho #125. Cần cả tiền tệ và kỳ.",
+              "title": "Salary Min"
+            },
+            "description": "`salary.min` của bước một, cho #125. Cần cả tiền tệ và kỳ."
+          },
+          {
+            "name": "salary_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 10000000000,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`salary.max` của bước một, cho #125. Cần cả tiền tệ và kỳ.",
+              "title": "Salary Max"
+            },
+            "description": "`salary.max` của bước một, cho #125. Cần cả tiền tệ và kỳ."
+          },
+          {
+            "name": "salary_currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "vnd",
+                    "usd"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`salary.currency` của bước một.",
+              "title": "Salary Currency"
+            },
+            "description": "`salary.currency` của bước một."
+          },
+          {
+            "name": "salary_period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "month",
+                    "year"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`salary.period` của bước một.",
+              "title": "Salary Period"
+            },
+            "description": "`salary.period` của bước một."
+          },
+          {
+            "name": "salary_non_numeric",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`salary_non_numeric` của bước một: tin có nói về lương mà không có số. Không đi cùng `salary_min` hay `salary_max`.",
+              "title": "Salary Non Numeric"
+            },
+            "description": "`salary_non_numeric` của bước một: tin có nói về lương mà không có số. Không đi cùng `salary_min` hay `salary_max`."
+          },
+          {
+            "name": "company_named",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`company_named` của bước một, cho #126.",
+              "title": "Company Named"
+            },
+            "description": "`company_named` của bước một, cho #126."
+          },
+          {
+            "name": "contacts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`contacts` của bước một, ngăn bằng dấu phẩy, mỗi mã là một kênh trong tập đóng, cho #126.",
+              "title": "Contacts"
+            },
+            "description": "`contacts` của bước một, ngăn bằng dấu phẩy, mỗi mã là một kênh trong tập đóng, cho #126."
+          },
+          {
+            "name": "fees",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 5,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Số trích dẫn phí hoặc đặt cọc của bước một (không phải chính chữ), cho #126.",
+              "title": "Fees"
+            },
+            "description": "Số trích dẫn phí hoặc đặt cọc của bước một (không phải chính chữ), cho #126."
+          },
+          {
+            "name": "duties_described",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`duties_described` của bước một: tin có mô tả công việc, cho #244.",
+              "title": "Duties Described"
+            },
+            "description": "`duties_described` của bước một: tin có mô tả công việc, cho #244."
+          },
+          {
+            "name": "title_level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[a-z0-9_]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`title_level` của bước một: mã cấp bậc mà chức danh cho biết (không gồm `unknown`), cho #244. Không bao giờ là chữ của chức danh.",
+              "title": "Title Level"
+            },
+            "description": "`title_level` của bước một: mã cấp bậc mà chức danh cho biết (không gồm `unknown`), cho #244. Không bao giờ là chữ của chức danh."
+          },
+          {
+            "name": "collected_reposts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 100000,
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`collected.repost_count` của bước một: số lần đăng lại của tin thu thập khớp, cho D4 (#246). Vắng mặt là không khớp; đi cặp với `collected_snapshots`.",
+              "title": "Collected Reposts"
+            },
+            "description": "`collected.repost_count` của bước một: số lần đăng lại của tin thu thập khớp, cho D4 (#246). Vắng mặt là không khớp; đi cặp với `collected_snapshots`."
+          },
+          {
+            "name": "collected_snapshots",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 10000,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`collected.snapshots_seen` của bước một: số snapshot mà tin khớp xuất hiện, cho D4 (#246). Đi cặp với `collected_reposts`.",
+              "title": "Collected Snapshots"
+            },
+            "description": "`collected.snapshots_seen` của bước một: số snapshot mà tin khớp xuất hiện, cho D4 (#246). Đi cặp với `collected_reposts`."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PostingCheckData_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không có ô thống kê cho tham số đã chọn (`unknown_cell`), hoặc mã kỹ năng không có trong bộ từ vựng (`unknown_skill`, chỉ ở `skill-roles`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Tham số truy vấn thiếu hoặc sai (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Chưa có số thật để soi tin (`check_unavailable`, tới #234): lỗi tạm thời, thử lại được, khác 404 `unknown_cell` (vai trò và cấp không có ô). Production trả mã này cho tới khi nối số thật, không bao giờ số giả.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/skill-roles": {
       "get": {
         "tags": [
@@ -547,6 +961,108 @@
           },
           "500": {
             "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posting-reads": {
+      "post": {
+        "tags": [
+          "posting"
+        ],
+        "summary": "Đọc một tin tuyển dụng dán vào",
+        "description": "Đọc chữ dán qua cổng model đúng một lần và trả các sự kiện đóng đã trích; không lưu gì (AD-11).\n\nResponse là `{data}`, không có `meta`: không có số liệu thị trường nào trong đó. Chữ không phải tin tuyển dụng IT, tin tuyển dụng\nngoài IT hoặc chữ quá ngắn trả 200 với `is_posting = false` và `reason` (`not_posting`, `not_it`, `too_short`). Chữ quá 20.000\nký tự hoặc thân quá trần byte: 413 `text_too_long`. Các lỗi còn lại của đường thật nằm ở mô tả các mã 429, 502, 503, 504. Bước hai là\n`GET /api/v1/posting-check`, chỉ nhận mã và số rút từ kết quả này; trích dẫn nguyên văn (`unrecognised`, `fee_mentions`,\n`contact_quotes`) và link tin thu thập (`collected.url`) chỉ hiện trên màn, không đi lên bước hai.",
+        "operationId": "post_posting_read_api_v1_posting_reads_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostingReadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostingReadResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Chữ dán vượt giới hạn cỡ (`text_too_long`): dài hơn 20.000 ký tự (FR-26), hoặc thân vượt trần byte của `posting_read.max_body_bytes`. Bị từ chối trước khi phân tích và trước khi đọc (AD-9); câu lỗi nêu giới hạn.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Thân sai hình: thiếu `text`, `text` không phải chuỗi, hoặc có trường lạ (`invalid_query`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Quá nhiều lần đọc trong một khoảng thời gian (`rate_limited`, #231).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Lỗi máy chủ (`internal_error`, `invalid_response`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cổng model trả kết quả không dùng được, hoặc nguồn đọc gặp lỗi (`read_failed`). Route chỉ ghi tên kiểu của lỗi (AD-11).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Chưa đọc được tin dán (`read_unavailable`): cổng model chưa sẵn sàng (#232).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Cổng model quá thời gian chờ (`read_timeout`, #232, #238).",
             "content": {
               "application/json": {
                 "schema": {
@@ -849,6 +1365,19 @@
         "title": "CitySharesData",
         "description": "`data` của `GET /api/v1/city-shares`."
       },
+      "ContactChannel": {
+        "type": "string",
+        "enum": [
+          "company_email",
+          "company_site",
+          "phone",
+          "zalo",
+          "telegram",
+          "personal_email"
+        ],
+        "title": "ContactChannel",
+        "description": "Kênh liên hệ tìm thấy trong tin (tập đóng, #245)."
+      },
       "CoverageNote": {
         "properties": {
           "code": {
@@ -978,6 +1507,25 @@
         ],
         "title": "Envelope[NewcomerRolesData]"
       },
+      "Envelope_PostingCheckData_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PostingCheckData",
+            "description": "Phần riêng của route. Mọi con số trong đây là một `Stat`."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Ngữ cảnh của con số: snapshot, nguồn, ngưỡng, lưu ý độ phủ, và từng ô."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "Envelope[PostingCheckData]"
+      },
       "Envelope_SkillRatesData_": {
         "properties": {
           "data": {
@@ -1066,6 +1614,68 @@
         ],
         "title": "ErrorEnvelope",
         "description": "Thân của mọi response lỗi. Không bao giờ đi cùng `data`."
+      },
+      "FeeFirstFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d6_fee_first",
+            "title": "Kind"
+          },
+          "quote_count": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Quote Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "quote_count"
+        ],
+        "title": "FeeFirstFact",
+        "description": "D6 (đòi tiền trước): số trích dẫn về phí hoặc đặt cọc. Màn trích `fee_mentions[0 : quote_count]` của bước một."
+      },
+      "HighReqLowPayFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d3_high_req_low_pay",
+            "title": "Kind"
+          },
+          "skill_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Skill Count"
+          },
+          "p75_skill_count": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "P75 của số kỹ năng trong ô, `kind = percentile`."
+          },
+          "salary_ceiling_vnd_month": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Salary Ceiling Vnd Month",
+            "description": "Lương trần của tin, VND một tháng gross."
+          },
+          "p25_salary": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "P25 của lương trong ô, VND một tháng, `kind = percentile`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "skill_count",
+          "p75_skill_count",
+          "salary_ceiling_vnd_month",
+          "p25_salary"
+        ],
+        "title": "HighReqLowPayFact",
+        "description": "D3 (yêu cầu cao, lương thấp): số kỹ năng so với P75 và lương trần (đã quy VND một tháng) so với P25 của lương trong ô."
       },
       "LearningPathData": {
         "properties": {
@@ -1422,6 +2032,22 @@
         "title": "NewcomerRolesData",
         "description": "`data` của `GET /api/v1/newcomer-roles`."
       },
+      "NoCompanyFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d7_no_company",
+            "title": "Kind"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "NoCompanyFact",
+        "description": "D7 (không rõ công ty): tin không nêu tên công ty. Không có số."
+      },
       "OverviewRanking": {
         "properties": {
           "level": {
@@ -1669,6 +2295,1275 @@
           "not_ready"
         ],
         "title": "PathStatus"
+      },
+      "PostingCheckData": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Vai trò đã chọn (mã)."
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Branch",
+            "description": "Nhánh của vai trò (mã, FR-27) mà người gọi gửi lên; lặp lại nguyên mã. `null` khi không gửi."
+          },
+          "level": {
+            "type": "string",
+            "title": "Level",
+            "description": "Cấp bậc đã chọn (mã)."
+          },
+          "cell_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Cell Id",
+            "description": "Ô đã dùng cho `match`, sau khi quay về như `skill-rates`; `meta.cells[cell_id].fallback_label` giải thích. Mục `market` có\n`market.cell_id` riêng."
+          },
+          "has_profile": {
+            "type": "boolean",
+            "title": "Has Profile",
+            "description": "`false` khi `have` rỗng: không có cờ `have`, mức khớp và đếm theo nhóm; nhóm và tỷ lệ vẫn có."
+          },
+          "match": {
+            "$ref": "#/components/schemas/PostingMatch"
+          },
+          "market": {
+            "$ref": "#/components/schemas/PostingMarket"
+          },
+          "warnings": {
+            "$ref": "#/components/schemas/PostingWarnings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "branch",
+          "level",
+          "cell_id",
+          "has_profile",
+          "match",
+          "market",
+          "warnings"
+        ],
+        "title": "PostingCheckData",
+        "description": "`data` của `GET /api/v1/posting-check`."
+      },
+      "PostingChecklistItem": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "company_named",
+              "salary_stated",
+              "duties_described",
+              "title_matches_level"
+            ],
+            "title": "Code"
+          },
+          "present": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Present",
+            "description": "`null` là không biết (ví dụ `title_matches_level` khi tin không có `title_level` hoặc cấp là `unknown`), khác với `false`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "present"
+        ],
+        "title": "PostingChecklistItem",
+        "description": "Một mục \"chi tiết thường có\" của tin (#244)."
+      },
+      "PostingCollected": {
+        "properties": {
+          "site": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Site",
+            "description": "Nguồn đã thu thập tin."
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date",
+            "title": "First Seen",
+            "description": "Ngày thấy tin lần đầu."
+          },
+          "repost_count": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Repost Count",
+            "description": "Số lần đăng lại. Đi vào bước hai qua `collected_reposts` cho D4."
+          },
+          "snapshots_seen": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Snapshots Seen",
+            "description": "Số snapshot mà tin xuất hiện. Đi vào bước hai qua `collected_snapshots` cho D4."
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "minLength": 9,
+            "pattern": "^https?://\\S+$",
+            "title": "Url",
+            "description": "Link về tin gốc. Bắt buộc khi có tin khớp (FR-32); chỉ hiện trên màn, không vào query."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "site",
+          "first_seen",
+          "repost_count",
+          "snapshots_seen",
+          "url"
+        ],
+        "title": "PostingCollected",
+        "description": "Tin đã thu thập khớp với tin dán (FR-32, #246): bước một đã tìm nên có link; bước hai chỉ nhận hai số."
+      },
+      "PostingCollectedCounts": {
+        "properties": {
+          "repost_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Repost Count",
+            "description": "Số lần đăng lại."
+          },
+          "snapshots_seen": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Snapshots Seen",
+            "description": "Số snapshot mà tin xuất hiện."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "repost_count",
+          "snapshots_seen"
+        ],
+        "title": "PostingCollectedCounts",
+        "description": "Vòng đời của tin thu thập khớp (FR-32), phần số mà bước hai nhận. Site, ngày thấy đầu và link ở `PostingReadData.collected`."
+      },
+      "PostingContactQuote": {
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/ContactChannel",
+            "description": "Kênh mà trích dẫn nói tới; phải nằm trong `contacts`."
+          },
+          "quote": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Quote",
+            "description": "Nguyên văn, tối đa 120 ký tự. Chỉ hiện trên màn từ response bước một; không bao giờ vào query."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "channel",
+          "quote"
+        ],
+        "title": "PostingContactQuote",
+        "description": "Một trích dẫn ngắn về kênh liên hệ (#245): dấu hiệu phải trích nguyên văn điều đã tìm thấy."
+      },
+      "PostingFxRate": {
+        "properties": {
+          "rate": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Rate",
+            "description": "Số VND cho một USD."
+          },
+          "unit": {
+            "type": "string",
+            "const": "vnd_per_usd",
+            "title": "Unit"
+          },
+          "fx_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Fx Version",
+            "description": "Phiên bản tỷ giá của snapshot (truy vết)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rate",
+          "unit",
+          "fx_version"
+        ],
+        "title": "PostingFxRate",
+        "description": "Tỷ giá đã dùng để quy USD sang VND (AD-10): tỷ giá cố định của snapshot đang dùng, số nguyên VND cho một USD."
+      },
+      "PostingGroupCount": {
+        "properties": {
+          "group": {
+            "type": "string",
+            "enum": [
+              "core",
+              "common",
+              "specific"
+            ],
+            "title": "Group"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total",
+            "description": "Số kỹ năng của tin thuộc nhóm."
+          },
+          "had": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Had",
+            "description": "Số kỹ năng trong đó hồ sơ có. `null` khi không có hồ sơ."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "group",
+          "total",
+          "had"
+        ],
+        "title": "PostingGroupCount",
+        "description": "Một dòng đếm thô theo nhóm: \"có `had` trên `total`\"."
+      },
+      "PostingMarket": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_ready",
+              "ready"
+            ],
+            "title": "Status",
+            "description": "`not_ready`: chưa tính (#240, #241). Khác với `not_enough_data` của từng thước, vốn là kết quả đã tính."
+          },
+          "cell_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cell Id",
+            "description": "Ô mà ba so sánh dùng. Có thể khác `data.cell_id` của mục `match` (mỗi mục quay về theo thước của mình). Cỡ mẫu \"X/30\" tra ở\n`meta.cells[cell_id].n_by_measure[<thước của trường>]` (`MARKET_MEASURE_OF`), không phải ô của `match`. `null` khi `not_ready`."
+          },
+          "years": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingPercentile"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Số năm kinh nghiệm yêu cầu so với ô."
+          },
+          "skill_count": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingPercentile"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Số kỹ năng nhận diện so với ô (FR-30: luôn hiện khi ô đủ mẫu)."
+          },
+          "salary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingSalaryComparison"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Lương công bố so với khoảng giữa của ô."
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "comparisons_not_verdict"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Mã câu \"đây là so sánh với thị trường, không phải phán quyết về tin\" (#125 AC5, #242). Có khi `ready`, `null` khi `not_ready`.\nChữ do web dựng từ mã."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "cell_id",
+          "years",
+          "skill_count",
+          "salary",
+          "note"
+        ],
+        "title": "PostingMarket",
+        "description": "Mục so với thị trường (#125, FR-30). `not_ready` ở dữ liệu tới #240–#241: mọi trường là `null`, không phải số 0."
+      },
+      "PostingMatch": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "not_enough_data",
+              "no_skills"
+            ],
+            "title": "Status",
+            "description": "`ready`; `not_enough_data` khi ô đã dùng (kể cả sau khi quay về) dưới ngưỡng mẫu nên không chia nhóm được; `no_skills`\nkhi tin không có kỹ năng nhận diện."
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/PostingMatchedSkill"
+            },
+            "type": "array",
+            "title": "Skills",
+            "description": "Kỹ năng của tin, theo thứ tự do máy chủ quyết: core, common, specific (rồi chưa chia nhóm), mỗi nhóm tỷ lệ giảm dần rồi\nmã. Web không sắp xếp lại."
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/PostingGroupCount"
+            },
+            "type": "array",
+            "title": "Groups",
+            "description": "Đủ ba dòng `core`, `common`, `specific` khi `status = ready`; rỗng nếu không."
+          },
+          "level": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingMatchLevel"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Mức khớp. `null` khi không có hồ sơ hoặc `status` khác `ready`."
+          },
+          "cv_first": {
+            "items": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$"
+            },
+            "type": "array",
+            "title": "Cv First",
+            "description": "Kỹ năng hồ sơ có và tin nêu, theo thứ tự của `skills`: danh sách \"nên đặt đầu CV\" (#235). Rỗng khi không có hồ sơ."
+          },
+          "config_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Config Version",
+            "description": "Phiên bản `config/rules.toml` đã cho trọng số (AD-10)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "skills",
+          "groups",
+          "level",
+          "cv_first",
+          "config_version"
+        ],
+        "title": "PostingMatch",
+        "description": "Mục khớp kỹ năng (FR-28, FR-29): có số từ #230."
+      },
+      "PostingMatchLevel": {
+        "properties": {
+          "points": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Points",
+            "description": "Tổng trọng số kỹ năng của tin mà hồ sơ có."
+          },
+          "max_points": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max Points",
+            "description": "Tổng trọng số mọi kỹ năng đã nhận diện của tin."
+          },
+          "percent": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Percent",
+            "description": "`points / max_points` làm tròn nửa lên, 0 đến 100."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "points",
+          "max_points",
+          "percent"
+        ],
+        "title": "PostingMatchLevel",
+        "description": "Mức khớp theo trọng số thị trường (FR-28): `points / max_points`."
+      },
+      "PostingMatchedSkill": {
+        "properties": {
+          "skill": {
+            "$ref": "#/components/schemas/SkillLabel",
+            "description": "Kỹ năng, kèm tên song ngữ."
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "core",
+                  "common",
+                  "specific"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group",
+            "description": "`core`, `common` hoặc `specific` (hiếm ở ô: nhóm `company_specific` của θ, hoặc không có dòng nào trong ô). `null` khi ô\nkhông đủ mẫu để chia nhóm."
+          },
+          "rate": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "Tỷ lệ của kỹ năng trong ô đã dùng, `kind = skill_rate`. Kỹ năng không có dòng trong ô đủ mẫu là 0. Ô không đủ mẫu là\n`null_data`."
+          },
+          "have": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Have",
+            "description": "Hồ sơ có kỹ năng này (AD-22: máy chủ so, web không tự so). `null` khi không có hồ sơ."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "skill",
+          "group",
+          "rate",
+          "have"
+        ],
+        "title": "PostingMatchedSkill",
+        "description": "Một kỹ năng của tin trong mục khớp."
+      },
+      "PostingPercentile": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "compared",
+              "not_enough_data",
+              "not_stated"
+            ],
+            "title": "State",
+            "description": "`compared`: có phân vị. `not_enough_data`: ô chưa đủ mẫu của thước này, màn ghi \"chưa đủ dữ liệu (X/30 ...)\" với X là\n`meta.cells[market.cell_id].n_by_measure` của thước (`experience_years`, `skill_count`). `not_stated`: tin không ghi (ví dụ không\nghi số năm)."
+          },
+          "percentile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stat"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "`kind = percentile`, giá trị 0 đến 100. `null_data` khi `not_enough_data`; `null` khi `not_stated`."
+          },
+          "ci_low": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stat"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cận dưới khoảng tin cậy 95% của phân vị (AD-26), `kind = percentile`. Chỉ có khi `compared` và `min_sample <= n < ci_below_n`\n(30 đến 99 tin có đúng trường đó, `config/rules.toml`); `null` khi n từ 100, và khi không `compared`."
+          },
+          "ci_high": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stat"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cận trên của khoảng tin cậy; đi cặp với `ci_low`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state",
+          "percentile",
+          "ci_low",
+          "ci_high"
+        ],
+        "title": "PostingPercentile",
+        "description": "Vị trí của tin theo một thước (số năm, số kỹ năng) so với ô, dạng phân vị (#125, FR-30)."
+      },
+      "PostingReadData": {
+        "properties": {
+          "is_posting": {
+            "type": "boolean",
+            "title": "Is Posting",
+            "description": "`false` với chữ không phải tin tuyển dụng IT hoặc quá ngắn: không có gì để khớp."
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "not_posting",
+                  "too_short",
+                  "not_it"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason",
+            "description": "Lý do khi `is_posting = false`: `not_posting` (không phải tin tuyển dụng), `too_short` (dưới 200 ký tự) hoặc `not_it` (tin\ntuyển dụng mà không thuộc lĩnh vực IT, UX-DR44: \"Tin này có vẻ không thuộc lĩnh vực IT\"). `null` khi là tin."
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "Mã vai trò của `config/rules.toml` (`roles`); `null` khi không phải tin."
+          },
+          "branch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Branch",
+            "description": "Mã nhánh của vai trò (FR-27), lấy từ `[[branches]]` của `config/classify.toml` (ví dụ `cloud` của `devops`); `null` khi tin\nkhông thuộc nhánh nào hoặc không phải tin."
+          },
+          "level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level",
+            "description": "Mã cấp bậc của `config/rules.toml` (`labels.level`: `intern`, `fresher`, ..., `unknown`); `null` khi không phải tin.\nTin không ghi cấp là `unknown`."
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/PostingSkillMention"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Skills",
+            "description": "Kỹ năng của bộ từ vựng mà tin nhắc, không trùng mã. Đây là thứ đi vào `skills=` của `posting-check`."
+          },
+          "unrecognised": {
+            "items": {
+              "type": "string",
+              "maxLength": 60,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Unrecognised",
+            "description": "Cụm chữ chưa nhận diện, nguyên văn, chỉ hiện trên màn (\"không tính vào mức khớp\"). Không bao giờ vào query."
+          },
+          "years_min": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 60.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Years Min",
+            "description": "Số năm kinh nghiệm tối thiểu tin yêu cầu; `null` khi tin không ghi."
+          },
+          "salary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingSalary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Lương dạng số; `null` khi tin không công bố số."
+          },
+          "salary_non_numeric": {
+            "type": "boolean",
+            "title": "Salary Non Numeric",
+            "description": "Tin có nói về lương nhưng không có số (\"thỏa thuận\", \"cạnh tranh\"). `false` khi có `salary`, và khi tin không nói gì về lương."
+          },
+          "company_named": {
+            "type": "boolean",
+            "title": "Company Named",
+            "description": "Tin có nêu tên công ty."
+          },
+          "duties_described": {
+            "type": "boolean",
+            "title": "Duties Described",
+            "description": "Tin có mô tả công việc (danh sách \"chi tiết thường có\", #244)."
+          },
+          "title_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Level",
+            "description": "Cấp bậc mà chức danh của tin cho biết (mã của `labels.level`, không gồm `unknown`); `null` khi chức danh không nêu cấp. Đủ để\nkiểm \"chức danh khớp cấp bậc\" (#244) mà không phải đưa chữ của tin lên bước hai."
+          },
+          "contacts": {
+            "items": {
+              "$ref": "#/components/schemas/ContactChannel"
+            },
+            "type": "array",
+            "title": "Contacts",
+            "description": "Kênh liên hệ tìm thấy, không trùng."
+          },
+          "contact_quotes": {
+            "items": {
+              "$ref": "#/components/schemas/PostingContactQuote"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Contact Quotes",
+            "description": "Trích dẫn nguyên văn về kênh liên hệ (tối đa 5, mỗi cái tối đa 120 ký tự), cho #245 (\"trích điều đã tìm thấy\"). Chỉ hiện trên\nmàn từ response này; bước hai chỉ nhận enum `contacts`."
+          },
+          "fee_mentions": {
+            "items": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Fee Mentions",
+            "description": "Trích dẫn ngắn về phí hoặc đặt cọc (tối đa 5, mỗi cái tối đa 120 ký tự), cho #245. Chỉ hiện trên màn."
+          },
+          "collected": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingCollected"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Tin đã thu thập khớp với tin dán (FR-32); `null` là không khớp. Bước một tra, vì chỉ bước này thấy chữ."
+          },
+          "model_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Model Id",
+            "description": "Mô hình đã đọc (AD-9 truy vết)."
+          },
+          "prompt_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Prompt Version",
+            "description": "Phiên bản prompt của cổng đọc."
+          },
+          "vocab_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Vocab Version",
+            "description": "Phiên bản bộ từ vựng kỹ năng đã dùng."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "is_posting",
+          "reason",
+          "role",
+          "branch",
+          "level",
+          "skills",
+          "unrecognised",
+          "years_min",
+          "salary",
+          "salary_non_numeric",
+          "company_named",
+          "duties_described",
+          "title_level",
+          "contacts",
+          "contact_quotes",
+          "fee_mentions",
+          "collected",
+          "model_id",
+          "prompt_version",
+          "vocab_version"
+        ],
+        "title": "PostingReadData",
+        "description": "`data` của `POST /api/v1/posting-reads`: sự kiện đóng đã trích từ chữ dán."
+      },
+      "PostingReadRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 20000,
+            "title": "Text",
+            "description": "Chữ của tin dán, tối đa 20.000 ký tự (dài hơn là 413 `text_too_long`). Chỉ đi qua cổng đọc một lần, không lưu và không ghi log (AD-11)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "PostingReadRequest",
+        "description": "Thân của `POST /api/v1/posting-reads`. Trần cỡ ở đây và ở `posting_read` của `config/rules.toml` (AD-9); trần tốc độ là của #231."
+      },
+      "PostingReadResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PostingReadData"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "PostingReadResponse",
+        "description": "`{data}`. Không có `meta`: xem docstring của module."
+      },
+      "PostingSalary": {
+        "properties": {
+          "min": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 10000000000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min",
+            "description": "Cận dưới; `null` khi tin chỉ nêu cận trên."
+          },
+          "max": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 10000000000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max",
+            "description": "Cận trên; `null` khi tin chỉ nêu cận dưới."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "vnd",
+              "usd"
+            ],
+            "title": "Currency"
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ],
+            "title": "Period"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "min",
+          "max",
+          "currency",
+          "period"
+        ],
+        "title": "PostingSalary",
+        "description": "Lương tin công bố dạng số."
+      },
+      "PostingSalaryComparison": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "compared",
+              "not_enough_data",
+              "not_stated",
+              "not_numeric"
+            ],
+            "title": "State",
+            "description": "`compared`: có vị trí so với khoảng giữa. `not_enough_data`: tin có lương dạng số nhưng ô chưa đủ 30 tin có lương (X/30 ở\n`meta.cells[market.cell_id].n_by_measure.salary`). `not_stated`: tin không công bố lương (sự thật trung tính, không phải cảnh\nbáo; `note`). `not_numeric`: tin có nói về lương nhưng không có số (\"thỏa thuận\"). Lương ngoại tệ hay theo năm không còn là một\ntrạng thái riêng: quy đổi lo cả hai."
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "below",
+                  "within",
+                  "above"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position",
+            "description": "Vị trí so với `[low, high]`; chỉ có khi `compared`."
+          },
+          "low": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stat"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "P25 của lương trong ô, `kind = percentile`, VND một tháng. `null_data` khi `not_enough_data`; `null` khi không có lương dạng số."
+          },
+          "high": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Stat"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "P75 của lương trong ô, `kind = percentile`, VND một tháng."
+          },
+          "converted": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingSalaryConversion"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Lương của tin đã quy đổi, kèm tỷ giá và đơn vị đã dùng. Có khi `compared` và `not_enough_data` (tin có lương dạng số)."
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "salary_not_stated"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "`salary_not_stated` khi `not_stated`: dòng trung tính của #125; `null` ở các trạng thái khác."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state",
+          "position",
+          "low",
+          "high",
+          "converted",
+          "note"
+        ],
+        "title": "PostingSalaryComparison",
+        "description": "Lương tin công bố so với khoảng giữa P25 đến P75 của ô (#125, DEC-10), sau khi quy về VND một tháng (AD-10)."
+      },
+      "PostingSalaryConversion": {
+        "properties": {
+          "min_vnd_month": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Vnd Month",
+            "description": "Cận dưới đã quy đổi; `null` khi tin chỉ nêu cận trên."
+          },
+          "max_vnd_month": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Vnd Month",
+            "description": "Cận trên đã quy đổi; `null` khi tin chỉ nêu cận dưới."
+          },
+          "fx": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingFxRate"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Tỷ giá đã dùng; `null` khi tin đã ghi bằng VND (không cần đổi tiền tệ)."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "min_vnd_month",
+          "max_vnd_month",
+          "fx"
+        ],
+        "title": "PostingSalaryConversion",
+        "description": "Lương của tin sau khi quy về VND một tháng gross (AD-10): USD theo tỷ giá, theo năm chia 12."
+      },
+      "PostingSkillMention": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 40,
+            "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+            "title": "Code",
+            "description": "Mã kỹ năng trong bộ từ vựng, snake_case."
+          },
+          "mentions": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Mentions",
+            "description": "Số lần tin nhắc kỹ năng. Chỉ để hiện trên màn; không đi vào query của `posting-check`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "mentions"
+        ],
+        "title": "PostingSkillMention",
+        "description": "Một kỹ năng của bộ từ vựng mà tin nhắc."
+      },
+      "PostingWarningSign": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "d1_wide_skills",
+              "d2_specific_heavy",
+              "d3_high_req_low_pay",
+              "d4_reposted",
+              "d5_unusual_contact",
+              "d6_fee_first",
+              "d7_no_company"
+            ],
+            "title": "Code"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "triggered",
+              "not_triggered",
+              "not_evaluable"
+            ],
+            "title": "Status",
+            "description": "`triggered`: kích hoạt, kèm `fact` và `action`. `not_triggered`: đánh giá được và không kích hoạt. `not_evaluable`: không có\nđủ dữ liệu để đánh giá (`reason`), không phải \"không kích hoạt\"."
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "not_in_data",
+                  "not_enough_data",
+                  "no_numeric_salary"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason",
+            "description": "Chỉ có khi `not_evaluable`: `not_in_data` (D4: tin chưa có trong dữ liệu), `not_enough_data` (D1, D3: ô chưa đủ mẫu),\n`no_numeric_salary` (D3: tin không có lương dạng số)."
+          },
+          "fact": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/WideSkillsFact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SpecificHeavyFact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HighReqLowPayFact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RepostedFact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/UnusualContactFact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/FeeFirstFact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/NoCompanyFact"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "kind",
+                  "mapping": {
+                    "d1_wide_skills": "#/components/schemas/WideSkillsFact",
+                    "d2_specific_heavy": "#/components/schemas/SpecificHeavyFact",
+                    "d3_high_req_low_pay": "#/components/schemas/HighReqLowPayFact",
+                    "d4_reposted": "#/components/schemas/RepostedFact",
+                    "d5_unusual_contact": "#/components/schemas/UnusualContactFact",
+                    "d6_fee_first": "#/components/schemas/FeeFirstFact",
+                    "d7_no_company": "#/components/schemas/NoCompanyFact"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fact",
+            "description": "Dữ kiện đã kích hoạt dấu hiệu, kiểu theo `code`; chỉ có khi `triggered`."
+          },
+          "action": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ask_daily_stack",
+                  "check_company_stack",
+                  "compare_pay_before_applying",
+                  "check_original_posting",
+                  "verify_company_channel",
+                  "no_payment_before_verifying",
+                  "look_up_company"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action",
+            "description": "Mã câu gợi ý hành động (`SIGN_ACTION`); chỉ có khi `triggered`."
+          },
+          "source_field": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "fee_mentions",
+                  "contacts"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Field",
+            "description": "Trường của `PostingReadData` mà màn trích nguyên văn: D5 `contacts`, D6 `fee_mentions`; `null` ở mọi trường hợp khác."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "status",
+          "reason",
+          "fact",
+          "action",
+          "source_field"
+        ],
+        "title": "PostingWarningSign",
+        "description": "Một dấu hiệu cần tự kiểm tra (FR-31, #245). Máy chủ không nhận chữ của tin: màn trích nguyên văn từ kết quả bước một."
+      },
+      "PostingWarnings": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_ready",
+              "ready"
+            ],
+            "title": "Status"
+          },
+          "checklist": {
+            "items": {
+              "$ref": "#/components/schemas/PostingChecklistItem"
+            },
+            "type": "array",
+            "title": "Checklist",
+            "description": "Đủ bốn mục của `CHECKLIST_CODES` theo thứ tự khi `ready`; rỗng khi `not_ready`."
+          },
+          "signs": {
+            "items": {
+              "$ref": "#/components/schemas/PostingWarningSign"
+            },
+            "type": "array",
+            "title": "Signs",
+            "description": "Khi `ready`: đủ bảy dấu hiệu `SIGN_CODES` theo thứ tự, mỗi cái một trạng thái. Rỗng khi `not_ready`."
+          },
+          "collected_match": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PostingCollectedCounts"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Vòng đời của tin thu thập khớp (hai số mà bước hai nhận); `null` là không khớp, và D4 là `not_evaluable`. Site, ngày thấy đầu\nvà link của tin khớp ở `PostingReadData.collected` (bước một)."
+          },
+          "salary_note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "salary_not_stated"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary Note",
+            "description": "`salary_not_stated` khi tin không ghi lương: dòng trung tính của FR-31, không phải dấu hiệu. `null` khi tin có lương hoặc `not_ready`."
+          },
+          "disclaimer": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "signs_are_hints"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disclaimer",
+            "description": "`signs_are_hints`: mã câu cố định FR-31 đặt ngay dưới các dấu hiệu. Có khi và chỉ khi `ready`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "checklist",
+          "signs",
+          "collected_match",
+          "salary_note",
+          "disclaimer"
+        ],
+        "title": "PostingWarnings",
+        "description": "Mục dấu hiệu cần kiểm (#126, FR-31). `not_ready` ở dữ liệu tới #244–#246: rỗng, không phải \"không có dấu hiệu\"."
+      },
+      "RepostedFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d4_reposted",
+            "title": "Kind"
+          },
+          "reposts": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Reposts"
+          },
+          "snapshots_seen": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Snapshots Seen"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "reposts",
+          "snapshots_seen"
+        ],
+        "title": "RepostedFact",
+        "description": "D4 (tin đăng lại nhiều lần): vòng đời của tin thu thập khớp."
       },
       "RoleForTitleData": {
         "properties": {
@@ -2006,6 +3901,34 @@
         "title": "SnapshotStatus",
         "description": "Trạng thái kết thúc của snapshot (AD-4). Cả hai đều đọc được."
       },
+      "SpecificHeavyFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d2_specific_heavy",
+            "title": "Kind"
+          },
+          "recognised_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Recognised Count"
+          },
+          "specific_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Specific Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "recognised_count",
+          "specific_count"
+        ],
+        "title": "SpecificHeavyFact",
+        "description": "D2 (tỷ lệ kỹ năng riêng cao): số kỹ năng đã nhận diện và số trong đó thuộc nhóm riêng của công ty (không tính chưa nhận diện)."
+      },
       "Stat": {
         "properties": {
           "value": {
@@ -2095,6 +4018,59 @@
         ],
         "title": "TitleMatch",
         "description": "Kết quả phân loại một chức danh."
+      },
+      "UnusualContactFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d5_unusual_contact",
+            "title": "Kind"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContactChannel"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Channels"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "channels"
+        ],
+        "title": "UnusualContactFact",
+        "description": "D5 (kênh liên hệ bất thường): các kênh đã tìm thấy, chỉ có kênh cá nhân. Màn trích `contact_quotes` của bước một theo kênh."
+      },
+      "WideSkillsFact": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "d1_wide_skills",
+            "title": "Kind"
+          },
+          "skill_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Skill Count",
+            "description": "Số kỹ năng đã nhận diện của tin."
+          },
+          "p90": {
+            "$ref": "#/components/schemas/Stat",
+            "description": "P90 của số kỹ năng trong ô, `kind = percentile`."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "skill_count",
+          "p90"
+        ],
+        "title": "WideSkillsFact",
+        "description": "D1 (yêu cầu kỹ năng dàn trải): số kỹ năng đã nhận diện của tin so với P90 của ô."
       }
     }
   }

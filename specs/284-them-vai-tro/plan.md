@@ -53,3 +53,5 @@ tests/steps/test_gh283_ingest_classify.py, web/tests/fr33-map-screen.test.tsx (s
 ## Ghi chú 2026-11-15 (gộp main vào #212)
 
 `tests/steps/test_gh284_aggregate_vai_tro_moi.py`: lời dựng `create_app` thêm `"learning_path": FakeMarket()`. Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `haido_api/fixtures/fake_market.json`, `tests/core/test_ad10_rules_config.py`, `tests/steps/test_gh284_aggregate_vai_tro_moi.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

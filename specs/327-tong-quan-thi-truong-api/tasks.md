@@ -13,3 +13,5 @@
 - [x] T004 Thêm `market_overview` vào `MarketReadModel`, `FakeMarket`, route; mục `market_overview` trong fixture.
 - [x] T005 Sinh `web/tests/fixtures/market-overview.json` và `docs/api/openapi.json`; viết mục route trong `docs/api/envelope-meta.md`.
 - [x] T006 Chạy `uv run pytest -q`, `uv run ruff check .`; ghi GREEN.
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

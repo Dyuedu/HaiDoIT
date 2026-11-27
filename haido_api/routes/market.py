@@ -6,7 +6,11 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 - `HAIDO_MARKET_SOURCE_SKILL_RATES` cho `GET /api/v1/skill-rates` (bản thật: #27);
 - `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` cho `GET /api/v1/newcomer-roles` (bản thật: #145, #146);
 - `HAIDO_MARKET_SOURCE_LEARNING_PATH` cho `GET /api/v1/learning-path` (bản thật: #216);
-- `HAIDO_MARKET_SOURCE_SKILL_ROLES` cho `GET /api/v1/skill-roles` (bản thật: #168).
+- `HAIDO_MARKET_SOURCE_SKILL_ROLES` cho `GET /api/v1/skill-roles` (bản thật: #168);
+- `HAIDO_MARKET_SOURCE_POSTING_CHECK` cho `GET /api/v1/posting-check` (bản thật: #234). `stat` ném `CheckUnavailable` (503 `check_unavailable`)
+  cho tới đó.
+
+`POST /api/v1/posting-reads` (#230) không phải số liệu thị trường nên có nguồn riêng, `HAIDO_POSTING_READER` (xem `routes/posting.py`).
 
 Thêm bản thật là thêm một mục vào `IMPLEMENTATIONS`; route và schema không đổi.
 """
@@ -29,6 +33,21 @@ from haido_api.schemas.market import (
     NewcomerRolesData,
     SkillRatesData,
     SkillRolesData,
+)
+from haido_api.schemas.posting import (
+    MAX_COLLECTED_REPOSTS,
+    MAX_COLLECTED_SNAPSHOTS,
+    MAX_FEES_PARAM,
+    MAX_SALARY,
+    MAX_YEARS_MIN,
+    ContactChannel,
+    PostingCheckData,
+    PostingFacts,
+    PostingSalary,
+    SalaryCurrency,
+    SalaryPeriod,
+    branch_codes,
+    title_level_codes,
 )
 from haido_api.stat_market import StatMarket
 from haido_core.config import ALL_LEVELS, ANY_YEARS, load_rules
@@ -55,6 +74,7 @@ SOURCE_ENV: dict[str, str] = {
     "newcomer_roles": "HAIDO_MARKET_SOURCE_NEWCOMER_ROLES",
     "learning_path": "HAIDO_MARKET_SOURCE_LEARNING_PATH",
     "skill_roles": "HAIDO_MARKET_SOURCE_SKILL_ROLES",
+    "posting_check": "HAIDO_MARKET_SOURCE_POSTING_CHECK",
 }
 DEFAULT_SOURCE = "fake"
 IMPLEMENTATIONS: dict[str, Callable[[], MarketReadModel]] = {
@@ -99,8 +119,13 @@ DEFAULT_PATH_LEVEL = "entry"
 """Cấp mặc định của lộ trình: nhóm mới vào nghề (DEC-8, #134)."""
 
 
-def parse_have(raw: str | None) -> tuple[str, ...]:
-    """`?have=a,b,c` thành tuple mã đã loại trùng, giữ thứ tự gặp đầu. Rỗng là không có mã nào.
+def _invalid_param(name: str) -> RequestValidationError:
+    """Lỗi 422 chỉ nêu tên tham số, không lặp lại giá trị đã gửi."""
+    return RequestValidationError([{"type": "value_error", "loc": ("query", name), "msg": f"{name} không hợp lệ", "input": None}])
+
+
+def parse_code_list(raw: str | None, name: str) -> tuple[str, ...]:
+    """`?<name>=a,b,c` thành tuple mã kỹ năng đã loại trùng, giữ thứ tự gặp đầu. Rỗng là không có mã nào.
 
     Raises:
         RequestValidationError: có phần tử rỗng hoặc sai định dạng mã kỹ năng, hoặc quá `MAX_PROFILE_SKILLS`
@@ -110,17 +135,94 @@ def parse_have(raw: str | None) -> tuple[str, ...]:
         return ()
     parts = raw.split(",")
     if len(parts) > MAX_PROFILE_SKILLS or not all(is_skill_code(p) for p in parts):
-        raise RequestValidationError(
-            [
-                {
-                    "type": "value_error",
-                    "loc": ("query", "have"),
-                    "msg": "have không hợp lệ",
-                    "input": None,
-                }
-            ]
-        )
+        raise _invalid_param(name)
     return tuple(dict.fromkeys(parts))
+
+
+def parse_have(raw: str | None) -> tuple[str, ...]:
+    """`?have=a,b,c`: hồ sơ của người dùng (AD-22). Xem `parse_code_list`."""
+    return parse_code_list(raw, "have")
+
+
+POSTING_CHECK_PARAMS: tuple[str, ...] = (
+    "role", "level", "branch", "have", "skills", "years_min", "salary_min", "salary_max", "salary_currency", "salary_period",
+    "salary_non_numeric", "company_named", "contacts", "fees", "duties_described", "title_level", "collected_reposts",
+    "collected_snapshots",
+)  # fmt: skip
+"""Mọi tham số của `posting-check`. Tham số khác (kể cả chữ tự do như `text`, `quote`, `url`) bị 422: chỉ mã và số đi lên máy chủ (AD-22).
+`MAX_SALARY` (trần của `salary_min`, `salary_max`) là của schema, cùng trần với `PostingSalary` ở bước một."""
+
+
+def _only_known_params(request: Request) -> None:
+    """Từ chối tham số lạ của `posting-check`, không nêu tên tham số đã gửi."""
+    if not set(request.query_params) <= set(POSTING_CHECK_PARAMS):
+        raise _invalid_param("unknown_param")
+
+
+def _posting_skills(raw: str | None) -> tuple[str, ...]:
+    """`skills=`: mã của tin, mọi mã phải có trong bộ từ vựng. Cụm chưa nhận diện không thể lọt vào query dù viết snake_case."""
+    codes = parse_code_list(raw, "skills")
+    if any(find_seed_skill(c) is None for c in codes):
+        raise _invalid_param("skills")
+    return codes
+
+
+def _posting_facts(
+    *,
+    role: str,
+    branch: str | None,
+    years_min: int | None,
+    salary_min: int | None,
+    salary_max: int | None,
+    salary_currency: SalaryCurrency | None,
+    salary_period: SalaryPeriod | None,
+    salary_non_numeric: bool | None,
+    company_named: bool | None,
+    contacts: str | None,
+    fees: int | None,
+    duties_described: bool | None,
+    title_level: str | None,
+    collected_reposts: int | None,
+    collected_snapshots: int | None,
+) -> PostingFacts:
+    """Gộp sự kiện đóng của bước 1 thành `PostingFacts`; ghép lương, nhánh hay tin thu thập sai là 422."""
+    if branch is not None and branch_codes().get(branch) != role:
+        raise _invalid_param("branch")  # nhánh phải thuộc vai trò đang chọn: đổi vai trò thì bỏ nhánh
+    if title_level is not None and title_level not in title_level_codes():
+        raise _invalid_param("title_level")
+    if (collected_reposts is None) != (collected_snapshots is None):
+        raise _invalid_param("collected_reposts")  # hai số của một tin khớp đi cặp
+    salary: PostingSalary | None = None
+    has_amount = salary_min is not None or salary_max is not None
+    has_unit = salary_currency is not None or salary_period is not None
+    if has_amount != has_unit or (has_amount and (salary_currency is None or salary_period is None)):
+        raise _invalid_param("salary_currency")
+    if salary_non_numeric and has_amount:
+        raise _invalid_param("salary_non_numeric")  # có số thì không thể "lương không có số"
+    if has_amount and salary_currency is not None and salary_period is not None:
+        if salary_min is not None and salary_max is not None and salary_min > salary_max:
+            raise _invalid_param("salary_min")
+        salary = PostingSalary(min=salary_min, max=salary_max, currency=salary_currency, period=salary_period)
+    channels: list[ContactChannel] = []
+    if contacts:
+        known = {c.value for c in ContactChannel}
+        parts = contacts.split(",")
+        if len(set(parts)) != len(parts) or not set(parts) <= known:
+            raise _invalid_param("contacts")
+        channels = [ContactChannel(p) for p in parts]
+    return PostingFacts(
+        branch=branch,
+        years_min=years_min,
+        salary=salary,
+        salary_non_numeric=bool(salary_non_numeric),
+        company_named=company_named,
+        contacts=tuple(channels),
+        fees=fees,
+        duties_described=duties_described,
+        title_level=title_level,
+        collected_reposts=collected_reposts,
+        collected_snapshots=collected_snapshots,
+    )
 
 
 router = APIRouter(
@@ -277,6 +379,127 @@ def get_learning_path(
     trò là `meta.cells[data.entry_cell_id].n`, có cả khi `data.cell_id` đã quay về ô rộng hơn.
     """
     return source.learning_path(role=role, level=level, have=parse_have(have))
+
+
+@router.get(
+    "/posting-check",
+    response_model=Envelope[PostingCheckData],
+    summary="Soi một tin dán: mức khớp kỹ năng, so thị trường, dấu hiệu cần kiểm",
+    responses={
+        503: {
+            "model": ErrorEnvelope,
+            "description": (
+                "Chưa có số thật để soi tin (`check_unavailable`, tới #234): lỗi tạm thời, thử lại được, khác 404 `unknown_cell` "
+                "(vai trò và cấp không có ô). Production trả mã này cho tới khi nối số thật, không bao giờ số giả."
+            ),
+        },
+    },
+)
+def get_posting_check(
+    role: Annotated[str, _code("Mã vai trò, snake_case: vai trò nhận diện được ở `POST /api/v1/posting-reads`, hoặc người dùng đổi.")],
+    level: Annotated[
+        LevelCode,
+        Query(description="Cấp bậc, như `skill-rates`: cấp nhận diện được ở bước một, hoặc người dùng đổi."),
+    ],
+    source: Annotated[MarketReadModel, Depends(_source_for("posting_check"))],
+    _known: Annotated[None, Depends(_only_known_params)],
+    branch: Annotated[
+        str | None,
+        _code("Mã nhánh của vai trò (FR-27, `branch` của bước một), phải thuộc `role` (`config/classify.toml`); được lặp lại ở `data.branch`."),
+    ] = None,
+    have: Annotated[
+        str | None,
+        Query(
+            description=(
+                "Hồ sơ: mã kỹ năng người dùng đã có, ngăn bằng dấu phẩy, tối đa 200 mã (AD-22), cùng bộ đọc với `skill-rates`. "
+                "Rỗng là không có hồ sơ: không có cờ `have`, mức khớp hay đếm theo nhóm."
+            ),
+        ),
+    ] = None,
+    skills: Annotated[
+        str | None,
+        Query(
+            description=(
+                "Mã kỹ năng của tin (`skills[].code` của bước một), ngăn bằng dấu phẩy, tối đa 200 mã. Mọi mã phải có trong bộ "
+                "từ vựng (`GET /api/v1/skills`); cụm chưa nhận diện không bao giờ đi vào query."
+            ),
+        ),
+    ] = None,
+    years_min: Annotated[
+        int | None, Query(ge=0, le=MAX_YEARS_MIN, description="`years_min` của bước một, cho #125. #230 chỉ kiểm định dạng.")
+    ] = None,
+    salary_min: Annotated[
+        int | None, Query(ge=0, le=MAX_SALARY, description="`salary.min` của bước một, cho #125. Cần cả tiền tệ và kỳ.")
+    ] = None,
+    salary_max: Annotated[
+        int | None, Query(ge=0, le=MAX_SALARY, description="`salary.max` của bước một, cho #125. Cần cả tiền tệ và kỳ.")
+    ] = None,
+    salary_currency: Annotated[SalaryCurrency | None, Query(description="`salary.currency` của bước một.")] = None,
+    salary_period: Annotated[SalaryPeriod | None, Query(description="`salary.period` của bước một.")] = None,
+    salary_non_numeric: Annotated[
+        bool | None,
+        Query(description="`salary_non_numeric` của bước một: tin có nói về lương mà không có số. Không đi cùng `salary_min` hay `salary_max`."),
+    ] = None,
+    company_named: Annotated[bool | None, Query(description="`company_named` của bước một, cho #126.")] = None,
+    contacts: Annotated[
+        str | None,
+        Query(description="`contacts` của bước một, ngăn bằng dấu phẩy, mỗi mã là một kênh trong tập đóng, cho #126."),
+    ] = None,
+    fees: Annotated[
+        int | None,
+        Query(ge=0, le=MAX_FEES_PARAM, description="Số trích dẫn phí hoặc đặt cọc của bước một (không phải chính chữ), cho #126."),
+    ] = None,
+    duties_described: Annotated[bool | None, Query(description="`duties_described` của bước một: tin có mô tả công việc, cho #244.")] = None,
+    title_level: Annotated[
+        str | None,
+        _code("`title_level` của bước một: mã cấp bậc mà chức danh cho biết (không gồm `unknown`), cho #244. Không bao giờ là chữ của chức danh."),
+    ] = None,
+    collected_reposts: Annotated[
+        int | None,
+        Query(
+            ge=0,
+            le=MAX_COLLECTED_REPOSTS,
+            description="`collected.repost_count` của bước một: số lần đăng lại của tin thu thập khớp, cho D4 (#246). Vắng mặt là không khớp; đi cặp với `collected_snapshots`.",
+        ),
+    ] = None,
+    collected_snapshots: Annotated[
+        int | None,
+        Query(
+            ge=1,
+            le=MAX_COLLECTED_SNAPSHOTS,
+            description="`collected.snapshots_seen` của bước một: số snapshot mà tin khớp xuất hiện, cho D4 (#246). Đi cặp với `collected_reposts`.",
+        ),
+    ] = None,
+) -> Envelope[PostingCheckData]:
+    """Bước hai của tin dán: chỉ mã và số, không bao giờ có chữ của tin (AD-22, AD-11).
+
+    `data.match` có số: từng kỹ năng của tin kèm nhóm, tỷ lệ trong ô và cờ `have`; mức khớp theo trọng số thị trường (FR-28); đếm
+    theo nhóm; kỹ năng nên đặt đầu CV. Ô dưới ngưỡng quay về ô rộng hơn như `skill-rates` (`data.cell_id`, nhãn ở
+    `meta.cells[data.cell_id].fallback_label`); cấp `unknown` (tin không ghi cấp) và cấp không có ô quay về ô mọi cấp của vai trò.
+    `data.market` (#125, FR-30) và `data.warnings` (#126, FR-31) có `status = not_ready` và rỗng cho tới khi #240–#246 xong; hình
+    khi `ready` đã chốt đầy đủ trong schema (phân vị kèm khoảng tin cậy, lương đã quy đổi, bảy dấu hiệu D1 đến D7). Tham số lạ,
+    nhánh không thuộc vai trò hoặc mã kỹ năng ngoài bộ từ vựng: 422. Chưa có số thật: 503 `check_unavailable`.
+    """
+    facts = _posting_facts(
+        role=role,
+        branch=branch,
+        years_min=years_min,
+        salary_min=salary_min,
+        salary_max=salary_max,
+        salary_currency=salary_currency,
+        salary_period=salary_period,
+        salary_non_numeric=salary_non_numeric,
+        company_named=company_named,
+        contacts=contacts,
+        fees=fees,
+        duties_described=duties_described,
+        title_level=title_level,
+        collected_reposts=collected_reposts,
+        collected_snapshots=collected_snapshots,
+    )
+    return source.posting_check(
+        role=role, level=level, have=parse_have(have), skills=_posting_skills(skills), facts=facts
+    )
 
 
 @router.get(

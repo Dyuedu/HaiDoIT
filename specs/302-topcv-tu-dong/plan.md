@@ -56,3 +56,5 @@ scraper/crawlers/topcv.py                    trang rỗng để lại thử sau,
 - `deploy/compose.scraper.yml`, `deploy/daily.sh`: thuộc #90 (không có `specs/`) và #273. Thay đổi không đụng hành vi của #273 (image kho, `.warehouse-tag`); test của #273 chạy lại xanh, ghi ở `specs/273-image-kho-trong-deploy/tdd.md`.
 - `scraper/tests/test_observations.py`: #296–#298 chỉ được thêm test mới, test của họ không đổi và vẫn xanh.
 - `topcv.py`, `pipeline.py`, `Dockerfile.browser`, `topcv-manual.sh`: git log không có số issue.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `tests/core/test_ad10_rules_config.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

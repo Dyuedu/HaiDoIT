@@ -34,3 +34,5 @@ web/tests/fr18-role-for-title.test.tsx             # mới
 ## Complexity Tracking
 
 - `haido_api/main.py` thuộc #2 và các issue route trước (chỉ thêm một `include_router`).
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fake_market.py`, `haido_api/fixtures/fake_market.json`, `haido_api/main.py`, `haido_api/market_source.py`, `haido_api/routes/market.py`, `haido_api/stat_market.py`, `tests/api/test_ad17_ordinal_allowlist.py`, `tests/api/test_ad17_routes.py`, `tests/api/test_ad17_web_fixtures.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

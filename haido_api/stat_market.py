@@ -38,6 +38,9 @@ lại từ bảng tin, không đọc bảng của scraper (AD-5, cổng AD-7). C
   `all` ở cấp `all` (mọi cấp, AC 4 của #113). Kỹ năng không có hàng nào ở snapshot là `UnknownCell` kèm ngày.
   `n_scanned` lớn hơn `n` của ô, hoặc vai trò có `n_with > 0` ở cấp entry khi hàng `all` × `all` có `n_with = 0`, là dữ
   liệu hỏng (`RuntimeError`). Mã kỹ năng ngoài bộ từ vựng là `UnknownSkill`, kiểm trước khi mở kết nối. Chỉ đọc `stat_*` theo khóa (AD-7).
+- Soi tin dán (#230): chưa có số thật. `posting_check` ném `CheckUnavailable` (503 `check_unavailable`, thử lại được) cho tới #234, nên prod
+  không bao giờ phục vụ số giả và cũng không giả làm "không có số cho vai trò này" (404 `unknown_cell`).
+  Bản thật sẽ lấy `skill_rates` của cùng ô rồi đưa qua `haido_api.posting_match.build_match`, như bản giả.
 - Lộ trình học (#216): cùng snapshot đọc được như tỷ lệ kỹ năng. Vai trò có lộ trình đã rà soát (`review` của
   `content/learning_path.json`, #96) lấy ô, tỷ lệ và nhóm từ chính `skill_rates`, nên bằng `/skill-rates`; vai trò khác là
   `not_ready` ở mọi cấp, kèm ô entry. Phần ghép ở `haido_api/stat_path.py`.
@@ -52,7 +55,7 @@ import sqlalchemy as sa
 from sqlalchemy import Connection, Engine
 
 from haido_api.market_overview import OverviewCounts, build_market_overview
-from haido_api.market_source import UnknownCell, UnknownSkill
+from haido_api.market_source import CheckUnavailable, UnknownCell, UnknownSkill
 from haido_api.schemas.learning_path import LearningPathData
 from haido_api.schemas.market import (
     CityShareRow,
@@ -66,6 +69,7 @@ from haido_api.schemas.market import (
     SkillRoleRow,
     SkillRolesData,
 )
+from haido_api.schemas.posting import PostingCheckData, PostingFacts
 from haido_api.stat_path import (
     DRAFT_NOTE,
     RolePath,
@@ -495,6 +499,19 @@ class StatMarket:
         )
         data = not_ready(role=role, level=level, have=have, entry_cell_id=entry_cell_id)
         return Envelope[LearningPathData](data=data, meta=meta)
+
+    def posting_check(
+        self,
+        *,
+        role: str,
+        level: str,
+        have: Collection[str],
+        skills: Collection[str],
+        facts: PostingFacts,
+    ) -> Envelope[PostingCheckData]:
+        # #230: chưa có bản thật (#234 nối `skill_rates` vào `build_match`). Không số giả. 503, không phải 404: 404 là "không có số cho
+        # vai trò và cấp này" mà màn hiểu là kết quả cuối, còn đây là chưa nối số, thử lại sau.
+        raise CheckUnavailable("Soi tin dán chưa sẵn sàng. Hãy thử lại sau.")
 
     def skill_roles(self, *, skill: str) -> Envelope[SkillRolesData]:
         rules = self._rules

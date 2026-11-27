@@ -259,6 +259,17 @@
         "salary": 13
       }
     },
+    "vn.backend.junior": {
+      "n": 32,
+      "seniority_mix": {
+        "junior": 32
+      },
+      "n_by_measure": {
+        "skill_count": 32,
+        "experience_years": 24,
+        "salary": 9
+      }
+    },
     "vn.ai_ml": {
       "n": 877,
       "seniority_mix": {
@@ -3362,6 +3373,87 @@
           {
             "skill": "linux",
             "rate": 0.07692307692307693,
+            "group": "company_specific"
+          }
+        ]
+      },
+      "junior": {
+        "cell_id": "vn.backend.junior",
+        "fallback_label": null,
+        "rows": [
+          {
+            "skill": "java",
+            "rate": 0.65625,
+            "group": "core"
+          },
+          {
+            "skill": "sql",
+            "rate": 0.59375,
+            "group": "core"
+          },
+          {
+            "skill": "spring_boot",
+            "rate": 0.5,
+            "group": "core"
+          },
+          {
+            "skill": "git",
+            "rate": 0.4375,
+            "group": "core"
+          },
+          {
+            "skill": "rest_api",
+            "rate": 0.34375,
+            "group": "core"
+          },
+          {
+            "skill": "postgresql",
+            "rate": 0.3125,
+            "group": "core"
+          },
+          {
+            "skill": "nodejs",
+            "rate": 0.25,
+            "group": "common"
+          },
+          {
+            "skill": "docker",
+            "rate": 0.21875,
+            "group": "common"
+          },
+          {
+            "skill": "mysql",
+            "rate": 0.1875,
+            "group": "common"
+          },
+          {
+            "skill": "microservices",
+            "rate": 0.15625,
+            "group": "common"
+          },
+          {
+            "skill": "ci_cd",
+            "rate": 0.125,
+            "group": "common"
+          },
+          {
+            "skill": "redis",
+            "rate": 0.125,
+            "group": "common"
+          },
+          {
+            "skill": "unit_testing",
+            "rate": 0.125,
+            "group": "common"
+          },
+          {
+            "skill": "kafka",
+            "rate": 0.0625,
+            "group": "company_specific"
+          },
+          {
+            "skill": "linux",
+            "rate": 0.0625,
             "group": "company_specific"
           }
         ]

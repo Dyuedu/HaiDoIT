@@ -12,3 +12,5 @@
 ## Phase 2: Implementation
 
 - [x] T003 Không có mã riêng: `StatMarket.skill_rates` (#151) làm hai test xanh; chạy cổng AD-7
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

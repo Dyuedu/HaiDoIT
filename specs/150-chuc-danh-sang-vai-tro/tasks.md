@@ -15,3 +15,5 @@
 - [x] T004 `NUMBERLESS_ROUTES`, quét router trong test Ordinal, OpenAPI, `envelope-meta.md`
 - [x] T005 `web/lib/role-for-title.ts`
 - [x] T006 `title-search.tsx` và nối vào màn hồ sơ kỹ năng (#152)
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

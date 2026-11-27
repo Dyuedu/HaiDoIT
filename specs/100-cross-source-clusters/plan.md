@@ -74,3 +74,5 @@ Không có vi phạm cần biện minh.
 File của issue này bị sửa: `haido_core/steps/aggregate.py` (vòng gộp cụm đưa mỗi cụm một tin mang hợp kỹ năng của mọi thành viên trong cửa sổ; cách gộp cụm và chọn đại diện không đổi), `haido_core/db/snapshot_store.py`, `haido_core/db/tables.py`.
 
 Test của issue này không phải sửa. `tests/db/test_dat20_stat_tables.py` (kiểm head Alembic, thuộc #93) đổi sang head 0009. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `haido_core/config.py`, `tests/core/test_ad10_rules_config.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

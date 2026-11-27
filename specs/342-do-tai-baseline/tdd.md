@@ -66,3 +66,13 @@ Lý do: #343 thêm `HAIDO_RESPONSE_CACHE: ${HAIDO_RESPONSE_CACHE:-on}` vào `dep
 
 - `uv run pytest tests/deploy/test_gh342_do_tai_baseline.py`: chạy lại sau khi sửa compose, xem `specs/343-cache-response/tdd.md`.
 - `loadtest/k6/baseline.js` thêm chỉ số `cache_hit` (tỷ lệ response có `x-cache: HIT`). Kịch bản, ngưỡng và URL không đổi; `tests/deploy/test_gh342_do_tai_baseline.py` vẫn xanh.
+
+## Đợt sửa 2026-11-27 (#230, hình tin dán "Soi tin")
+
+**Vì sao sửa**: #230 thêm nguồn `posting_check` vào `SOURCE_ENV`, bảng `[posting_match]` vào `config/rules.toml`, ô `vn.backend.junior` vào
+`fake_market.json`, route `posting-reads` và `posting-check`. Các file của issue này bị chạm: `deploy/compose.loadtest.yml`.
+
+**Hành vi của issue này**: không đổi; không AC nào của #342 đúng khác đi. Mọi thay đổi chỉ cộng thêm (khóa nguồn mới, mục cấu hình mới, ô và hàng
+fixture mới, hàng tài liệu mới, nguồn `posting_check` trong các lời gọi `create_app` của test).
+
+**RED/GREEN**: RED (chạy thật): trả 13 file test cũ dựng create_app với năm nguồn về bản ở HEAD rồi chạy với code mới thì 109 failed, 54 lỗi, 32 passed (thiếu nguồn posting_check). GREEN: sau khi thêm nguồn và sửa các file, uv run pytest -q toàn bộ được 2029 passed (không còn test nào đỏ của issue này). Chi tiết ở specs/230-hinh-soi-tin/tdd.md.

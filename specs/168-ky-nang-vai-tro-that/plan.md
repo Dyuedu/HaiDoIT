@@ -31,3 +31,5 @@ tests/deploy/test_gh166_ky_nang_vai_tro_doc_snapshot_that.py  # chỉ docstring
 ## Complexity Tracking
 
 - `haido_api/stat_market.py`, `deploy/compose.prod.yml`, `docs/api/envelope-meta.md` và các test trên thuộc nhiều issue cũ: thêm đợt vào `tdd.md` của từng issue có `specs/` (liệt kê trong `tdd.md` của issue này). Không AC nào của #166 và #103 sai đi: xem `tdd.md`.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`, `tests/api/test_fr09_skill_roles_stat.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

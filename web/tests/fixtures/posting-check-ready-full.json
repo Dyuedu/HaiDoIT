@@ -1,0 +1,404 @@
+{
+  "data": {
+    "role": "backend",
+    "branch": null,
+    "level": "intern",
+    "cell_id": "vn.backend",
+    "has_profile": true,
+    "match": {
+      "status": "ready",
+      "skills": [
+        {
+          "skill": {
+            "code": "sql",
+            "name_en": "SQL",
+            "name_vi": "SQL"
+          },
+          "group": "core",
+          "rate": {
+            "value": 0.6369426751592356,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "java",
+            "name_en": "Java",
+            "name_vi": "Java"
+          },
+          "group": "core",
+          "rate": {
+            "value": 0.6242038216560509,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "spring_boot",
+            "name_en": "Spring Boot",
+            "name_vi": "Spring Boot"
+          },
+          "group": "core",
+          "rate": {
+            "value": 0.5095541401273885,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "git",
+            "name_en": "Git",
+            "name_vi": "Git"
+          },
+          "group": "core",
+          "rate": {
+            "value": 0.47770700636942676,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "docker",
+            "name_en": "Docker",
+            "name_vi": "Docker"
+          },
+          "group": "core",
+          "rate": {
+            "value": 0.3184713375796178,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "mysql",
+            "name_en": "MySQL",
+            "name_vi": "MySQL"
+          },
+          "group": "common",
+          "rate": {
+            "value": 0.24203821656050956,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "linux",
+            "name_en": "Linux",
+            "name_vi": "Linux"
+          },
+          "group": "common",
+          "rate": {
+            "value": 0.12101910828025478,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": false
+        },
+        {
+          "skill": {
+            "code": "kafka",
+            "name_en": "Apache Kafka",
+            "name_vi": "Apache Kafka"
+          },
+          "group": "specific",
+          "rate": {
+            "value": 0.09554140127388536,
+            "kind": "skill_rate",
+            "display": "shown",
+            "cell_id": "vn.backend"
+          },
+          "have": false
+        }
+      ],
+      "groups": [
+        {
+          "group": "core",
+          "total": 5,
+          "had": 5
+        },
+        {
+          "group": "common",
+          "total": 2,
+          "had": 1
+        },
+        {
+          "group": "specific",
+          "total": 1,
+          "had": 0
+        }
+      ],
+      "level": {
+        "points": 17,
+        "max_points": 20,
+        "percent": 85
+      },
+      "cv_first": [
+        "sql",
+        "java",
+        "spring_boot",
+        "git",
+        "docker",
+        "mysql"
+      ],
+      "config_version": "2026-11-27.2"
+    },
+    "market": {
+      "status": "ready",
+      "cell_id": "vn.backend",
+      "note": "comparisons_not_verdict",
+      "years": {
+        "state": "compared",
+        "percentile": {
+          "value": 62.0,
+          "kind": "percentile",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        },
+        "ci_low": null,
+        "ci_high": null
+      },
+      "skill_count": {
+        "state": "compared",
+        "percentile": {
+          "value": 94.0,
+          "kind": "percentile",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        },
+        "ci_low": null,
+        "ci_high": null
+      },
+      "salary": {
+        "state": "compared",
+        "position": "below",
+        "low": {
+          "value": 12000000.0,
+          "kind": "percentile",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        },
+        "high": {
+          "value": 20000000.0,
+          "kind": "percentile",
+          "display": "shown",
+          "cell_id": "vn.backend"
+        },
+        "converted": {
+          "min_vnd_month": 8000000,
+          "max_vnd_month": 9000000,
+          "fx": {
+            "rate": 25000,
+            "unit": "vnd_per_usd",
+            "fx_version": "fx-2026-11-03"
+          }
+        },
+        "note": null
+      }
+    },
+    "warnings": {
+      "status": "ready",
+      "checklist": [
+        {
+          "code": "company_named",
+          "present": false
+        },
+        {
+          "code": "salary_stated",
+          "present": true
+        },
+        {
+          "code": "duties_described",
+          "present": true
+        },
+        {
+          "code": "title_matches_level",
+          "present": true
+        }
+      ],
+      "signs": [
+        {
+          "code": "d1_wide_skills",
+          "status": "triggered",
+          "reason": null,
+          "fact": {
+            "kind": "d1_wide_skills",
+            "skill_count": 14,
+            "p90": {
+              "value": 12.0,
+              "kind": "percentile",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          "action": "ask_daily_stack",
+          "source_field": null
+        },
+        {
+          "code": "d2_specific_heavy",
+          "status": "not_triggered",
+          "reason": null,
+          "fact": null,
+          "action": null,
+          "source_field": null
+        },
+        {
+          "code": "d3_high_req_low_pay",
+          "status": "triggered",
+          "reason": null,
+          "fact": {
+            "kind": "d3_high_req_low_pay",
+            "skill_count": 14,
+            "p75_skill_count": {
+              "value": 10.0,
+              "kind": "percentile",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            },
+            "salary_ceiling_vnd_month": 9000000,
+            "p25_salary": {
+              "value": 12000000.0,
+              "kind": "percentile",
+              "display": "shown",
+              "cell_id": "vn.backend"
+            }
+          },
+          "action": "compare_pay_before_applying",
+          "source_field": null
+        },
+        {
+          "code": "d4_reposted",
+          "status": "triggered",
+          "reason": null,
+          "fact": {
+            "kind": "d4_reposted",
+            "reposts": 3,
+            "snapshots_seen": 41
+          },
+          "action": "check_original_posting",
+          "source_field": null
+        },
+        {
+          "code": "d5_unusual_contact",
+          "status": "triggered",
+          "reason": null,
+          "fact": {
+            "kind": "d5_unusual_contact",
+            "channels": [
+              "zalo",
+              "telegram"
+            ]
+          },
+          "action": "verify_company_channel",
+          "source_field": "contacts"
+        },
+        {
+          "code": "d6_fee_first",
+          "status": "triggered",
+          "reason": null,
+          "fact": {
+            "kind": "d6_fee_first",
+            "quote_count": 1
+          },
+          "action": "no_payment_before_verifying",
+          "source_field": "fee_mentions"
+        },
+        {
+          "code": "d7_no_company",
+          "status": "triggered",
+          "reason": null,
+          "fact": {
+            "kind": "d7_no_company"
+          },
+          "action": "look_up_company",
+          "source_field": null
+        }
+      ],
+      "collected_match": {
+        "repost_count": 3,
+        "snapshots_seen": 41
+      },
+      "salary_note": null,
+      "disclaimer": "signs_are_hints"
+    }
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1,
+      "theta_version": "theta-1"
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.backend": {
+        "n": 157,
+        "fallback_label": "Backend · Intern chỉ có 13 tin, chưa đủ để tính riêng, nên số dưới đây lấy từ Backend ở mọi cấp bậc (157 tin); 105 trên 157 tin (67%) là Mid trở lên.",
+        "seniority_mix": {
+          "intern": 13,
+          "fresher": 7,
+          "junior": 32,
+          "mid": 65,
+          "senior": 40
+        },
+        "n_by_measure": {
+          "skill_count": 157,
+          "experience_years": 110,
+          "salary": 35
+        },
+        "insufficient_by_measure": {
+          "skill_count": false,
+          "experience_years": false,
+          "salary": false
+        }
+      }
+    }
+  }
+}

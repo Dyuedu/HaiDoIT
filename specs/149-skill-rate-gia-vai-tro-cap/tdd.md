@@ -99,3 +99,12 @@ RED và GREEN: `specs/217-man-lo-trinh/tdd.md` đợt 4.
 Lý do: sửa file mà issue này từng đụng (trong số `stat_market.py`, `check_gates.py`, `envelope-meta.md`, `compose.prod.yml`, test lộ trình): chỉ phần lộ trình học. Hành vi và AC của issue này không đổi.
 
 RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.
+
+## Đợt sửa 2026-11-27 (#230, hình tin dán "Soi tin")
+
+**Vì sao sửa**: #230 thêm nguồn `posting_check` vào `SOURCE_ENV`, bảng `[posting_match]` vào `config/rules.toml`, ô `vn.backend.junior` vào
+`fake_market.json`, route `posting-reads` và `posting-check`. Các file của issue này bị chạm: `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fake_market.py`, `haido_api/fixtures/fake_market.json`, `haido_api/main.py`, `haido_api/market_source.py`, `haido_api/routes/market.py`, `haido_api/stat_market.py`, `tests/api/test_ad17_ordinal_allowlist.py`, `tests/api/test_ad17_routes.py`, `tests/api/test_ad17_web_fixtures.py`.
+
+**Hành vi của issue này**: không AC nào của #149 đúng khác đi, nhưng **một hành vi của bản giả đổi**: `GET /api/v1/skill-rates?role=backend&level=junior` (và `learning-path` của #212 cho cùng cấp) trên bản giả nay trả **200** (ô `vn.backend.junior` mới trong `fake_market.json`, n = 32, đủ mẫu), trước đó 404 `unknown_cell`; `intern` vẫn quay về `vn.backend` (200, không đổi); các cấp khác không có ô (`fresher`, `mid`, `senior`...) vẫn 404. Phần còn lại chỉ cộng thêm (khóa nguồn mới, mục cấu hình mới, hàng fixture mới, hàng tài liệu mới, nguồn `posting_check` trong các lời gọi `create_app` của test). Vòng review 2026-11-27 của #230 không đổi thêm hành vi nào của issue này.
+
+**RED/GREEN**: RED (chạy thật): trả 13 file test cũ dựng create_app với năm nguồn về bản ở HEAD rồi chạy với code mới thì 109 failed, 54 lỗi, 32 passed (thiếu nguồn posting_check). GREEN: sau khi thêm nguồn và sửa các file, uv run pytest -q toàn bộ được 2029 passed (không còn test nào đỏ của issue này). Chi tiết ở specs/230-hinh-soi-tin/tdd.md.

@@ -42,3 +42,5 @@
 - [x] T021 `haido_core/domain/envelope.py`: `SKILL_COUNT`, `sample_n`, hook `check_against_meta`
 - [x] T022 `haido_api/schemas/market.py` (`level`, `check_against_meta`, docstring `mentioned`), `fake_market.py` (cấu trúc mới, `_check_skill_roles`), `fake_market.json`, `compose.prod.yml`
 - [x] T023 `web/lib/skill-roles.ts`, sinh lại fixture web và `newcomer-roles.json`, sinh lại `openapi.json`, cập nhật `envelope-meta.md`
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

@@ -1,0 +1,64 @@
+{
+  "data": {
+    "is_posting": true,
+    "reason": null,
+    "role": "devops",
+    "branch": "cloud",
+    "level": "mid",
+    "skills": [
+      {
+        "code": "docker",
+        "mentions": 2
+      },
+      {
+        "code": "kubernetes",
+        "mentions": 2
+      },
+      {
+        "code": "aws",
+        "mentions": 2
+      },
+      {
+        "code": "terraform",
+        "mentions": 1
+      },
+      {
+        "code": "linux",
+        "mentions": 1
+      },
+      {
+        "code": "ci_cd",
+        "mentions": 1
+      }
+    ],
+    "unrecognised": [
+      "Pulumi"
+    ],
+    "years_min": 3,
+    "salary": null,
+    "salary_non_numeric": true,
+    "company_named": true,
+    "duties_described": true,
+    "title_level": "mid",
+    "contacts": [
+      "company_email"
+    ],
+    "contact_quotes": [
+      {
+        "channel": "company_email",
+        "quote": "Gửi CV về địa chỉ email của công ty"
+      }
+    ],
+    "fee_mentions": [],
+    "collected": {
+      "site": "itviec",
+      "first_seen": "2026-09-14",
+      "repost_count": 3,
+      "snapshots_seen": 41,
+      "url": "https://example.com/jobs/devops-engineer-beta-cloud"
+    },
+    "model_id": "fake-reader",
+    "prompt_version": "fake-1",
+    "vocab_version": "seed-2026-11-23"
+  }
+}

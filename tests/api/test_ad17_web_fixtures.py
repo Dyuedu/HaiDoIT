@@ -14,6 +14,19 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+from posting_examples import NAMES as READY_EXAMPLES
+from posting_examples import ready_example
+from posting_samples import (
+    BACKEND_TEXT,
+    CLOUD_TEXT,
+    FEE_TEXT,
+    HAVE_16_OF_18,
+    NOT_IT_TEXT,
+    NOT_POSTING_TEXT,
+    POSTING_SKILLS,
+    SHORT_TEXT,
+    csv,
+)
 
 from haido_api.main import app
 
@@ -121,3 +134,56 @@ def test_ad17_fixture_web_khop_response_skill_roles(skill: str) -> None:
     assert resp.status_code == 200, resp.text
     fixture = json.loads((WEB_FIXTURES / f"skill-roles-{skill}.json").read_text(encoding="utf-8"))
     assert resp.json() == fixture
+
+
+@pytest.mark.parametrize(
+    ("name", "text"),
+    [
+        ("backend", BACKEND_TEXT),
+        ("fee", FEE_TEXT),
+        ("cloud", CLOUD_TEXT),
+        ("not-posting", NOT_POSTING_TEXT),
+        ("not-it", NOT_IT_TEXT),
+        ("too-short", SHORT_TEXT),
+    ],
+)
+def test_ad17_fixture_web_khop_response_posting_read(name: str, text: str) -> None:
+    """#230: `posting-read-<tên>.json` là response của `POST /api/v1/posting-reads` với chữ mẫu của `posting_samples.py`.
+
+    `backend`: tin Backend Junior đủ trường; `fee`: tin có đặt cọc, liên hệ Zalo và Telegram, không nêu công ty;
+    `cloud`: tin DevOps nhánh Cloud, lương không có số, đã có tin thu thập khớp; `not-posting`: không phải tin; `not-it`: tin tuyển
+    dụng không thuộc IT; `too-short`: quá ngắn.
+    """
+    resp = TestClient(app).post("/api/v1/posting-reads", json={"text": text})
+    assert resp.status_code == 200, resp.text
+    fixture = json.loads((WEB_FIXTURES / f"posting-read-{name}.json").read_text(encoding="utf-8"))
+    assert resp.json() == fixture
+
+
+_SKILLS = csv(POSTING_SKILLS)
+POSTING_CHECK_CASES = [
+    ("backend.junior-have", {"role": "backend", "level": "junior", "skills": _SKILLS, "have": csv(HAVE_16_OF_18)}),  # FR-28: 16/18 = 89%
+    ("backend.junior", {"role": "backend", "level": "junior", "skills": _SKILLS}),  # chưa có hồ sơ
+    ("backend.intern-have", {"role": "backend", "level": "intern", "skills": _SKILLS, "have": "java,sql,docker"}),  # quay về ô rộng
+    ("backend.unknown-fee", {"role": "backend", "level": "unknown", "skills": "java", "contacts": "zalo,telegram", "fees": "1"}),  # tin có phí, không ghi cấp
+    ("data_engineer.entry-have", {"role": "data_engineer", "level": "entry", "skills": "python,sql,airflow", "have": "python"}),  # không ô nào đủ 30
+]
+
+
+@pytest.mark.parametrize(("name", "params"), POSTING_CHECK_CASES)
+def test_ad17_fixture_web_khop_response_posting_check(name: str, params: dict[str, str]) -> None:
+    """#230: `posting-check-<tên>.json` là response của `GET /api/v1/posting-check` với tham số của từng ca."""
+    resp = TestClient(app).get("/api/v1/posting-check", params=params)
+    assert resp.status_code == 200, resp.text
+    fixture = json.loads((WEB_FIXTURES / f"posting-check-{name}.json").read_text(encoding="utf-8"))
+    assert resp.json() == fixture
+
+
+@pytest.mark.parametrize("name", READY_EXAMPLES)
+def test_ad17_fixture_web_ready_la_vi_du_viet_tay_khop_posting_examples(name: str) -> None:
+    """#230 (vòng review): `posting-check-ready-<tên>.json` là ví dụ `ready` của `market` và `warnings` (API giả còn `not_ready`).
+
+    Chúng được dựng bởi `tests/api/posting_examples.py` (phần `match` và `meta` từ API giả) và đã qua `Envelope[PostingCheckData]`.
+    """
+    fixture = json.loads((WEB_FIXTURES / f"posting-check-ready-{name}.json").read_text(encoding="utf-8"))
+    assert ready_example(name) == fixture

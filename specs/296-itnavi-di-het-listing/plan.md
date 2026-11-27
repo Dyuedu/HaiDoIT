@@ -38,3 +38,5 @@ scraper/tests/test_observations.py thêm test ITnavi
 ## Complexity Tracking
 
 - `scraper/crawlers/itnavi.py` và `scraper/tests/test_observations.py`: git log không có commit nào gắn số issue, `specs/` không có plan nào trỏ tới. Không có spec cũ phải cập nhật.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `tests/core/test_ad10_rules_config.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

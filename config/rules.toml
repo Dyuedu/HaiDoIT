@@ -1,6 +1,6 @@
 # Quy tắc có phiên bản của Hải Đồ IT (DoD dòng 4): ngưỡng, cửa sổ ngày, danh sách nguồn, bảng nhãn.
 # Đổi giá trị nào ở đây thì tăng config_version; stat_job_lifecycle và stat_cells lưu phiên bản đã dùng.
-config_version = "2026-11-19.1"
+config_version = "2026-11-27.2"
 
 # Cửa sổ "tin còn mới": 0 <= snapshot - last_seen <= window_days (domain.lifecycle).
 # Phép dân số đếm đúng window_days ngày kết thúc ở S, gồm cả S: S - (window_days - 1) <= last_seen <= S.
@@ -53,6 +53,25 @@ always_cities = ["ha_noi", "ho_chi_minh", "da_nang", "remote", "abroad", "unknow
 # Nhóm cấp bậc: nhóm mới vào nghề của #134 là Intern, Fresher, Junior gộp một. `unknown` không thuộc nhóm nào.
 [level_groups]
 entry = ["intern", "fresher", "junior"]
+
+# Trọng số của mức khớp tin dán (FR-28, #230): mức khớp = tổng trọng số kỹ năng của tin mà hồ sơ có, chia tổng trọng số mọi kỹ năng
+# đã nhận diện của tin. Cốt lõi nặng hơn thường gặp, thường gặp nặng hơn riêng của công ty (`company_specific` của θ).
+# Ví dụ kiểm: 4/4 cốt lõi + 2/2 thường gặp + 0/2 riêng = 16/18 = 89%. Response ghi `config_version` đã dùng.
+[posting_match]
+weight_core = 3
+weight_common = 2
+weight_specific = 1
+
+# Trần của POST /api/v1/posting-reads (FR-26, AD-9, #230): chữ dán tối đa 20.000 ký tự. Trần byte của thân JSON phải phủ được 20.000
+# ký tự ở tệ nhất 4 byte UTF-8 mỗi ký tự (80.000) cộng phần phụ trội của JSON (dấu nháy, escape): 131.072 byte (128 KiB). Thân vượt
+# mức này (khai ở Content-Length, hoặc đếm lúc đọc) bị từ chối bằng 413 trước khi phân tích. Tốc độ (rate cap theo IP) là của #231.
+[posting_read]
+max_chars = 20000
+max_body_bytes = 131072
+
+# Khoảng tin cậy 95% của phân vị tin dán (FR-30, AD-26): có khi min_sample <= n < ci_below_n, n là số tin có đúng trường đó.
+[posting_market]
+ci_below_n = 100
 
 [sources]
 # Nguồn thu tự động hằng ngày (đúng AUTO_SOURCES của scraper/ingest.py).

@@ -28,3 +28,5 @@ tests/domain/test_ad2_select_cell.py        # mới
 ## Complexity Tracking
 
 - `registry.py` và `REGISTRY.md` thuộc #101, #139, #283, #285: thêm đợt TDD vào `tdd.md` của các issue có `specs/`. Hành vi và AC của các issue đó không đổi (thêm trường `order` có mặc định, `label` nới thành `str | None`; chưa có chỗ nào gọi `CellChoice`).
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`, `tests/api/test_fr19_skill_rates_stat.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

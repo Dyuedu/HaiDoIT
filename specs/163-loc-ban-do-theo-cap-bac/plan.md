@@ -136,3 +136,5 @@ Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates
 File của issue này bị sửa: `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`replace_stats` bắt buộc nhận `skill_rates`), `haido_core/db/tables.py`; ô theo nhóm cấp được dùng lại để tính tỷ lệ kỹ năng nhưng cách lọc cấp không đổi.
 
 `tests/db/test_fr33_stat_city_shares_level.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fake_market.py`, `haido_api/fixtures/fake_market.json`, `haido_api/market_source.py`, `haido_api/routes/market.py`, `haido_api/stat_market.py`, `haido_core/config.py`, `tests/api/test_ad17_routes.py`, `tests/api/test_ad17_web_fixtures.py`, `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/core/test_ad10_rules_config.py`, `tests/steps/test_dat20_api_end_to_end.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

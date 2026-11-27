@@ -36,3 +36,5 @@
 - [x] T020 Code: `snapshot_store.replace_stats`, `haido_core/config.py`, `haido_api/stat_market.py`, `tools/theta/calibrate_theta.py`
 - [x] T021 Tài liệu: `docs/data/theta.md` (quy tắc 2, giới hạn, luật bộ đọc), sửa FR-9 của #101, FR-003 và data-model của #151, các mục "Đợt #102" của #100, #163, #280, #283, #284, #285, #296, #302
 - [x] T022 Ghi RED, GREEN, đột biến vào `tdd.md`
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

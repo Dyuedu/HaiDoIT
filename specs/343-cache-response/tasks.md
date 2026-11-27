@@ -22,3 +22,5 @@
 - T001 → RED
 - T002–T004 → GREEN
 - T006 sau T004
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

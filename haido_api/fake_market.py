@@ -17,6 +17,12 @@ thị (`display`, `insufficient_by_measure`) do `suppression_for` tính từ `n`
 của tỷ lệ); tỷ lệ là số nhắc chia `skill_count`. Mã kỹ năng không có trong mục đó là `unknown_cell`. Fixture lệch `config/rules.toml`
 (thiếu hay thừa vai trò, thiếu ô entry) là lỗi khởi tạo `ValueError` nói rõ chỗ lệch, không phải `KeyError`.
 
+`posting_check` (#230) dựng trên `skill_rates` của cùng ô (nên cùng ô, cùng nhãn quay về), rồi đưa qua `posting_match.build_match`.
+`level=junior` của `backend` có ô riêng `vn.backend.junior` (32 tin, đủ mẫu); `intern` quay về `vn.backend`; `data_engineer` không ô nào đủ 30.
+Cấp mà bản giả không có hàng nào (`unknown` của tin không ghi cấp, hay `mid` của `devops`) quay về ô mọi cấp của vai trò, có nhãn quay
+về, như `intern`: tin đọc ở bước một luôn qua được bước hai (`skill_rates` vẫn 404 ở những cấp đó, như trước). Mục `market` và `warnings`
+luôn `not_ready` cho tới #240–#246.
+
 Bản giả không chọn ô và không quay về (phép 2 của registry, #3/#17): fixture ánh xạ thẳng
 tham số sang ô đã dùng, và `fallback_label` lấy nguyên văn.
 """
@@ -35,6 +41,7 @@ from haido_api.learning_path import (
 )
 from haido_api.market_overview import BIG_CITIES, OverviewCounts, build_market_overview
 from haido_api.market_source import UnknownCell
+from haido_api.posting_match import build_match
 from haido_api.schemas.learning_path import (
     LearningPathData,
     PathStatus,
@@ -52,7 +59,13 @@ from haido_api.schemas.market import (
     SkillRoleRow,
     SkillRolesData,
 )
-from haido_core.config import load_rules
+from haido_api.schemas.posting import (
+    PostingCheckData,
+    PostingFacts,
+    PostingMarket,
+    PostingWarnings,
+)
+from haido_core.config import ALL_LEVELS, load_rules
 from haido_core.domain.display_policy import DisplayState, MeasureKind, suppression_for
 from haido_core.domain.envelope import (
     CellMeta,
@@ -104,7 +117,11 @@ class FakeMarket:
             role: entry["skills"] for role, entry in path_raw["roles"].items()
         }
         self._topics = {role: topics_of(entry) for role, entry in path_raw["roles"].items()}
-        self._roles: tuple[str, ...] = tuple(load_rules().roles)
+        rules = load_rules()
+        self._roles: tuple[str, ...] = tuple(rules.roles)
+        self._posting_weights = dict(rules.posting_match_weights)
+        self._config_version = rules.config_version
+        self._role_labels = {code: label for label, code in rules.role_codes.items()}
         self._check_skill_roles()
 
     def version(self) -> str:
@@ -351,6 +368,47 @@ class FakeMarket:
             rows=rows,
         )
         return Envelope[SkillRolesData](data=data, meta=self._meta([r.share.cell_id for r in rows], {}))
+
+    def posting_check(
+        self,
+        *,
+        role: str,
+        level: str,
+        have: Collection[str],
+        skills: Collection[str],
+        facts: PostingFacts,
+    ) -> Envelope[PostingCheckData]:
+        rates = self._posting_rates(role, level)  # UnknownCell khi vai trò không có ô nào; cờ have do build_match đặt
+        match = build_match(rates.data, list(skills), have, self._posting_weights, self._config_version)
+        data = PostingCheckData(
+            role=role,
+            branch=facts.branch,
+            level=level,
+            cell_id=rates.data.cell_id,
+            has_profile=bool(have),
+            match=match,
+            market=PostingMarket(status="not_ready", cell_id=None, years=None, skill_count=None, salary=None, note=None),  # #125: #240, #241
+            warnings=PostingWarnings(  # #126: #244–#246
+                status="not_ready", checklist=[], signs=[], collected_match=None, salary_note=None, disclaimer=None
+            ),
+        )
+        return Envelope[PostingCheckData](data=data, meta=rates.meta)
+
+    def _posting_rates(self, role: str, level: str) -> Envelope[SkillRatesData]:
+        """Tỷ lệ kỹ năng của ô cho tin dán. Cấp không có ô (kể cả `unknown`) quay về ô mọi cấp của vai trò (phép 2) kèm nhãn."""
+        try:
+            return self.skill_rates(role=role, level=level)
+        except UnknownCell:
+            if level == ALL_LEVELS:
+                raise
+        rates = self.skill_rates(role=role, level=ALL_LEVELS)  # UnknownCell khi vai trò không có ô nào
+        cell_id = rates.data.cell_id
+        label = (
+            f"Chưa có số riêng cho {self._role_labels.get(role, role)} ở cấp bậc này (tin không ghi cấp bậc, hoặc cấp chưa có ô), "
+            f"nên số dưới đây lấy từ {self._role_labels.get(role, role)} ở mọi cấp bậc ({self._cells[cell_id]['n']} tin)."
+        )
+        cell = rates.meta.cells[cell_id].model_copy(update={"fallback_label": label})
+        return Envelope[SkillRatesData](data=rates.data, meta=rates.meta.model_copy(update={"cells": {cell_id: cell}}))
 
     def _sample(self, cell_id: str) -> int:
         """Cỡ mẫu của tỷ lệ kỹ năng của ô: `n_by_measure.skill_count`, thiếu thì `n`."""

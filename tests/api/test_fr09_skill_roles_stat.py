@@ -26,7 +26,7 @@ def _client(engine: Engine) -> TestClient:
     fake = FakeMarket()
     stat = StatMarket(engine_factory=lambda: engine, rules=RULES)
     app = create_app(
-        {"city_shares": fake, "skill_rates": fake, "newcomer_roles": fake, "learning_path": fake, "skill_roles": stat}
+        {"city_shares": fake, "skill_rates": fake, "newcomer_roles": fake, "learning_path": fake, "skill_roles": stat, "posting_check": fake}
     )
     return TestClient(app, raise_server_exceptions=False)
 

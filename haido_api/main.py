@@ -1,7 +1,8 @@
 """App FastAPI của Hải Đồ IT.
 
 Chạy: `uv run uvicorn haido_api.main:app`. Chọn nguồn từng phép qua
-`HAIDO_MARKET_SOURCE_CITY_SHARES` và `HAIDO_MARKET_SOURCE_SKILL_RATES` (mặc định `fake`).
+`HAIDO_MARKET_SOURCE_CITY_SHARES` và `HAIDO_MARKET_SOURCE_SKILL_RATES` (mặc định `fake`); nguồn đọc tin dán
+chọn qua `HAIDO_POSTING_READER` (#230).
 """
 
 import os
@@ -11,24 +12,27 @@ from fastapi import FastAPI
 
 from haido_api.errors import install_error_handlers
 from haido_api.market_source import MarketReadModel
+from haido_api.posting_read import PostingReader, load_reader
 from haido_api.response_cache import (
     CACHE_ENV,
     DEFAULT_MAX_ENTRIES,
     ResponseCache,
     ResponseStore,
 )
-from haido_api.routes import market, roles, skills
+from haido_api.routes import market, posting, roles, skills
 
 
 def create_app(
     sources: Mapping[str, MarketReadModel] | None = None,
     *,
+    posting_reader: PostingReader | None = None,
     response_cache: bool | None = None,
     cache_max_entries: int = DEFAULT_MAX_ENTRIES,
 ) -> FastAPI:
     """Dựng app. `sources` ánh xạ tên phép sang nguồn; bỏ trống thì đọc biến môi trường.
 
-    `response_cache` bỏ trống thì bật khi `HAIDO_RESPONSE_CACHE=on` (#343).
+    `response_cache` bỏ trống thì bật khi `HAIDO_RESPONSE_CACHE=on` (#343). `posting_reader` bỏ trống thì đọc biến
+    `HAIDO_POSTING_READER` (#230).
     """
     chosen = dict(sources) if sources is not None else market.load_sources()
     missing = sorted(set(market.SOURCE_ENV) - set(chosen))
@@ -44,8 +48,10 @@ def create_app(
         ),
     )
     app.state.market_sources = chosen
+    app.state.posting_reader = posting_reader if posting_reader is not None else load_reader()
     install_error_handlers(app)
     app.include_router(market.router)
+    app.include_router(posting.router)
     app.include_router(skills.router)
     app.include_router(roles.router)
 

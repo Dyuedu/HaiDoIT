@@ -43,8 +43,13 @@ SAMPLE_QUERY: dict[str, dict[str, str]] = {
     "/api/v1/market-overview": {},
     "/api/v1/learning-path": {"role": "backend", "level": "entry"},
     "/api/v1/skill-roles": {"skill": "python"},
+    "/api/v1/posting-check": {"role": "backend", "level": "junior", "skills": "java,sql"},  # #230
 }
 
+# Route nhận chữ của người dùng (#230): response là `{data}`, không `meta`. Số trong đó là sự kiện trích từ chữ dán,
+# không phải số liệu thị trường, nên chỉ được nằm ở các trường dưới đây (và `mentions`, `years_min`, `min`, `max`).
+USER_TEXT_ROUTES: frozenset[str] = frozenset({"/api/v1/posting-reads"})
+USER_TEXT_NUMBER_FIELDS: frozenset[str] = frozenset({"mentions", "years_min", "min", "max", "repost_count", "snapshots_seen"})
 
 def _sample_cv_docx() -> bytes:
     xml = (
@@ -110,7 +115,13 @@ def test_ad17_moi_route_tra_envelope(client: TestClient, monkeypatch: pytest.Mon
     all_routes = _api_routes()
     openapi_paths = {p for p in app.openapi()["paths"] if p.startswith("/api/v1")}
     assert set(all_routes) == openapi_paths
-    routes = {p: r for p, r in all_routes.items() if p not in NUMBERLESS_ROUTES}
+    for path in USER_TEXT_ROUTES:
+        assert path in all_routes, path
+        assert all_routes[path].methods == {"POST"}
+        body = client.post(path, json={"text": "x" * 300 + " Java developer"}).json()
+        assert set(body) == {"data"}, f"{path} không được có meta"
+        assert _numbers_by_field(body) <= USER_TEXT_NUMBER_FIELDS, path
+    routes = {p: r for p, r in all_routes.items() if p not in NUMBERLESS_ROUTES | USER_TEXT_ROUTES}
     assert set(routes) == set(SAMPLE_QUERY) | set(POST_ROUTES)
     for path in NUMBERLESS_ROUTES:
         assert path in all_routes, path
@@ -135,6 +146,19 @@ def test_ad17_moi_route_tra_envelope(client: TestClient, monkeypatch: pytest.Mon
             model.model_validate(resp.json())
         else:
             model.model_validate(_get(client, path, **SAMPLE_QUERY[path]))
+
+
+def _numbers_by_field(node: Any, field: str = "") -> set[str]:
+    """Tên trường của mọi số trong JSON, bỏ qua bool."""
+    if isinstance(node, bool):
+        return set()
+    if isinstance(node, int | float):
+        return {field}
+    if isinstance(node, dict):
+        return {name for k, v in node.items() for name in _numbers_by_field(v, k)}
+    if isinstance(node, list):
+        return {name for v in node for name in _numbers_by_field(v, field)}
+    return set()
 
 
 def _numbers(node: Any) -> list[Any]:
@@ -177,6 +201,12 @@ def _all_fixture_requests() -> list[tuple[str, dict[str, str]]]:
     ]
     reqs.append(("/api/v1/newcomer-roles", {}))
     reqs += [("/api/v1/skill-roles", {"skill": skill}) for skill in raw["skill_roles"]]  # #166
+    reqs += [  # #230: khớp có hồ sơ, không hồ sơ, quay về ô rộng, không ô nào đủ mẫu
+        ("/api/v1/posting-check", {"role": "backend", "level": "junior", "skills": "java,sql,spring_boot,git,docker,mysql,kafka,linux", "have": "java,sql,git"}),
+        ("/api/v1/posting-check", {"role": "backend", "level": "junior", "skills": "java,sql,spring_boot,git,docker,mysql,kafka,linux"}),
+        ("/api/v1/posting-check", {"role": "backend", "level": "intern", "skills": "java,sql,python", "have": "java"}),
+        ("/api/v1/posting-check", {"role": "data_engineer", "level": "entry", "skills": "python,sql"}),
+    ]
     reqs += [  # #212: ready qua ô chọn thẳng, quay về vai trò × mọi cấp, null_data; not_ready không có Stat
         ("/api/v1/learning-path", {"role": "backend", "level": "entry"}),
         ("/api/v1/learning-path", {"role": "backend", "level": "intern"}),
@@ -315,7 +345,7 @@ def test_ad17_chon_nguon_rieng_cho_tung_phep() -> None:
         def skill_rates(self, *, role: str, level: str) -> Any:
             raise AssertionError("skill_rates không được đi qua nguồn này")
 
-    test_client = TestClient(create_app({"city_shares": _CityOnly(), "skill_rates": fake, "newcomer_roles": fake, "learning_path": fake, "skill_roles": fake}))
+    test_client = TestClient(create_app({"city_shares": _CityOnly(), "skill_rates": fake, "newcomer_roles": fake, "learning_path": fake, "skill_roles": fake, "posting_check": fake}))
     error = _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 404, "unknown_cell")
     assert error["snapshot_date"] == "2026-11-04"
     assert test_client.get("/api/v1/skill-rates?role=ai_ml&level=entry").status_code == 200
@@ -346,7 +376,7 @@ def test_ad17_nguon_tra_sai_hop_dong_thanh_loi_500() -> None:
 
     broken = _Broken()
     test_client = TestClient(
-        create_app({"city_shares": broken, "skill_rates": broken, "newcomer_roles": broken, "learning_path": broken, "skill_roles": broken}), raise_server_exceptions=False
+        create_app({"city_shares": broken, "skill_rates": broken, "newcomer_roles": broken, "learning_path": broken, "skill_roles": broken, "posting_check": broken}), raise_server_exceptions=False
     )
     _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 500, "invalid_response")
     _assert_error(
@@ -363,7 +393,7 @@ def test_ad17_nguon_dung_model_sai_thanh_invalid_response() -> None:
             raise AssertionError("không gọi tới")
 
     source = _BuildsBadStat()
-    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source, "learning_path": source, "skill_roles": source}))
+    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source, "learning_path": source, "skill_roles": source, "posting_check": source}))
     _assert_error(test_client.get("/api/v1/city-shares?role=ai_ml"), 500, "invalid_response")
 
 
@@ -380,7 +410,7 @@ def test_ad17_instance_sua_bang_model_copy_van_bi_kiem_lai() -> None:
             return env.model_copy(update={"data": env.data.model_copy(update={"rows": rows})})
 
     source = _CopiesWithGroup()
-    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source, "learning_path": source, "skill_roles": source}))
+    test_client = TestClient(create_app({"city_shares": source, "skill_rates": source, "newcomer_roles": source, "learning_path": source, "skill_roles": source, "posting_check": source}))
     resp = test_client.get("/api/v1/skill-rates?role=data_engineer&level=senior")
     _assert_error(resp, 500, "invalid_response")
 

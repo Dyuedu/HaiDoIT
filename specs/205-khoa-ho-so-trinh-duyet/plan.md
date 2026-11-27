@@ -81,3 +81,5 @@ Cập nhật 2026-11-11 (#163): `docs/api/openapi.json` được sinh lại vì 
 ## Ghi chú 2026-11-15 (gộp main vào #212)
 
 Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates`: `pandas`, `spark`, `airflow` trở lại, thêm hai hàng null_data ở `data_engineer/entry`) đổi; `cells`, `city_shares`, `newcomer_roles` không đổi. Không AC nào của issue này đổi.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fake_market.py`, `haido_api/fixtures/fake_market.json`, `haido_api/main.py`, `haido_api/market_source.py`, `tests/api/test_ad17_routes.py`, `tests/steps/test_dat20_api_end_to_end.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

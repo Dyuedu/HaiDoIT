@@ -27,3 +27,5 @@
 - [x] T013 Mutation: đọc `job_*` và dùng `n` thay `n_scanned`, test phải đỏ đúng lý do, rồi khôi phục file
 - [x] T014 `haido_core/domain/cells.py` (`sample_noun`, làm tròn nửa lên), `haido_api/stat_market.py` (404, nhất quán `n_scanned`)
 - [x] T015 Web: `rows` rỗng với `core_size = 0` đọc được, màn hiện câu giải thích (`web/lib/skill-rates.ts`, `skill-profile-view.ts`, `skill-profile-screen.tsx`, `web/tests/fr19-skill-profile.test.tsx`)
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

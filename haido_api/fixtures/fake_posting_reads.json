@@ -1,0 +1,204 @@
+{
+  "_note": "Dữ liệu giả của #230, đọc bởi haido_api/posting_read.py. Bản giả chọn kết quả từ chữ dán, tất định, theo thứ tự: (1) chữ đã cắt khoảng trắng đầu cuối ngắn hơn min_chars thì too_short; (2) không chứa dấu nào của it_markers (casefold): có dấu của job_markers thì not_it, không có thì not_posting; (3) chứa dấu nào của deposit_markers thì reads.fee; (4) chứa dấu nào của devops_markers thì reads.cloud; (5) còn lại là reads.backend. Mã vai trò, nhánh, cấp, kỹ năng phải nằm trong config/rules.toml, config/classify.toml và bộ từ vựng. backend: 4 core, 2 common, 2 specific ở ô vn.backend.junior của fake_market.json (ví dụ FR-28 16/18 = 89% khi hồ sơ có 6 kỹ năng đầu). cloud: tin DevOps nhánh Cloud, lương \"thỏa thuận\" (không có số), đã có tin thu thập khớp (collected, link example.com). Các trích dẫn (contact_quotes, fee_mentions) và cụm chưa nhận diện là chữ minh họa, không chép từ tin nào. Chữ dán không bao giờ được chép vào fixture.",
+  "model_id": "fake-reader",
+  "prompt_version": "fake-1",
+  "min_chars": 200,
+  "it_markers": [
+    "java",
+    "python",
+    "javascript",
+    "typescript",
+    "sql",
+    "developer",
+    "lập trình",
+    "phần mềm",
+    "software",
+    "backend",
+    "frontend",
+    "fullstack",
+    "devops",
+    "tester",
+    "kubernetes",
+    "docker"
+  ],
+  "deposit_markers": [
+    "đặt cọc",
+    "deposit"
+  ],
+  "reads": {
+    "backend": {
+      "role": "backend",
+      "branch": null,
+      "level": "junior",
+      "skills": [
+        {
+          "code": "java",
+          "mentions": 3
+        },
+        {
+          "code": "sql",
+          "mentions": 2
+        },
+        {
+          "code": "spring_boot",
+          "mentions": 2
+        },
+        {
+          "code": "git",
+          "mentions": 1
+        },
+        {
+          "code": "docker",
+          "mentions": 1
+        },
+        {
+          "code": "mysql",
+          "mentions": 1
+        },
+        {
+          "code": "kafka",
+          "mentions": 1
+        },
+        {
+          "code": "linux",
+          "mentions": 1
+        }
+      ],
+      "unrecognised": [
+        "Quarkus",
+        "Vert.x"
+      ],
+      "years_min": 1,
+      "salary": {
+        "min": 10000000,
+        "max": 18000000,
+        "currency": "vnd",
+        "period": "month"
+      },
+      "salary_non_numeric": false,
+      "company_named": true,
+      "duties_described": true,
+      "title_level": "junior",
+      "contacts": [
+        "company_email",
+        "company_site"
+      ],
+      "contact_quotes": [
+        {
+          "channel": "company_email",
+          "quote": "Gửi CV về địa chỉ email của công ty"
+        }
+      ],
+      "fee_mentions": [],
+      "collected": null
+    },
+    "fee": {
+      "role": "backend",
+      "branch": null,
+      "level": "unknown",
+      "skills": [
+        {
+          "code": "java",
+          "mentions": 1
+        }
+      ],
+      "unrecognised": [],
+      "years_min": null,
+      "salary": null,
+      "salary_non_numeric": false,
+      "company_named": false,
+      "duties_described": false,
+      "title_level": null,
+      "contacts": [
+        "zalo",
+        "telegram"
+      ],
+      "contact_quotes": [
+        {
+          "channel": "zalo",
+          "quote": "Liên hệ Zalo để nhận việc ngay"
+        },
+        {
+          "channel": "telegram",
+          "quote": "nhắn Telegram để giữ chỗ"
+        }
+      ],
+      "fee_mentions": [
+        "đặt cọc 500.000đ phí hồ sơ để giữ chỗ"
+      ],
+      "collected": null
+    },
+    "cloud": {
+      "role": "devops",
+      "branch": "cloud",
+      "level": "mid",
+      "skills": [
+        {
+          "code": "docker",
+          "mentions": 2
+        },
+        {
+          "code": "kubernetes",
+          "mentions": 2
+        },
+        {
+          "code": "aws",
+          "mentions": 2
+        },
+        {
+          "code": "terraform",
+          "mentions": 1
+        },
+        {
+          "code": "linux",
+          "mentions": 1
+        },
+        {
+          "code": "ci_cd",
+          "mentions": 1
+        }
+      ],
+      "unrecognised": [
+        "Pulumi"
+      ],
+      "years_min": 3,
+      "salary": null,
+      "salary_non_numeric": true,
+      "company_named": true,
+      "duties_described": true,
+      "title_level": "mid",
+      "contacts": [
+        "company_email"
+      ],
+      "contact_quotes": [
+        {
+          "channel": "company_email",
+          "quote": "Gửi CV về địa chỉ email của công ty"
+        }
+      ],
+      "fee_mentions": [],
+      "collected": {
+        "site": "itviec",
+        "first_seen": "2026-09-14",
+        "repost_count": 3,
+        "snapshots_seen": 41,
+        "url": "https://example.com/jobs/devops-engineer-beta-cloud"
+      }
+    }
+  },
+  "job_markers": [
+    "tuyển dụng",
+    "ứng tuyển",
+    "mức lương",
+    "quyền lợi",
+    "gửi cv",
+    "mô tả công việc",
+    "job description",
+    "we are hiring"
+  ],
+  "devops_markers": [
+    "devops",
+    "kubernetes",
+    "terraform"
+  ]
+}

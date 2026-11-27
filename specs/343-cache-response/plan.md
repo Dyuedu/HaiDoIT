@@ -51,3 +51,5 @@ Spec cũ cập nhật vì file của chúng bị đụng (ghi một đợt trong
 ## Complexity Tracking
 
 Không có vi phạm.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.loadtest.yml`, `deploy/compose.prod.yml`, `haido_api/fake_market.py`, `haido_api/main.py`, `haido_api/market_source.py`, `haido_api/stat_market.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

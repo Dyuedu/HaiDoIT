@@ -1,0 +1,73 @@
+{
+  "data": {
+    "is_posting": true,
+    "reason": null,
+    "role": "backend",
+    "branch": null,
+    "level": "junior",
+    "skills": [
+      {
+        "code": "java",
+        "mentions": 3
+      },
+      {
+        "code": "sql",
+        "mentions": 2
+      },
+      {
+        "code": "spring_boot",
+        "mentions": 2
+      },
+      {
+        "code": "git",
+        "mentions": 1
+      },
+      {
+        "code": "docker",
+        "mentions": 1
+      },
+      {
+        "code": "mysql",
+        "mentions": 1
+      },
+      {
+        "code": "kafka",
+        "mentions": 1
+      },
+      {
+        "code": "linux",
+        "mentions": 1
+      }
+    ],
+    "unrecognised": [
+      "Quarkus",
+      "Vert.x"
+    ],
+    "years_min": 1,
+    "salary": {
+      "min": 10000000,
+      "max": 18000000,
+      "currency": "vnd",
+      "period": "month"
+    },
+    "salary_non_numeric": false,
+    "company_named": true,
+    "duties_described": true,
+    "title_level": "junior",
+    "contacts": [
+      "company_email",
+      "company_site"
+    ],
+    "contact_quotes": [
+      {
+        "channel": "company_email",
+        "quote": "Gửi CV về địa chỉ email của công ty"
+      }
+    ],
+    "fee_mentions": [],
+    "collected": null,
+    "model_id": "fake-reader",
+    "prompt_version": "fake-1",
+    "vocab_version": "seed-2026-11-23"
+  }
+}

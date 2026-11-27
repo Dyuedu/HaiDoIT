@@ -61,3 +61,5 @@ tests/deploy/test_daily_warehouse.py
 
 - `tests/deploy/test_daily_warehouse.py` là test của #90 (chưa có `specs/`): đổi chuỗi `haidoit-warehouse:local` sang image GHCR.
 - `deploy/vps-deploy.sh` và `.github/workflows/deploy.yml` thuộc #262: cập nhật `specs/262-bat-deploy/` cùng commit.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`. Xem `specs/230-hinh-soi-tin/plan.md`.

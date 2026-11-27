@@ -67,3 +67,5 @@ tests tests/core/test_ad10_rules_config.py (các ca θ cũ đã chuyển sang te
 - NULL đọc là hằng `PRE_FREEZE_THETA_VERSION = "theta-1"`, không phải `theta_versions[0]`: thứ tự không được quyết định nghĩa của dữ liệu cũ. Để hằng và vị trí không lệch nhau, bộ đọc từ chối sổ đăng ký có mục đầu khác `theta-1`.
 - `replace_stats` tự bảo vệ (UPDATE chỉ khớp `status = 'open'`) thay vì tin `aggregate` đã khóa: hàm công khai không được lặng lẽ đổi `theta_version` của snapshot đã chốt.
 - `rules.toml` còn `theta_core`/`theta_common` là lỗi, không phải bỏ qua: nếu bỏ qua, người sửa số ở đó sẽ tưởng θ đã đổi.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fixtures/fake_market.json`, `haido_api/stat_market.py`, `haido_core/config.py`, `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr09_skill_roles_stat.py`, `tests/api/test_fr19_skill_rates_stat.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_gh102_stat_market_theta.py`, `tests/core/test_ad10_rules_config.py`. Xem `specs/230-hinh-soi-tin/plan.md`.
