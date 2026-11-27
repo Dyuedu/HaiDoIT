@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ThemeToggle } from "./theme-toggle";
+
 const NAV_ITEMS = [
   { label: "Bản đồ", href: "/" },
   { label: "Insights", href: "/insights" },
@@ -15,7 +17,7 @@ export function AppHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="flex min-h-nav flex-wrap items-center justify-between border-b border-border bg-header px-page">
+    <header className="flex min-h-nav flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border bg-header px-page">
       <div className="flex flex-wrap items-center gap-6">
         <Link
           href="/"
@@ -44,6 +46,9 @@ export function AppHeader() {
             );
           })}
         </nav>
+      </div>
+      <div className="py-1">
+        <ThemeToggle />
       </div>
     </header>
   );

@@ -66,3 +66,9 @@ Sửa hợp đồng #212 (xem `specs/212-hinh-lo-trinh-hoc/plan.md`) và cổng 
 ## Thay đổi sau merge (2026-11-25, #216)
 
 Phần ghép của `DraftPathMarket` chuyển vào `haido_api/stat_path.py` và `StatMarket`; nội dung nháp chuyển sang `haido_api/content/learning_path.json`. App demo và màn không đổi.
+
+
+## Thay đổi sau merge (2026-11-27, Hướng B — CV Advisor)
+
+- Mở rộng `web/app/api/[...path]/route.ts` với `POST` proxy multipart/JSON.
+- Thêm `web/lib/advisor-roadmap.ts`, `web/app/components/advisor/cv-advisor-form.tsx`; cập nhật `web/app/co-van/page.tsx`, `web/lib/learning-path-view.ts` (`DEFAULT_PATH_LEVEL`) và `web/app/components/advisor/learning-path-screen.tsx`. Chi tiết: [specs/cv-advisor-roadmap/plan.md](../cv-advisor-roadmap/plan.md).

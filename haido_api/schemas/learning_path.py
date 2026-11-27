@@ -8,7 +8,7 @@ Lộ trình đã xếp sẵn (AD-7). Mỗi chặng là một chủ đề có tê
 import re
 from collections import Counter
 from enum import StrEnum
-from typing import Annotated, Self
+from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
@@ -290,3 +290,27 @@ class LearningPathData(BaseModel):
 
     def _skills(self) -> list[PathSkill]:
         return [s for st in self.stages for s in st.skills]
+
+
+class AdvisorRoadmapData(BaseModel):
+    """Dữ liệu phản hồi của `POST /api/v1/advisor/roadmap`: phân tích CV + yêu cầu JD -> lộ trình roadmap.sh."""
+
+    model_config = _CONFIG
+
+    path: LearningPathData
+    """Lộ trình từng chặng gắn số liệu JD thật từ `skill-rates` và đánh dấu kỹ năng đã có."""
+
+    cv_skills: list[SkillCode]
+    """Mã kỹ năng nhận diện từ CV (thuộc bộ từ vựng, tối đa 200)."""
+
+    missing_core_skills: list[SkillCode]
+    """Kỹ năng cốt lõi của ô JD chưa có trong CV/hồ sơ."""
+
+    missing_common_skills: list[SkillCode]
+    """Kỹ năng thường gặp của ô JD chưa có trong CV/hồ sơ."""
+
+    advisor_summary: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    """Tóm tắt nhận xét cá nhân hóa giữa CV và yêu cầu tuyển dụng ở vị trí & cấp đã chọn."""
+
+    generation_mode: Literal["llm", "market_fallback"]
+    """`llm` nếu tổng hợp bằng LLM; `market_fallback` nếu dùng bộ đối chiếu từ dữ liệu thị trường."""

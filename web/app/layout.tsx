@@ -26,13 +26,19 @@ export const metadata: Metadata = {
   description: "Bản đồ nhu cầu kỹ năng trên tin tuyển dụng IT",
 };
 
+const THEME_BOOT_SCRIPT =
+  '(function(){try{var d=document.documentElement,c=document.cookie.match(/(?:^|; )haido_theme=(light|dark)/),t=c?c[1]:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");d.dataset.theme=t;d.style.colorScheme=t;}catch(e){}})();';
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${beVietnamPro.variable} ${jetBrainsMono.variable}`}>
+    <html lang="vi" className={`${beVietnamPro.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-canvas font-sans text-text antialiased">
         <AppHeader />
         <main className="mx-auto max-w-content px-page py-6">{children}</main>

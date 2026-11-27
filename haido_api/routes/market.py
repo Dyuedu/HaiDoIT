@@ -18,10 +18,11 @@ from typing import Annotated, Any, Literal
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.exceptions import RequestValidationError
 
+from haido_api.advisor_service import build_advisor_roadmap
 from haido_api.fake_market import FakeMarket
 from haido_api.market_source import MarketReadModel, UnknownSkill
 from haido_api.schemas.error import ErrorEnvelope
-from haido_api.schemas.learning_path import LearningPathData
+from haido_api.schemas.learning_path import AdvisorRoadmapData, LearningPathData
 from haido_api.schemas.market import (
     CitySharesData,
     MarketOverviewData,
@@ -305,3 +306,16 @@ def get_skill_roles(
     if find_seed_skill(skill) is None:
         raise UnknownSkill("Kỹ năng đã chọn không có trong bộ từ vựng.")
     return source.skill_roles(skill=skill)
+
+
+@router.post(
+    "/advisor/roadmap",
+    response_model=Envelope[AdvisorRoadmapData],
+    summary="Phân tích CV theo vai trò & cấp bậc để tạo lộ trình roadmap.sh",
+)
+async def post_advisor_roadmap(
+    request: Request,
+    source: Annotated[MarketReadModel, Depends(_source_for("skill_rates"))],
+) -> Envelope[AdvisorRoadmapData]:
+    """Nhận file CV (PDF/DOCX trong bộ nhớ, không lưu), `role`, `level`, `consent` và sinh lộ trình học từ yêu cầu JD thật."""
+    return await build_advisor_roadmap(request, skill_rates_source=source)

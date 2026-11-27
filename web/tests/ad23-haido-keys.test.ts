@@ -20,10 +20,10 @@ afterEach(() => {
 });
 
 describe("AD-23 danh sách khóa đóng", () => {
-  it("mọi khóa có tiền tố haido: và đúng ba khóa", () => {
+  it("mọi khóa có tiền tố haido: và đúng bốn khóa", () => {
     expect(HAIDO_PREFIX).toBe("haido:");
     expect(Object.values(HAIDO_KEYS).sort()).toEqual(
-      ["haido:eval", "haido:profile", "haido:session"],
+      ["haido:eval", "haido:profile", "haido:session", "haido:theme"],
     );
   });
 });

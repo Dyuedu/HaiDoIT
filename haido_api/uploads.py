@@ -16,6 +16,7 @@ tiếng Việt, nêu giới hạn và kiểu được nhận, không bao giờ c
 """
 
 import unicodedata
+from collections.abc import Collection
 from dataclasses import dataclass, field
 from functools import lru_cache
 
@@ -52,6 +53,7 @@ class CvUpload:
     content: bytes
     filename: str
     content_type: str
+    fields: dict[str, str] = field(default_factory=dict)
 
 
 @lru_cache(maxsize=1)
@@ -135,20 +137,27 @@ def _clean_filename(name: str) -> str:
     return kept[:_MAX_FILENAME] or "cv"
 
 
+_MAX_CAPTURED_FIELD_BYTES = 4096
+
+
 @dataclass
 class _Reader:
     """Trạng thái của một lần đọc; các hàm `on_*` là callback của `MultipartParser`."""
 
     rules: RulesConfig
     reject: _Reject
+    capture_fields: frozenset[str] = frozenset()
     buffer: bytearray = field(default_factory=bytearray)
     filename: str = ""
     content_type: str = ""
     collecting: bool = False
+    capturing_name: str | None = None
     signature_checked: bool = False
     file_parts: int = 0
     finished: bool = False
     ended: bool = False
+    fields: dict[str, str] = field(default_factory=dict)
+    _field_buf: bytearray = field(default_factory=bytearray)
     _field: bytearray = field(default_factory=bytearray)
     _value: bytearray = field(default_factory=bytearray)
     _headers: dict[bytes, bytes] = field(default_factory=dict)
@@ -156,6 +165,8 @@ class _Reader:
     def on_part_begin(self) -> None:
         self._headers = {}
         self.collecting = False
+        self.capturing_name = None
+        self._field_buf.clear()
 
     def on_header_begin(self) -> None:
         self._field.clear()
@@ -174,9 +185,12 @@ class _Reader:
         """Quyết định nhận hay bỏ part, trước khi dữ liệu của part đến."""
         _, params = parse_options_header(self._headers.get(b"content-disposition", b""))
         if b"filename" not in params:
-            if params.get(b"name") == FIELD_NAME.encode():
+            raw_name = params.get(b"name", b"").decode("utf-8", errors="replace")
+            if raw_name == FIELD_NAME:
                 raise self.reject.invalid()  # phần `cv` phải là một file, không phải trường chữ
-            return  # trường chữ khác (đồng ý...) được bỏ qua, dữ liệu của nó không được giữ
+            if raw_name in self.capture_fields:
+                self.capturing_name = raw_name
+            return  # trường chữ khác (đồng ý...) được bỏ qua nếu không yêu cầu thu thập
         self.file_parts += 1
         if self.file_parts > 1 or params.get(b"name") != FIELD_NAME.encode():
             raise self.reject.invalid()
@@ -191,6 +205,11 @@ class _Reader:
         self.collecting = True
 
     def on_part_data(self, data: bytes, start: int, end: int) -> None:
+        if self.capturing_name is not None:
+            if len(self._field_buf) + (end - start) > _MAX_CAPTURED_FIELD_BYTES:
+                raise self.reject.invalid()
+            self._field_buf += data[start:end]
+            return
         if not self.collecting:
             return
         if len(self.buffer) + (end - start) > self.rules.cv_max_bytes:
@@ -204,6 +223,11 @@ class _Reader:
         self.ended = True
 
     def on_part_end(self) -> None:
+        if self.capturing_name is not None:
+            self.fields[self.capturing_name] = bytes(self._field_buf).decode("utf-8", errors="replace").strip()
+            self.capturing_name = None
+            self._field_buf.clear()
+            return
         if not self.collecting:
             return
         if not self.signature_checked:
@@ -218,7 +242,12 @@ class _Reader:
             raise self.reject.wrong_content()
 
 
-async def read_cv_upload(request: Request, rules: RulesConfig | None = None) -> CvUpload:
+async def read_cv_upload(
+    request: Request,
+    rules: RulesConfig | None = None,
+    *,
+    capture_fields: Collection[str] = (),
+) -> CvUpload:
     """Đọc file CV từ request multipart, chỉ trong bộ nhớ. Raise `UploadRejected` khi không hợp lệ."""
     rules = rules if rules is not None else _default_rules()
     reject = _Reject(rules)
@@ -230,7 +259,7 @@ async def read_cv_upload(request: Request, rules: RulesConfig | None = None) -> 
     if _declared_length(request, reject) > ceiling:
         raise reject.too_large()
 
-    reader = _Reader(rules, reject)
+    reader = _Reader(rules, reject, capture_fields=frozenset(capture_fields))
     parser = MultipartParser(
         boundary,
         {
@@ -264,4 +293,4 @@ async def read_cv_upload(request: Request, rules: RulesConfig | None = None) -> 
         raise reject.invalid()
     if not reader.finished:
         raise reject.malformed()
-    return CvUpload(bytes(reader.buffer), reader.filename, reader.content_type)
+    return CvUpload(bytes(reader.buffer), reader.filename, reader.content_type, reader.fields)

@@ -73,3 +73,8 @@ CI đỏ ở `ruff check .` (4 lỗi I001, chưa chạy lệnh này trước khi
 Lý do: phần ghép và nội dung chuyển chỗ; màn và app demo không đổi.
 
 RED và GREEN: `specs/216-lo-trinh-that/tdd.md`.
+
+
+## Đợt 5 (2026-11-27, Hướng B): mở khóa chọn cấp bậc & lộ trình từ CV
+
+Chi tiết RED/GREEN cho chọn `level` và tải CV trên `/co-van`: [specs/cv-advisor-roadmap/tdd.md](../cv-advisor-roadmap/tdd.md).

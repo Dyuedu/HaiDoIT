@@ -26,6 +26,7 @@ export default async function AdvisoryPage({ searchParams }: { searchParams: Sea
     <section className="py-2">
       <LearningPathScreen
         initialRole={knownRole ? (roleCode as string) : null}
+        initialLevel={knownLevel ? (levelCode as string) : null}
         profileLevel={knownLevel ? (levelCode as string) : DEFAULT_LEVEL}
         initialSkill={skillCode !== undefined && isSkillCode(skillCode) ? skillCode : null}
         unknownRole={roleCode !== undefined && !knownRole}

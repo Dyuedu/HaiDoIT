@@ -4,9 +4,11 @@ Sinh lại `docs/api/openapi.json` sau khi đổi schema:
     HAIDO_UPDATE_OPENAPI=1 uv run pytest tests/api -q
 """
 
+import io
 import json
 import math
 import os
+import zipfile
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -42,6 +44,22 @@ SAMPLE_QUERY: dict[str, dict[str, str]] = {
     "/api/v1/learning-path": {"role": "backend", "level": "entry"},
     "/api/v1/skill-roles": {"skill": "python"},
 }
+
+
+def _sample_cv_docx() -> bytes:
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        "<w:body><w:p><w:r><w:t>Backend Java SQL Docker Git REST API Developer</w:t></w:r></w:p></w:body>"
+        "</w:document>"
+    )
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("word/document.xml", xml.encode("utf-8"))
+    return buf.getvalue()
+
+
+POST_ROUTES: frozenset[str] = frozenset({"/api/v1/advisor/roadmap"})
 
 # Route không trả con số nào nên không dùng Envelope (AD-17 chỉ áp cho response chứa số).
 # Test bên dưới kiểm response của chúng không có số. Thêm route vào đây phải có lý do.
@@ -87,12 +105,13 @@ def _api_routes() -> dict[str, APIRoute]:
 # ---------------------------------------------------------------- AC: mọi route trả Envelope
 
 
-def test_ad17_moi_route_tra_envelope(client: TestClient) -> None:
+def test_ad17_moi_route_tra_envelope(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HAIDO_ADVISOR_MODE", "offline")
     all_routes = _api_routes()
     openapi_paths = {p for p in app.openapi()["paths"] if p.startswith("/api/v1")}
     assert set(all_routes) == openapi_paths
     routes = {p: r for p, r in all_routes.items() if p not in NUMBERLESS_ROUTES}
-    assert set(routes) == set(SAMPLE_QUERY)
+    assert set(routes) == set(SAMPLE_QUERY) | set(POST_ROUTES)
     for path in NUMBERLESS_ROUTES:
         assert path in all_routes, path
         assert _numbers(_get(client, path, **NUMBERLESS_SAMPLE[path])) == [], f"{path} có số nhưng không dùng Envelope"
@@ -100,7 +119,22 @@ def test_ad17_moi_route_tra_envelope(client: TestClient) -> None:
         model = route.response_model
         assert isinstance(model, type) and issubclass(model, Envelope), path
         assert model.__pydantic_generic_metadata__["args"], f"{path}: Envelope chưa gắn kiểu data"
-        model.model_validate(_get(client, path, **SAMPLE_QUERY[path]))
+        if path in POST_ROUTES:
+            resp = client.post(
+                path,
+                files={
+                    "cv": (
+                        "cv.docx",
+                        _sample_cv_docx(),
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    )
+                },
+                data={"role": "backend", "level": "entry", "consent": "true"},
+            )
+            assert resp.status_code == 200, resp.text
+            model.model_validate(resp.json())
+        else:
+            model.model_validate(_get(client, path, **SAMPLE_QUERY[path]))
 
 
 def _numbers(node: Any) -> list[Any]:
