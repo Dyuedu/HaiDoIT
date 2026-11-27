@@ -3,14 +3,19 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
-import { type Profile } from "@/lib/haido-keys";
-import { ROLE_OPTIONS, levelLabel, roleLabel } from "@/lib/labels";
+import {
+  type AdvisorRoadmapEnvelope,
+  applyHaveToAdvisorEnvelope,
+  toLearningPathEnvelope,
+} from "@/lib/advisor-roadmap";
+import { MAX_PROFILE_SKILLS, type Profile, isSkillCode } from "@/lib/haido-keys";
+import { LEVEL_OPTIONS, ROLE_OPTIONS, roleLabel } from "@/lib/labels";
 import { type LearningPathResult, fetchLearningPath, learningPathUrl } from "@/lib/learning-path";
 import {
   ALL_DONE_TEXT,
+  DEFAULT_PATH_LEVEL,
   NOT_READY_HINT,
   NOT_READY_TEXT,
-  PATH_LEVEL,
   buildLearningPathView,
 } from "@/lib/learning-path-view";
 import { skillProfileHref } from "@/lib/newcomer-roles-view";
@@ -21,28 +26,39 @@ import { type SkillsResult, fetchSkills, skillDisplayName } from "@/lib/vocab";
 import { FilterSelect } from "../map/filter-select";
 import { LoadError } from "../map/load-error";
 import { SnapshotCaption } from "../map/snapshot-caption";
+import { CvAdvisorForm } from "./cv-advisor-form";
 import { PathGraph } from "./path-graph";
 import { pathNodeId } from "./path-node";
 import { SkillPanel } from "./skill-panel";
 
 const LOADING = "Đang tải lộ trình…";
 const UNREADABLE = "Không đọc được số liệu. Thử lại sau.";
-const INTRO = "Chọn một vai trò để xem nên học gì trước, theo tin tuyển dụng dành cho người mới vào nghề.";
+const INTRO = "Chọn vai trò và cấp bậc, hoặc tải CV lên để nhận lộ trình học theo yêu cầu tuyển dụng.";
 
 const PATH_ROLES = ROLE_OPTIONS.filter((option) => option.code !== "all");
 const ROLE_CODES = new Set(PATH_ROLES.map((option) => option.code));
+const LEVEL_CODES = new Set(LEVEL_OPTIONS.map((option) => option.code));
 
 interface Loaded {
   key: string;
   role: string;
+  level: string;
   result: LearningPathResult;
+}
+
+interface AdvisorLoaded {
+  role: string;
+  level: string;
+  envelope: AdvisorRoadmapEnvelope;
 }
 
 interface LearningPathScreenProps {
   /** Vai trò hợp lệ trong URL, hoặc `null`. */
   initialRole: string | null;
-  /** Cấp hợp lệ trong URL: chỉ dùng cho liên kết về hồ sơ kỹ năng. Lộ trình luôn ở nhóm mới vào nghề (#134). */
-  profileLevel: string;
+  /** Cấp bậc hợp lệ trong URL, hoặc `null` nếu URL không truyền `level`. */
+  initialLevel?: string | null;
+  /** Cấp bậc rơi về mặc định khi URL không truyền `level`. */
+  profileLevel?: string;
   /** Kỹ năng đúng định dạng trong URL: mở ngăn ở kỹ năng đó (#153). */
   initialSkill: string | null;
   /** URL có tham số `role` nhưng mã không phải vai trò nào. */
@@ -50,26 +66,46 @@ interface LearningPathScreenProps {
 }
 
 /**
- * Màn lộ trình học (#217, story #121), phía trình duyệt. Thứ tự, chặng đang học và số đếm của API (AD-7, AD-22); hồ sơ
- * đọc và ghi qua `profile-store.ts` (AD-23), gửi lên API bằng `have=`. Ô tick phản hồi ngay theo hồ sơ; số cũ ở lại tới
- * khi số mới về.
+ * Màn lộ trình học (#217, story #121 & Hướng B): dựng lộ trình kiểu `roadmap.sh` theo `(role, level)` từ thị trường
+ * hoặc cá nhân hóa từ CV + LLM + dữ liệu JD qua `POST /api/v1/advisor/roadmap`. Hồ sơ đọc/ghi qua `profile-store.ts`
+ * (AD-23); khi đang xem lộ trình từ CV, tick kỹ năng cập nhật trực tiếp trạng thái mà không phải tải lại CV.
  */
-export function LearningPathScreen({ initialRole, profileLevel, initialSkill, unknownRole }: LearningPathScreenProps) {
-  // `undefined`: chưa chọn trên màn này, dùng vai trò mục tiêu đã lưu (FR-14). `null`: không có vai trò.
+export function LearningPathScreen({
+  initialRole,
+  initialLevel = null,
+  profileLevel = DEFAULT_PATH_LEVEL,
+  initialSkill,
+  unknownRole,
+}: LearningPathScreenProps) {
+  // `undefined`: chưa chọn trên màn này, dùng giá trị phù hợp từ URL hoặc hồ sơ (FR-14). `null`: không có vai trò.
   const [chosenRole, setChosenRole] = useState<string | null | undefined>(
     initialRole ?? (unknownRole ? null : undefined),
   );
+  const [chosenLevel, setChosenLevel] = useState<string | undefined>(initialLevel ?? undefined);
   const [openSkill, setOpenSkill] = useState<string | null>(initialSkill);
   const [vocab, setVocab] = useState<SkillsResult | null>(null);
   const [retry, setRetry] = useState(0);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
+  const [advisorLoaded, setAdvisorLoaded] = useState<AdvisorLoaded | null>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
   const scrolledRef = useRef(false);
 
   const profile: Profile = useSyncExternalStore(subscribeProfile, getProfileSnapshot, getServerProfileSnapshot);
   const skills = profile.skills;
   const savedRole = profile.role !== null && ROLE_CODES.has(profile.role) ? profile.role : null;
+  const savedLevel = profile.level !== null && LEVEL_CODES.has(profile.level) ? profile.level : null;
   const role = chosenRole === undefined ? savedRole : chosenRole;
+  const level =
+    chosenLevel !== undefined
+      ? chosenLevel
+      : initialRole !== null
+        ? profileLevel
+        : savedLevel ?? DEFAULT_PATH_LEVEL;
+
+  const activeAdvisor =
+    role !== null && advisorLoaded !== null && advisorLoaded.role === role && advisorLoaded.level === level
+      ? advisorLoaded
+      : null;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -79,22 +115,22 @@ export function LearningPathScreen({ initialRole, profileLevel, initialSkill, un
     return () => controller.abort();
   }, []);
 
-  const requestKey = role ? `${learningPathUrl(role, PATH_LEVEL, skills)}#${retry}` : null;
+  const requestKey = role && !activeAdvisor ? `${learningPathUrl(role, level, skills)}#${retry}` : null;
 
   useEffect(() => {
-    if (!role || requestKey === null) return;
+    if (!role || requestKey === null || activeAdvisor) return;
     const controller = new AbortController();
-    fetchLearningPath(role, PATH_LEVEL, skills, { signal: controller.signal }).then((result) => {
-      if (!controller.signal.aborted) setLoaded({ key: requestKey, role, result });
+    fetchLearningPath(role, level, skills, { signal: controller.signal }).then((result) => {
+      if (!controller.signal.aborted) setLoaded({ key: requestKey, role, level, result });
     });
     return () => controller.abort();
-    // `requestKey` gộp role, skills và lần thử lại.
+    // `requestKey` gộp role, level, skills và lần thử lại.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestKey]);
+  }, [requestKey, activeAdvisor]);
 
   useEffect(() => {
-    if (role) window.history.replaceState(window.history.state, "", learningPathHref(role, PATH_LEVEL, openSkill));
-  }, [role, openSkill]);
+    if (role) window.history.replaceState(window.history.state, "", learningPathHref(role, level, openSkill));
+  }, [role, level, openSkill]);
 
   const owned = useMemo(() => new Set(skills), [skills]);
   const nameOf = useMemo(() => {
@@ -106,9 +142,22 @@ export function LearningPathScreen({ initialRole, profileLevel, initialSkill, un
     return (code: string) => byCode.get(code) ?? code;
   }, [vocab]);
 
-  // Số của lần tải đúng vai trò đang chọn. Sau khi tick, giữ số cũ tới khi số mới về để màn không nhảy.
-  const current = role && loaded?.role === role ? loaded : null;
-  const result = current && (current.key === requestKey || current.result.kind === "ok") ? current.result : null;
+  const advisorEnvelope = useMemo(
+    () => (activeAdvisor ? applyHaveToAdvisorEnvelope(activeAdvisor.envelope, skills) : null),
+    [activeAdvisor, skills],
+  );
+
+  // Số của lần tải đúng vai trò & cấp bậc đang chọn. Sau khi tick, giữ số cũ tới khi số mới về để màn không nhảy.
+  const current = role && loaded?.role === role && loaded?.level === level ? loaded : null;
+  const result = useMemo<LearningPathResult | null>(
+    () =>
+      advisorEnvelope
+        ? { kind: "ok", envelope: toLearningPathEnvelope(advisorEnvelope) }
+        : current && (current.key === requestKey || current.result.kind === "ok")
+          ? current.result
+          : null,
+    [advisorEnvelope, current, requestKey],
+  );
   const view = useMemo(
     () => (result?.kind === "ok" ? buildLearningPathView(result.envelope, (code) => nameOf(code) ?? code, shortNameOf) : null),
     [result, nameOf, shortNameOf],
@@ -134,6 +183,31 @@ export function LearningPathScreen({ initialRole, profileLevel, initialSkill, un
     setChosenRole(next);
     setOpenSkill(null);
     saveProfile({ ...profile, role: next });
+  };
+
+  const chooseLevel = (next: string) => {
+    if (!LEVEL_CODES.has(next)) return;
+    setChosenLevel(next);
+    setOpenSkill(null);
+    saveProfile({ ...profile, level: next });
+  };
+
+  const handleAdvisorSuccess = (envelope: AdvisorRoadmapEnvelope) => {
+    const mergedSkills = Array.from(
+      new Set([...skills, ...envelope.data.cv_skills.filter((code) => isSkillCode(code))]),
+    ).slice(0, MAX_PROFILE_SKILLS);
+    saveProfile({
+      ...profile,
+      role: envelope.data.path.role,
+      level: envelope.data.path.level,
+      skills: mergedSkills,
+    });
+    setAdvisorLoaded({
+      role: envelope.data.path.role,
+      level: envelope.data.path.level,
+      envelope,
+    });
+    setOpenSkill(null);
   };
 
   const close = useCallback(() => {
@@ -249,9 +323,7 @@ export function LearningPathScreen({ initialRole, profileLevel, initialSkill, un
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="m-0 text-title text-text">{role ? `Lộ trình học: ${roleLabel(role)}` : "Cố vấn"}</h1>
-        {role ? (
-          <p className="m-0 text-body-md text-text-secondary">{levelLabel(PATH_LEVEL)}</p>
-        ) : (
+        {!role && (
           <p data-testid="insight-sentence" className="m-0 max-w-[68ch] text-body-md text-text-quiet">
             {unknownRole ? `Không có vai trò này. ${INTRO}` : INTRO}
           </p>
@@ -259,18 +331,32 @@ export function LearningPathScreen({ initialRole, profileLevel, initialSkill, un
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-        <div className="sm:w-80">
+        <div className="sm:w-64">
           <FilterSelect label="Vai trò" value={role ?? ""} options={roleOptions} onChange={chooseRole} />
+        </div>
+        <div className="sm:w-56">
+          <FilterSelect label="Cấp bậc" value={level} options={LEVEL_OPTIONS} onChange={chooseLevel} />
         </div>
         {role && (
           <Link
-            href={skillProfileHref(role, role === initialRole ? profileLevel : PATH_LEVEL)}
+            href={skillProfileHref(role, level)}
             className="inline-flex min-h-target items-center justify-center rounded-md border border-border-chip px-4 text-ui text-text-secondary transition-colors hover:border-selected hover:text-text"
           >
             Xem hồ sơ kỹ năng
           </Link>
         )}
       </div>
+
+      <CvAdvisorForm
+        role={role}
+        level={level}
+        haveSkills={skills}
+        skillName={(code) => nameOf(code) ?? code}
+        advisorData={advisorEnvelope?.data ?? null}
+        ownedSkills={owned}
+        onSuccess={handleAdvisorSuccess}
+        onResetAdvisor={activeAdvisor ? () => setAdvisorLoaded(null) : undefined}
+      />
 
       {role && (
         <p

@@ -77,12 +77,15 @@ describe("fr22 #217 — các chặng", () => {
     expect(linux.textContent).not.toContain("Riêng của công ty");
   });
 
-  it("fr22 #134: luôn hỏi cấp entry, kể cả khi URL có cấp khác", async () => {
-    const api = routeLearningPath();
+  it("fr22 huong-b: tôn trọng cấp bậc trên URL (senior) và giữ combobox đúng cấp", async () => {
+    const seniorPath = pathWithHave("backend", []);
+    seniorPath.data.level = "senior";
+    const api = routeLearningPath({ learningPath: () => jsonResponse(200, seniorPath) });
     await open({ role: "backend", level: "senior" });
     await path();
-    expect(api.calls()[0].params).toEqual({ role: "backend", level: "entry" });
-    expect(screen.getByText("Mới vào nghề")).toBeTruthy();
+    expect(api.calls()[0].params).toEqual({ role: "backend", level: "senior" });
+    expect((screen.getByRole("combobox", { name: "Cấp bậc" }) as HTMLSelectElement).value).toBe("senior");
+    expect(screen.getByText("Senior")).toBeTruthy();
   });
 
   it("fr22: chưa đủ dữ liệu thì không có %, không nhóm", async () => {
