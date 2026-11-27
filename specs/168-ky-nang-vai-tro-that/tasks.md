@@ -24,3 +24,5 @@
 - [x] T010 Test trước: hòa tỷ lệ mà `n_scanned` lớn hơn, `mentioned` bỏ qua hàng `all × entry`, ngưỡng `min_sample` và `min_sample - 1`, đuôi `null_data` theo mã, snapshot không có nguồn, `sources_failed`, guard dữ liệu mâu thuẫn, `UnknownSkill` trước kết nối, factory đếm lần gọi, trong `tests/api/test_fr09_skill_roles_stat.py` và `tests/api/test_fr09_skill_roles.py`
 - [x] T011 `haido_api/stat_market.py`: `UnknownSkill` trước kết nối, guard `n_with`, khóa sắp xếp dùng `DisplayState.NULL_DATA` nhất quán, `_skill_role_rows` trả thêm `n_with` theo vai trò
 - [x] T012 Mutation lại cho các hành vi mới (xem `tdd.md`, đợt review)
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

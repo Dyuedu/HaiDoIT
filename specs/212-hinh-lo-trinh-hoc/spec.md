@@ -56,6 +56,7 @@ Người làm màn lộ trình (#217), người làm bước dựng lộ trình 
 ### Edge Cases
 
 - Cấp bậc khác `entry` của vai trò sẵn sàng (backend, data_engineer): bản giả chỉ có ô `entry`, như `skill-rates` giả, nên 404 `unknown_cell`. Lộ trình dùng đúng ô mà `skill-rates` của cùng (vai trò, cấp) dùng.
+  **Cập nhật 2026-11-27 (#230)**: câu trên không còn đúng cho `backend`. Bản giả nay có ô `vn.backend.junior` (n = 32) nên `backend` ở cấp `junior` trả 200 (ô riêng, không quay về), và `intern` trả 200 qua ô `vn.backend` (như trước); chỉ các cấp còn lại của `backend` (`fresher`, `mid`, `senior`...) và các cấp khác `entry` của `data_engineer` vẫn 404. AC của #212 không đổi: lộ trình vẫn dùng đúng ô mà `skill-rates` cùng (vai trò, cấp) dùng.
 - Vai trò `not_ready` ở mọi cấp hợp lệ: 200 `not_ready`; `entry_cell_id` là ô entry của vai trò bất kể cấp.
 - Vai trò không có trong `config/rules.toml` (kể cả `all`): 404 `unknown_cell`, như `city-shares`.
 - Kỹ năng nền tảng (FR-20): có thể thuộc nhóm `company_specific`; chỉ kỹ năng nền tảng mới được như vậy.

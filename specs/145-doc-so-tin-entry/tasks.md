@@ -25,3 +25,5 @@
 ## Thay đổi sau merge (2026-11-17, #166)
 
 #166 sửa file dùng chung với issue này (`newcomer_roles` thật không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

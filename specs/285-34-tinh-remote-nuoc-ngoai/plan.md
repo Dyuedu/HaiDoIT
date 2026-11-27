@@ -60,3 +60,5 @@ Gộp main vào nhánh #212: `haido_api/fixtures/fake_market.json` (`skill_rates
 File của issue này bị sửa: `haido_core/steps/ingest.py` (dữ kiện mang thêm `vocab_version`; nhãn thành phố không đổi), `haido_core/steps/aggregate.py`, `haido_core/db/snapshot_store.py` (`FactVersion` có trường mới ở cuối, sau `city`), `haido_core/db/tables.py`.
 
 `tests/db/test_gh285_fact_city.py` đổi kỳ vọng head Alembic từ 0008 sang 0009. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `haido_api/fixtures/fake_market.json`, `haido_core/config.py`, `tests/api/test_ad17_routes.py`, `tests/api/test_dat20_stat_market.py`, `tests/api/test_fr33_city_shares_level.py`, `tests/api/test_fr33_city_shares_years.py`, `tests/core/test_ad10_rules_config.py`, `tests/steps/test_dat20_api_end_to_end.py`, `tests/steps/test_gh284_aggregate_vai_tro_moi.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

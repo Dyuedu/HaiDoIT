@@ -12,3 +12,5 @@
 - [x] T003 Cập nhật bảng nguồn trong `docs/api/envelope-meta.md`.
 - [x] T004 Thêm đợt tdd vào `specs/146`, `specs/166`, `specs/262`, `specs/273`.
 - [x] T005 Chạy pytest đầy đủ, ruff, cổng.
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

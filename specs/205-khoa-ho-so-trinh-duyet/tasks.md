@@ -52,3 +52,5 @@
 #166 đợt 2 sửa thêm file dùng chung với issue này (`haido_api/fake_market.py`, `fixtures/fake_market.json`, `routes/market.py`). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
 
 - [x] T900 (#278, 2026-11-23) `haido_core/vocab/skills_seed.json`, `skills.py`: 265 mã, danh sách loại trừ; sửa `tests/core/test_fr13_skill_seed.py` (review 2026-11-23: `it support` là bí danh chỉ-tra-thẻ của `helpdesk` trong `scan_skip`, các tên vai trò còn lại vẫn cấm; thêm test đòi tên vai trò làm bí danh phải ở `scan_skip`). Chi tiết: `specs/278-ma-ky-nang-thuong-gap/`
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

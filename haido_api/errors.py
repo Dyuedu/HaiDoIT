@@ -15,8 +15,10 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from haido_api.market_source import UnknownCell, UnknownSkill
+from haido_api.market_source import CheckUnavailable, UnknownCell, UnknownSkill
+from haido_api.posting_read import PostingReadRefused
 from haido_api.schemas.error import ErrorBody, ErrorEnvelope
+from haido_api.schemas.posting import POSTING_READ_ERRORS, POSTING_READ_MESSAGES
 from haido_api.uploads import UploadRejected
 
 logger = logging.getLogger("haido_api")
@@ -43,7 +45,11 @@ def invalid_query_message(errors: Sequence[Any]) -> str:
     """Câu tiếng Việt cho lỗi 422, chỉ nêu tên tham số."""
     thieu: list[str] = []
     sai: list[str] = []
+    la = False
     for err in errors:
+        if err.get("type") == "extra_forbidden":
+            la = True  # không nêu tên: khóa lạ do người gửi đặt, có thể là chữ của tin dán (AD-11)
+            continue
         name = str(err.get("loc", ("?",))[-1])
         (thieu if err.get("type") == "missing" else sai).append(name)
     parts = []
@@ -51,6 +57,8 @@ def invalid_query_message(errors: Sequence[Any]) -> str:
         parts.append("thiếu tham số " + ", ".join(dict.fromkeys(thieu)))
     if sai:
         parts.append("tham số sai định dạng: " + ", ".join(dict.fromkeys(sai)))
+    if la:
+        parts.append("có trường không có trong hợp đồng")
     return "Truy vấn không hợp lệ: " + "; ".join(parts or ["không đọc được tham số"]) + "."
 
 
@@ -60,6 +68,17 @@ async def _unknown_cell(_: Request, exc: UnknownCell) -> JSONResponse:
 
 async def _unknown_skill(_: Request, exc: UnknownSkill) -> JSONResponse:
     return error_response(404, "unknown_skill", exc.message)
+
+
+async def _check_unavailable(_: Request, exc: CheckUnavailable) -> JSONResponse:
+    return error_response(503, "check_unavailable", exc.message)
+
+
+async def _posting_read_refused(_: Request, exc: PostingReadRefused) -> JSONResponse:
+    # AD-11: câu và HTTP lấy từ bảng của mã lỗi, không bao giờ từ thông điệp của nguồn đọc (nó có thể lỡ mang chữ của tin);
+    # mã không có trong bảng là lỗi của nguồn, trả như `read_failed`. Ở đây không ghi gì.
+    code = exc.code if exc.code in POSTING_READ_ERRORS else "read_failed"
+    return error_response(POSTING_READ_ERRORS[code], code, POSTING_READ_MESSAGES[code])
 
 
 async def _upload_rejected(_: Request, exc: UploadRejected) -> JSONResponse:
@@ -95,7 +114,9 @@ async def _internal_error(request: Request, exc: Exception) -> JSONResponse:
 def install_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(UnknownCell, _unknown_cell)
     app.add_exception_handler(UnknownSkill, _unknown_skill)
+    app.add_exception_handler(CheckUnavailable, _check_unavailable)
     app.add_exception_handler(UploadRejected, _upload_rejected)
+    app.add_exception_handler(PostingReadRefused, _posting_read_refused)
     app.add_exception_handler(RequestValidationError, _invalid_query)
     app.add_exception_handler(StarletteHTTPException, _http_error)
     app.add_exception_handler(ResponseValidationError, _invalid_response)

@@ -38,7 +38,7 @@ def _client(engine: Engine) -> TestClient:
     fake = FakeMarket()
     draft = DraftPathMarket(engine_factory=lambda: engine, rules=RULES)
     app = create_app(
-        {"city_shares": fake, "skill_rates": draft, "newcomer_roles": fake, "learning_path": draft, "skill_roles": fake}
+        {"city_shares": fake, "skill_rates": draft, "newcomer_roles": fake, "learning_path": draft, "skill_roles": fake, "posting_check": fake}
     )
     return TestClient(app, raise_server_exceptions=False)
 

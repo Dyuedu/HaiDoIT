@@ -55,3 +55,5 @@
 ## Cập nhật 2026-11-16 theo #101
 
 - [x] T-101 Giữ test của issue này xanh sau khi #101 sửa các file trên; test của issue này không phải sửa. `tests/db/test_dat20_stat_tables.py` (kiểm head Alembic, thuộc #93) đổi sang head 0009.
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

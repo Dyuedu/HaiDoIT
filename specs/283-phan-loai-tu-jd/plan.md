@@ -94,3 +94,5 @@ File của issue này bị sửa: `haido_core/steps/ingest.py` và `haido_core/d
 `tests/db/test_gh283_facts_labels.py` đổi kỳ vọng head Alembic từ 0008 sang 0009; `tests/steps/test_gh283_ingest_classify.py` thêm hai test quét lại khi từ vựng đổi. Hành vi và AC của issue này không đổi. Xem `specs/101-ty-le-ky-nang/`. Đợt 2 (cùng ngày): xem `tdd.md` của #283.
 
 Đợt 2 (cùng ngày, #101 D3): `haido_core/db/snapshot_store.py` (`FactVersion.vocab_version`, `stale_in_window` nhận thêm phiên bản từ vựng, NULL là khác) và `haido_core/steps/ingest.py` (`PlannedFact.vocab_version`, `_refresh_labels` quét lại cả khi từ vựng đổi). Test: `tests/steps/test_gh283_ingest_classify.py` thêm hai test. Migration 0009 thêm cột `job_posting_facts.vocab_version` (nullable); xem `specs/101-ty-le-ky-nang/data-model.md`.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `config/rules.toml`, `haido_core/config.py`, `tests/core/test_ad10_rules_config.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

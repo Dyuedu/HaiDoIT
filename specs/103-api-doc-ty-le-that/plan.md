@@ -26,3 +26,5 @@ tests/api/test_fr19_skill_rates_stat.py    # mới (của #151): test AD-7 ghi l
 ## Complexity Tracking
 
 - Không đụng file nào của issue cũ.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`, `tests/api/test_fr19_skill_rates_stat.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

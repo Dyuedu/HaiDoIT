@@ -42,3 +42,5 @@ Test đứng trước code. Mỗi test mới phải đỏ trước khi có code 
 #166 sửa file dùng chung với issue này (từ vựng quét JD không đổi). Hành vi và AC của issue này không đổi. Chi tiết: `specs/166-hinh-ky-nang-theo-vai-tro/plan.md`.
 
 - [x] T900 (#278, 2026-11-23) `haido_core/vocab/skills_seed.json`, `skills.py`: 40 mã mới, `scan_skip` mở rộng, `version` `seed-2026-11-23`; `tests/domain/test_gh283_posting_text.py` giữ câu gốc "Phát triển API bằng Docker", kỳ vọng thêm `api` (đợt review 2026-11-23). Chi tiết: `specs/278-ma-ky-nang-thuong-gap/`
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

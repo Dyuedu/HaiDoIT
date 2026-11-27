@@ -37,3 +37,5 @@
 - [x] T017 Test màn: chủ đề, chọn một, màu và chú giải, tên ngắn, lựa chọn thay thế
 - [x] T018 `path-graph.tsx`, `path-node.tsx`, `skill-panel.tsx`, `learning-path-screen.tsx`, `learning-path-view.ts`
 - [x] T019 Chrome headless 360, 1024, 1280px trên image thật; cập nhật specs các issue bị đụng
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

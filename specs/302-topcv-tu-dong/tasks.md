@@ -43,3 +43,5 @@
 - [x] T010 Chép `scraper/` lên `/opt/haidoit/scraper` (không phải git repo), build `scraper-browser`, chạy thử `pipeline.py crawl --sources topcv --limit 5`
 - [x] T011 Merge sau khi image đã build, vì merge đẩy `daily.sh` mới lên VPS
 - [x] T012 Đêm đầu (17/11): log có `[topcv] OK in 6978s`, `seen: 2399 jobs, listing_complete=True`; nhưng ingest bỏ qua TopCV, xem Phase 5
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

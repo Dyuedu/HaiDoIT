@@ -64,3 +64,5 @@ tests/deploy/test_gh262_don_tag_cu.py
 ## Complexity Tracking
 
 Không có vi phạm cần biện minh. Token kéo image dùng `GITHUB_TOKEN` của job khi không có PAT riêng, vì workflow đã khai `packages: write`. Không thêm secret thứ sáu chỉ để lặp lại quyền đó.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`. Xem `specs/230-hinh-soi-tin/plan.md`.

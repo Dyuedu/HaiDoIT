@@ -18,3 +18,5 @@
 - [x] T007 `haido_core/domain/registry.py`: `CellChoice.label: str | None`, `CellChoice.order`
 - [x] T008 `haido_core/domain/cells.py`: `CellSelector`, `CellStats`
 - [x] T009 `haido_core/domain/REGISTRY.md`: ghi thân hàm phép 2
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

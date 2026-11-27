@@ -25,12 +25,16 @@ LEVEL_GROUPS = '[level_groups]\nentry = ["junior"]\n'
 YEARS_OPTIONS = "years_options = [0, 1, 3]\n"
 ALWAYS_CITIES = 'always_cities = ["ha_noi", "unknown"]\n'  # #285
 
+POSTING = "[posting_match]\nweight_core = 3\nweight_common = 2\nweight_specific = 1\n"  # #230
+POSTING_READ = "[posting_read]\nmax_chars = 20000\nmax_body_bytes = 131072\n"  # #230: trần của POST posting-reads (FR-26, AD-9)
+POSTING_MARKET = "[posting_market]\nci_below_n = 100\n"  # #230: khoảng tin cậy 95% khi min_sample <= n < ci_below_n (FR-30, AD-26)
+
 CV = f'cv_max_bytes = 5242880\ncv_types = ["{PDF}", "{DOCX}"]\n'
 
 BASE = (
     'config_version = "t"\nwindow_days = 60\nmin_sample = 30\ntheta_version = "theta-1"\n'
     f'roles = ["backend", "other"]\n{LEVEL_OPTIONS}{YEARS_OPTIONS}{ALWAYS_CITIES}{CV}\n'
-    f"{SOURCES}\n{LEVEL_GROUPS}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
+    f"{SOURCES}\n{LEVEL_GROUPS}\n{POSTING}\n{POSTING_READ}\n{POSTING_MARKET}\n{NOTE}\n{CITY}\n{ROLE}\n{LEVEL}"
 )
 
 
@@ -461,4 +465,89 @@ def test_fr33_thieu_years_options_thi_bao_loi_tieng_viet(tmp_path: Path) -> None
 def test_fr33_years_options_sai_thi_bao_loi_tieng_viet(tmp_path: Path, value: str) -> None:
     body = BASE.replace(YEARS_OPTIONS, f"years_options = {value}\n")
     with pytest.raises(ConfigError, match="years_options"):
+        load_rules(_write(tmp_path, body))
+
+
+# ---------------------------------------------------------------- #230: trọng số mức khớp của tin dán (FR-28, AD-10)
+
+
+def test_fr28_rules_that_co_trong_so_3_2_1_va_phien_ban_moi() -> None:
+    rules = load_rules()
+    assert rules.posting_match_weights == {"core": 3, "common": 2, "specific": 1}
+    assert rules.config_version == "2026-11-27.2"  # đổi giá trị trong rules.toml thì tăng phiên bản
+
+
+def test_fr28_trong_so_tu_file_cau_hinh(tmp_path: Path) -> None:
+    body = BASE.replace("weight_core = 3", "weight_core = 5")
+    assert load_rules(_write(tmp_path, body)).posting_match_weights == {"core": 5, "common": 2, "specific": 1}
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        BASE.replace(POSTING, ""),  # thiếu cả bảng
+        BASE.replace("weight_common = 2\n", ""),  # thiếu một khóa
+        BASE.replace("weight_core = 3", "weight_core = 0"),  # không dương
+        BASE.replace("weight_core = 3", "weight_core = 2.5"),  # không nguyên
+        BASE.replace("weight_core = 3", "weight_core = true"),  # bool không phải số
+        BASE.replace("weight_core = 3", "weight_core = 1"),  # core nhỏ hơn common
+        BASE.replace("weight_specific = 1", "weight_specific = 2\nweight_extra = 1"),  # khóa lạ
+    ],
+    ids=["thieu_bang", "thieu_khoa", "khong_duong", "khong_nguyen", "bool", "sai_thu_tu", "khoa_la"],
+)
+def test_fr28_trong_so_sai_la_loi_cau_hinh(tmp_path: Path, body: str) -> None:
+    with pytest.raises(ConfigError, match="posting_match"):
+        load_rules(_write(tmp_path, body))
+
+
+def test_fr26_rules_that_co_tran_cua_post_posting_reads() -> None:
+    rules = load_rules()
+    assert rules.posting_max_chars == 20_000  # FR-26
+    # Tệ nhất 4 byte UTF-8 mỗi ký tự cộng phần phụ trội của JSON (dấu nháy, escape xuống dòng): 131072 byte phủ được.
+    assert rules.posting_max_body_bytes == 131_072 >= 4 * rules.posting_max_chars + 1024
+
+
+def test_fr26_tran_post_doc_tu_file_chi_dinh(tmp_path: Path) -> None:
+    body = BASE.replace("max_chars = 20000", "max_chars = 5000").replace("max_body_bytes = 131072", "max_body_bytes = 40000")
+    rules = load_rules(_write(tmp_path, body))
+    assert (rules.posting_max_chars, rules.posting_max_body_bytes) == (5000, 40000)
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        BASE.replace(POSTING_READ, ""),  # thiếu cả bảng
+        BASE.replace("max_chars = 20000\n", ""),  # thiếu khóa
+        BASE.replace("max_body_bytes = 131072\n", ""),
+        BASE.replace("max_chars = 20000", "max_chars = 0"),
+        BASE.replace("max_chars = 20000", "max_chars = 2.5"),
+        BASE.replace("max_chars = 20000", "max_chars = true"),
+        BASE.replace("max_body_bytes = 131072", "max_body_bytes = 19999"),  # nhỏ hơn số ký tự: một ký tự ít nhất một byte
+        BASE.replace("max_body_bytes = 131072", "max_body_bytes = 99999999"),  # vượt trần tuyệt đối 1 MiB
+        BASE.replace("max_body_bytes = 131072", "max_body_bytes = 131072\nextra = 1"),  # khóa lạ
+    ],
+    ids=["thieu_bang", "thieu_chars", "thieu_bytes", "chars_0", "chars_float", "chars_bool", "bytes_nho", "bytes_vuot_tran", "khoa_la"],
+)
+def test_fr26_tran_post_sai_la_loi_cau_hinh(tmp_path: Path, body: str) -> None:
+    with pytest.raises(ConfigError, match="posting_read"):
+        load_rules(_write(tmp_path, body))
+
+
+def test_fr30_rules_that_co_nguong_khoang_tin_cay() -> None:
+    assert load_rules().posting_ci_below_n == 100
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        BASE.replace(POSTING_MARKET, ""),
+        BASE.replace("ci_below_n = 100", "ci_below_n = 30"),  # phải lớn hơn min_sample
+        BASE.replace("ci_below_n = 100", "ci_below_n = 100.5"),
+        BASE.replace("ci_below_n = 100", "ci_below_n = true"),
+        BASE.replace("ci_below_n = 100", "ci_below_n = 100\nextra = 1"),
+    ],
+    ids=["thieu_bang", "bang_min_sample", "float", "bool", "khoa_la"],
+)
+def test_fr30_nguong_khoang_tin_cay_sai_la_loi_cau_hinh(tmp_path: Path, body: str) -> None:
+    with pytest.raises(ConfigError, match="posting_market"):
         load_rules(_write(tmp_path, body))

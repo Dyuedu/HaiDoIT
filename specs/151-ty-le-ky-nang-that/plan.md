@@ -39,3 +39,5 @@ web/tests/fr19-skill-profile.test.tsx                       # đợt 2
 ## Thay đổi sau merge (2026-11-25, #217)
 
 `web/lib/skill-profile-view.ts`: `learningPathHref` nhận `skill` tùy chọn. Hành vi của issue này không đổi.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`, `haido_api/routes/market.py`, `haido_api/stat_market.py`, `tests/api/test_ad17_meta_nguon_stat.py`, `tests/api/test_fr19_skill_rates_stat.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

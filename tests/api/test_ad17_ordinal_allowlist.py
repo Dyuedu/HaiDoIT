@@ -20,6 +20,27 @@ ALLOWED = {
     # #149: "bạn có X trong Y kỹ năng core" của hồ sơ kỹ năng, đếm ở API (AD-22).
     "SkillRatesData.core_size",
     "SkillRatesData.have_core",
+    # #230: điểm và số đếm của mức khớp tin dán, tính ở API (AD-22) trên mã kỹ năng của tin và hồ sơ.
+    "PostingGroupCount.total",
+    "PostingGroupCount.had",
+    "PostingMatchLevel.points",
+    "PostingMatchLevel.max_points",
+    "PostingMatchLevel.percent",
+    # #230 (vòng review): thông tin của chính tin dán (không phải số liệu thị trường): tiền của tin đã quy đổi (VND một tháng, số
+    # nguyên theo AD-17 "tiền là số nguyên VND/tháng"), tỷ giá của snapshot (VND một USD), số đếm của dữ kiện từng dấu hiệu.
+    "PostingSalaryConversion.min_vnd_month",
+    "PostingSalaryConversion.max_vnd_month",
+    "PostingFxRate.rate",
+    "PostingCollectedCounts.repost_count",
+    "PostingCollectedCounts.snapshots_seen",
+    "WideSkillsFact.skill_count",
+    "SpecificHeavyFact.recognised_count",
+    "SpecificHeavyFact.specific_count",
+    "HighReqLowPayFact.skill_count",
+    "HighReqLowPayFact.salary_ceiling_vnd_month",
+    "RepostedFact.reposts",
+    "RepostedFact.snapshots_seen",
+    "FeeFirstFact.quote_count",
 }
 
 

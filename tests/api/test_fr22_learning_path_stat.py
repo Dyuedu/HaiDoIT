@@ -48,7 +48,7 @@ def _client(engine: Engine, paths: dict[str, RolePath]) -> TestClient:
     fake = FakeMarket()
     stat = StatMarket(engine_factory=lambda: engine, rules=RULES, paths=paths)
     app = create_app(
-        {"city_shares": fake, "skill_rates": stat, "newcomer_roles": fake, "learning_path": stat, "skill_roles": fake}
+        {"city_shares": fake, "skill_rates": stat, "newcomer_roles": fake, "learning_path": stat, "skill_roles": fake, "posting_check": fake}
     )
     return TestClient(app, raise_server_exceptions=False)
 
@@ -99,7 +99,7 @@ def test_fr22_ac2_mac_dinh_dung_noi_dung_cua_repo(pg_engine: Engine) -> None:
     fake = FakeMarket()
     stat = StatMarket(engine_factory=lambda: pg_engine, rules=RULES)
     app = create_app(
-        {"city_shares": fake, "skill_rates": stat, "newcomer_roles": fake, "learning_path": stat, "skill_roles": fake}
+        {"city_shares": fake, "skill_rates": stat, "newcomer_roles": fake, "learning_path": stat, "skill_roles": fake, "posting_check": fake}
     )
     want = "ready" if CONTENT["backend"].review else "not_ready"
     assert _ok(TestClient(app))["data"]["status"] == want

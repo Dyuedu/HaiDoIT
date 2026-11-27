@@ -7,3 +7,5 @@
 - [x] T005 Cập nhật specs #138, #212, #217, #309 và các issue chung file
 - [ ] T006 Nối thứ tự của #213
 - [ ] T007 Đánh dấu rà soát khi có biên bản (#96, #214, #215)
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

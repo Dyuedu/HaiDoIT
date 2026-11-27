@@ -13,4 +13,6 @@ services:
       HAIDO_MARKET_SOURCE_SKILL_RATES: stat
       HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
       HAIDO_MARKET_SOURCE_LEARNING_PATH: stat  # haido_api.demo thay phép này bằng bản nháp
+      HAIDO_MARKET_SOURCE_POSTING_CHECK: stat  # #230: chưa có số thật (#234), trả 503 check_unavailable; demo không phục vụ tin dán giả
+      HAIDO_POSTING_READER: model  # #230: chưa có cổng đọc (#232), trả 503 read_unavailable (cùng prod, tests/deploy/test_gh230_*)
       HAIDO_RESPONSE_CACHE: "on"

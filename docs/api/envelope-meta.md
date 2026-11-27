@@ -393,6 +393,81 @@ trên số mã gửi lên, trước khi loại trùng (150 mã khác nhau cộng
 - Kiểu TypeScript: `web/lib/learning-path.ts`. Fixture: `web/tests/fixtures/learning-path-*.json`.
 - Mọi mã kỹ năng giả (cả ở `skill-rates`) là snake_case và có trong `haido_core/vocab/skills_seed.json`.
 
+## Tin dán "Soi tin" (#230): hai bước
+
+Chữ của tin chỉ đi lên máy chủ đúng một lần, ở bước một, và không được lưu hay ghi log ở đâu (AD-11). Đổi vai trò hoặc cấp bậc chỉ gọi lại bước hai, nên không phải dán lại.
+
+### Bước một: `POST /api/v1/posting-reads`
+
+Thân `{"text": "..."}`, `text` tối đa 20.000 ký tự (FR-26). Thân được chặn cỡ **trước khi phân tích** (AD-9): `Content-Length` vượt `posting_read.max_body_bytes` của `config/rules.toml` (131.072 byte, phủ 20.000 ký tự ở tệ nhất 4 byte UTF-8 mỗi ký tự cộng phần phụ trội của JSON) bị từ chối ngay; thân không khai độ dài (chunked) hoặc khai gian bị dừng lúc đọc khi vượt trần; chữ dài hơn 20.000 ký tự trong thân nhỏ hơn trần byte cũng vậy. Cả ba: 413 `text_too_long`, câu nêu giới hạn, nguồn đọc không được gọi. Trần tốc độ theo IP (`rate_limited`) và câu chữ trên màn là của #231.
+
+Response `{data}`, **không có `meta`**: không có Stat của thị trường, không có ô thống kê hay snapshot. Các số trong đó (`mentions`, `years_min`, `salary`, `collected`) là sự kiện trích từ chữ người dùng dán hoặc từ tin đã thu thập, không phải số liệu thị trường, nên quy tắc "mọi số là Stat" không áp (giống `GET /api/v1/skills`).
+
+```json
+{ "data": { "is_posting": true, "reason": null, "role": "backend", "branch": null, "level": "junior",
+  "skills": [{ "code": "java", "mentions": 3 }, { "code": "sql", "mentions": 2 }],
+  "unrecognised": ["Quarkus", "Vert.x"], "years_min": 1,
+  "salary": { "min": 10000000, "max": 18000000, "currency": "vnd", "period": "month" }, "salary_non_numeric": false,
+  "company_named": true, "duties_described": true, "title_level": "junior",
+  "contacts": ["company_email", "company_site"],
+  "contact_quotes": [{ "channel": "company_email", "quote": "Gửi CV về địa chỉ email của công ty" }],
+  "fee_mentions": [], "collected": null,
+  "model_id": "fake-reader", "prompt_version": "fake-1", "vocab_version": "seed-2026-11-23" } }
+```
+
+- `is_posting = false` với `reason = not_posting | too_short | not_it`: mọi trường còn lại rỗng, `null` hoặc `false`; không có gì để khớp. `not_it` là tin tuyển dụng mà không thuộc IT (UX-DR44: "Tin này có vẻ không thuộc lĩnh vực IT"); `not_posting` là chữ không phải tin tuyển dụng; `too_short` là dưới 200 ký tự.
+- `role`, `level` là mã của `config/rules.toml` (`roles`, `labels.level`; tin không ghi cấp là `unknown`); `branch` (FR-27) là mã nhánh của vai trò, snake_case của nhãn trong `[[branches]]` của `config/classify.toml` (`cloud` của `devops`, `llm_agent` của `ai_ml`), hoặc `null`; `skills[].code` là mã của bộ từ vựng.
+- Sự kiện cho danh sách chi tiết (#244): `company_named`, `duties_described` và `title_level` (cấp mà chức danh cho biết, mã của `labels.level` trừ `unknown`, hoặc `null`; đủ để kiểm "chức danh khớp cấp bậc" mà không đưa chữ của JD lên bước hai); lương (#125): `salary` (số) hoặc `salary_non_numeric = true` (có nói về lương mà không có số, như "thỏa thuận"), loại trừ nhau.
+- `unrecognised` (tối đa 50 cụm, mỗi cụm 60 ký tự), `fee_mentions` (tối đa 5 trích dẫn, mỗi cái 120 ký tự) và `contact_quotes` (tối đa 5 `{channel, quote}`, mỗi `quote` 120 ký tự, `channel` nằm trong `contacts`) là chữ nguyên văn **chỉ hiện trên màn**, không bao giờ vào query của bước hai. Dấu hiệu D5, D6 (#245) trích dẫn từ đây.
+- `contacts` thuộc tập đóng `company_email`, `company_site`, `phone`, `zalo`, `telegram`, `personal_email`.
+- `collected` (FR-32, #246): tin đã thu thập khớp với tin dán, hoặc `null`. `{site, first_seen, repost_count, snapshots_seen, url}`, `url` bắt buộc (FR-32: link về tin gốc). Bước một tra vì chỉ bước này thấy chữ; bước hai chỉ nhận `repost_count` và `snapshots_seen` (D4).
+- `model_id`, `prompt_version`, `vocab_version`: truy vết của cổng đọc (AD-9).
+- Kết quả của cổng đọc quá trần (cụm chưa nhận diện, trích dẫn) bị cắt trước khi dựng model; số năm quá 60 thành `null` (không đoán). Lỗi còn lại của một lần đọc là 502 `read_failed`, không phải 500. Route bắt mọi lỗi của nguồn đọc, chỉ ghi tên kiểu của lỗi (không thông điệp, không vết gọi hàm: thông điệp có thể mang chữ của tin) và không ném lại lên máy chủ ASGI; câu lỗi luôn là câu chuẩn của mã lỗi, không bao giờ thông điệp của nguồn.
+- Lỗi (đã khai trong OpenAPI, bảng "Hình lỗi" bên dưới): `text_too_long` 413 (máy chủ, #230) và `rate_limited` 429 (#231), `read_failed` 502, `read_unavailable` 503, `read_timeout` 504 (#232), `invalid_query` 422.
+- Bản giả chọn kết quả từ chữ dán, tất định, theo thứ tự: ngắn hơn 200 ký tự sau khi cắt khoảng trắng là `too_short`; không có dấu IT nào (`it_markers` của `fixtures/fake_posting_reads.json`): có dấu tin tuyển dụng (`job_markers`: "tuyển dụng", "ứng tuyển", "mức lương"...) là `not_it`, không có là `not_posting`; có `đặt cọc` hoặc `deposit` là tin có phí (Zalo, Telegram, không nêu công ty, `level = unknown`); có `devops`, `kubernetes` hoặc `terraform` là tin DevOps nhánh Cloud (lương "thỏa thuận", đã có tin thu thập khớp); còn lại là tin Backend Junior.
+
+### Bước hai: `GET /api/v1/posting-check?role=<mã>&level=<mã>&skills=<mã,mã>&have=<mã,mã>&...`
+
+Chỉ mã và số (AD-22). `role`, `level` bắt buộc (cùng mã với `skill-rates`). `have` dùng chung bộ đọc với `skill-rates`: chỉ kiểm định dạng mã (tối đa 200), **không kiểm với bộ từ vựng**, nên mã lạ không khớp kỹ năng nào của tin và bị bỏ qua (cùng quy tắc ở `skill-rates`). `skills` là `skills[].code` của bước một, tối đa 200 mã, **mọi mã phải có trong bộ từ vựng**: cụm chưa nhận diện dù viết snake_case vẫn bị 422. Sự kiện đóng của bước một cho #125 và #126 đi qua:
+
+| Tham số | Từ bước một |
+|---|---|
+| `branch` | `branch`; phải thuộc `role` (đổi vai trò thì bỏ nhánh), lặp lại ở `data.branch` |
+| `years_min` | `years_min` (0 đến 60) |
+| `salary_min`, `salary_max`, `salary_currency` (`vnd\|usd`), `salary_period` (`month\|year`) | `salary`; trần 10^10 chung với bước một (`MAX_SALARY`) |
+| `salary_non_numeric` | `salary_non_numeric`; không đi cùng `salary_min` hay `salary_max` |
+| `company_named`, `duties_described` | hai cờ của danh sách chi tiết |
+| `title_level` | `title_level` (mã cấp, không gồm `unknown`) |
+| `contacts` | `contacts` (tập đóng, ngăn bằng dấu phẩy) |
+| `fees` | số `fee_mentions` (0 đến 5), không phải chính chữ |
+| `collected_reposts`, `collected_snapshots` | `collected.repost_count`, `collected.snapshots_seen`; đi cặp; vắng mặt là không khớp |
+
+#230 chỉ kiểm định dạng; #240–#246 mới đọc. Tham số khác (kể cả `text`, `quote`, `url`) và giá trị sai: 422 `invalid_query`, không lặp lại giá trị đã gửi. `contact_quotes`, `fee_mentions`, `unrecognised` và `collected.url`, `collected.site` không bao giờ vào query: màn hiện chúng từ response của bước một.
+
+`data`: `role`, `branch`, `level`, `cell_id` (ô đã dùng cho `match` sau khi quay về như `skill-rates`; `meta.cells[cell_id].fallback_label` giải thích; cấp `unknown` và cấp không có ô quay về ô mọi cấp của vai trò, nên tin đọc được ở bước một luôn qua được bước hai), `has_profile`, và ba mục:
+
+- `match` (có số): `status` (`ready`, `not_enough_data` khi ô đã dùng dưới 30 tin, `no_skills`); `skills[]` mỗi kỹ năng `{skill{code,name_en,name_vi}, group: core|common|specific|null, rate: Stat(skill_rate), have: bool|null}` theo thứ tự máy chủ (core, common, specific, rồi tỷ lệ giảm dần); `groups[]` ba dòng `{group, total, had|null}`; `level: {points, max_points, percent}|null`; `cv_first[]`; `config_version`. Trọng số core 3, common 2, specific 1 từ `config/rules.toml` (`[posting_match]`, AD-10); mức khớp chỉ tính kỹ năng đã nhận diện của tin: 4/4 core + 2/2 common + 0/2 specific = 16/18 = 89%. `specific` là kỹ năng tin nêu mà hiếm ở ô (nhóm `company_specific` của θ, hoặc ô không có dòng, tỷ lệ 0). Không có hồ sơ (`has_profile = false`): `have`, `level`, `groups[].had` là `null`, `cv_first` rỗng; nhóm và tỷ lệ vẫn có. Các số đếm (`total`, `had`, `points`, `max_points`, `percent`) là `Ordinal`.
+- `market` (#125, FR-30): `not_ready` là `{status: "not_ready", cell_id: null, years: null, skill_count: null, salary: null, note: null}`. Hình `ready`:
+  - `note`: `"comparisons_not_verdict"` (bắt buộc khi `ready`, `null` khi `not_ready`): mã câu "so sánh với thị trường, không phải phán quyết về tin" (#125 AC 5, #242); chữ do web dựng.
+  - `cell_id`: ô của ba so sánh, **có thể khác** `data.cell_id` của `match`. Cỡ mẫu "chưa đủ dữ liệu (X/30 ...)" lấy ở `meta.cells[market.cell_id].n_by_measure` theo thước của chính trường: `years` là `experience_years` (số tin có số năm), `skill_count` là `skill_count`, `salary` là `salary` (số tin có lương), không phải `n` của ô và không phải ô của `match`.
+  - `years`, `skill_count`: `{state: compared|not_enough_data|not_stated, percentile: Stat(percentile, 0 đến 100)|null, ci_low: Stat|null, ci_high: Stat|null}`. `not_enough_data` thì `percentile` là `null_data`; `not_stated` (tin không ghi, chỉ `years`) thì mọi trường `null`. `ci_low` và `ci_high` là khoảng tin cậy 95% (AD-26), đi cặp, bao `percentile`, chỉ có khi `compared` và `min_sample <= n < ci_below_n` (30 đến 99 tin có đúng trường đó; `[posting_market] ci_below_n` của `config/rules.toml`); `Envelope` kiểm điều này với `meta`.
+  - `salary`: `{state: compared|not_enough_data|not_stated|not_numeric, position: below|within|above|null, low: Stat|null, high: Stat|null, converted: {min_vnd_month, max_vnd_month, fx: {rate, unit: "vnd_per_usd", fx_version}|null}|null, note: "salary_not_stated"|null}`. Lương của tin được quy về VND một tháng gross trước khi so (AD-10): USD theo tỷ giá cố định của snapshot (`fx.rate` VND cho một USD, kèm `fx_version`), lương theo năm chia 12; nên không còn trạng thái "không so được vì không phải VND một tháng". `low`, `high` là P25 và P75 của ô (VND một tháng). `not_stated`: tin không công bố lương, câu trung tính `salary_not_stated` (#125, không phải cảnh báo). `not_numeric`: tin nói về lương mà không có số ("thỏa thuận"). `not_enough_data`: tin có lương số nhưng ô dưới 30 tin có lương; `converted` vẫn có.
+  - Số tiền và tỷ giá của chính tin là `Ordinal` (số nguyên VND), phân vị và P25, P75 là `Stat`.
+- `warnings` (#126, FR-31): `not_ready` là `{status: "not_ready", checklist: [], signs: [], collected_match: null, salary_note: null, disclaimer: null}`. Hình `ready`:
+  - `checklist`: đủ bốn mục `company_named`, `salary_stated`, `duties_described`, `title_matches_level` mỗi mục `{code, present: bool|null}`; `null` là "không biết" (ví dụ `title_matches_level` khi tin không có chức danh cho biết cấp), khác `false`.
+  - `signs`: **đủ bảy** dấu hiệu theo thứ tự D1 đến D7 (`d1_wide_skills`, `d2_specific_heavy`, `d3_high_req_low_pay`, `d4_reposted`, `d5_unusual_contact`, `d6_fee_first`, `d7_no_company`), mỗi cái `{code, status: triggered|not_triggered|not_evaluable, reason, fact, action, source_field}`. `reason` chỉ có khi `not_evaluable`: `not_in_data` (D4: "không đánh giá được: tin chưa có trong dữ liệu"), `not_enough_data` (D1, D2, D3: ô chưa đủ mẫu để có P90, P75, P25 hay nhóm kỹ năng của D2, vốn chỉ có khi n ≥ 30), `no_numeric_salary` (D3). D5, D6, D7 luôn đánh giá được từ chính tin. `fact` (kiểu theo `code`, có `kind`) và `action` (mã câu gợi ý, một-một với dấu hiệu) chỉ có khi `triggered`; `source_field` là `contacts` (D5), `fee_mentions` (D6) hoặc `null`.
+  - Dữ kiện: D1 `{skill_count, p90: Stat}`; D2 `{recognised_count, specific_count}` (không tính kỹ năng chưa nhận diện); D3 `{skill_count, p75_skill_count: Stat, salary_ceiling_vnd_month, p25_salary: Stat}`; D4 `{reposts, snapshots_seen}`; D5 `{channels}` (chỉ `zalo`, `telegram`, `personal_email`; màn lọc `contact_quotes` của bước một theo kênh); D6 `{quote_count}` (màn trích `fee_mentions[0 : quote_count]`); D7 `{}`. Mã của D1 đến D7 và của gợi ý là mã câu, câu chữ ở web (FR-25/31/47: không dùng "lừa đảo", "tin giả", "tin ma").
+  - `collected_match`: `{repost_count, snapshots_seen}` hoặc `null` (không khớp: D4 là `not_evaluable`); site, ngày thấy đầu và link ở `collected` của bước một.
+  - `salary_note`: `salary_not_stated` khi tin không ghi lương, dòng trung tính của FR-31 ("Tin không công bố khoảng lương. Bạn có thể tham khảo phân vị lương của vai trò này (nếu đủ mẫu) khi đàm phán."), không phải dấu hiệu.
+  - `disclaimer`: `signs_are_hints`, mã câu cố định FR-31 đặt ngay dưới các dấu hiệu ("Dấu hiệu là gợi ý để bạn tự kiểm tra. Đa số tin bị gắn dấu hiệu vẫn là tin thật."). Có khi và chỉ khi `ready`.
+  - Số đếm của dữ kiện là `Ordinal`; danh sách khóa ở `tests/api/test_ad17_ordinal_allowlist.py`.
+
+Một mục chưa làm luôn là `not_ready`, không phải số 0 hay danh sách rỗng trông như "không có gì". API giả còn `not_ready` cho `market` và `warnings` tới #240–#246; hình `ready` được kiểm bằng hai ví dụ viết tay (`tests/api/posting_examples.py`, `web/tests/fixtures/posting-check-ready-{full,sparse}.json`: `full` ô `vn.backend` đủ mẫu, tin USD, D1, D3, D4, D5, D6, D7 kích hoạt; `sparse` ô `vn.backend.junior`, số năm chưa đủ 24/30, số kỹ năng có khoảng tin cậy, tin không ghi lương, D4 không đánh giá được).
+
+Lỗi: 404 `unknown_cell` khi vai trò không có ô nào; **503 `check_unavailable`** khi nguồn chưa có số thật (production tới #234, không bao giờ số giả): lỗi tạm thời, thử lại được, khác 404 (kết quả cuối "không có số cho vai trò này").
+
+Kiểu TypeScript, hàm gọi API, hàm dựng URL và bộ kiểm hợp đồng (gồm hình `ready`): `web/lib/posting.ts`. Fixture cho test web: `web/tests/fixtures/posting-read-{backend,fee,cloud,not-posting,not-it,too-short}.json`, `posting-check-{backend.junior-have,backend.junior,backend.intern-have,backend.unknown-fee,data_engineer.entry-have}.json` (response của API giả) và `posting-check-ready-{full,sparse}.json` (ví dụ `ready`).
+
 ## Hình lỗi
 
 Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ có `data` trong response lỗi.
@@ -413,6 +488,12 @@ Mọi lỗi, kể cả lỗi tham số, có cùng một hình. Không bao giờ 
 | 413 | `cv_too_large` | Tệp CV lớn hơn `cv_max_bytes`, hoặc `Content-Length` vượt mức cho phép |
 | 415 | `cv_unsupported_type` | Yêu cầu không phải `multipart/form-data` có boundary, hoặc loại tệp CV không được nhận, hoặc byte đầu không khớp định dạng đã khai |
 | 400 | `cv_invalid_upload` | Tải CV sai cấu trúc: chưa chọn tệp, thiếu hoặc thừa tệp `cv`, thân bị cắt, `Content-Length` không hợp lệ. Mọi lỗi tải CV kèm `Connection: close` |
+| 413 | `text_too_long` | `posting-reads` (#230, AD-9): chữ dán dài hơn 20.000 ký tự hoặc thân vượt `posting_read.max_body_bytes`; từ chối trước khi phân tích và trước khi đọc, câu lỗi nêu giới hạn |
+| 429 | `rate_limited` | `posting-reads` (#231): quá nhiều lần đọc trong một khoảng thời gian |
+| 502 | `read_failed` | `posting-reads`: cổng model trả kết quả không dùng được, hoặc nguồn đọc gặp lỗi (route chỉ ghi tên kiểu của lỗi, AD-11) |
+| 503 | `read_unavailable` | `posting-reads`: cổng model chưa sẵn sàng (hiện chưa cài đặt, nên là lỗi của production tới #232) |
+| 503 | `check_unavailable` | `posting-check`: chưa có số thật để soi tin (production tới #234); thử lại được, khác 404 `unknown_cell` |
+| 504 | `read_timeout` | `posting-reads` (#232): cổng model quá thời gian chờ |
 | 500 | `invalid_response` | Máy chủ tạo ra dữ liệu sai hợp đồng này, ở response hoặc trong lúc dựng nó |
 | 500 | `internal_error` | Lỗi khác của máy chủ |
 
@@ -443,11 +524,16 @@ Fixture: `haido_api/fixtures/fake_market.json`, snapshot `2026-11-03`, ngưỡng
 | `learning-path?role=backend&level=intern` | Sẵn sàng qua `vn.backend` (vai trò × mọi cấp, n = 157; ô Intern n = 13), mọi `rate` có số; `fallback_label` ghi 105 trên 157 tin (67%) là Mid trở lên |
 | `learning-path?role=data_engineer&level=entry` | Sẵn sàng nhưng mọi `rate` là `null_data`, `group = null`: ô entry n = 4 và `vn.data_engineer` n = 22 đều dưới 30; `cell_id = vn.data_engineer`, `fallback_label` giải thích |
 | `learning-path?role=qa` | 200 `not_ready` (mọi vai trò khác của config); `ai_ml&level=entry` cũng `not_ready` nhưng có `skill-rates` để mở hồ sơ |
-| `learning-path?role=backend&level=senior` | 404 `unknown_cell` (bản giả chỉ có ô `entry` và `intern` của backend, như `skill-rates`); `data_engineer&level=senior` cũng 404 vì ô đó không phủ hết kỹ năng của lộ trình |
+| `learning-path?role=backend&level=senior` | 404 `unknown_cell` (bản giả chỉ có ô `entry`, `junior` (#230) và `intern` của backend, như `skill-rates`); `data_engineer&level=senior` cũng 404 vì ô đó không phủ hết kỹ năng của lộ trình |
 | `skill-roles?skill=python` | 17 vai trò: 11 đủ mẫu, trong đó `mobile` đủ mẫu (n = 30) và 0 tin nhắc; `embedded`, `data_scientist`, `data_engineer`, `devops`, `ui_ux`, `other` dưới 30 (`null_data`); `ai_ml` dẫn đầu |
 | `skill-roles?skill=figma` | Xếp hạng khác `python` (`frontend` dẫn đầu); `ui_ux` có tỷ lệ thật cao nhất nhưng n = 21 nên `null_data`; nhiều vai trò đủ mẫu bằng 0 (xếp theo mã) |
 | `skill-roles?skill=abap` | Mã hợp lệ mà không tin nào nhắc: `mentioned = false`, mọi dòng đủ mẫu bằng 0 |
 | `skill-roles?skill=java` | 404 `unknown_cell` (mã trong bộ từ vựng nhưng bản giả chưa có số); `skill=khong_co_ky_nang` là 404 `unknown_skill` |
+| `posting-check?role=backend&level=junior&skills=java,sql,spring_boot,git,docker,mysql,kafka,linux&have=java,sql,spring_boot,git,docker,mysql` | Ô `vn.backend.junior` (n = 32, đủ mẫu): 4 core, 2 common, 2 specific; hồ sơ có 6 kỹ năng đầu: 16/18 = 89%, đếm 4/4, 2/2, 0/2; `market` và `warnings` là `not_ready` |
+| `posting-check?...&level=intern` | Quay về `vn.backend` (n = 157), có `fallback_label`; `skills=...,python`: `python` không có dòng trong ô nên là `specific`, tỷ lệ 0 |
+| `posting-check?role=backend&level=unknown&skills=java` | Cấp `unknown` (tin không ghi cấp) quay về `vn.backend` (mọi cấp), có `fallback_label`: tin có phí đọc ở bước một qua được bước hai |
+| `posting-check?role=data_engineer&level=entry&skills=python,sql,airflow` | Không ô nào đủ 30: `match.status = not_enough_data`, không nhóm, mọi `rate` là `null_data` |
+| `posting-reads` | Chữ dưới 200 ký tự: `too_short`; không có dấu IT: `not_it` (có dấu tin tuyển dụng) hoặc `not_posting`; có `đặt cọc`: tin có phí; có `devops`: tin DevOps nhánh Cloud đã có tin thu thập khớp; còn lại: tin Backend Junior |
 | `newcomer-roles` | 17 vai trò: 12 đủ mẫu; `devops` đủ mẫu, 0 tin entry-level; `embedded`, `data_scientist`, `data_engineer` dưới 30; `other` không có tin |
 | `market-overview` | Cùng ô `vn.<role>` với `newcomer-roles`; Hà Nội/TP.HCM của tám vai trò chưa có ô thành phố và các mốc số năm lấy từ mục `market_overview` của fixture |
 
@@ -458,7 +544,7 @@ uv sync
 uv run uvicorn haido_api.main:app        # http://localhost:8000/docs
 ```
 
-Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake`. Production không bao giờ phục vụ bản giả: mọi biến dưới đây phải là `stat` trong `deploy/compose.prod.yml`, và `tests/deploy/test_gh309_prod_khong_doc_du_lieu_gia.py` đỏ khi thiếu một biến (#309). `compose.local.yml` giữ `fake`.
+Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake`. Nguồn đọc chữ dán của `posting-reads` có biến riêng (`HAIDO_POSTING_READER`, bảng dưới). Production không bao giờ phục vụ bản giả: mọi biến `HAIDO_MARKET_SOURCE_*` dưới đây phải là `stat` trong `deploy/compose.prod.yml`, và `tests/deploy/test_gh309_prod_khong_doc_du_lieu_gia.py` đỏ khi thiếu một biến (#309). Biến của nguồn đọc tin dán, `HAIDO_POSTING_READER`, không phải số liệu thị trường nên không phải `stat`: prod, demo và loadtest đặt `model` (503 `read_unavailable` tới #232, cùng `HAIDO_MARKET_SOURCE_POSTING_CHECK: stat` trả 503 `check_unavailable` tới #234), để không bao giờ phục vụ tin dán giả (`tests/deploy/test_gh230_posting_nguon_prod.py` giữ cả ba file compose). Không đặt biến thì mặc định `fake` như các nguồn khác (đóng cửa ở compose, không ở mã); `compose.local.yml` giữ `fake`.
 
 | Biến | Route | Bản thật |
 |---|---|---|
@@ -467,6 +553,8 @@ Mỗi phép chọn nguồn riêng qua biến môi trường, mặc định `fake
 | `HAIDO_MARKET_SOURCE_NEWCOMER_ROLES` | `/api/v1/newcomer-roles`, `/api/v1/market-overview` (#327) | `stat` (#145, #146): ô `vn.<role>.entry` và `vn.<role>` của snapshot đã công bố mới nhất có hàng cấp `entry`; `deploy/compose.prod.yml` đặt `stat`, `compose.local.yml` giữ `fake` |
 | `HAIDO_MARKET_SOURCE_LEARNING_PATH` | `/api/v1/learning-path` | `stat` (#216): vai trò có `review` trong `haido_api/content/learning_path.json` (giảng viên đã rà soát, #96) trả lộ trình với tỷ lệ của `skill-rates`; vai trò khác 200 `not_ready`; chưa có snapshot thì 404. `deploy/compose.prod.yml` đặt `stat` (#309). App demo (`haido_api.demo`) hiện cả lộ trình chưa rà soát, kèm lưu ý `draft_path` |
 | `HAIDO_MARKET_SOURCE_SKILL_ROLES` | `/api/v1/skill-roles` | `stat` (#168): `stat_skill_rates` hàng entry của kỹ năng và `stat_cells` ô `vn.<role>.entry` của snapshot đọc được mới nhất; `deploy/compose.prod.yml` đặt `stat` (#166) |
+| `HAIDO_MARKET_SOURCE_POSTING_CHECK` | `/api/v1/posting-check` | `stat` (#234): chưa có số thật, `StatMarket.posting_check` trả 503 `check_unavailable` (không phải 404 `unknown_cell`) cho tới đó; `deploy/compose.prod.yml`, `compose.demo.yml` và `compose.loadtest.yml` đặt `stat` (#230) |
+| `HAIDO_POSTING_READER` | `/api/v1/posting-reads` | `model` (#232): cổng đọc bằng model, chưa cài đặt nên trả 503 `read_unavailable`; `fake` mặc định; `deploy/compose.prod.yml`, `compose.demo.yml` và `compose.loadtest.yml` đặt `model` (#230) |
 
 Tên nguồn không có trong `IMPLEMENTATIONS` (`haido_api/routes/market.py`) thì app không khởi động.
 Thêm bản thật: cài `MarketReadModel` (`haido_api/market_source.py`), thêm một mục vào `IMPLEMENTATIONS`,

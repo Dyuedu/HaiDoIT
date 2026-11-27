@@ -88,6 +88,14 @@ class RulesConfig:
     level_groups: dict[str, tuple[str, ...]]
     """Nhóm cấp bậc: tên nhóm sang các mã cấp thành viên (`entry` = intern, fresher, junior; #134)."""
     years_options: tuple[int, ...]
+    posting_match_weights: dict[str, int]
+    """Trọng số mức khớp tin dán (FR-28, #230), khóa `core`, `common`, `specific`; số nguyên dương, giảm dần theo thứ tự đó."""
+    posting_max_chars: int
+    """Số ký tự tối đa của chữ dán (FR-26: 20.000). `POST /api/v1/posting-reads` từ chối chữ dài hơn bằng 413 `text_too_long`."""
+    posting_max_body_bytes: int
+    """Số byte tối đa của thân `POST /api/v1/posting-reads` (AD-9). Kiểm bằng `Content-Length` rồi đếm lúc đọc, trước khi phân tích JSON."""
+    posting_ci_below_n: int
+    """Cỡ mẫu `n` mà từ đó phân vị của tin dán không còn kèm khoảng tin cậy 95% (FR-30, AD-26): có khoảng khi `min_sample <= n < ci_below_n`."""
     always_cities: tuple[str, ...] = ()
     """Nơi luôn có hàng trong `stat_*` (#285); nơi khác chỉ có hàng khi có tin."""
     """Mốc "tối đa N năm kinh nghiệm" của bản đồ (#280), tăng dần, không gồm `any`. Mã của mốc là `str(N)`."""
@@ -122,6 +130,66 @@ CV_MAX_BYTES_LIMIT = 50 * 1024 * 1024
 _MIME = re.compile(r"[a-z0-9][a-z0-9.+-]*/[a-z0-9][a-z0-9.+-]*")
 
 UNKNOWN = "unknown"
+
+POSTING_WEIGHT_GROUPS: tuple[str, ...] = ("core", "common", "specific")
+"""Ba nhóm của mức khớp tin dán, theo thứ tự trọng số giảm dần (`specific` là nhóm `company_specific` của θ)."""
+
+
+def _posting_match_weights(raw: dict[str, Any]) -> dict[str, int]:
+    """`[posting_match]` (#230): `weight_core`, `weight_common`, `weight_specific` là số nguyên dương, không tăng dần."""
+    table = raw.get("posting_match")
+    if table is None:
+        raise ConfigError("Cấu hình thiếu bảng posting_match.")
+    keys = {f"weight_{group}" for group in POSTING_WEIGHT_GROUPS}
+    if not isinstance(table, dict) or set(table) != keys:
+        raise ConfigError(f"posting_match phải có đúng các khóa {', '.join(sorted(keys))}.")
+    weights: dict[str, int] = {}
+    for group in POSTING_WEIGHT_GROUPS:
+        value = table[f"weight_{group}"]
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            raise ConfigError(f"posting_match.weight_{group} phải là số nguyên từ 1 trở lên.")
+        weights[group] = value
+    if any(a < b for a, b in pairwise(weights.values())):
+        raise ConfigError("posting_match: trọng số phải giảm dần từ core, common đến specific (không tăng).")
+    return weights
+
+
+POSTING_READ_BYTES_LIMIT = 1024 * 1024
+"""Trần tuyệt đối của `posting_read.max_body_bytes`, để cấu hình sai không mở cửa cho thân lớn vào bộ nhớ."""
+
+
+def _plain_int(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _posting_read(raw: dict[str, Any]) -> tuple[int, int]:
+    """`[posting_read]` (#230, FR-26, AD-9): `max_chars` và `max_body_bytes`, số nguyên dương; byte không ít hơn ký tự, không quá 1 MiB."""
+    table = raw.get("posting_read")
+    if table is None:
+        raise ConfigError("Cấu hình thiếu bảng posting_read.")
+    if not isinstance(table, dict) or set(table) != {"max_chars", "max_body_bytes"}:
+        raise ConfigError("posting_read phải có đúng các khóa max_body_bytes, max_chars.")
+    chars, size = table["max_chars"], table["max_body_bytes"]
+    if not _plain_int(chars) or chars < 1:
+        raise ConfigError("posting_read.max_chars phải là số nguyên từ 1 trở lên.")
+    if not _plain_int(size) or not chars <= size <= POSTING_READ_BYTES_LIMIT:
+        raise ConfigError(
+            f"posting_read.max_body_bytes phải là số nguyên byte từ max_chars ({chars}) đến {POSTING_READ_BYTES_LIMIT}."
+        )
+    return chars, size
+
+
+def _posting_ci_below_n(raw: dict[str, Any], min_sample: int) -> int:
+    """`[posting_market]` (#230, FR-30, AD-26): `ci_below_n` là số nguyên lớn hơn `min_sample`."""
+    table = raw.get("posting_market")
+    if table is None:
+        raise ConfigError("Cấu hình thiếu bảng posting_market.")
+    if not isinstance(table, dict) or set(table) != {"ci_below_n"}:
+        raise ConfigError("posting_market phải có đúng khóa ci_below_n.")
+    value = table["ci_below_n"]
+    if not _plain_int(value) or value <= min_sample:
+        raise ConfigError(f"posting_market.ci_below_n phải là số nguyên lớn hơn min_sample ({min_sample}).")
+    return value
 
 
 def _years_options(raw: dict[str, Any]) -> tuple[int, ...]:
@@ -421,6 +489,8 @@ def load_rules(path: Path | str | None = None, *, theta_path: Path | str | None 
         raise ConfigError("roles phải đúng bằng tập mã trong labels.role.")
     level_options, level_groups = _level_filter(raw, level_codes)
     years_options = _years_options(raw)
+    posting_match_weights = _posting_match_weights(raw)
+    posting_max_chars, posting_max_body_bytes = _posting_read(raw)
 
     return RulesConfig(
         config_version=version,
@@ -443,6 +513,10 @@ def load_rules(path: Path | str | None = None, *, theta_path: Path | str | None 
         level_options=level_options,
         level_groups=level_groups,
         years_options=years_options,
+        posting_match_weights=posting_match_weights,
+        posting_max_chars=posting_max_chars,
+        posting_max_body_bytes=posting_max_body_bytes,
+        posting_ci_below_n=_posting_ci_below_n(raw, min_sample),
         always_cities=tuple(always),
     )
 

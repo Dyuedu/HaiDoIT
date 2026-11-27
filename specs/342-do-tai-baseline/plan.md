@@ -53,3 +53,5 @@ specs/342-do-tai-baseline/
 ## Complexity Tracking
 
 Không có vi phạm.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.loadtest.yml`. Xem `specs/230-hinh-soi-tin/plan.md`.

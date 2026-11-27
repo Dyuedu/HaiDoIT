@@ -20,6 +20,11 @@ services:
       # Lộ trình (#309, #216): `stat` chỉ hiện lộ trình đã rà soát (#96), vai trò khác trả `not_ready`. Mọi khóa của SOURCE_ENV phải có ở đây
       # (tests/deploy/test_gh309_*), vì mã mặc định là `fake`.
       HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
+      # Soi tin dán (#230): bước hai (GET posting-check) đọc `stat`, chưa có số thật nên trả 503 `check_unavailable` (thử lại được, khác 404 `unknown_cell`) tới #234, không số giả.
+      HAIDO_MARKET_SOURCE_POSTING_CHECK: stat
+      # Bước một (POST posting-reads) không phải số liệu thị trường nên có biến riêng: `model` là cổng đọc của #232, chưa cài đặt
+      # nên trả 503 `read_unavailable`. Mã mặc định là `fake` (tests/deploy/test_gh230_*).
+      HAIDO_POSTING_READER: model
       # Cache response theo snapshot (#343): mỗi request vẫn hỏi bảng snapshots, nên snapshot mới lên ngay.
       HAIDO_RESPONSE_CACHE: "on"
     ports:

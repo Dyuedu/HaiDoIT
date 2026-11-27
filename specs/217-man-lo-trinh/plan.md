@@ -66,3 +66,5 @@ Sửa hợp đồng #212 (xem `specs/212-hinh-lo-trinh-hoc/plan.md`) và cổng 
 ## Thay đổi sau merge (2026-11-25, #216)
 
 Phần ghép của `DraftPathMarket` chuyển vào `haido_api/stat_path.py` và `StatMarket`; nội dung nháp chuyển sang `haido_api/content/learning_path.json`. App demo và màn không đổi.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.demo.yml`, `docs/api/envelope-meta.md`, `docs/api/openapi.json`, `haido_api/fake_market.py`, `tests/api/test_fr22_learning_path_draft.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

@@ -17,6 +17,7 @@ from haido_api.schemas.market import (
     SkillRatesData,
     SkillRolesData,
 )
+from haido_api.schemas.posting import PostingCheckData, PostingFacts
 from haido_core.domain.envelope import Envelope
 
 
@@ -27,6 +28,18 @@ class UnknownCell(LookupError):
         super().__init__(message)
         self.message = message
         self.snapshot_date = snapshot_date
+
+
+class CheckUnavailable(RuntimeError):
+    """Nguồn chưa có số thật để soi tin dán (#230, tới #234): "chưa sẵn sàng, thử lại sau", không phải "không có số cho vai trò này".
+
+    Route trả 503 `check_unavailable`, khác 404 `unknown_cell` (vai trò và cấp không có ô), nên màn không nhầm một chỗ chưa nối số với
+    một kết quả cuối. Thông điệp không có chữ của tin: nguồn không bao giờ nhận chữ.
+    """
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        self.message = message
 
 
 class UnknownSkill(LookupError):
@@ -111,5 +124,27 @@ class MarketReadModel(Protocol):
 
         Raises:
             UnknownCell: nguồn chưa có số cho `skill`, hoặc chưa có snapshot nào đọc được.
+        """
+        ...
+
+    def posting_check(
+        self,
+        *,
+        role: str,
+        level: str,
+        have: Collection[str],
+        skills: Collection[str],
+        facts: PostingFacts,
+    ) -> Envelope[PostingCheckData]:
+        """Mục `match` của một tin dán trên ô `role` × `level` (FR-28, #230); `market` và `warnings` còn `not_ready` (#125, #126).
+
+        `skills` là mã kỹ năng của tin (đã nằm trong bộ từ vựng, route đã kiểm); `have` là hồ sơ (AD-22, rỗng là không có hồ
+        sơ). Nguồn lấy tỷ lệ kỹ năng của ô như `skill_rates` (kể cả quay về ô rộng hơn) rồi đưa qua
+        `haido_api.posting_match.build_match`. `facts` là sự kiện đóng của bước một (nhánh, số năm, lương, tên công ty, kênh liên hệ, phí, mô tả công việc, cấp của chức danh, vòng đời tin khớp),
+        #240–#246 mới đọc; #230 chỉ lặp lại `branch`.
+
+        Raises:
+            UnknownCell: không có ô nào cho `role` × `level`, kể cả sau khi quay về.
+            CheckUnavailable: nguồn chưa có số thật (đến #234); 503, không phải 404.
         """
         ...

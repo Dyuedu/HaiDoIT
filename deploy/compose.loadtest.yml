@@ -41,6 +41,8 @@ services:
       HAIDO_MARKET_SOURCE_SKILL_RATES: stat
       HAIDO_MARKET_SOURCE_SKILL_ROLES: stat
       HAIDO_MARKET_SOURCE_LEARNING_PATH: stat
+      HAIDO_MARKET_SOURCE_POSTING_CHECK: stat  # #230: như prod; chưa có số thật nên 503 check_unavailable (tests/deploy/test_gh230_*)
+      HAIDO_POSTING_READER: model  # #230: như prod; chưa cài đặt nên 503 read_unavailable
       # Như prod (#343). Đo không cache: HAIDO_RESPONSE_CACHE=off docker compose -f deploy/compose.loadtest.yml up -d
       HAIDO_RESPONSE_CACHE: ${HAIDO_RESPONSE_CACHE:-on}
     ports:

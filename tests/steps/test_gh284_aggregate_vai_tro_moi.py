@@ -64,7 +64,7 @@ def test_gh284_api_doc_vai_tro_moi_nhu_vai_tro_cu(env: Env, scraper_db) -> None:
             "skill_rates": FakeMarket(),
             "newcomer_roles": FakeMarket(),
             "learning_path": FakeMarket(),
-            "skill_roles": FakeMarket(),
+            "skill_roles": FakeMarket(), "posting_check": FakeMarket(),
         }
     )
     resp = TestClient(app).get("/api/v1/city-shares", params={"role": "fullstack", "level": "entry", "years": "any"})

@@ -24,3 +24,5 @@
 - T001, T002 song song → RED
 - T003–T006 song song → GREEN
 - T007 sau T003–T005; T008 sau T007
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

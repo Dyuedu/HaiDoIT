@@ -65,3 +65,5 @@ Test trước, chạy đỏ, ghi `tdd.md` đợt 2.
 
 - [x] Test chủ đề, chặng chọn một, validator
 - [x] Schema, `topic_stages`, `build_stages`, bản giả, fixture web, openapi
+
+- [x] T-230 Cập nhật 2026-11-27 theo #230: thêm nguồn `posting_check` (và các mục cộng thêm) vào các file của issue này; kiểm bằng `tdd.md` mục "Đợt sửa 2026-11-27"

@@ -1,0 +1,24 @@
+{
+  "data": {
+    "is_posting": false,
+    "reason": "not_it",
+    "role": null,
+    "branch": null,
+    "level": null,
+    "skills": [],
+    "unrecognised": [],
+    "years_min": null,
+    "salary": null,
+    "salary_non_numeric": false,
+    "company_named": false,
+    "duties_described": false,
+    "title_level": null,
+    "contacts": [],
+    "contact_quotes": [],
+    "fee_mentions": [],
+    "collected": null,
+    "model_id": "fake-reader",
+    "prompt_version": "fake-1",
+    "vocab_version": "seed-2026-11-23"
+  }
+}

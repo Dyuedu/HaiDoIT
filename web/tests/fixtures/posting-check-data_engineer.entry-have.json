@@ -1,0 +1,139 @@
+{
+  "data": {
+    "role": "data_engineer",
+    "branch": null,
+    "level": "entry",
+    "cell_id": "vn.data_engineer",
+    "has_profile": true,
+    "match": {
+      "status": "not_enough_data",
+      "skills": [
+        {
+          "skill": {
+            "code": "airflow",
+            "name_en": "Apache Airflow",
+            "name_vi": "Apache Airflow"
+          },
+          "group": null,
+          "rate": {
+            "value": null,
+            "kind": "skill_rate",
+            "display": "null_data",
+            "cell_id": "vn.data_engineer"
+          },
+          "have": false
+        },
+        {
+          "skill": {
+            "code": "python",
+            "name_en": "Python",
+            "name_vi": "Python"
+          },
+          "group": null,
+          "rate": {
+            "value": null,
+            "kind": "skill_rate",
+            "display": "null_data",
+            "cell_id": "vn.data_engineer"
+          },
+          "have": true
+        },
+        {
+          "skill": {
+            "code": "sql",
+            "name_en": "SQL",
+            "name_vi": "SQL"
+          },
+          "group": null,
+          "rate": {
+            "value": null,
+            "kind": "skill_rate",
+            "display": "null_data",
+            "cell_id": "vn.data_engineer"
+          },
+          "have": false
+        }
+      ],
+      "groups": [],
+      "level": null,
+      "cv_first": [
+        "python"
+      ],
+      "config_version": "2026-11-27.2"
+    },
+    "market": {
+      "status": "not_ready",
+      "cell_id": null,
+      "years": null,
+      "skill_count": null,
+      "salary": null,
+      "note": null
+    },
+    "warnings": {
+      "status": "not_ready",
+      "checklist": [],
+      "signs": [],
+      "collected_match": null,
+      "salary_note": null,
+      "disclaimer": null
+    }
+  },
+  "meta": {
+    "snapshot_date": "2026-11-03",
+    "snapshot_status": "published",
+    "sources": [
+      "careerlink",
+      "itnavi",
+      "zalo",
+      "vietnamworks",
+      "topdev",
+      "momo",
+      "itviec"
+    ],
+    "sources_failed": [],
+    "thresholds": {
+      "min_sample": 30,
+      "theta_core": 0.3,
+      "theta_common": 0.1,
+      "theta_version": "theta-1"
+    },
+    "coverage_notes": [
+      {
+        "code": "n_sources",
+        "text": "Dữ liệu chỉ gồm tin tuyển dụng IT đăng online trên 7 nguồn."
+      },
+      {
+        "code": "posting_not_demand",
+        "text": "Tin tuyển dụng không đồng nghĩa với vị trí đang thực sự cần người."
+      },
+      {
+        "code": "big_city_bias",
+        "text": "Dữ liệu nghiêng về thành phố lớn và công ty lớn."
+      },
+      {
+        "code": "salary_disclosed_only",
+        "text": "Con số lương chỉ phản ánh những tin có công bố lương."
+      }
+    ],
+    "cells": {
+      "vn.data_engineer": {
+        "n": 22,
+        "fallback_label": "Data Engineer · Entry chỉ có 4 tin và Data Engineer ở mọi cấp bậc chỉ có 22 tin; cả hai chưa đủ 30 tin nên chưa hiển thị tỷ lệ.",
+        "seniority_mix": {
+          "junior": 4,
+          "senior": 18
+        },
+        "n_by_measure": {
+          "skill_count": 22,
+          "experience_years": 15,
+          "salary": 4
+        },
+        "insufficient_by_measure": {
+          "skill_count": true,
+          "experience_years": true,
+          "salary": true
+        }
+      }
+    }
+  }
+}

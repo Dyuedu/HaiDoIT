@@ -22,3 +22,5 @@ Python 3.13, pytest, PyYAML (đã có trong test deploy của #146, #166). Khôn
 
 - `deploy/compose.prod.yml`: #1, #162 (chưa có `specs/`), #262, #273, #146, #166 (có `specs/`, thêm đợt tdd).
 - `docs/api/envelope-meta.md`: nhiều issue; chỉ bảng nguồn đổi, không đổi hình response.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `deploy/compose.prod.yml`, `docs/api/envelope-meta.md`. Xem `specs/230-hinh-soi-tin/plan.md`.

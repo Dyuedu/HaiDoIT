@@ -54,3 +54,5 @@ Hai file test không có issue cũ nào thiếu `specs/`.
 ## Ghi chú 2026-11-15 (gộp main vào #212)
 
 `tests/api/test_fr37_newcomer_roles_stat.py`: lời dựng `create_app` thêm `"learning_path": fake`. `haido_api/stat_market.py` thêm `learning_path` (ném `UnknownCell`, chờ #216), `newcomer_roles` giữ nguyên.
+
+**Cập nhật 2026-11-27 (#230)**: các file sau của issue này được #230 sửa thêm, hành vi không đổi: `haido_api/stat_market.py`, `tests/api/test_fr37_newcomer_roles_stat.py`. Xem `specs/230-hinh-soi-tin/plan.md`.

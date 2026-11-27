@@ -24,11 +24,12 @@ REAL = {
     "/api/v1/learning-path",  # #216: `not_ready` khi chưa rà soát vẫn đủ `meta`
     "/api/v1/market-overview",  # #328: đọc cùng nguồn với newcomer-roles
 }
+PENDING = {"/api/v1/posting-check"}  # #230: `stat` ném check_unavailable (503) cho tới #234, không bao giờ số giả
 
 
 def _stat_client(engine: Engine) -> TestClient:
     stat = StatMarket(engine_factory=lambda: engine, rules=RULES)
-    app = create_app({op: stat for op in ("city_shares", "skill_rates", "newcomer_roles", "learning_path", "skill_roles")})
+    app = create_app({op: stat for op in ("city_shares", "skill_rates", "newcomer_roles", "learning_path", "skill_roles", "posting_check")})
     return TestClient(app, raise_server_exceptions=False)
 
 
@@ -58,17 +59,21 @@ def test_ad17_103_moi_route_co_so_nguon_stat_tra_data_va_meta(pg_engine: Engine)
         body = resp.json()
         assert set(body) == {"data", "meta"}, path
         assert body["meta"]["snapshot_date"] == S and body["meta"]["cells"], path
+    for path in sorted(PENDING):  # có snapshot rồi mà chưa có bản thật: 503 "chưa sẵn sàng", không số giả, không giả làm "không có số"
+        resp = client.get(path, params=SAMPLE_QUERY[path])
+        assert resp.status_code == 503 and resp.json()["error"]["code"] == "check_unavailable", (path, resp.text)
 
 
 def test_ad17_103_moi_route_deu_co_so_that() -> None:
-    assert set(SAMPLE_QUERY) == REAL
+    assert set(SAMPLE_QUERY) == REAL | PENDING
 
 
 def test_ad17_103_chua_co_snapshot_thi_moi_route_tra_loi_chuan_khong_co_data(pg_engine: Engine) -> None:
     client = _stat_client(pg_engine)
     for path in sorted(SAMPLE_QUERY):
         resp = client.get(path, params=SAMPLE_QUERY[path])
-        assert resp.status_code == 404, (path, resp.text)
+        status, code = (503, "check_unavailable") if path in PENDING else (404, "unknown_cell")  # #230: chưa nối số thật, thử lại sau
+        assert resp.status_code == status, (path, resp.text)
         body = resp.json()
         assert set(body) == {"error"}, path
-        assert body["error"]["code"] == "unknown_cell", path
+        assert body["error"]["code"] == code, path
